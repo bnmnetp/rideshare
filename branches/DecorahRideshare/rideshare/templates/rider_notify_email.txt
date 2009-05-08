@@ -1,0 +1,11 @@
+Hello {{rider.first_name}}:
+
+You have a ride!  {{trip.driver.first_name}} {{trip.driver.last_name}} has agreed to let you ride with them
+to {{trip.destination}}.
+
+You should contact {{trip.driver.first_name}} by email at {{trip.driver.email}} to workout
+the details regarding when they are leaving.
+
+Have a good trip!
+
+Decorah Rideshare

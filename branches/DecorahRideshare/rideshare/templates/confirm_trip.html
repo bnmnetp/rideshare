@@ -1,0 +1,27 @@
+{% extends "sidebar_base.html" %}
+    
+{% block title %}
+    Decorah Rideshare
+{% endblock %}
+
+{% block titlebar %}
+<center>
+<h1>{{ trip.cat.cat_name }}</h1>
+</center>
+{% endblock %}
+
+
+{% block content %}
+
+<p>A new trip to has been created with the following information:
+    
+    <form action="." method="POST" accept-charset="utf-8">
+        <table>
+        {{form.as_table}}
+        </table>
+        <p><input type="submit" value="Continue &rarr;"></p>
+    </form>  
+    
+
+    
+{% endblock %}

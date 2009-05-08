@@ -1,0 +1,35 @@
+{% extends "sidebar_base.html" %}
+    
+{% block title %}
+    Decorah Rideshare
+{% endblock %}
+
+{% block titlebar %}
+<center>
+<h1>Show riders</h1>
+</center>
+{% endblock %}
+
+
+
+{% block content %}
+    <p>Thank you for volunteering to drive {{user.first_name}}!</p>
+    
+    {% if riders %}
+        
+    <p>The following people are looking for a ride to {{trip.destination}}.  Please check the people you 
+    would be willing to take with you.</p>
+    
+    <form action="." method="POST">
+        <table>     
+        {{form.as_p }}
+        </table>
+        <p><input type="submit" name="Continue" value="Continue" id="Continue">
+    </form>
+    {% else %}
+    <p>At this time there are no additional people looking for a ride to {{trip.destination}}.  You will be
+        notified by email if someone wants a ride in the future.</p>
+    {% endif %}
+
+    <p>You can start a new trip by clicking <a href="/rideshare/">here</a></p>
+{% endblock %}

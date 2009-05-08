@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Registration Complete
+{% endblock %}
+
+{% block titlebar %}
+    <h1>Registration Complete</h1>
+{% endblock %}
+
+{% block content %}
+
+{% if form.has_errors %}
+<p>Your username and password didn't match. Please try again.</p>
+{% endif %}
+
+<p>Congratulations you are now registered.  <a href="http://www.decorahrideshare.com/">click here</a> to go to the home page to share a ride.
+</p>
+
+<p>Thank you for using Decorah RideShare!</p>
+
+{% endblock %}

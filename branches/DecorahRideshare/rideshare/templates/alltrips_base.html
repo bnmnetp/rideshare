@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block links %}
+
+    {# <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.6.0/build/assets/skins/sam/autocomplete.css" /> #}
+    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.6.0/build/autocomplete/assets/skins/sam/autocomplete.css">
+    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.6.0/build/fonts/fonts-min.css" />
+    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.6.0/build/calendar/assets/skins/sam/calendar.css" />
+
+    <script type="text/javascript" src="http://yui.yahooapis.com/2.6.0/build/utilities/utilities-min.js"></script>
+    <script type="text/javascript" src="http://yui.yahooapis.com/2.6.0/build/autocomplete/autocomplete-min.js"></script>
+    <script type="text/javascript" src="http://yui.yahooapis.com/2.6.0/build/yahoo-dom-event/yahoo-dom-event.js"></script>
+    <script type="text/javascript" src="http://yui.yahooapis.com/2.6.0/build/calendar/calendar-min.js"></script>    
+    <script type="text/javascript" src="http://yui.yahooapis.com/2.6.0/build/datasource/datasource-min.js"></script>
+
+
+{% endblock %}
+
+{% block navcontent %}
+<h2>All Trips</h2>
+    <table>
+        {% for trip in new_trips %}
+        <tr>
+            <td>From:</td>
+            <td> {{ trip.start_point }}</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>To:</td> 
+            <td class="destination"><a href="/rideshare/finalize_exact_match/{{trip.id}}/">{{ trip.destination }}</a></td>
+            <td> {{ trip.date_of_trip|default_if_none:"commute" }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+{% endblock %}

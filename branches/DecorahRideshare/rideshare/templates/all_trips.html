@@ -1,0 +1,45 @@
+{% extends "simplebase.html" %}
+
+{% block titlebar %}
+<center>
+<h1>All Trips</h1>
+</center>
+{% endblock %}
+
+{% block content %}
+    <table>
+        <tr>
+            <th>Type/Driver</th>
+            <th>From/Riders</th>
+            <th>To/Requests</th>
+        </tr>
+    {% for t in all_trips %}
+        <tr class="{%  cycle 'odd' 'even' %}">
+            <td>{{t.date_of_trip|default_if_none:"commute"}}</td>
+            <td> {{t.start_point}}</td>
+            <td><a href="/rideshare/finalize_exact_match/{{t.id}}/">{{t.destination}}</a></td>
+        </tr>
+        <tr class="{% cycle 'odd' 'even' %}">
+            <td>{% if t.driver %}
+                {{t.driver.first_name }} {{t.driver.last_name}}
+                {% else %}
+                Needs Driver
+                {% endif %}
+            </td>
+            <td>{% if t.riders.all %}
+                    {% for r in t.riders.all %}
+                    {{r.first_name}}
+                    {{r.last_name}}
+                    {% endfor %}
+                {% else %}
+                    No Riders Yet
+                {% endif %}
+
+            </td>
+            <td>
+                Requests:  {{t.requests.all|length}}
+            </td>
+        </tr>
+    {% endfor %}
+    </table>
+{% endblock %}

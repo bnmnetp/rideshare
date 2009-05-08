@@ -1,0 +1,41 @@
+{% extends "sidebar_base.html" %}
+    
+{% block title %}
+    Decorah Rideshare
+{% endblock %}
+
+{% block titlebar %}
+<center>
+<h1>{{ cat.cat_name }}</h1>
+</center>
+{% endblock %}
+
+
+{% block content %}
+<center>
+<h2>Search for a Ride</h2>
+</center>
+<p>Need Help? Point the mouse at any field for a hint.  
+    If a trip does not match your criteria you will be able to start one.</p>
+<form action="." method="post">
+{% include 'rideform.html' %}
+
+    <p>
+        <center>
+        <input type="submit" value="Find a Ride">
+        </center>
+    </p>
+</form>
+    {% if rideform.errors %}
+        <p class="formerror">Errors:  Fields marked with * are required</p>
+    {% else %}
+        <p>Fields marked with * are required</p>
+    {% endif %}
+
+<hr />
+
+
+{% include "rideform_script.html" %}
+
+
+{% endblock %}

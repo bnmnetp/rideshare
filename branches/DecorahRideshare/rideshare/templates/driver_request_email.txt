@@ -1,0 +1,9 @@
+Dear {{trip.driver.first_name}}
+
+{{rider.first_name}} {{rider.last_name}} would like to ride with you to {{trip.destination}}
+on {{trip.date_of_trip}}.
+
+Click on the following link to accept:  http://{{site}}/rideshare/accept/{{trip.id}}/{{rider.id}}/
+
+If you cannot take {{rider.first_name}} click on the following link and we will attempt to find another ride.
+Decline:  http://{{site}}/rideshare/decline/{{trip.id}}/{{rider.id}}/
