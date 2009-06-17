@@ -1,0 +1,32 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html> <head>
+<title></title>
+</head>
+
+<script type="text/javascript">
+  function useHttpResponse() {
+  if (http.readyState == 4) {
+     var textout = http.responseText;
+     var rides = eval(textout);
+     alert(rides[0].destination_title);
+  }
+
+  }
+
+  http = new XMLHttpRequest();
+  http.open("GET","/",true);
+  http.onreadystatechange = useHttpResponse;
+  http.send(null);
+  
+</script>
+
+
+
+<body>
+<h1></h1>
+
+
+<hr>
+<address></address>
+<!-- hhmts start --> Last modified: Wed Jun 17 17:27:44 CDT 2009 <!-- hhmts end -->
+</body> </html>
