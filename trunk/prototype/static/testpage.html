@@ -3,20 +3,25 @@
 <title></title>
 </head>
 
+<!-- http://docs.jquery.com/Ajax/jQuery.getJSON#urldatacallback -->
+<script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript">
   function useHttpResponse() {
-  if (http.readyState == 4) {
-     var textout = http.responseText;
-     var rides = eval(textout);
-     alert(rides[0].destination_title);
-  }
+      if (http.readyState == 4) {
+          var textout = http.responseText;
+          var rides = eval(textout);
+          alert(rides[0].destination_title);
+      }
 
   }
 
-  http = new XMLHttpRequest();
-  http.open("GET","/",true);
-  http.onreadystatechange = useHttpResponse;
-  http.send(null);
+  function myHttpResponse(json) {
+    alert("JSON Data: " + json[1].destination_title);
+  }
+
+
+  $.getJSON("/",myHttpResponse)
+
   
 </script>
 
@@ -28,5 +33,5 @@
 
 <hr>
 <address></address>
-<!-- hhmts start --> Last modified: Wed Jun 17 17:27:44 CDT 2009 <!-- hhmts end -->
+<!-- hhmts start --> Last modified: Thu Jun 18 17:44:05 CDT 2009 <!-- hhmts end -->
 </body> </html>
