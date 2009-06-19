@@ -1,37 +1,59 @@
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
 <html> <head>
 <title></title>
-</head>
+
+<script type="text/javascript" src="jquery.js"></script>
+
 
 <!-- http://docs.jquery.com/Ajax/jQuery.getJSON#urldatacallback -->
-<script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript">
-  function useHttpResponse() {
-      if (http.readyState == 4) {
-          var textout = http.responseText;
-          var rides = eval(textout);
-          alert(rides[0].destination_title);
-      }
 
-  }
+    function myHttpResponse(json) {
+       alert("JSON Data: " + json[1].destination_title);
+       for (var i=0; i<json.length; i++) {
+            addTableRow($("#mytable"),json[i].driver,json[i].destination_title,json[i].start_point_title,json[i].num_passengers,json[i].max_passengers)
+        }
+    }
 
-  function myHttpResponse(json) {
-    alert("JSON Data: " + json[1].destination_title);
-  }
+    function addTableRow(jQtable,name,dest,start,num_riders,max_riders){
+	jQtable.each(function(){
+	    var $table = $(this);
+	    tds += '<td>' + name + '</td>'
+	    tds += '<td>' + start + '</td>'	    	    
+	    tds += '<td>' + dest + '</td>'
+	    tds += '<td>' + num_riders + '</td>'
+	    tds += '<td>' + max_riders + '</td>'	    	    
+	    tds += '</tr>';
+	    if($('tbody', this).length > 0){
+		$('tbody', this).append(tds);
+	    }else {
+		$(this).append(tds);
+	    }
+	});
+    }
 
+    $(document).ready(function(){
+        $.getJSON("/",myHttpResponse)	    
+    });	    
 
-  $.getJSON("/",myHttpResponse)
 
   
 </script>
 
 
+</head>
 
 <body>
 <h1></h1>
 
+<table id="mytable" width="100%" >
+<tr>
+  <td> Driver </td><td>Start</td><td> Destination</td><td>Num
+    Riders</td><td>Max riders</td>
+</tr>
+</table>
 
 <hr>
 <address></address>
-<!-- hhmts start --> Last modified: Thu Jun 18 17:44:05 CDT 2009 <!-- hhmts end -->
+<!-- hhmts start --> Last modified: Fri Jun 19 14:48:25 CDT 2009 <!-- hhmts end -->
 </body> </html>
