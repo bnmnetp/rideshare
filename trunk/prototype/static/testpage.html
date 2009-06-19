@@ -9,20 +9,22 @@
 <script type="text/javascript">
 
     function myHttpResponse(json) {
-       alert("JSON Data: " + json[1].destination_title);
-       for (var i=0; i<json.length; i++) {
-            addTableRow($("#mytable"),json[i].driver,json[i].destination_title,json[i].start_point_title,json[i].num_passengers,json[i].max_passengers)
+      for (var i=0; i<json.length; i++) {
+            addTableRow($("#mytable"),json[i].driver,json[i].destination_title,
+                                      json[i].start_point_title,json[i].num_passengers,
+                                      json[i].max_passengers);
         }
     }
 
     function addTableRow(jQtable,name,dest,start,num_riders,max_riders){
 	jQtable.each(function(){
 	    var $table = $(this);
-	    tds += '<td>' + name + '</td>'
-	    tds += '<td>' + start + '</td>'	    	    
-	    tds += '<td>' + dest + '</td>'
-	    tds += '<td>' + num_riders + '</td>'
-	    tds += '<td>' + max_riders + '</td>'	    	    
+            var tds = '<tr>';
+	    tds += '<td>' + name + '</td>';
+	    tds += '<td>' + start + '</td>';
+	    tds += '<td>' + dest + '</td>';
+	    tds += '<td>' + num_riders + '</td>';
+	    tds += '<td>' + max_riders + '</td>';	    	    
 	    tds += '</tr>';
 	    if($('tbody', this).length > 0){
 		$('tbody', this).append(tds);
@@ -55,5 +57,5 @@
 
 <hr>
 <address></address>
-<!-- hhmts start --> Last modified: Fri Jun 19 14:48:25 CDT 2009 <!-- hhmts end -->
+<!-- hhmts start --> Last modified: Fri Jun 19 15:06:30 CDT 2009 <!-- hhmts end -->
 </body> </html>
