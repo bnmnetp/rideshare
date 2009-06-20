@@ -26,8 +26,12 @@
     }
 
 // Adds a popup to the GoogleMap that fits 'ride'
-    function addRideToMap(ride, rideNum)
+    function addRideToMap(ride, rideNum, open)
     {
+
+        // Add implementation for bool 'open' to open the new popup after creation
+      var open = (typeof open == 'undefined') ?
+        false : open;
       if (ride.destination.title == "Decorah, IA")
       {
         var amarker = new GMarker(new GLatLng(ride.start_point.latitude, ride.start_point.longitude), gmarkerOptions);
@@ -48,6 +52,7 @@
         ride.marker = bmarker;
         map.addOverlay(bmarker);
       }
+      return ride.marker;
     }
 
 // Returns the HTML to be contained in a popup window in the GMap
@@ -70,8 +75,18 @@
           msg = "Can take "+space_left+" more people";
         }
       }
+      var disabled;
+      var today = new Date();
+      if (ride.ToD < new Date(today.getFullYear(), today.getMonth(), today.getDate() + 2))
+      {
+        disabled = "disabled=\"disabled\"";
+      }
+      else
+      {
+        disabled = "";
+      }
       var text1 = ("Driver: "+ride.driver+"<br><i>"+ride.start_point.title+"</i> --> <i>"+ride.destination.title+"</i><br>Date: "+numToTextMonth(ride.ToD.getMonth())+" "+ride.ToD.getDate()+", "+ride.ToD.getFullYear()+"<br>"+msg);
-      var text2 = ("<br /><button type=\"button\" onclick=\"addPassengerFromPopup(loginName, "+rideNum+"); return false;\">Join this Ride</button>");
+      var text2 = ("<br /><button type=\"button\" onclick=\"addPassengerFromPopup(loginName, "+rideNum+"); return false;\" "+disabled+">Join this Ride</button>");
       var result = text1 + text2;
       return result;
     }
@@ -172,7 +187,7 @@
       rides[rideNum] = createdRide;
 
     // Adds overlay to the map
-      addRideToMap(createdRide, rideNum);
+      var marker = addRideToMap(createdRide, rideNum, true);
 
     // Adds line to the table;
       var table = document.getElementById("rideTable");
@@ -191,6 +206,7 @@
       c5.innerHTML = numToTextMonth(createdRide.ToD.getMonth())+" "+createdRide.ToD.getDate()+", "+createdRide.ToD.getFullYear();
 
       map.closeInfoWindow();
+      marker.infowindowopen();
     }
 
 // Changes a numerical month returned from a Date object to a String
@@ -316,8 +332,6 @@
 // Adds the current logged-in person to a Ride
   function addPassengerFromPopup(login, rideNum)
   {
-    alert("here");
-    alert("rideNum = "+rideNum);
     var ride = rides[rideNum];
     if (ride.max_passengers > ride.num_passengers)
     {
@@ -331,7 +345,9 @@
   
       // Change popups
       map.removeOverlay(rides[rideNum].marker);
-      addRideToMap(rides[rideNum], rideNum);
+      var marker = addRideToMap(rides[rideNum], rideNum);
+
+      marker.openInfoWindowHtml("You have been added<br />to this ride!");
     }
     else
     {
