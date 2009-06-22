@@ -58,37 +58,59 @@ class MyClass:
 class MainHandler(webapp.RequestHandler):
 
     def get(self):
+        self.response.out.write('Hello World!')
+
+
+class RideQueryHandler(webapp.RequestHandler):
+    """
+    Parse and process requests for rides
+    returns json
+    """
+
+    def get(self):
+        """
+        Arguments:
+        - `self`:
+        """
         allRides = Ride.all()
         json = simplejson.dumps([r.to_dict() for r in allRides])
         self.response.headers.add_header('content-type','application/json')
         self.response.out.write(json)
+        
+    
+        
 
 
 def main():
     # prepopulate the database
-    newRide = Ride()
-    newRide.max_passengers = 3
-    newRide.num_passengers = 0
-    newRide.driver = "Brad"
-    newRide.start_point_title = "Decorah, IA"
-    newRide.destination_title = "Plymouth, MN"
-    newRide.ToD = datetime.datetime(2009,9,15)
-    newRide.passengers = []
-    newRide.put()
+    query = db.Query(Ride)
     
-    newRide = Ride()
-    newRide.max_passengers = 1
-    newRide.num_passengers = 0
-    newRide.driver = "Kevin"
-    newRide.start_point_title = "Decorah, IA"
-    newRide.destination_title = "Des Moines, IA"
-    newRide.ToD = datetime.datetime(2009,9,17)
-    newRide.passengers = []
-    newRide.put()
+    if query.count() < 2:
+        newRide = Ride()
+        newRide.max_passengers = 3
+        newRide.num_passengers = 0
+        newRide.driver = "Brad"
+        newRide.start_point_title = "Decorah, IA"
+        newRide.destination_title = "Plymouth, MN"
+        newRide.ToD = datetime.datetime(2009,9,15)
+        newRide.passengers = []
+        newRide.put()
+
+        newRide = Ride()
+        newRide.max_passengers = 1
+        newRide.num_passengers = 0
+        newRide.driver = "Kevin"
+        newRide.start_point_title = "Decorah, IA"
+        newRide.destination_title = "Des Moines, IA"
+        newRide.ToD = datetime.datetime(2009,9,17)
+        newRide.passengers = []
+        newRide.put()
     
     
     
-    application = webapp.WSGIApplication([('/', MainHandler)], debug=True)
+    application = webapp.WSGIApplication([('/', MainHandler),
+                                          ('/getrides', RideQueryHandler )],
+                                         debug=True)
     wsgiref.handlers.CGIHandler().run(application)
 
 
