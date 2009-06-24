@@ -333,25 +333,43 @@
   function addPassengerFromPopup(login, rideNum)
   {
     var ride = rides[rideNum];
-    if (ride.max_passengers > ride.num_passengers)
+    var pass = ride.passengers;
+    var addable = true;
+    // Check if the logged in person has been added as a passenger already
+    for (var pass in pass)
     {
-      // Change Ride object
-      ride.passengers[ride.num_passengers] = login;
-      ride.num_passengers += 1;
-  
-      // Change table
-      var table = document.getElementById("rideTable");
-      table.rows[rideNum + 1].cells[2].innerHTML = ride.num_passengers; // Add one for table header
-  
-      // Change popups
-      map.removeOverlay(rides[rideNum].marker);
-      var marker = addRideToMap(rides[rideNum], rideNum);
+      if (pass == login)
+      { addable = false; }
+    }
+    // Check if the logged in person is the driver
+    if (ride.driver == login)
+      { addable = false; }
+    if (addable)
+    {
+      if (ride.max_passengers > ride.num_passengers)
+      {
+        // Change Ride object
+        ride.passengers[ride.num_passengers] = login;
+        ride.num_passengers += 1;
+    
+        // Change table
+        var table = document.getElementById("rideTable");
+        table.rows[rideNum + 1].cells[2].innerHTML = ride.num_passengers; // Add one for table header
+    
+        // Change popups
+        map.removeOverlay(rides[rideNum].marker);
+        var marker = addRideToMap(rides[rideNum], rideNum);
 
-      marker.openInfoWindowHtml("You have been added<br />to this ride!");
+        marker.openInfoWindowHtml("You have been added<br />to this ride!");
+      }
+      else
+      {
+        alert("This ride is full.\nNo more passengers can be added.");
+      }
     }
     else
     {
-      alert("This ride is full.\nNo more passengers can be added.");
+      alert("You are already in this ride!");
     }
   }
 
