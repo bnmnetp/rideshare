@@ -75,11 +75,16 @@ class RideQueryHandler(webapp.RequestHandler):
         Arguments:
         - `self`:
 
-        The query may be filtered by start date, end date
+        The query may be filtered by after date, and before date.  Expect to get the dates
+        in the form YYYY-MM-DD
         """
+        # Create a query object
         allRides = Ride.all()
+        # Check to see if the browser side provided us with before/after dates
         after_date = self.request.get('after')
         before_date = self.request.get("before")
+        # If there is an after date then limit the rides to those after the date
+        # using the filter method
         if after_date:
             y,m,d = after_date.split('-')
             allRides.filter('ToD >= ',datetime.datetime(int(y),int(m),int(d)))
@@ -91,13 +96,49 @@ class RideQueryHandler(webapp.RequestHandler):
 
         logging.debug("after %s before %s", after_date, before_date)
 
-
+        # Now put together the json result to send back to the browser.
         json = simplejson.dumps([r.to_dict() for r in allRides])
         self.response.headers.add_header('content-type','application/json')
         self.response.out.write(json)
         logging.debug('end get')
     
+
+class RideNewrideHandler(webapp.RequestHandler):
+    """
+    For new Rides
+    """
+
+    def get(self):
+        """
+        Called when a new ride needs to be added to the database.
         
+        Arguments:
+        - `self`:
+        """
+        
+    
+        
+        
+        
+        
+def geocode(address):
+ # This function queries the Google Maps API geocoder with an
+ # address. It gets back a csv file, which it then parses and
+ # returns a string with the longitude and latitude of the address.
+
+ # This isn't an actual maps key, you'll have to get one yourself.
+ # Sign up for one here: http://code.google.com/apis/maps/signup.html
+  mapsKey = 'onk1an5ac8ABQIAAAAg9WbCE_zwMIRW7jDFE_3ixQlKBzOsZLiKVvY0J60oIHyvyt2BhQBmJex9U1i3T7I95SaF5Yg7fgabA'
+  mapsUrl = 'http://maps.google.com/maps/geo?q='
+     
+ # This joins the parts of the URL together into one string.
+  url = ''.join([mapsUrl,urllib.quote(address),'&output=csv&key=',mapsKey])
+    
+ # This retrieves the URL from Google, parses out the longitude and latitude,
+ # and then returns them as a string.
+  coordinates = urllib.urlopen(url).read().split(',')
+  #coorText = '%s,%s' % (coordinates[3],coordinates[2])
+  return (float(coordinates[3]),float(coordinates[2]))
 
 
 def main():
@@ -111,7 +152,9 @@ def main():
         newRide.num_passengers = 0
         newRide.driver = "Brad"
         newRide.start_point_title = "Decorah, IA"
+        newRide.start_point_long, newRide.start_point_lat = geocode(newRide.start_point_title)
         newRide.destination_title = "Plymouth, MN"
+        newRide.destination_long, newRide.destination_lat = geocode(newRide.destination_title)
         newRide.ToD = datetime.datetime(2009,9,15)
         newRide.passengers = []
         newRide.put()
@@ -121,7 +164,9 @@ def main():
         newRide.num_passengers = 0
         newRide.driver = "Kevin"
         newRide.start_point_title = "Decorah, IA"
+        newRide.start_point_long, newRide.start_point_lat = geocode(newRide.start_point_title)
         newRide.destination_title = "Des Moines, IA"
+        newRide.destination_long, newRide.destination_lat = geocode(newRide.destination_title)
         newRide.ToD = datetime.datetime(2009,9,17)
         newRide.passengers = []
         newRide.put()
