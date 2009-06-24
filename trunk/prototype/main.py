@@ -28,6 +28,9 @@ from google.appengine.ext import webapp
 from google.appengine.ext import db
 from google.appengine.api import users
 
+import logging
+import urllib
+
 # Make this very flat to start with, then add references later...
 class Ride(db.Model):
     max_passengers = db.IntegerProperty()
@@ -71,20 +74,37 @@ class RideQueryHandler(webapp.RequestHandler):
         """
         Arguments:
         - `self`:
+
+        The query may be filtered by start date, end date
         """
         allRides = Ride.all()
+        after_date = self.request.get('after')
+        before_date = self.request.get("before")
+        if after_date:
+            y,m,d = after_date.split('-')
+            allRides.filter('ToD >= ',datetime.datetime(int(y),int(m),int(d)))
+
+        if before_date:
+            y,m,d = before_date.split("-")
+            allRides.filter('ToD <=',datetime.datetime(int(y),int(m),int(d)))
+        
+
+        logging.debug("after %s before %s", after_date, before_date)
+
+
         json = simplejson.dumps([r.to_dict() for r in allRides])
         self.response.headers.add_header('content-type','application/json')
         self.response.out.write(json)
-        
+        logging.debug('end get')
     
         
 
 
 def main():
+    logging.getLogger().setLevel(logging.DEBUG)
     # prepopulate the database
     query = db.Query(Ride)
-    
+    # TODO:  use google python geocoder to lookup lat/long for start/dest    
     if query.count() < 2:
         newRide = Ride()
         newRide.max_passengers = 3
