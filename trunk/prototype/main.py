@@ -103,22 +103,47 @@ class RideQueryHandler(webapp.RequestHandler):
         logging.debug('end get')
     
 
-class RideNewrideHandler(webapp.RequestHandler):
+class NewRideHandler(webapp.RequestHandler):
     """
     For new Rides
     """
 
-    def get(self):
+    def post(self):
         """
         Called when a new ride needs to be added to the database.
+        Probably with all of this data it should be done as a form post.
         
         Arguments:
         - `self`:
+        Web Arguments:
+        - max_passengers
+        - num_passengers
+        - driver
+        - start_point_title
+        - start_point_lat
+        - start_point_long
+        - destination_title
+        - destination_lat
+        - destination_long
+        - ToD
         """
         
-    
+        newRide = Ride()
+        newRide.max_passengers = int(self.request.get("maxp"))
+        newRide.num_passengers = 0
+        newRide.driver = self.request.get("driver")
+        newRide.start_point_title = self.request.get("startloc")
+        newRide.start_point_long, float(self.request.get("startlong"))
+        newRide.start_point_lat, float(self.request.get("startlat"))
+        newRide.destination_title = self.request.get("dest")
+        newRide.destination_long = float(self.request.get("destlong"))
+        newRide.destination_lat  = float(self.request.get("destlat"))
+        y,m,d = self.request.get("date").split("-")
+        newRide.ToD = datetime.datetime(int(y),int(m),int(d))
+        newRide.passengers = []
+        newRide.put()
         
-        
+        # todo redirect after success...
         
         
 def geocode(address):
@@ -174,7 +199,9 @@ def main():
     
     
     application = webapp.WSGIApplication([('/', MainHandler),
-                                          ('/getrides', RideQueryHandler )],
+                                          ('/getrides', RideQueryHandler ),
+                                          ("/newride", NewRideHandler),
+                                          ],
                                          debug=True)
     wsgiref.handlers.CGIHandler().run(application)
 
