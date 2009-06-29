@@ -49,6 +49,22 @@
 
       rmarkerOptions = { icon:redIcon };
 
+      // Sample custom marker code created with Google Map Custom Marker Maker
+      // http://www.powerhut.co.uk/googlemaps/custom_markers.php
+
+      var myIcon = new GIcon();
+      myIcon.image = 'markers/image.png';
+      myIcon.shadow = 'markers/shadow.png';
+      myIcon.iconSize = new GSize(20,17);
+      myIcon.shadowSize = new GSize(29,17);
+      myIcon.iconAnchor = new GPoint(10,17);
+      myIcon.infoWindowAnchor = new GPoint(10,0);
+      myIcon.printImage = 'markers/printImage.gif';
+      myIcon.mozPrintImage = 'markers/mozPrintImage.gif';
+      myIcon.printShadow = 'markers/printShadow.gif';
+      myIcon.transparent = 'markers/transparent.png';
+      myIcon.imageMap = [19,0,19,1,19,2,18,3,18,4,17,5,16,6,19,7,19,8,19,9,19,10,16,11,19,12,13,13,13,14,15,15,19,16,8,16,7,15,6,14,6,13,5,12,5,11,5,10,4,9,4,8,4,7,3,6,2,5,1,4,1,3,0,2,0,1,0,0];
+/*
       var blueIcon = new GIcon();
       blueIcon.image = "http://labs.google.com/ridefinder/images/blue-dot.png";
       blueIcon.shadow = "http://labs.google.com/ridefinder/images/mm_20_shadow.png";
@@ -56,14 +72,15 @@
       blueIcon.shadowSize = new GSize(22, 20);
       blueIcon.iconAnchor = new GPoint(10, 20);
       blueIcon.infoWindowAnchor = new GPoint(5, 1);
+*/
 
-      bmarkerOptions = { icon:blueIcon };
+      bmarkerOptions = { icon:myIcon };
       // End creation of Icon for Rides
 
       var blueIcon = new GIcon(G_DEFAULT_ICON);
       blueIcon.image = "http://labs.google.com/ridefinder/images/mm_20_blue.png";
       blueIcon.iconSize = new GSize(20, 20);
-      markerOptions = { icon:blueIcon };
+      markerOptions = { icon:myIcon };
       var marker = new GMarker(new GLatLng(43.313059,-91.799501), markerOptions);
 
     </script>
