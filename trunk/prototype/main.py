@@ -24,12 +24,15 @@ from django.utils import simplejson
 ##from django.core import serializers
 
 from google.appengine.ext import webapp
+from google.appengine.ext.webapp import template
+
 #from appengine_django.models import BaseModel
 from google.appengine.ext import db
 from google.appengine.api import users
 
 import logging
 import urllib
+import os.path
 
 # Make this very flat to start with, then add references later...
 class Ride(db.Model):
@@ -127,7 +130,7 @@ class NewRideHandler(webapp.RequestHandler):
         - destination_long
         - ToD
         """
-        
+
         newRide = Ride()
         newRide.max_passengers = int(self.request.get("maxp"))
         newRide.num_passengers = 0
@@ -142,8 +145,11 @@ class NewRideHandler(webapp.RequestHandler):
         newRide.ToD = datetime.datetime(int(y),int(m),int(d))
         newRide.passengers = []
         newRide.put()
-        
-        # todo redirect after success...
+
+        temp = os.path.join(os.path.dirname(__file__),'templates/success.html')
+        outstr = template.render(temp,{})
+        self.response.out.write(outstr)
+
         
         
 def geocode(address):
