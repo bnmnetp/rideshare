@@ -176,7 +176,7 @@ def main():
     logging.getLogger().setLevel(logging.DEBUG)
     # prepopulate the database
     query = db.Query(Ride)
-    # TODO:  use google python geocoder to lookup lat/long for start/dest    
+
     if query.count() < 2:
         newRide = Ride()
         newRide.max_passengers = 3
