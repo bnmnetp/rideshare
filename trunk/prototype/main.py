@@ -153,7 +153,7 @@ def geocode(address):
 
  # This isn't an actual maps key, you'll have to get one yourself.
  # Sign up for one here: http://code.google.com/apis/maps/signup.html
-  mapsKey = 'onk1an5ac8ABQIAAAAg9WbCE_zwMIRW7jDFE_3ixQlKBzOsZLiKVvY0J60oIHyvyt2BhQBmJex9U1i3T7I95SaF5Yg7fgabA'
+  mapsKey = 'ABQIAAAAn9H2MPjtzJCGP4OYVLJuOxQbtjENHIgppMgd3dAaKy16g5o_8xTNamzlZZNZ42SPIkttrL_Smwh7RQ'
   mapsUrl = 'http://maps.google.com/maps/geo?q='
      
  # This joins the parts of the URL together into one string.
