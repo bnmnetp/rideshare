@@ -5,6 +5,7 @@
         map = new GMap2(document.getElementById("map_canvas"));
         map.setCenter(new GLatLng(43.313059,-91.799501), 6);
         map.addControl(new GLargeMapControl());
+        //map.setUIToDefault();
         geocoder = new GClientGeocoder();
         GEvent.addListener(marker, "click", function()
           { marker.openInfoWindowHtml("Decorah, Iowa"); });
@@ -15,7 +16,9 @@
         {
           addRideToMap(rides[r], r);
         }
+        GEvent.addListener(map, "click", getAddress);
       }
+/*
       GEvent.addListener(map, "click", function(overlay, point)
         {
           var fpoint = point;
@@ -23,13 +26,78 @@
           var html = ("<b>Create a new Ride</b>" + getNewRidePopupHTML(fpoint));
           map.openInfoWindowHtml(point, html);
         });
+*/
+
+    }
+
+    function getAddress(overlay, latlng)
+    {
+      if (latlng != null) 
+      {
+        address = latlng;
+        geocoder.getLocations(latlng, showAddressClick);
+      }
+    }
+
+
+    function showAddressClick(response) 
+    {
+      if (!response || response.Status.code != 200) 
+      {
+        alert("Status Code:" + response.Status.code);
+      } 
+      else 
+      {
+        place = response.Placemark[0];
+        point = new GLatLng(place.Point.coordinates[1],
+                            place.Point.coordinates[0]);
+        //marker = new GMarker(point);
+        //map.addOverlay(marker);
+        map.openInfoWindowHtml(point, 
+        '<b>latlng: </b>' + place.Point.coordinates[1] + "," + place.Point.coordinates[0] + '<br>' +
+        getNewRidePopupHTML(place));
+      }
+    }
+
+// Returns the form used in the HTML popup to build a new ride
+    function getNewRidePopupHTML(place)
+    {
+      var line0 = "<b>Create a new Ride</b>";
+      var line1 = "<form onsubmit=\"createRideFromPopup(this, " + 
+                          place.Point.coordinates[1] + ", " +
+                          place.Point.coordinates[0] + ", \'" +
+                          place.address + "\'); return false;\">";
+      var line2 = "<input type=\"radio\" name=\"rideType\" />Starting Point<br />";
+      var line3 = "<input type=\"radio\" name=\"rideType\" />Destination<br /><br />";
+      var line4 = "<div id=\"address\">Location: <i>"+place.address+"</i></div><br /><sup>(If this address is incorrect, zoom in for better accuracy)</sup><br />";
+      var line5 = "Maximum number of passengers: <input type=\"text\" name=\"max_pass\" maxLength=\"3\"/><br />";
+      var line6 = "Date of departure: <select name=\"month\" onchange=\"changeDays(this.form.day, this); return false;\">";
+      var line7 = "<option value=\"0\" selected=\"selected\" onload=\"changeDays(this, this.form.month); return false;\">January</option><option value=\"1\">February</option><option value=\"2\">March</option><option value=\"3\">April</option><option value=\"4\">May</option><option value=\"5\">June</option><option value=\"6\">July</option><option value=\"7\">August</option><option value=\"8\">September</option><option value=\"9\">October</option><option value=\"10\">November</option><option value=\"11\">December</option>";
+      var line8 = "</select><select name=\"day\">";
+      for (var i = 0; i < 31; i++)
+      {
+        line8 = line8 + "<option value=\""+i+"\">" + (i+1).toString() + "</option>";
+      }
+      var line9 = "</select><select name=\"year\">";
+      var yr = (new Date()).getFullYear();
+      var line10;
+      for (var i = yr-1; i < yr+4; i++)
+      {
+        line10 = line10 + "<option value=\""+i+"\">"+i+"</option>";
+      }
+      var line11 = "</select><br />";
+      var line12 = "<input type=\"submit\" value=\"OK\" />";
+      var line13 = "<input type=\"button\" value=\"Cancel\" onclick=\"map.closeInfoWindow();\"/>";
+      var line14 = "</form>";
+      var full = line0 + line1 + line2 + line3 + line4 + line5 + line6 + line7 + line8 + line9 + line10 + line11 + line12 + line13 + line14;
+      return full;
     }
 
 // Adds a popup to the GoogleMap that fits 'ride'
     function addRideToMap(ride, rideNum, open)
     {
 
-        // Add implementation for bool 'open' to open the new popup after creation
+        // TODO: Add implementation for bool 'open' to open the new popup after creation
       var open = (typeof open == 'undefined') ?
         false : open;
       if (ride.destination.title == "Decorah, IA")
@@ -113,41 +181,12 @@
     }
 */
 
-// Returns the form used in the HTML popup to build a new ride
-    function getNewRidePopupHTML(fpoint)
-    {
-      var line1 = "<form onsubmit=\"createRideFromPopup(this, "+fpoint.lat()+", "+fpoint.lng()+"); return false;\">";
-      var line2 = "<input type=\"radio\" name=\"rideType\" />Starting Point<br />";
-      var line3 = "<input type=\"radio\" name=\"rideType\" />Destination<br /><br />";
-      var line4 = "City, State: <input type=\"text\" name=\"locationName\" /><br />";
-      var line5 = "Maximum number of passengers: <input type=\"text\" name=\"max_pass\" maxLenght=\"3\"/><br />";
-      var line6 = "Date of departure: <select name=\"month\" onchange=\"changeDays(this.form.day, this); return false;\">";
-      var line7 = "<option value=\"0\" selected=\"selected\" onload=\"changeDays(this, this.form.month); return false;\">January</option><option value=\"1\">February</option><option value=\"2\">March</option><option value=\"3\">April</option><option value=\"4\">May</option><option value=\"5\">June</option><option value=\"6\">July</option><option value=\"7\">August</option><option value=\"8\">September</option><option value=\"9\">October</option><option value=\"10\">November</option><option value=\"11\">December</option>";
-      var line8 = "</select><select name=\"day\">";
-      for (var i = 0; i < 31; i++)
-      {
-        line8 = line8 + "<option value=\""+i+"\">" + (i+1).toString() + "</option>";
-      }
-      var line9 = "</select><select name=\"year\">";
-      var yr = (new Date()).getFullYear();
-      var line10;
-      for (var i = yr-1; i < yr+4; i++)
-      {
-        line10 = line10 + "<option value=\""+i+"\">"+i+"</option>";
-      }
-      var line11 = "</select><br />";
-      var line12 = "<input type=\"submit\" value=\"OK\" />";
-      var line13 = "<input type=\"button\" value=\"Cancel\" onclick=\"map.closeInfoWindow();\"/>";
-      var line14 = "</form>";
-      var full = line1 + line2 + line3 + line4 + line5 + line6 + line7 + line8 + line9 + line10 + line11 + line12 + line13 + line14;
-      return full;
-    }
-
 // Takes the form from the Popup and creates a Ride
 // Adds overlay to map; Adds line to table; Adds option to pulldown
-    function createRideFromPopup(form, ilat, ilong)
+    function createRideFromPopup(form, ilat, ilong, address)
     {
-      var imax_passengers = form.elements[3].value;
+      var add = document.getElementById("address");
+      var imax_passengers = form.elements[2].value;
       var idriver = loginName;
       var istart_point_title;
       var istart_point_lat;
@@ -155,13 +194,13 @@
       var idestination_title;
       var idestination_lat;
       var idestination_long;
-      var iToD = new Date(form.elements[6].options.valueOf().selectedIndex + (new Date()).getFullYear()-1, form.elements[4].options.valueOf().selectedIndex, form.elements[5].options.valueOf().selectedIndex + 1);
+      var iToD = new Date(form.elements[5].options.valueOf().selectedIndex + (new Date()).getFullYear()-1, form.elements[3].options.valueOf().selectedIndex, form.elements[4].options.valueOf().selectedIndex + 1);
       var ipassengers = new Array();
     // Create the ride
-      var location = form.elements[2].value;
+      var location = add.innerHTML.slice(13,-4);
       if (form.elements[0].checked) // Starting point
       {
-        istart_point_title = form.elements[2].value;
+        istart_point_title = location;
         istart_point_lat = ilat;
         istart_point_long = ilong;
         idestination_title = "Decorah, IA";
@@ -173,7 +212,7 @@
         istart_point_title = "Decorah, IA";
         istart_point_lat = 43.313059;
         istart_point_long = -91.799501;
-        idestination_title = form.elements[2].value;
+        idestination_title = location;
         idestination_lat = ilat;
         idestination_long = ilong;
       }
