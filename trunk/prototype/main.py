@@ -20,6 +20,7 @@
 
 import wsgiref.handlers
 import datetime
+from datetime import date
 from django.utils import simplejson
 ##from django.core import serializers
 
@@ -134,20 +135,49 @@ class NewRideHandler(webapp.RequestHandler):
         newRide = Ride()
         newRide.max_passengers = int(self.request.get("maxp"))
         newRide.num_passengers = 0
-        newRide.driver = self.request.get("driver")
-        newRide.start_point_title = self.request.get("startloc")
-        newRide.start_point_long, float(self.request.get("startlong"))
-        newRide.start_point_lat, float(self.request.get("startlat"))
-        newRide.destination_title = self.request.get("dest")
-        newRide.destination_long = float(self.request.get("destlong"))
-        newRide.destination_lat  = float(self.request.get("destlat"))
-        y,m,d = self.request.get("date").split("-")
+        newRide.driver = 'John Doe'
+        #newRide.driver = self.request.get("driver") TODO: Will deal with User
+
+        latlng = ['41.517658', '-95.452065']
+        lat = float(latlng[0])
+        lng = float(latlng[1])
+        location = self.request.get("address")
+        checked = int(self.request.get("rideType"))
+        if checked == 0:
+          newRide.start_point_title = location
+          newRide.start_point_lat = lat
+          newRide.start_point_long = lng
+          newRide.destination_title = "Decorah, IA"
+          newRide.destination_lat = 43.313059
+          newRide.destination_long = -91.799501
+        elif checked == 1:
+          newRide.start_point_title = "Decorah, IA"
+          newRide.start_point_lat = 43.313059
+          newRide.start_point_long = -91.799501
+          newRide.destination_title = location
+          newRide.destination_lat = lat
+          newRide.destination_long = lng           
+
+        y = int(self.request.get("year"))
+        m = int(self.request.get("month")) + 1
+        d = int(self.request.get("day"))
         newRide.ToD = datetime.datetime(int(y),int(m),int(d))
         newRide.passengers = []
         newRide.put()
 
         temp = os.path.join(os.path.dirname(__file__),'templates/success.html')
-        outstr = template.render(temp,{})
+        outstr = template.render(temp,{
+                'maxp': newRide.max_passengers,
+                'num_passengers': newRide.num_passengers,
+                'driver': newRide.driver,
+                'startloc': newRide.start_point_title,
+                'startlong': newRide.start_point_long,
+                'startlat': newRide.start_point_lat,
+                'dest': newRide.destination_title,
+                'destlong': newRide.destination_long,
+                'destlat': newRide.destination_lat,
+                'ToD': newRide.ToD,
+                })
         self.response.out.write(outstr)
 
         
