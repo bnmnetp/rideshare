@@ -64,7 +64,7 @@ class MyClass:
 class MainHandler(webapp.RequestHandler):
 
     def get(self):
-        self.response.out.write('Hello World!')
+        self.response.out.write(template.render('index.html', {}))
 
 
 class RideQueryHandler(webapp.RequestHandler):
