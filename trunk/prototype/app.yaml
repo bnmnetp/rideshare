@@ -7,7 +7,8 @@ handlers:
 - url: /static
   static_dir: static
 
+- url: /markers
+  static_dir: static
+
 - url: /.*
   script: main.py
-
-

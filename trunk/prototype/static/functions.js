@@ -54,7 +54,7 @@
         //marker = new GMarker(point);
         //map.addOverlay(marker);
         map.openInfoWindowHtml(point, 
-        '<b>latlng: </b>' + place.Point.coordinates[1] + "," + place.Point.coordinates[0] + '<br>' +
+        //'<b>latlng: </b>' + place.Point.coordinates[1] + "," + place.Point.coordinates[0] + '<br>' +
         getNewRidePopupHTML(place));
       }
     }
@@ -63,22 +63,22 @@
     function getNewRidePopupHTML(place)
     {
       var line0 = "<b>Create a new Ride</b>";
-      var line1 = "<form onsubmit=\"createRideFromPopup(this, " + 
-                          place.Point.coordinates[1] + ", " +
-                          place.Point.coordinates[0] + ", \'" +
-                          place.address + "\'); return false;\">";
-      var line2 = "<input type=\"radio\" name=\"rideType\" />Starting Point<br />";
-      var line3 = "<input type=\"radio\" name=\"rideType\" />Destination<br /><br />";
-      var line4 = "<div id=\"address\">Location: <i>"+place.address+"</i></div><br /><sup>(If this address is incorrect, zoom in for better accuracy)</sup><br />";
-      var line5 = "Maximum number of passengers: <input type=\"text\" name=\"max_pass\" maxLength=\"3\"/><br />";
-      var line6 = "Date of departure: <select name=\"month\" onchange=\"changeDays(this.form.day, this); return false;\">";
-      var line7 = "<option value=\"0\" selected=\"selected\" onload=\"changeDays(this, this.form.month); return false;\">January</option><option value=\"1\">February</option><option value=\"2\">March</option><option value=\"3\">April</option><option value=\"4\">May</option><option value=\"5\">June</option><option value=\"6\">July</option><option value=\"7\">August</option><option value=\"8\">September</option><option value=\"9\">October</option><option value=\"10\">November</option><option value=\"11\">December</option>";
-      var line8 = "</select><select name=\"day\">";
+      var line1 = "<form method=\"post\" id=\"newride\" action=\"/newride\">";
+      line1 += "<p name=\"latlng\" id=\"latlng\">"
+													+ place.Point.coordinates[1] + ", "
+													+ place.Point.coordinates[0] + "</p>";
+      var line2 = "<input type=\"radio\" name=\"rideType\" id=\"rideType\"/>Starting Point<br />";
+      var line3 = "<input type=\"radio\" name=\"rideType\" id=\"rideType\"/>Destination<br /><br />";
+      var line4 = "<div name=\"address\" id=\"address\">Location: <i>"+place.address+"</i></div><br /><sup>(If this address is incorrect, zoom in for better accuracy)</sup><br />";
+      var line5 = "Maximum number of passengers: <input type=\"text\" name=\"maxp\" id=\"maxp\" maxLength=\"3\"/><br />";
+      var line6 = "Date of departure: <select name=\"month\" id=\"month\" onchange=\"changeDays(this.form.day, this); return false;\">";
+      var line7 = "<option value=\"0\" selected=\"selected\">January</option><option value=\"1\">February</option><option value=\"2\">March</option><option value=\"3\">April</option><option value=\"4\">May</option><option value=\"5\">June</option><option value=\"6\">July</option><option value=\"7\">August</option><option value=\"8\">September</option><option value=\"9\">October</option><option value=\"10\">November</option><option value=\"11\">December</option>";
+      var line8 = "</select><select name=\"day\" id=\"day\">";
       for (var i = 0; i < 31; i++)
       {
         line8 = line8 + "<option value=\""+i+"\">" + (i+1).toString() + "</option>";
       }
-      var line9 = "</select><select name=\"year\">";
+      var line9 = "</select><select name=\"year\" id=\"year\">";
       var yr = (new Date()).getFullYear();
       var line10;
       for (var i = yr-1; i < yr+4; i++)
@@ -181,6 +181,7 @@
     }
 */
 
+/* // Not needed after Google App integration
 // Takes the form from the Popup and creates a Ride
 // Adds overlay to map; Adds line to table; Adds option to pulldown
     function createRideFromPopup(form, ilat, ilong, address)
@@ -247,6 +248,7 @@
       map.closeInfoWindow();
       marker.infowindowopen();
     }
+*/
 
 // Changes a numerical month returned from a Date object to a String
     function numToTextMonth(num)

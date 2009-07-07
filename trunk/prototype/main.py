@@ -64,7 +64,8 @@ class MyClass:
 class MainHandler(webapp.RequestHandler):
 
     def get(self):
-        self.response.out.write('Hello World!')
+      path = 'index.html'
+      self.response.out.write(template.render(path, {}))
 
 
 class RideQueryHandler(webapp.RequestHandler):
@@ -134,15 +135,15 @@ class NewRideHandler(webapp.RequestHandler):
         newRide = Ride()
         newRide.max_passengers = int(self.request.get("maxp"))
         newRide.num_passengers = 0
-        newRide.driver = self.request.get("driver")
-        newRide.start_point_title = self.request.get("startloc")
-        newRide.start_point_long, float(self.request.get("startlong"))
-        newRide.start_point_lat, float(self.request.get("startlat"))
-        newRide.destination_title = self.request.get("dest")
-        newRide.destination_long = float(self.request.get("destlong"))
-        newRide.destination_lat  = float(self.request.get("destlat"))
+        newRide.driver = self.request.get("driver") #
+        newRide.start_point_title = self.request.get("startloc") #
+        newRide.start_point_long = float(self.request.get("startlong")) #
+        newRide.start_point_lat = float(self.request.get("startlat")) #
+        newRide.destination_title = self.request.get("dest") #
+        newRide.destination_long = float(self.request.get("destlong")) #
+        newRide.destination_lat  = float(self.request.get("destlat")) #
         y,m,d = self.request.get("date").split("-")
-        newRide.ToD = datetime.datetime(int(y),int(m),int(d))
+        newRide.ToD = datetime.datetime(int(y),int(m),int(d)) #
         newRide.passengers = []
         newRide.put()
 
