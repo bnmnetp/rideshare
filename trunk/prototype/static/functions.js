@@ -34,7 +34,7 @@
     {
       if (latlng != null) 
       {
-        address = latlng;
+        address2 = latlng;
         geocoder.getLocations(latlng, showAddressClick);
       }
     }
@@ -55,21 +55,21 @@
         //map.addOverlay(marker);
         map.openInfoWindowHtml(point, 
         // '<b>latlng: </b>' + place.Point.coordinates[1] + "," + place.Point.coordinates[0] + '<br>' +
-        getNewRidePopupHTML(place));
+        getNewRidePopupHTML(place.Point.coordinates[1], place.Point.coordinates[0], place.address));
       }
     }
 
 // Returns the form used in the HTML popup to build a new ride
-    function getNewRidePopupHTML(place)
+    function getNewRidePopupHTML(lat, lng, address3)
     {
       var line0 = "<b>Create a new Ride</b>";
-      var line1 = "<form method=\"post\" id=\"newride\" action=\"/newride?lat="+place.Point.coordinates[1]+"&lng="+place.Point.coordinates[0]+"&address="+place.address+"\">";
+      var line1 = "<form method=\"post\" id=\"newride\" action=\"/newride?lat="+lat+"&lng="+lng+"&address="+address3+"\">";
       line1 += "<p name=\"latlng\" id=\"latlng\">"
-													+ place.Point.coordinates[1] + ", "
-													+ place.Point.coordinates[0] + "</p>";
+													+ lat + ", "
+													+ lng + "</p>";
       var line2 = "<input type=\"radio\" name=\"rideType\" value=\"0\" id=\"rideType\"/>Starting Point<br />";
       var line3 = "<input type=\"radio\" name=\"rideType\" value=\"1\" id=\"rideType\"/>Destination<br /><br />";
-      var line4 = "<div name=\"address\" id=\"address\">Location: <i>"+place.address+"</i></div><br /><sup>(If this address is incorrect, zoom in for better accuracy)</sup><br />";
+      var line4 = "<div name=\"address\" id=\"address\">Location: <i>"+address3+"</i></div><br /><sup>(If this address is incorrect, zoom in for better accuracy)</sup><br />";
       var line5 = "Maximum number of passengers: <input type=\"text\" name=\"maxp\" id=\"maxp\" maxLength=\"3\"/><br />";
       var line6 = "Date of departure: <select name=\"month\" id=\"month\" onchange=\"changeDays(this.form.day, this); return false;\">";
       var line7 = "<option value=\"0\" selected=\"selected\">January</option><option value=\"1\">February</option><option value=\"2\">March</option><option value=\"3\">April</option><option value=\"4\">May</option><option value=\"5\">June</option><option value=\"6\">July</option><option value=\"7\">August</option><option value=\"8\">September</option><option value=\"9\">October</option><option value=\"10\">November</option><option value=\"11\">December</option>";
@@ -172,18 +172,25 @@
       else if (num==11) {return "December";}
     }
     
-    function showAddress(address) {
-      if (geocoder) {
+    function showAddress(address1) 
+    {
+      if (geocoder) 
+      {
+        alert(address1);
         geocoder.getLatLng(
-          address,
-          function(point) {
-            if (!point) {
-              alert(address + " not found");
-            } else {
+          address1,
+          function(point) 
+          {
+            if (!point) 
+            {
+              alert(address1 + " not found");
+            }
+            else 
+            {
               //map.setCenter(point, 13);
-              var marker = new GMarker(point);
-              map.addOverlay(marker);
-              marker.openInfoWindowHtml(address);
+              //var marker = new GMarker(point);
+              //map.addOverlay(marker);
+              map.openInfoWindowHtml(point, getNewRidePopupHTML(point.lat(), point.lng(), address1));
             }
           }
         );

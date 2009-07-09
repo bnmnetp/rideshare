@@ -15,9 +15,7 @@
     <script type="text/javascript">
     var map;
     var geocoder;
-    var address;
-
-    var loginName = "Kevin Williams";
+    var address2;
 
     var rides = new Array();
 // Add all rides to this array
@@ -146,20 +144,6 @@
       </select>
       <input type="submit" value="Submit" /></p>
     </form><br />
-<!--
-    <form action="#" name="addPass" onSubmit="addPassenger(loginName, this.addPassChoices.options.valueOf().selectedIndex); return false;">
-    <h6>Which ride would you like to join?</h6><p>
-    <select name="addPassChoices" id="addPassChoices">
-      <script type="text/javascript">
-        for (var d in rides)
-        {
-          document.write("<option value=\""+d+"\">"+getPullDownMenuMessage(rides[d])+"</option>");
-        }
-      </script>
-    </select>
-    <input type="submit" value="Join Ride!" /></p>
-    </form>
--->
 
 <script type="text/javascript">changefDays(); changeiDays();</script>
     <table border="-1" id="rideTable">
