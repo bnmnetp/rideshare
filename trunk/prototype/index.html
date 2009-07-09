@@ -21,10 +21,21 @@
 
     var rides = new Array();
 // Add all rides to this array
-    rides[0] = new Ride(1, "Kevin", "Cedar Rapids, IA", 41.88, -91.70, "Decorah, IA", 43.313059,-91.799501, "December 20, 2009", new Array());
-    rides[1] = new Ride(4, "David", "Springfield, IL", 39.85, -89.67, "Decorah, IA", 43.313059,-91.799501, "February 1, 2010", new Array());
-    rides[2] = new Ride(2, "Brad", "Des Moines, IA", 41.53, -93.65, "Decorah, IA", 43.313059,-91.799501, "August 30, 2009", new Array());
-    rides[3] = new Ride(15, "Mallory", "Decorah, IA", 43.313059,-91.799501, "Marshalltown, IA", 42.0494444, -92.9077778, "October 31, 2010", new Array());
+  {% for r in ride_list %}
+    var temp = new Ride({{ r.max_passengers }},
+                        '{{ r.driver }}',
+                        '{{ r.start_point_title }}',
+                        {{ r.start_point_lat }},
+                        {{ r.start_point_long }},
+                        '{{ r.destination_title }}',
+                        {{ r.destination_lat }},
+                        {{ r.destination_long }},
+                        new Date({{ r.ToD.year }}, 
+                                 {{ r.ToD.month }} - 1, 
+                                 {{ r.ToD.day }}), [{% for p in r.passengers %}{% if not forloop.first %}, {% endif %}'{{ p }}'{% endfor %}],
+                        '{{ r.key }}');
+    rides.push(temp);
+  {% endfor %}
 
       // Begin creation of Icons for Rides
       var greenIcon = new GIcon();
@@ -91,8 +102,8 @@
          <input type="text" size="60" name="address" value="700 College Dr., Decorah, IA" />
          <input type="submit" value="Go!" />
        </p>
-       <p>To add a Ride, click on a destination or starting point that is not Decorah.  Then, choose whether the point is a starting point, destination, or a commute to Decorah, enter the name for this location (for other ridesharers to see) and click 'OK'.</p>
-       <p>You can also add yourself to a ride by clicking on a ride on the map and selecting 'Join this ride'.</p>
+       <p>To add a Ride, click on a destination or starting point that is not Decorah.  Then, select whether the point is a starting point or destination, choose the date of the trip, and click 'OK'.</p>
+       <p>You can also add yourself to a ride by clicking on a ride on the map and selecting 'Join this Ride'.</p>
        <p>However, you can't join a ride the day before the trip leaves.</p>
        <div id="map_canvas" style="width: 800px; height: 600px"></div>
     </form>

@@ -63,7 +63,7 @@
     function getNewRidePopupHTML(place)
     {
       var line0 = "<b>Create a new Ride</b>";
-      var line1 = "<form method=\"post\" id=\"newride\" action=\"/newride\">";
+      var line1 = "<form method=\"post\" id=\"newride\" action=\"/newride?lat="+place.Point.coordinates[1]+"&lng="+place.Point.coordinates[0]+"&address="+place.address+"\">";
       line1 += "<p name=\"latlng\" id=\"latlng\">"
 													+ place.Point.coordinates[1] + ", "
 													+ place.Point.coordinates[0] + "</p>";
@@ -74,9 +74,9 @@
       var line6 = "Date of departure: <select name=\"month\" id=\"month\" onchange=\"changeDays(this.form.day, this); return false;\">";
       var line7 = "<option value=\"0\" selected=\"selected\">January</option><option value=\"1\">February</option><option value=\"2\">March</option><option value=\"3\">April</option><option value=\"4\">May</option><option value=\"5\">June</option><option value=\"6\">July</option><option value=\"7\">August</option><option value=\"8\">September</option><option value=\"9\">October</option><option value=\"10\">November</option><option value=\"11\">December</option>";
       var line8 = "</select><select name=\"day\" id=\"day\">";
-      for (var i = 0; i < 31; i++)
+      for (var i = 1; i < 32; i++)
       {
-        line8 = line8 + "<option value=\""+i+"\">" + (i+1).toString() + "</option>";
+        line8 = line8 + "<option value=\""+i+"\">" + (i).toString() + "</option>";
       }
       var line9 = "</select><select name=\"year\" id=\"year\">";
       var yr = (new Date()).getFullYear();
@@ -94,12 +94,8 @@
     }
 
 // Adds a popup to the GoogleMap that fits 'ride'
-    function addRideToMap(ride, rideNum, open)
+    function addRideToMap(ride, rideNum)
     {
-
-        // TODO: Add implementation for bool 'open' to open the new popup after creation
-      var open = (typeof open == 'undefined') ?
-        false : open;
       if (ride.destination.title == "Decorah, IA")
       {
         var amarker = new GMarker(new GLatLng(ride.start_point.latitude, ride.start_point.longitude), gmarkerOptions);
@@ -145,7 +141,7 @@
       }
       var disabled;
       var today = new Date();
-      if (ride.ToD < new Date(today.getFullYear(), today.getMonth(), today.getDate() + 2))
+      if (ride.ToD < new Date(today.getFullYear(), today.getMonth(), today.getDate() + 2) || (ride.max_passengers <= ride.num_passengers))
       {
         disabled = "disabled=\"disabled\"";
       }
@@ -154,98 +150,9 @@
         disabled = "";
       }
       var text1 = ("Driver: "+ride.driver+"<br><i>"+ride.start_point.title+"</i> --> <i>"+ride.destination.title+"</i><br>Date: "+numToTextMonth(ride.ToD.getMonth())+" "+ride.ToD.getDate()+", "+ride.ToD.getFullYear()+"<br>"+msg);
-      var text2 = ("<br /><button type=\"button\" onclick=\"addPassengerFromPopup(loginName, "+rideNum+"); return false;\" "+disabled+">Join this Ride</button>");
+      var text2 = ("<br /><form method=\"post\" id=\"addPass\" action=\"/addpass?user_name=John%20Doe&ride_key="+ride.key+"\"><input type=\"submit\" value=\"Join this Ride\""+disabled+"/></form>");
       var result = text1 + text2;
       return result;
-    }
-/*
-// Returns the label for an option in the pulldown menu regarding joining a ride
-    function getPullDownMenuMessage(ride)
-    {
-          var msg;
-          var plural = "";
-          var spotsLeft = ride.max_passengers-ride.num_passengers;
-          if (spotsLeft > 0)
-          {
-            if (spotsLeft > 1)
-            {
-              plural = "s";
-            }
-            msg = ride.driver+" has "+(ride.max_passengers-ride.num_passengers)+" seat"+plural+" remaining";
-          }
-          else
-          {
-            msg = ride.driver+" has no more room";
-          }
-          return msg;
-    }
-*/
-
-// Takes the form from the Popup and creates a Ride
-// Adds overlay to map; Adds line to table; Adds option to pulldown
-    function createRideFromPopup(form, ilat, ilong, address)
-    {
-      var add = document.getElementById("address");
-      var imax_passengers = form.elements[2].value;
-      var idriver = loginName;
-      var istart_point_title;
-      var istart_point_lat;
-      var istart_point_long;
-      var idestination_title;
-      var idestination_lat;
-      var idestination_long;
-      var iToD = new Date(form.elements[5].options.valueOf().selectedIndex + (new Date()).getFullYear()-1, form.elements[3].options.valueOf().selectedIndex, form.elements[4].options.valueOf().selectedIndex + 1);
-      var ipassengers = new Array();
-    // Create the ride
-      var location = add.innerHTML.slice(13,-4);
-      if (form.elements[0].checked) // Starting point
-      {
-        istart_point_title = location;
-        istart_point_lat = ilat;
-        istart_point_long = ilong;
-        idestination_title = "Decorah, IA";
-        idestination_lat = 43.313059;
-        idestination_long = -91.799501;
-      }
-      else if (form.elements[1].checked) // Destination
-      {
-        istart_point_title = "Decorah, IA";
-        istart_point_lat = 43.313059;
-        istart_point_long = -91.799501;
-        idestination_title = location;
-        idestination_lat = ilat;
-        idestination_long = ilong;
-      }
-      else
-      {
-        alert("Please choose whether the ride is a\nstarting point, destination, or commute.");
-      }
-
-      var createdRide = new Ride(imax_passengers, idriver, istart_point_title, istart_point_lat, istart_point_long, idestination_title, idestination_lat, idestination_long, iToD, ipassengers);
-      var rideNum = rides.length;
-      rides[rideNum] = createdRide;
-
-    // Adds overlay to the map
-      var marker = addRideToMap(createdRide, rideNum, true);
-
-    // Adds line to the table;
-      var table = document.getElementById("rideTable");
-      var row = table.insertRow(table.rows.length);
-      var c0 = row.insertCell(0);
-      c0.innerHTML = createdRide.driver;
-      var c1 = row.insertCell(1);
-      c1.innerHTML = createdRide.max_passengers;
-      var c2 = row.insertCell(2);
-      c2.innerHTML = createdRide.num_passengers;
-      var c3 = row.insertCell(3);
-      c3.innerHTML = createdRide.start_point.title;
-      var c4 = row.insertCell(4);
-      c4.innerHTML = createdRide.destination.title;
-      var c5 = row.insertCell(5);
-      c5.innerHTML = numToTextMonth(createdRide.ToD.getMonth())+" "+createdRide.ToD.getDate()+", "+createdRide.ToD.getFullYear();
-
-      map.closeInfoWindow();
-      marker.infowindowopen();
     }
 
 // Changes a numerical month returned from a Date object to a String
@@ -284,7 +191,7 @@
     }
 
 // Class that holds all information for a ride: Maximum passengers, # Passengers already, Start Point, Destination, and Time of Departure
-   function Ride(max_passengers, driver, start_point_title, start_point_lat, start_point_long, destination_title, destination_lat, destination_long, ToD, passengers)
+   function Ride(max_passengers, driver, start_point_title, start_point_lat, start_point_long, destination_title, destination_lat, destination_long, ToD, passengers, key)
    {
       this.max_passengers = max_passengers;
       this.num_passengers = passengers.length;
@@ -295,6 +202,7 @@
 //      this.marker = new GMarker(new GLatLng(this.start_point.latitude, this.start_point.longitude), gmarkerOptions);
       this.marker = null;
       this.passengers = passengers;
+      this.key = key;
    }
 
 // Class that stores information for a location

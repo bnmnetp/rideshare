@@ -65,7 +65,11 @@ class MyClass:
 class MainHandler(webapp.RequestHandler):
 
     def get(self):
-        self.response.out.write(template.render('index.html', {}))
+        query = db.Query(Ride)
+        ride_list = query.fetch(limit=100)
+        self.response.out.write(template.render('index.html', {
+            'ride_list': ride_list
+            }))
 
 
 class RideQueryHandler(webapp.RequestHandler):
@@ -137,10 +141,13 @@ class NewRideHandler(webapp.RequestHandler):
         newRide.num_passengers = 0
         newRide.driver = 'John Doe'
         #newRide.driver = self.request.get("driver") TODO: Will deal with User
-
+        """
         latlng = ['41.517658', '-95.452065']
         lat = float(latlng[0])
         lng = float(latlng[1])
+        """
+        lat = float(self.request.get("lat"))
+        lng = float(self.request.get("lng"))
         location = self.request.get("address")
         checked = int(self.request.get("rideType"))
         if checked == 0:
@@ -180,6 +187,55 @@ class NewRideHandler(webapp.RequestHandler):
                 })
         self.response.out.write(outstr)
 
+class AddPassengerHandler(webapp.RequestHandler):
+    """
+    Handles addition of passengers
+    """
+    def post(self):
+      """
+      Called when adding a passenger to a ride
+      
+      Arguments:
+      - 'self'
+      
+      Web Arguments:
+      - user_name
+      - ride_key
+      """
+      user_name = self.request.get('user_name') # TODO: Change to User later
+      ride_key = self.request.get('ride_key')
+      ride = db.get(db.Key(ride_key))
+      if ride == None: # Check if the ride was found
+        temp = os.path.join(os.path.dirname(__file__), 'templates/error.html')
+        outstr = template.render(temp, {'error_message': 'Error in ride matching'})
+        self.response.out.write(outstr)
+      # Check if the current user is already on the ride
+      already = False
+      for p in ride.passengers:
+        if p == user_name: # TODO: Change to User later
+          already = True
+      if already:
+        temp = os.path.join(os.path.dirname(__file__), 'templates/error.html')
+        outstr = template.render(temp, {'error_message': 'You are already registered for this ride!'})
+        self.response.out.write(outstr)
+      else:
+        ride.num_passengers = ride.num_passengers + 1
+        ride.passengers.append(user_name)
+        ride.put()
+
+        if ride.num_passengers == ride.max_passengers:
+          capacity_message = 'is now full.'
+        else:
+          num_left = ride.max_passengers - ride.num_passengers
+          capacity_message = 'can hold ' + str(num_left) + ' more passengers.'
+        temp = os.path.join(os.path.dirname(__file__), 
+                          'templates/addpass.html')
+        outstr = template.render(temp, {
+                          'user_name': user_name,
+                          'driver': ride.driver,
+                          'capacity_message': capacity_message
+                          })
+        self.response.out.write(outstr)
         
         
 def geocode(address):
@@ -237,6 +293,7 @@ def main():
     application = webapp.WSGIApplication([('/', MainHandler),
                                           ('/getrides', RideQueryHandler ),
                                           ("/newride", NewRideHandler),
+                                          ("/addpass", AddPassengerHandler),
                                           ],
                                          debug=True)
     wsgiref.handlers.CGIHandler().run(application)
