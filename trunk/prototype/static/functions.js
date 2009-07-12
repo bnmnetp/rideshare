@@ -2,7 +2,7 @@
     {
       if (GBrowserIsCompatible()) 
       {
-        map = new GMap2(document.getElementById("map_canvas"));
+        map = new GMap2(document.getElementById("map_canvas"), {draggableCursor: 'crosshair'});
         map.setCenter(new GLatLng(43.313059,-91.799501), 6);
         map.addControl(new GLargeMapControl());
         //map.setUIToDefault();
@@ -64,9 +64,6 @@
     {
       var line0 = "<b>Create a new Ride</b>";
       var line1 = "<form method=\"post\" id=\"newride\" action=\"/newride?lat="+lat+"&lng="+lng+"&address="+address3+"\">";
-      line1 += "<p name=\"latlng\" id=\"latlng\">"
-													+ lat + ", "
-													+ lng + "</p>";
       var line2 = "<input type=\"radio\" name=\"rideType\" value=\"0\" id=\"rideType\"/>Starting Point<br />";
       var line3 = "<input type=\"radio\" name=\"rideType\" value=\"1\" id=\"rideType\"/>Destination<br /><br />";
       var line4 = "<div name=\"address\" id=\"address\">Location: <i>"+address3+"</i></div><br /><sup>(If this address is incorrect, zoom in for better accuracy)</sup><br />";
@@ -176,7 +173,6 @@
     {
       if (geocoder) 
       {
-        alert(address1);
         geocoder.getLatLng(
           address1,
           function(point) 
