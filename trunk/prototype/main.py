@@ -39,7 +39,7 @@ import os.path
 class Ride(db.Model):
     max_passengers = db.IntegerProperty()
     num_passengers = db.IntegerProperty()
-    driver = db.StringProperty()  # change to User later
+    driver = db.UserProperty()
     start_point_title = db.StringProperty()
     start_point_lat = db.FloatProperty()
     start_point_long = db.FloatProperty()
@@ -47,7 +47,7 @@ class Ride(db.Model):
     destination_lat = db.FloatProperty()
     destination_long = db.FloatProperty()
     ToD = db.DateTimeProperty()
-    passengers = db.StringListProperty()
+    passengers = db.ListProperty(users.User)
 
     def to_dict(self):
         res = {}
@@ -139,7 +139,8 @@ class NewRideHandler(webapp.RequestHandler):
         newRide = Ride()
         newRide.max_passengers = int(self.request.get("maxp"))
         newRide.num_passengers = 0
-        newRide.driver = 'John Doe'
+        newRide.driver = users.get_current_user()
+
         #newRide.driver = self.request.get("driver") TODO: Will deal with User
         """
         latlng = ['41.517658', '-95.452065']
@@ -202,7 +203,9 @@ class AddPassengerHandler(webapp.RequestHandler):
       - user_name
       - ride_key
       """
-      user_name = self.request.get('user_name') # TODO: Change to User later
+      # The current user can add himself to the ride.  No need for this in the form.
+      user_name = users.get_current_user()
+      
       ride_key = self.request.get('ride_key')
       ride = db.get(db.Key(ride_key))
       if ride == None: # Check if the ride was found
@@ -261,13 +264,15 @@ def geocode(address):
 def main():
     logging.getLogger().setLevel(logging.DEBUG)
     # prepopulate the database
+
     query = db.Query(Ride)
 
+    
     if query.count() < 2:
         newRide = Ride()
         newRide.max_passengers = 3
         newRide.num_passengers = 0
-        newRide.driver = "Brad"
+        newRide.driver = users.User("bmiller@luther.edu")
         newRide.start_point_title = "Decorah, IA"
         newRide.start_point_long, newRide.start_point_lat = geocode(newRide.start_point_title)
         newRide.destination_title = "Plymouth, MN"
@@ -279,7 +284,7 @@ def main():
         newRide = Ride()
         newRide.max_passengers = 1
         newRide.num_passengers = 0
-        newRide.driver = "Kevin"
+        newRide.driver = users.User("willke02@luther.edu")
         newRide.start_point_title = "Decorah, IA"
         newRide.start_point_long, newRide.start_point_lat = geocode(newRide.start_point_title)
         newRide.destination_title = "Des Moines, IA"
