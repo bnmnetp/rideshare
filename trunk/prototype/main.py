@@ -137,57 +137,61 @@ class NewRideHandler(webapp.RequestHandler):
         """
 
         newRide = Ride()
-        newRide.max_passengers = int(self.request.get("maxp"))
-        newRide.num_passengers = 0
-        newRide.driver = users.get_current_user()
+        maxp = self.request.get("maxp")
+        if maxp == '' or maxp == None:
+          doRender(self, 'error.html', { 'error_message': "Please specify a maximum number of passengers." })
+        else:
+          newRide.max_passengers = int(maxp)
+          newRide.num_passengers = 0
+          newRide.driver = users.get_current_user()
 
-        #newRide.driver = self.request.get("driver") TODO: Will deal with User
-        """
-        latlng = ['41.517658', '-95.452065']
-        lat = float(latlng[0])
-        lng = float(latlng[1])
-        """
-        lat = float(self.request.get("lat"))
-        lng = float(self.request.get("lng"))
-        location = self.request.get("address")
-        checked = int(self.request.get("rideType"))
-        if checked == 0:
-          newRide.start_point_title = location
-          newRide.start_point_lat = lat
-          newRide.start_point_long = lng
-          newRide.destination_title = "Decorah, IA"
-          newRide.destination_lat = 43.313059
-          newRide.destination_long = -91.799501
-        elif checked == 1:
-          newRide.start_point_title = "Decorah, IA"
-          newRide.start_point_lat = 43.313059
-          newRide.start_point_long = -91.799501
-          newRide.destination_title = location
-          newRide.destination_lat = lat
-          newRide.destination_long = lng           
+          #newRide.driver = self.request.get("driver") TODO: Will deal with User
+          """
+          latlng = ['41.517658', '-95.452065']
+          lat = float(latlng[0])
+          lng = float(latlng[1])
+          """
+          lat = float(self.request.get("lat"))
+          lng = float(self.request.get("lng"))
+          location = self.request.get("address")
+          checked = int(self.request.get("rideType"))
+          if checked == 0:
+            newRide.start_point_title = location
+            newRide.start_point_lat = lat
+            newRide.start_point_long = lng
+            newRide.destination_title = "Decorah, IA"
+            newRide.destination_lat = 43.313059
+            newRide.destination_long = -91.799501
+          elif checked == 1:
+            newRide.start_point_title = "Decorah, IA"
+            newRide.start_point_lat = 43.313059
+            newRide.start_point_long = -91.799501
+            newRide.destination_title = location
+            newRide.destination_lat = lat
+            newRide.destination_long = lng             
 
-        y = int(self.request.get("year"))
-        m = int(self.request.get("month")) + 1
-        d = int(self.request.get("day"))
-        newRide.ToD = datetime.datetime(int(y),int(m),int(d))
-        newRide.passengers = []
-        newRide.put()
+          y = int(self.request.get("year"))
+          m = int(self.request.get("month")) + 1
+          d = int(self.request.get("day"))
+          newRide.ToD = datetime.datetime(int(y),int(m),int(d))
+          newRide.passengers = []
+          newRide.put()
 
-        temp = os.path.join(os.path.dirname(__file__),'templates/success.html')
-        outstr = template.render(temp,{
-                'maxp': newRide.max_passengers,
-                'num_passengers': newRide.num_passengers,
-                'driver': newRide.driver,
-                'startloc': newRide.start_point_title,
-                'startlong': newRide.start_point_long,
-                'startlat': newRide.start_point_lat,
-                'dest': newRide.destination_title,
-                'destlong': newRide.destination_long,
-                'destlat': newRide.destination_lat,
-                'ToD': newRide.ToD,
-                })
-        self.response.out.write(outstr)
-
+          temp = os.path.join(os.path.dirname(__file__),'templates/success.html')
+          outstr = template.render(temp,{
+                  'maxp': newRide.max_passengers,
+                  'num_passengers': newRide.num_passengers,
+                  'driver': newRide.driver,
+                  'startloc': newRide.start_point_title,
+                  'startlong': newRide.start_point_long,
+                  'startlat': newRide.start_point_lat,
+                  'dest': newRide.destination_title,
+                  'destlong': newRide.destination_long,
+                  'destlat': newRide.destination_lat,
+                  'ToD': newRide.ToD,
+                  })
+          self.response.out.write(outstr)
+  
 class AddPassengerHandler(webapp.RequestHandler):
     """
     Handles addition of passengers
@@ -240,7 +244,23 @@ class AddPassengerHandler(webapp.RequestHandler):
                           })
         self.response.out.write(outstr)
         
+class TableFillHandler(webapp.RequestHandler):
+  """
+  Fills the table in index.html using AJAX every 5 seconds
+  """
+  def get(self):
+    """
+    Returns the data to be held within the table in HTML fragments
+    """
+    # Get all rides
+    # Return as a table through tablelist.html
+    # Write AJAX in index.html so it may be used using jQuery library
         
+def doRender(handler, name='index.html', value={}):
+    temp = os.path.join(os.path.dirname(__file__), 'templates/' + name)
+    outstr = template.render(temp, value)
+    handler.response.out.write(outstr)
+
 def geocode(address):
  # This function queries the Google Maps API geocoder with an
  # address. It gets back a csv file, which it then parses and
@@ -299,6 +319,7 @@ def main():
                                           ('/getrides', RideQueryHandler ),
                                           ("/newride", NewRideHandler),
                                           ("/addpass", AddPassengerHandler),
+                                          ("/tablefill", TableFillHandler),
                                           ],
                                          debug=True)
     wsgiref.handlers.CGIHandler().run(application)
