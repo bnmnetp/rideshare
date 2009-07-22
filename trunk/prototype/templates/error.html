@@ -1,12 +1,9 @@
-<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
-<html> <head>
-<title>Error</title>
-</head>
+{% extends "_notIndex.html" %}
 
-<body>
+{% block title %}Error{% endblock %}
+
+{% block bodycontent %}
 <h1>Error</h1>
 
 <p>{{ error_message }}</p>
-
-<hr>
-</body> </html>
+{% endblock %}

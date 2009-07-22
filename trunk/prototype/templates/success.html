@@ -1,9 +1,8 @@
-<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
-<html> <head>
-<title>Success</title>
-</head>
+{% extends "_notIndex.html" %}
 
-<body>
+{% block title %}Success{% endblock %}
+
+{% block bodycontent%}
 <h1>Congratulations, you have created a new Ride</h1>
 
 <p>Maximum passengers: {{ maxp }}</p>
@@ -12,9 +11,4 @@
 <p>Starting Info: {{ startloc }} | {{ startlong }} | {{ startlat }}</p>
 <p>Destination Info: {{ dest }} | {{ destlong }} | {{ destlat }}</p>
 <p>Date: {{ ToD }}</p>
-
-<hr>
-<p>Click <a href="/">here</a> to return to the main page.</p>
-<address></address>
-<!-- hhmts start --> Last modified: Fri Jun 26 10:36:28 CDT 2009 <!-- hhmts end -->
-</body> </html>
+{% endblock %}
