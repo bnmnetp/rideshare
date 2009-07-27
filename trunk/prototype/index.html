@@ -95,6 +95,7 @@
   </head>
 
   <body onload="initialize()" onunload="GUnload()" style="font-family: Arial;border: 0 none;">
+    {{ greeting }}
     <form action="#" onsubmit="showAddress(this.address.value); return false">
        <p>Where do you want to go?
          <input type="text" size="60" name="address" value="700 College Dr., Decorah, IA" />
