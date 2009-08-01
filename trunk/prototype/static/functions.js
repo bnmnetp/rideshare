@@ -8,7 +8,7 @@
         //map.setUIToDefault();
         geocoder = new GClientGeocoder();
         GEvent.addListener(marker, "click", function()
-          { marker.openInfoWindowHtml("Decorah, Iowa"); });
+          { marker.openInfoWindowHtml("Luther College<br />Decorah, Iowa"); });
         map.addOverlay(marker);
 
         var r;
@@ -62,33 +62,103 @@
 // Returns the form used in the HTML popup to build a new ride
     function getNewRidePopupHTML(lat, lng, address3)
     {
-      var line0 = "<b>Create a new Ride</b>";
-      var line1 = "<form method=\"post\" id=\"newride\" action=\"/newride?lat="+lat+"&lng="+lng+"&address="+address3+"\">";
-      var line2 = "<input type=\"radio\" name=\"rideType\" value=\"0\" id=\"rideType\"/>Starting Point<br />";
-      var line3 = "<input type=\"radio\" name=\"rideType\" value=\"1\" id=\"rideType\"/>Destination<br /><br />";
-      var line4 = "<div name=\"address\" id=\"address\">Location: <i>"+address3+"</i></div><br /><sup>(If this address is incorrect, zoom in for better accuracy)</sup><br />";
-      var line5 = "Maximum number of passengers: <input type=\"text\" name=\"maxp\" id=\"maxp\" maxLength=\"3\"/><br />";
-      var line6 = "Date of departure: <select name=\"month\" id=\"month\" onchange=\"changeDays(this.form.day, this); return false;\">";
-      var line7 = "<option value=\"0\" selected=\"selected\">January</option><option value=\"1\">February</option><option value=\"2\">March</option><option value=\"3\">April</option><option value=\"4\">May</option><option value=\"5\">June</option><option value=\"6\">July</option><option value=\"7\">August</option><option value=\"8\">September</option><option value=\"9\">October</option><option value=\"10\">November</option><option value=\"11\">December</option>";
-      var line8 = "</select><select name=\"day\" id=\"day\">";
-      for (var i = 1; i < 32; i++)
-      {
-        line8 = line8 + "<option value=\""+i+"\">" + (i).toString() + "</option>";
-      }
-      var line9 = "</select><select name=\"year\" id=\"year\">";
+			var line0="<b>Create a New Ride</b>";
+
+			var line1="<form><p style=\"text-align: center;\">";
+			var line2="<br />"+address3+"<br />";
+			var line3="<input onclick=\"newRidePopupHTMLPart2("+lat+", "+lng+", '"+address3+"', true);\" type=\"radio\" name=\"rideType\" value=\"0\" id=\"rideType\""+"/>To or";
+			var line4="<input onclick=\"newRidePopupHTMLPart2("+lat+", "+lng+", '"+address3+"', false);\" type=\"radio\" name=\"rideType\" value=\"1\" id=\"rideType\"/>From<br />Luther Campus?</p></form>";
+
+			var full = line0 + line1 + line2 + line3 + line4;
+			return full;
+		}
+
+		function newRidePopupHTMLPart2(lat, lng, address4, to)
+		{
+			map.closeInfoWindow();
+			var htmlText = getNewRidePopupHTML2(lat, lng, address4, to);
+			map.openInfoWindowHtml(new GLatLng(lat, lng), htmlText);
+		}
+
+		function getNewRidePopupHTML2(lat, lng, address5, to)
+		{
+			var line5="<b>Create a new Ride</b> <form method=\"post\" id=\"newride\" action=\"/newride?lat="+lat+"&amp;lng="+lng+"&amp;to="+to+"\"><div id=\"textToAll\">Please ensure that your address is as specific as possible<br />(<i>37</i> Main Street, not <i>30-50</i> Main Street)<br />To <input type=\"text\" id=\"textTo\" name='textTo' size=\"50\"";
+			if (to == false)
+			{
+				line5 = line5 + "value='"+address5+"'";
+			}
+			else
+			{
+				line5 = line5 + "value='Luther College, Decorah, Iowa' readonly='readonly'";
+			}
+			line5 = line5 + "></div>";
+			var line6="<div id=\"textFromAll\">From <input type=\"text\" id=\"textFrom\" name='textFrom' size=\"50\"";
+			if (to == true)
+			{
+				line6 = line6 + "value='"+address5+"'";
+			}
+			else
+			{
+				line6 = line6 + "value='Luther College, Decorah, Iowa' readonly='readonly'";
+			}
+			line6 = line6 + "><br /></div><br />";
+			var line7="<div id=\"maxpdiv\">";
+			var line8="Maximum number of passengers: <input type=\"text\" name=\"maxp\" id=\"maxp\" maxLength=\"3\" size=\"3\" value=\"2\"><br />";
+			var line9="How can you be contacted by phone? <input type=\"text\" name=\"number\" id=\"number\" maxlength=\"12\" size=\"10\" value=\"563-555-1212\" onclick=\"this.value=''\"></div>";
+			var line10="<div id=\"toddiv\">";
+			var line11="Time of Departure: <select name=\"earlylate\" id=\"earlylate\"><option value=\"0\" selected=\"selected\">Early</option><option value=\"1\">Late</option></select>";
+			var line12="<select name=\"partofday\" id=\"partofday\"><option value=\"0\" selected=\"selected\">Morning</option><option value=\"1\">Afternoon</option><option value=\"2\">Evening</option></select>";
+			var line13="<select name=\"month\" onChange=\"changeDays(document.getElementById('day'), this); return false;\"><option value=\"0\" selected=\"selected\">January</option><option value=\"1\">February</option><option value=\"2\">March</option><option value=\"3\">April</option><option value=\"4\">May</option><option value=\"5\">June</option><option value=\"6\">July</option><option value=\"7\">August</option><option value=\"8\">September</option><option value=\"9\">October</option><option value=\"10\">November</option><option value=\"11\">December</option></select>";
+			var line14="<select name=\"day\" id=\"day\">";
+			for (var i = 1; i < 32; i++)
+			{
+				line14 = line14 + "<option value=\""+i+"\">"+i+"</option>";
+			}
+			line14 = line14 + "</select>";
+			var line15="<select name=\"year\">";
       var yr = (new Date()).getFullYear();
-      var line10;
+      var line16 = "";
       for (var i = yr-1; i < yr+4; i++)
       {
-        line10 = line10 + "<option value=\""+i+"\">"+i+"</option>";
+        line16 = line16 + "<option value=\""+i+"\">"+i+"</option>";
       }
-      var line11 = "</select><br />";
-      var line12 = "<input type=\"submit\" value=\"OK\" />";
-      var line13 = "<input type=\"button\" value=\"Cancel\" onclick=\"map.closeInfoWindow();\"/>";
-      var line14 = "</form>";
-      var full = line0 + line1 + line2 + line3 + line4 + line5 + line6 + line7 + line8 + line9 + line10 + line11 + line12 + line13 + line14;
+			line16 = line16 + "</select></div>";
+			var line17="<div id=\"buttons\"><input type=\"submit\" id=\"submit\" name=\"submit\" value=\"Okay\"><input type=\"button\" id=\"cancel\" name='cancel' value='Cancel' onclick='map.closeInfoWindow();'></div></form>";
+			var full = line5+line6+line7+line8+line9+line10+line11+line12+line13+line14+line15+line16+line17;
       return full;
     }
+
+// Brings parts of newRide popup into out of hiding
+		function updateForm(address) {
+			var select = document.getElementById("day"); 
+			for (var i = 0; i < 31; i++) { 
+				addOption(select, i, i+1); 
+				}
+			textFromAll = document.getElementById("textFromAll");
+			textFromAll.style.display = "block";
+			textToAll = document.getElementById("textToAll");
+			textToAll.style.display = "block";
+			maxpdiv = document.getElementById("maxpdiv");
+			maxpdiv.style.display = "block";
+			toddiv = document.getElementById("toddiv");
+			toddiv.style.display = "block";
+			buttons = document.getElementById("buttons");
+			buttons.style.display = "block";
+			form = document.getElementById("newride");
+			if (form.elements[0].checked) {
+				textTo.value="Luther College, Decorah, IA, 52101";
+				textTo.readOnly = true;
+				textFrom.value = address;
+				textFrom.readOnly = false;
+			}
+			else {
+				textTo.value = address;
+				textTo.readOnly = false;
+				textFrom.value = "Luther College, Decorah, IA, 52101";
+				textFrom.readOnly = true;
+			}
+			map.updateInfoWindow(new GInfoWindowTab());
+		}
 
 // Adds a popup to the GoogleMap that fits 'ride'
     function addRideToMap(ride, rideNum)

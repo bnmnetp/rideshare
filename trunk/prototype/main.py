@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2.5
 #
 # Copyright 2007 Google Inc.
 #
@@ -47,7 +47,9 @@ class Ride(db.Model):
     destination_lat = db.FloatProperty()
     destination_long = db.FloatProperty()
     ToD = db.DateTimeProperty()
+    part_of_day = db.StringProperty() # 0->Morning | 1->Afternoon | 2->Evening
     passengers = db.ListProperty(users.User)
+    contact = db.StringProperty()
 
     def to_dict(self):
         res = {}
@@ -139,46 +141,72 @@ class NewRideHandler(webapp.RequestHandler):
         - destination_title
         - destination_lat
         - destination_long
+        - part_of_day
         - ToD
+        - contact
         """
 
         newRide = Ride()
         maxp = self.request.get("maxp")
-        if maxp == '' or maxp == None:
+        number = self.request.get("number")
+        # Add in hyphens for number if omitted
+        if len(number) == 10: 
+          number = number[0:3] + '-' + number[3:6] + '-' + number[6:]
+        # Ensure maxp is filled
+        if maxp == '' or maxp == None: 
           doRender(self, 'error.html', { 'error_message': "Please specify a maximum number of passengers." })
+        # Ensure original number is given
+        elif number == '' or number == '563-555-1212': 
+					doRender(self, 'error.html', { 'error_message': "Please specify a contact number." })
+        # Check for valid number size
+        elif len(number) < 10 or len(number) == 11: 
+          doRender(self, 'error.html', { 'error_message': "Please use a valid contact number with an area code (i.e. 563-555-1212)." })
         else:
+          newRide.contact = number
           newRide.max_passengers = int(maxp)
           newRide.num_passengers = 0
           newRide.driver = users.get_current_user()
 
-          #newRide.driver = self.request.get("driver") TODO: Will deal with User
-          """
+          """ # For testing
           latlng = ['41.517658', '-95.452065']
           lat = float(latlng[0])
           lng = float(latlng[1])
           """
           lat = float(self.request.get("lat"))
           lng = float(self.request.get("lng"))
-          location = self.request.get("address")
-          checked = int(self.request.get("rideType"))
-          if checked == 0:
-            newRide.start_point_title = location
+          checked = self.request.get("to")
+          if checked == 'true':
+            newRide.start_point_title = self.request.get("textFrom")
             newRide.start_point_lat = lat
             newRide.start_point_long = lng
             newRide.destination_title = "Decorah, IA"
             newRide.destination_lat = 43.313059
             newRide.destination_long = -91.799501
-          elif checked == 1:
+          elif checked == 'false':
             newRide.start_point_title = "Decorah, IA"
             newRide.start_point_lat = 43.313059
             newRide.start_point_long = -91.799501
-            newRide.destination_title = location
+            newRide.destination_title = self.request.get("textTo")
             newRide.destination_lat = lat
             newRide.destination_long = lng             
 
           y = int(self.request.get("year"))
           m = int(self.request.get("month")) + 1
           d = int(self.request.get("day"))
+          early_late_value = int(self.request.get("earlylate"))
+          part_of_day_value = int(self.request.get("partofday"))
+          part_of_day = ''
+          if early_late_value == 0:
+            part_of_day += 'Early '
+          else:
+            part_of_day += 'Late '
+          if part_of_day_value == 0:
+            part_of_day += 'Morning'
+          elif part_of_day_value == 1:
+            part_of_day += 'Afternoon'
+          else:
+            part_of_day += 'Evening'
+          newRide.part_of_day = part_of_day
           newRide.ToD = datetime.datetime(int(y),int(m),int(d))
           newRide.passengers = []
           newRide.put()
@@ -194,7 +222,9 @@ class NewRideHandler(webapp.RequestHandler):
                   'dest': newRide.destination_title,
                   'destlong': newRide.destination_long,
                   'destlat': newRide.destination_lat,
+                  'partofday': newRide.part_of_day,
                   'ToD': newRide.ToD,
+                  'contact': newRide.contact,
                   })
           self.response.out.write(outstr)
   
@@ -249,18 +279,7 @@ class AddPassengerHandler(webapp.RequestHandler):
                           'capacity_message': capacity_message
                           })
         self.response.out.write(outstr)
-        
-class TableFillHandler(webapp.RequestHandler):
-  """
-  Fills the table in index.html using AJAX every 5 seconds
-  """
-  def get(self):
-    """
-    Returns the data to be held within the table in HTML fragments
-    """
-    # Get all rides
-    # Return as a table through tablelist.html
-    # Write AJAX in index.html so it may be used using jQuery library
+
         
 def doRender(handler, name='index.html', value={}):
     temp = os.path.join(os.path.dirname(__file__), 'templates/' + name)
@@ -303,6 +322,7 @@ def main():
         newRide.start_point_long, newRide.start_point_lat = geocode(newRide.start_point_title)
         newRide.destination_title = "Plymouth, MN"
         newRide.destination_long, newRide.destination_lat = geocode(newRide.destination_title)
+        newRide.part_of_day = 'Early Morning'
         newRide.ToD = datetime.datetime(2009,9,15)
         newRide.passengers = []
         newRide.put()
@@ -315,6 +335,7 @@ def main():
         newRide.start_point_long, newRide.start_point_lat = geocode(newRide.start_point_title)
         newRide.destination_title = "Des Moines, IA"
         newRide.destination_long, newRide.destination_lat = geocode(newRide.destination_title)
+        newRide.part_of_day = 'Late Afternoon'
         newRide.ToD = datetime.datetime(2009,9,17)
         newRide.passengers = []
         newRide.put()
@@ -325,7 +346,6 @@ def main():
                                           ('/getrides', RideQueryHandler ),
                                           ("/newride", NewRideHandler),
                                           ("/addpass", AddPassengerHandler),
-                                          ("/tablefill", TableFillHandler),
                                           ],
                                          debug=True)
     wsgiref.handlers.CGIHandler().run(application)
