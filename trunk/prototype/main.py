@@ -47,7 +47,7 @@ class Ride(db.Model):
     destination_lat = db.FloatProperty()
     destination_long = db.FloatProperty()
     ToD = db.DateTimeProperty()
-    part_of_day = db.StringProperty() # 0->Morning | 1->Afternoon | 2->Evening
+    part_of_day = db.StringProperty()
     passengers = db.ListProperty(users.User)
     contact = db.StringProperty()
 
@@ -148,71 +148,58 @@ class NewRideHandler(webapp.RequestHandler):
 
         newRide = Ride()
         maxp = self.request.get("maxp")
-        number = self.request.get("number")
-        # Add in hyphens for number if omitted
-        if len(number) == 10: 
-          number = number[0:3] + '-' + number[3:6] + '-' + number[6:]
-        # Ensure maxp is filled
-        if maxp == '' or maxp == None: 
-          doRender(self, 'error.html', { 'error_message': "Please specify a maximum number of passengers." })
-        # Ensure original number is given
-        elif number == '' or number == '563-555-1212': 
-					doRender(self, 'error.html', { 'error_message': "Please specify a contact number." })
-        # Check for valid number size
-        elif len(number) < 10 or len(number) == 11: 
-          doRender(self, 'error.html', { 'error_message': "Please use a valid contact number with an area code (i.e. 563-555-1212)." })
+        inumber = self.request.get("contact")
+        number = inumber[0:3]+'-'+inumber[3:6]+'-'+inumber[6:]
+        newRide.contact = number
+        newRide.max_passengers = int(maxp)
+        newRide.num_passengers = 0
+        newRide.driver = users.get_current_user()
+
+        """ # For testing
+        latlng = ['41.517658', '-95.452065']
+        lat = float(latlng[0])
+        lng = float(latlng[1])
+        """
+        lat = float(self.request.get("lat"))
+        lng = float(self.request.get("lng"))
+        checked = self.request.get("checked")
+        if checked == 'true':
+          newRide.start_point_title = self.request.get("from")
+          newRide.start_point_lat = lat
+          newRide.start_point_long = lng
+          newRide.destination_title = "Luther College, Decorah, IA"
+          newRide.destination_lat = 43.313059
+          newRide.destination_long = -91.799501
+        elif checked == 'false':
+          newRide.start_point_title = "Luther College, Decorah, IA"
+          newRide.start_point_lat = 43.313059
+          newRide.start_point_long = -91.799501
+          newRide.destination_title = self.request.get("to")
+          newRide.destination_lat = lat
+          newRide.destination_long = lng             
+        y = int(self.request.get("year"))
+        m = int(self.request.get("month")) + 1
+        d = int(self.request.get("day"))
+        early_late_value = int(self.request.get("earlylate"))
+        part_of_day_value = int(self.request.get("partofday"))
+        part_of_day = ''
+        if early_late_value == 0:
+          part_of_day += 'Early '
         else:
-          newRide.contact = number
-          newRide.max_passengers = int(maxp)
-          newRide.num_passengers = 0
-          newRide.driver = users.get_current_user()
+          part_of_day += 'Late '
+        if part_of_day_value == 0:
+          part_of_day += 'Morning'
+        elif part_of_day_value == 1:
+          part_of_day += 'Afternoon'
+        else:
+          part_of_day += 'Evening'
+        newRide.part_of_day = part_of_day
+        newRide.ToD = datetime.datetime(int(y),int(m),int(d))
+        newRide.passengers = []
+        newRide.put()
 
-          """ # For testing
-          latlng = ['41.517658', '-95.452065']
-          lat = float(latlng[0])
-          lng = float(latlng[1])
-          """
-          lat = float(self.request.get("lat"))
-          lng = float(self.request.get("lng"))
-          checked = self.request.get("to")
-          if checked == 'true':
-            newRide.start_point_title = self.request.get("textFrom")
-            newRide.start_point_lat = lat
-            newRide.start_point_long = lng
-            newRide.destination_title = "Decorah, IA"
-            newRide.destination_lat = 43.313059
-            newRide.destination_long = -91.799501
-          elif checked == 'false':
-            newRide.start_point_title = "Decorah, IA"
-            newRide.start_point_lat = 43.313059
-            newRide.start_point_long = -91.799501
-            newRide.destination_title = self.request.get("textTo")
-            newRide.destination_lat = lat
-            newRide.destination_long = lng             
-
-          y = int(self.request.get("year"))
-          m = int(self.request.get("month")) + 1
-          d = int(self.request.get("day"))
-          early_late_value = int(self.request.get("earlylate"))
-          part_of_day_value = int(self.request.get("partofday"))
-          part_of_day = ''
-          if early_late_value == 0:
-            part_of_day += 'Early '
-          else:
-            part_of_day += 'Late '
-          if part_of_day_value == 0:
-            part_of_day += 'Morning'
-          elif part_of_day_value == 1:
-            part_of_day += 'Afternoon'
-          else:
-            part_of_day += 'Evening'
-          newRide.part_of_day = part_of_day
-          newRide.ToD = datetime.datetime(int(y),int(m),int(d))
-          newRide.passengers = []
-          newRide.put()
-
-          temp = os.path.join(os.path.dirname(__file__),'templates/success.html')
-          outstr = template.render(temp,{
+        temp = os.path.join(os.path.dirname(__file__),'templates/success.html')
+        outstr = template.render(temp,{
                   'maxp': newRide.max_passengers,
                   'num_passengers': newRide.num_passengers,
                   'driver': newRide.driver,
@@ -226,7 +213,7 @@ class NewRideHandler(webapp.RequestHandler):
                   'ToD': newRide.ToD,
                   'contact': newRide.contact,
                   })
-          self.response.out.write(outstr)
+        self.response.out.write(outstr)
   
 class AddPassengerHandler(webapp.RequestHandler):
     """
@@ -318,7 +305,7 @@ def main():
         newRide.max_passengers = 3
         newRide.num_passengers = 0
         newRide.driver = users.User("bmiller@luther.edu")
-        newRide.start_point_title = "Decorah, IA"
+        newRide.start_point_title = "Luther College, Decorah, IA"
         newRide.start_point_long, newRide.start_point_lat = geocode(newRide.start_point_title)
         newRide.destination_title = "Plymouth, MN"
         newRide.destination_long, newRide.destination_lat = geocode(newRide.destination_title)
@@ -331,7 +318,7 @@ def main():
         newRide.max_passengers = 1
         newRide.num_passengers = 0
         newRide.driver = users.User("willke02@luther.edu")
-        newRide.start_point_title = "Decorah, IA"
+        newRide.start_point_title = "Luther College, Decorah, IA"
         newRide.start_point_long, newRide.start_point_lat = geocode(newRide.start_point_title)
         newRide.destination_title = "Des Moines, IA"
         newRide.destination_long, newRide.destination_lat = geocode(newRide.destination_title)

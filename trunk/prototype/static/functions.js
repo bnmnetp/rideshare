@@ -82,8 +82,8 @@
 
 		function getNewRidePopupHTML2(lat, lng, address5, to)
 		{
-			var line5="<b>Create a new Ride</b> <form method=\"post\" id=\"newride\" action=\"/newride?lat="+lat+"&amp;lng="+lng+"&amp;to="+to+"\"><div id=\"textToAll\">Please ensure that your address is as specific as possible<br />(<i>37</i> Main Street, not <i>30-50</i> Main Street)<br />To <input type=\"text\" id=\"textTo\" name='textTo' size=\"50\"";
-			if (to == false)
+			var line5="<b>Create a new Ride</b> <form onsubmit=\"verifyNewRidePopup("+lat+", "+lng+", '"+address5+"'); return false;\" id=\"newride\"><div id=\"textToAll\">Please ensure that your address is as specific as possible<br />(<i>37</i> Main Street, not <i>30-50</i> Main Street)<br />From <input type=\"text\" id=\"textFrom\" name='textFrom' size=\"50\"";
+			if (to == true)
 			{
 				line5 = line5 + "value='"+address5+"'";
 			}
@@ -92,8 +92,8 @@
 				line5 = line5 + "value='Luther College, Decorah, Iowa' readonly='readonly'";
 			}
 			line5 = line5 + "></div>";
-			var line6="<div id=\"textFromAll\">From <input type=\"text\" id=\"textFrom\" name='textFrom' size=\"50\"";
-			if (to == true)
+			var line6="<div id=\"textFromAll\">To <input type=\"text\" id=\"textTo\" name='textTo' size=\"50\"";
+			if (to == false)
 			{
 				line6 = line6 + "value='"+address5+"'";
 			}
@@ -108,19 +108,31 @@
 			var line10="<div id=\"toddiv\">";
 			var line11="Time of Departure: <select name=\"earlylate\" id=\"earlylate\"><option value=\"0\" selected=\"selected\">Early</option><option value=\"1\">Late</option></select>";
 			var line12="<select name=\"partofday\" id=\"partofday\"><option value=\"0\" selected=\"selected\">Morning</option><option value=\"1\">Afternoon</option><option value=\"2\">Evening</option></select>";
-			var line13="<select name=\"month\" onChange=\"changeDays(document.getElementById('day'), this); return false;\"><option value=\"0\" selected=\"selected\">January</option><option value=\"1\">February</option><option value=\"2\">March</option><option value=\"3\">April</option><option value=\"4\">May</option><option value=\"5\">June</option><option value=\"6\">July</option><option value=\"7\">August</option><option value=\"8\">September</option><option value=\"9\">October</option><option value=\"10\">November</option><option value=\"11\">December</option></select>";
+			var line13="<select name=\"month\" id='month' onChange=\"changeDays(document.getElementById('day'), this); return false;\"><option value=\"0\" selected=\"selected\">January</option><option value=\"1\">February</option><option value=\"2\">March</option><option value=\"3\">April</option><option value=\"4\">May</option><option value=\"5\">June</option><option value=\"6\">July</option><option value=\"7\">August</option><option value=\"8\">September</option><option value=\"9\">October</ption><option value=\"10\">November</option><option value=\"11\">December</option></select>";
 			var line14="<select name=\"day\" id=\"day\">";
 			for (var i = 1; i < 32; i++)
 			{
-				line14 = line14 + "<option value=\""+i+"\">"+i+"</option>";
+        if (i == 1)
+        {
+          line14 += "<option value=\""+i+"\" selected=\"selected\">"+i+"</option>";
+        }
+        else
+        {
+				  line14 = line14 + "<option value=\""+i+"\">"+i+"</option>";
+        }
 			}
 			line14 = line14 + "</select>";
-			var line15="<select name=\"year\">";
+			var line15="<select name=\"year\" id='year'>";
       var yr = (new Date()).getFullYear();
       var line16 = "";
       for (var i = yr-1; i < yr+4; i++)
       {
-        line16 = line16 + "<option value=\""+i+"\">"+i+"</option>";
+        line16 +="<option value=\""+i+"\"";
+        if (i == yr)
+        {
+          line16 += "selected=\"selected\"";
+        }
+        line16 += ">"+i+"</option>";
       }
 			line16 = line16 + "</select></div>";
 			var line17="<div id=\"buttons\"><input type=\"submit\" id=\"submit\" name=\"submit\" value=\"Okay\"><input type=\"button\" id=\"cancel\" name='cancel' value='Cancel' onclick='map.closeInfoWindow();'></div></form>";
@@ -128,42 +140,134 @@
       return full;
     }
 
-// Brings parts of newRide popup into out of hiding
-		function updateForm(address) {
-			var select = document.getElementById("day"); 
-			for (var i = 0; i < 31; i++) { 
-				addOption(select, i, i+1); 
-				}
-			textFromAll = document.getElementById("textFromAll");
-			textFromAll.style.display = "block";
-			textToAll = document.getElementById("textToAll");
-			textToAll.style.display = "block";
-			maxpdiv = document.getElementById("maxpdiv");
-			maxpdiv.style.display = "block";
-			toddiv = document.getElementById("toddiv");
-			toddiv.style.display = "block";
-			buttons = document.getElementById("buttons");
-			buttons.style.display = "block";
-			form = document.getElementById("newride");
-			if (form.elements[0].checked) {
-				textTo.value="Luther College, Decorah, IA, 52101";
-				textTo.readOnly = true;
-				textFrom.value = address;
-				textFrom.readOnly = false;
-			}
-			else {
-				textTo.value = address;
-				textTo.readOnly = false;
-				textFrom.value = "Luther College, Decorah, IA, 52101";
-				textFrom.readOnly = true;
-			}
-			map.updateInfoWindow(new GInfoWindowTab());
-		}
+    function verifyNewRidePopup(lat, lng, address6)
+    {
+      var from = document.getElementById("textFrom").value;
+      var to = document.getElementById("textTo").value;
+      var earlylate = document.getElementById("earlylate").value;
+      var partofday = document.getElementById("partofday").value;
+      var month = document.getElementById("month").value;
+      var day = document.getElementById("day").value;
+      var year = document.getElementById("year").value;
+
+      // Check for valid number
+      var number = document.getElementById("number").value;
+      var maxp = document.getElementById("maxp").value;
+      var incorrect = false;
+      var alpha = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      for (n in number)
+      {
+        for (a in alpha)
+        {
+          if (number[n] == alpha[a])
+          {
+            incorrect = true;
+          }
+        }
+      }
+      var badmaxp = false;
+      for (o in maxp)
+      {
+        for (a in alpha)
+        {
+          if (maxp[o] == alpha[a])
+          {
+            badmaxp = true;
+          }
+        }
+      }
+      // Ensure valid number is supplied
+      if (number.length < 10 || number.length == 11 || incorrect)
+      {
+        alert("Please supply a valid ten-digit contact number.");
+      }
+      // Ensure an original number is supplied
+      else if (number == '563-555-1212')
+      {
+        alert("Please supply an original contact number.");
+      }
+      // Ensure maxp is filled
+      else if (maxp == '' || badmaxp)
+      {
+        alert("Please supply a valid maximum number of passengers.");
+      }
+      // Bring up confirm window
+      else
+      {
+        number = number.slice(0, 3) + '-' + number.slice(3, 6) + '-' + number.slice(6);
+        map.closeInfoWindow();
+        var htmlText = getNewRidePopupHTML3(lat, lng, from, to, maxp, number, earlylate, partofday, month, day, year);
+        map.openInfoWindowHtml(new GLatLng(lat, lng), htmlText);
+      }  
+    }
+
+		function getNewRidePopupHTML3(lat, lng, from, to, maxp, number, earlylate, partofday, month, day, year)
+    {/*
+      alert("lat = "+lat);
+      alert("lng = "+lng);
+      alert("from = "+from);
+      alert("to = "+to);
+      alert("maxp = "+maxp);
+      alert("number = "+number);
+      alert("earlylate = "+earlylate);
+      alert("partofday = "+partofday);
+      alert("month = "+month);
+      alert("day = "+day);
+      alert("year = "+year); */
+      var full;
+      full = "<b>Is the following information correct?</b><br />";
+      full += "From <i>"+from+"</i><br />";
+      full += "To <i>"+to+"</i><br />";
+      full += "Departing <i>";
+      if (earlylate == 0) {
+        full += "Early ";
+        }
+      else {
+        full += "Late ";
+        }
+      if (partofday == 0) {
+        full += "Morning, ";
+        }
+      else if (partofday == 1) {
+        full += "Afternoon, ";
+        }
+      else {
+        full += "Evening, ";
+        }
+      full += numToTextMonth(month) + " " + day + ", " + year + "</i><br />";
+      full += "Maximum of <i>" + maxp + "</i> passengers<br />";
+      full += "Contact Number: <i>" + number + "</i><br />";
+      number = number.slice(0,3) + number.slice(4,7) + number.slice(8);
+      full += "<form method='post' action=\"/newride?lat="+lat+"&amp;lng="+lng+"&amp;checked=";
+      if (from == "Luther College, Decorah, Iowa") {
+        full += "false&amp;to="+to;
+        }
+      else {
+        full += "true&amp;from="+from;
+        }
+      full += "&amp;maxp="+maxp+"&amp;earlylate="+earlylate+"&amp;";
+      full += "partofday="+partofday+"&amp;year="+year+"&amp;";
+      full += "month="+month+"&amp;day="+day+"&amp;contact="+number+"\" ";
+      full += "><input type='submit' id='submit' name='submit' value='Submit' />";
+      full += "<input type='button' id='cancel' name='cancel' value='Back' onclick=\"newRidePopupHTMLPart2(";
+      full += lat+", "+lng+", '";
+      var checked;
+      if (from == "Luther College, Decorah, Iowa") {
+        full += to;
+        checked = false;
+        }
+      else {
+        full += from;
+        checked = true;
+        }
+      full +="', "+checked.toString()+");\"/></form>";
+      return full;
+    }
 
 // Adds a popup to the GoogleMap that fits 'ride'
     function addRideToMap(ride, rideNum)
     {
-      if (ride.destination.title == "Decorah, IA")
+      if (ride.destination.title == "Luther College, Decorah, IA")
       {
         var amarker = new GMarker(new GLatLng(ride.start_point.latitude, ride.start_point.longitude), gmarkerOptions);
         GEvent.addListener(amarker, "click", function()
@@ -173,7 +277,7 @@
         ride.marker = amarker;
         map.addOverlay(amarker);
       }
-      else if (ride.start_point.title == "Decorah, IA")
+      else if (ride.start_point.title == "Luther College, Decorah, IA")
       {
         var bmarker = new GMarker(new GLatLng(ride.destination.latitude, ride.destination.longitude), rmarkerOptions);
         GEvent.addListener(bmarker, "click", function()
@@ -195,8 +299,11 @@
       {
         msg = "This ride is full";
       }
-      else 
+      else
       {
+        // Check if within a day
+        var today = new Date();
+        
         if (space_left == 1)
         {
           msg = "Can take "+space_left+" more person";
@@ -264,7 +371,7 @@
     }
 
 // Class that holds all information for a ride: Maximum passengers, # Passengers already, Start Point, Destination, and Time of Departure
-   function Ride(max_passengers, driver, start_point_title, start_point_lat, start_point_long, destination_title, destination_lat, destination_long, ToD, passengers, key)
+   function Ride(max_passengers, driver, start_point_title, start_point_lat, start_point_long, destination_title, destination_lat, destination_long, ToD, part_of_day, passengers, contact, key)
    {
       this.max_passengers = max_passengers;
       this.num_passengers = passengers.length;
@@ -273,8 +380,10 @@
       this.destination = new Location(destination_title, destination_lat, destination_long);
       this.ToD = new Date(ToD);
 //      this.marker = new GMarker(new GLatLng(this.start_point.latitude, this.start_point.longitude), gmarkerOptions);
+      this.part_of_day = part_of_day;
       this.marker = null;
       this.passengers = passengers;
+      this.contact = contact;
       this.key = key;
    }
 

@@ -30,7 +30,9 @@
                         {{ r.destination_long }},
                         new Date({{ r.ToD.year }}, 
                                  {{ r.ToD.month }} - 1, 
-                                 {{ r.ToD.day }}), [{% for p in r.passengers %}{% if not forloop.first %}, {% endif %}'{{ p }}'{% endfor %}],
+                                 {{ r.ToD.day }}), 
+                        '{{ r.part_of_day }}', [{% for p in r.passengers %}{% if not forloop.first %}, {% endif %}'{{ p }}'{% endfor %}],
+                        '{{ r.contact }}',
                         '{{ r.key }}');
     rides.push(temp);
   {% endfor %}
@@ -175,7 +177,7 @@
       var c4 = row.insertCell(4);
       c4.innerHTML = rides[r].destination.title;
       var c5 = row.insertCell(5);
-      c5.innerHTML = numToTextMonth(rides[r].ToD.getMonth())+" "+rides[r].ToD.getDate()+", "+rides[r].ToD.getFullYear();
+      c5.innerHTML = rides[r].part_of_day + " " + numToTextMonth(rides[r].ToD.getMonth())+" "+rides[r].ToD.getDate()+", "+rides[r].ToD.getFullYear();
     }
 
 </script>
