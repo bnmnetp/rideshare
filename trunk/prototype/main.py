@@ -72,11 +72,12 @@ class MainHandler(webapp.RequestHandler):
         user = users.get_current_user()
         greeting = ''
         if user:
-            greeting = ("Welcome, %s! (<a href=\"%s\">sign out</a>)" %
+            greeting = ("Welcome, %s! (<a href=\"%s\">sign out</a>) Go to your <a href='/home'>Home Page</a>" %
                   (user.nickname(), users.create_logout_url("/")))
        
         self.response.out.write(template.render('index.html', {
-            'ride_list': ride_list, 'greeting' : greeting
+            'ride_list': ride_list, 
+            'greeting' : greeting
             }))
 
 
@@ -267,6 +268,53 @@ class AddPassengerHandler(webapp.RequestHandler):
                           })
         self.response.out.write(outstr)
 
+class HomeHandler(webapp.RequestHandler):
+    """
+    Displays personal homepage
+    """
+    def get(self):
+      username = users.get_current_user()
+      drive = db.Query(Ride)
+      drive.filter('driver =', username)
+      driverides = drive.fetch(limit=100)
+      rides = db.Query(Ride)
+      allrides = rides.fetch(limit=200)
+      passengerrides = []
+      for ride in allrides:
+        for p in ride.passengers:
+          if p == username:
+            passengerrides.append(ride)
+      doRender(self, 'home.html', { 
+                          'user': username,
+                          'driverides': driverides, 
+                          'passengerrides': passengerrides })
+
+class DeleteRideHandler(webapp.RequestHandler):
+    """
+    Deletes a ride using a key
+    """
+    def get(self):
+      key = self.request.get('key')
+      ride = db.get(key)
+      if ride == None:
+        doRender(self, 'error.html', {
+                              'error_message': "No such ride exists."})
+      else:
+        db.delete(ride)
+        self.response.out.write("Deleted!")
+
+class RemovePassengerHandler(webapp.RequestHandler):
+    """
+    Removes a passenger using a key and the current user
+    """
+    def get(self):
+      key = self.request.get('key')
+      ride = db.get(key)
+      username = users.get_current_user()
+      ride.passengers.remove(username)
+      ride.num_passengers -= 1
+      ride.put()
+      self.response.out.write("Removed!")
         
 def doRender(handler, name='index.html', value={}):
     temp = os.path.join(os.path.dirname(__file__), 'templates/' + name)
@@ -330,11 +378,14 @@ def main():
     
     
     application = webapp.WSGIApplication([('/', MainHandler),
-                                          ('/getrides', RideQueryHandler ),
-                                          ("/newride", NewRideHandler),
-                                          ("/addpass", AddPassengerHandler),
-                                          ],
-                                         debug=True)
+                                  ('/getrides', RideQueryHandler ),
+                                  ("/newride", NewRideHandler),
+                                  ("/addpass", AddPassengerHandler),
+                                  ('/home', HomeHandler),
+                                  ('/deleteride', DeleteRideHandler),
+                                  ('/removepassenger', RemovePassengerHandler),
+                                  ],
+                                  debug=True)
     wsgiref.handlers.CGIHandler().run(application)
 
 

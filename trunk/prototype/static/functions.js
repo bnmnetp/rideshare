@@ -269,6 +269,7 @@
     {
       if (ride.destination.title == "Luther College, Decorah, IA")
       {
+        gmarkerOptions['title'] = ride.driver;
         var amarker = new GMarker(new GLatLng(ride.start_point.latitude, ride.start_point.longitude), gmarkerOptions);
         GEvent.addListener(amarker, "click", function()
         {
@@ -279,6 +280,7 @@
       }
       else if (ride.start_point.title == "Luther College, Decorah, IA")
       {
+        rmarkerOptions['title'] = ride.driver;
         var bmarker = new GMarker(new GLatLng(ride.destination.latitude, ride.destination.longitude), rmarkerOptions);
         GEvent.addListener(bmarker, "click", function()
         {
@@ -301,9 +303,6 @@
       }
       else
       {
-        // Check if within a day
-        var today = new Date();
-        
         if (space_left == 1)
         {
           msg = "Can take "+space_left+" more person";
@@ -315,7 +314,12 @@
       }
       var disabled;
       var today = new Date();
-      if (ride.ToD < new Date(today.getFullYear(), today.getMonth(), today.getDate() + 2) || (ride.max_passengers <= ride.num_passengers))
+      if (ride.ToD < new Date(today.getFullYear(), today.getMonth(), today.getDate() + 2))
+      {
+        disabled = "disabled=\"disabled\"";
+        msg = "It is too late to join this ride";
+      }
+      else if (ride.max_passengers <= ride.num_passengers)
       {
         disabled = "disabled=\"disabled\"";
       }
