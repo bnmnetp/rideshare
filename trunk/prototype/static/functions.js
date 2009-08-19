@@ -129,8 +129,8 @@
       {
         line16 +="<option value=\""+i+"\"";
         if (i == yr)
-        {
           line16 += "selected=\"selected\"";
+        {
         }
         line16 += ">"+i+"</option>";
       }
@@ -154,7 +154,7 @@
       var number = document.getElementById("number").value;
       var maxp = document.getElementById("maxp").value;
       var incorrect = false;
-      var alpha = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      //var alpha = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
       for (n in number)
       {
         for (a in alpha)
@@ -194,7 +194,9 @@
       // Bring up confirm window
       else
       {
-        number = number.slice(0, 3) + '-' + number.slice(3, 6) + '-' + number.slice(6);
+        if (number.length == 10) {
+          number = number.slice(0, 3) + '-' + number.slice(3, 6) + '-' + number.slice(6);
+          }
         map.closeInfoWindow();
         var htmlText = getNewRidePopupHTML3(lat, lng, from, to, maxp, number, earlylate, partofday, month, day, year);
         map.openInfoWindowHtml(new GLatLng(lat, lng), htmlText);
@@ -271,9 +273,12 @@
       {
         gmarkerOptions['title'] = ride.driver;
         var amarker = new GMarker(new GLatLng(ride.start_point.latitude, ride.start_point.longitude), gmarkerOptions);
-        GEvent.addListener(amarker, "click", function()
+        GEvent.addListener(amarker, "click", function(latlng)
+        // From function() to function(latlng)
         {
-          amarker.openInfoWindowHtml(getPopupWindowMessage(ride, rideNum));
+          if (latlng) {
+            amarker.openInfoWindowHtml(getPopupWindowMessage(ride, rideNum, latlng.lat(), latlng.lng()));
+            }
         });
         ride.marker = amarker;
         map.addOverlay(amarker);
@@ -282,9 +287,12 @@
       {
         rmarkerOptions['title'] = ride.driver;
         var bmarker = new GMarker(new GLatLng(ride.destination.latitude, ride.destination.longitude), rmarkerOptions);
-        GEvent.addListener(bmarker, "click", function()
+        GEvent.addListener(bmarker, "click", function(latlng)
+        // From function() to function(latlng)
         {
-          bmarker.openInfoWindowHtml(getPopupWindowMessage(ride, rideNum));
+          if (latlng) {
+            bmarker.openInfoWindowHtml(getPopupWindowMessage(ride, rideNum, latlng.lat(), latlng.lng()));
+            }
         });
         ride.marker = bmarker;
         map.addOverlay(bmarker);
@@ -292,8 +300,11 @@
       return ride.marker;
     }
 
-// Returns the HTML to be contained in a popup window in the GMap
-    function getPopupWindowMessage(ride, rideNum)
+/* 
+Returns the HTML to be contained in a popup window in the GMap
+Asks whether the user wants to join this ride
+*/
+    function getPopupWindowMessage(ride, rideNum, lat, lng)
     {
       var msg;
       var space_left = ride.max_passengers - ride.num_passengers;
@@ -319,19 +330,156 @@
         disabled = "disabled=\"disabled\"";
         msg = "It is too late to join this ride";
       }
-      else if (ride.max_passengers <= ride.num_passengers)
-      {
+      else if (ride.max_passengers <= ride.num_passengers) {
         disabled = "disabled=\"disabled\"";
-      }
-      else
-      {
+        }
+      else {
         disabled = "";
-      }
-      var text1 = ("Driver: "+ride.driver+"<br><i>"+ride.start_point.title+"</i> --> <i>"+ride.destination.title+"</i><br>Date: "+numToTextMonth(ride.ToD.getMonth())+" "+ride.ToD.getDate()+", "+ride.ToD.getFullYear()+"<br>"+msg);
-      var text2 = ("<br /><form method=\"post\" id=\"addPass\" action=\"/addpass?user_name=John%20Doe&ride_key="+ride.key+"\"><input type=\"submit\" value=\"Join this Ride\""+disabled+"/></form>");
+        }
+      var text1 = ("Driver: "+ride.driver+"<br><i>"+ride.start_point.title+"</i> --> <i>"+ride.destination.title+"</i><br>Date: "+ride.part_of_day+" "+numToTextMonth(ride.ToD.getMonth())+" "+ride.ToD.getDate()+", "+ride.ToD.getFullYear()+"<br>"+msg);
+      var drop_off_or_pick_up; // drop_off = 0, pick_up = 1
+      if (ride.start_point.title == "Luther College, Decorah, IA") {
+        drop_off_or_pick_up = 0;
+        }
+      else {
+        drop_off_or_pick_up = 1;
+        }
+      var text2 = ("<br /><form id=\"addPass\" onsubmit=\"addPassengerPart2('"+ride.key+"', "+drop_off_or_pick_up+", "+lat+", "+lng+", "+rideNum+"); return false;\"><input type=\"submit\" value=\"Join this Ride\""+disabled+"/></form>");
       var result = text1 + text2;
       return result;
     }
+
+/*
+Sets up map to use clicks to create a pick up or drop off point for a ride
+Options out: click on map, 'Use this Location', or 'Cancel'
+*/
+// drop_off = 0, pick_up = 1
+    function addPassengerPart2(ride_key, drop_off_or_pick_up, lat, lng, rideNum)
+    {
+      map.closeInfoWindow();
+      // remove all listeners
+      GEvent.clearListeners(map);
+      map.clearOverlays();
+
+      // Create text for popup window
+      var infowindowtext = '';
+      infowindowtext += 'Would you like to be ';
+      if (drop_off_or_pick_up == 1) {
+        infowindowtext += 'picked up';
+        }
+      else {
+        infowindowtext += 'dropped off';
+        }
+      infowindowtext += ' at this location?<br />If not, please click on the map to select a new ';
+      if (drop_off_or_pick_up == 1) {
+        infowindowtext += 'pick up';
+        }
+      else {
+        infowindowtext += 'drop off';
+        }
+      infowindowtext += ' point.<br />';
+      infowindowtext += "<input type='button' onclick='rides["+rideNum+"].marker.openInfoWindowHtml(getPopupWindowMessage2("+rideNum+", "+drop_off_or_pick_up+", "+lat+", "+lng+", \"\"))' value='Use this location' />";
+      infowindowtext += "<input type='button' onclick='initialize();' value='Cancel' />";
+      // Keep marker for ride's location (lat, lng)
+      var thismarker = rides[rideNum].marker;
+      GEvent.addListener(thismarker, "click", function(latlng)
+      // From function() to function(latlng)
+      {
+        if (latlng) {
+          thismarker.openInfoWindowHtml(infowindowtext);
+          }
+      });
+      map.addOverlay(thismarker);
+
+      GEvent.addListener(map, 'click', function(overlay, latlng) 
+      {
+        if (latlng != null) 
+        {
+          geocoder.getLocations(latlng, function(response) 
+          {
+            if (!response || response.Status.code != 200) 
+            {
+              alert("Status Code: " + response.Status.code);
+            }
+            else
+            {
+              var place = response.Placemark[0];
+              point = new GLatLng(place.Point.coordinates[1],
+                                  place.Point.coordinates[0]);
+              var doOrPu = drop_off_or_pick_up; // drop_off = 0, pick_up = 1
+              map.openInfoWindowHtml(point, getPopupWindowMessage2(rideNum, doOrPu, 
+                      point.lat(), 
+                      point.lng(), place.address));
+            }
+          });
+        }
+      });
+
+      // Popup regarding choice of pickup / dropoff point
+      thismarker.openInfoWindowHtml(infowindowtext);
+    }
+
+    function getPopupWindowMessage2(rideNum, doOrPu, lat, lng, address8)
+    {
+      if (address8 == '') {
+        if (doOrPu == 0) {
+          address8 = rides[rideNum].destination.title;
+          }
+        else {
+          address8 = rides[rideNum].start_point.title;
+          }
+        }
+      var text = "<form onsubmit='addPassengerPart3("+rideNum+", "+lat+", "+lng+", "+doOrPu+"); return false;'>Please ensure that your address is as specific as possible<br />(<i>37</i> Main Street, not <i>30-50</i> Main Street)<br />";
+      if (doOrPu == 0) {
+        text += "Drop Off At: ";
+        }
+      else {
+        text += "Pick Up At: ";
+        }
+      text += "<input type='text' id='address' value='"+address8+"' size='30' /><br />";
+      text += "Contact: <input type='text' id='contact' value='563-555-1212' onclick='this.value=\"\"' /><br />";
+      text += "<input type='submit' id='submit' value='Okay' />";
+      var ride_key = rides[rideNum].key;
+      text += "<input type='button' id='back' value='Back' onclick='addPassengerPart2(\""+ride_key+"\", "+doOrPu+", "+lat+", "+lng+", "+rideNum+"); return false;' /></form>";
+      return text;
+    }
+
+    function addPassengerPart3(rideNum, lat, lng, doOrPu) {
+      var contact = document.getElementById('contact').value;
+      var address = document.getElementById('address').value;
+      var badcontact = false;
+      for (n in contact) {
+        for (a in alpha) {
+          if (contact[n] == alpha[a]) {
+            badcontact = true;
+            }
+          }
+        }
+      if (badcontact) { // Contains letter(s)
+        alert("Please supply a valid contact number using only numbers and dashes.");
+        }
+      else if (contact == '' || contact.length == 11 || contact.length < 10) { // Number is too short or too long
+        alert("Please supply a 10 digit contact number");
+        }
+      else if (contact == '563-555-1212') {
+        alert("Please supply an original contact number");
+        }
+      else if (address == '') {
+        alert("Please supply an address");
+        }
+      else {
+        if (contact.length == 10) { // 3194317934 => 319-431-7934
+        contact = contact.slice(0,3)+"-"+contact.slice(3,6)+"-"+contact.slice(6);
+        }
+        var text = "<form method='post' action='/addpass?ride_key="+rides[rideNum].key+"&amp;contact="+contact+"&amp;address="+address+"&amp;lat="+lat+"&amp;lng="+lng+"'>";
+        text += '<h4>Is the following information correct?</h4>';
+        text += 'Address: '+address+'<br />';
+        text += 'Contact: '+contact+'<br />';
+        text += "<input type='submit' id='submit' value='Submit' />";
+        text += "<input type='button' id='back' value='Back' onclick='map.openInfoWindowHtml(newGLatLng("+lat+", "+lng+"), getPopupWindowMessage2("+rideNum+", "+doOrPu+", "+lat+", "+lng+", \""+address+"\"));' /></form>";
+        rides[rideNum].marker.openInfoWindow(text);
+        }
+      }
 
 // Changes a numerical month returned from a Date object to a String
     function numToTextMonth(num)

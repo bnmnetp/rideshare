@@ -20,27 +20,29 @@ You are listed to drive for the following rides:<br /><br />
     <td>{{ r.part_of_day }} {{ r.ToD }}</td>
     <td><table border="0">
       {% for p in r.passengers %}
-      <tr><td>{{ p }}</td></tr>
+      <tr><td>{{ p.name }}</td></tr>
       {% endfor %}</table></td>
     <td><input type="button" value="Delete" onclick="if(confirm('Are you sure you want to delete this ride?')) location.href='/deleteride?key={{r.key}}'" /></td>
 </tr>
 {% endfor %}
 </table><br /><br />
 {% else %}
-You are not listed as a driver for any rides.<br />
+You are not listed as a driver for any rides.<br /><br />
 {% endif %}
 {% if passengerrides %}
 You are listed as a passenger for the following rides:<br /><br />
 
 <table border="3" id="passengerRidesTable">
-<tr><th>From</th>
+<tr><th>Driver</th>
+  <th>From</th>
   <th>To</th>
   <th>Time of Departure</th>
   <th>Passengers</th>
   <th>Remove?</th>
 </tr>
 {% for r in passengerrides %}
-<tr><td>{{ r.start_point_title }}</td>
+<tr><td>{{ r.driver }}</td>
+    <td>{{ r.start_point_title }}</td>
     <td>{{ r.destination_title }}</td>
     <td>{{ r.part_of_day }} {{ r.ToD }}</td>
     <td><table border="0">

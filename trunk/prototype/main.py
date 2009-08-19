@@ -48,7 +48,7 @@ class Ride(db.Model):
     destination_long = db.FloatProperty()
     ToD = db.DateTimeProperty()
     part_of_day = db.StringProperty()
-    passengers = db.ListProperty(users.User)
+    passengers = db.ListProperty(db.Key)
     contact = db.StringProperty()
 
     def to_dict(self):
@@ -58,6 +58,21 @@ class Ride(db.Model):
                 res[k] = getattr(self,k) #eval('self.'+k)
         res['ToD'] = str(self.ToD)
         return res
+
+class Passenger(db.Model):
+    name = db.UserProperty()
+    contact = db.StringProperty()
+    location = db.StringProperty()
+    lat = db.FloatProperty()
+    lng = db.FloatProperty()
+    ride = db.ReferenceProperty()
+    
+    """
+    Check home page functionality regarding the search for passenger rides
+    & list of passengers for driver rides
+    
+    Change method of display in entire project regarding passengers
+    """
 
 class MyClass:
     max_passengers = 0
@@ -235,23 +250,38 @@ class AddPassengerHandler(webapp.RequestHandler):
       user_name = users.get_current_user()
       
       ride_key = self.request.get('ride_key')
+      contact = self.request.get('contact')
+      address = self.request.get('address')
+      lat = float(self.request.get('lat'))
+      lng = float(self.request.get('lng'))
       ride = db.get(db.Key(ride_key))
       if ride == None: # Check if the ride was found
         temp = os.path.join(os.path.dirname(__file__), 'templates/error.html')
         outstr = template.render(temp, {'error_message': 'Error in ride matching'})
         self.response.out.write(outstr)
+      # Check if the current user is the driver
+      elif ride.max_passengers == ride.num_passengers:
+        doRender(self, 'error.html', {'error_message': 'This ride is full'})
       # Check if the current user is already on the ride
       already = False
       for p in ride.passengers:
-        if p == user_name: # TODO: Change to User later
+        if db.get(db.Key(p)).name == user_name:
           already = True
       if already:
         temp = os.path.join(os.path.dirname(__file__), 'templates/error.html')
         outstr = template.render(temp, {'error_message': 'You are already registered for this ride!'})
         self.response.out.write(outstr)
       else:
+        passenger = Passenger()
+        passenger.name = user_name
+        passenger.contact = contact
+        passenger.location = address
+        passenger.lat = lat
+        passenger.lng = lng
+        passenger.ride = db.Key(ride_key)
+        pass_key = passenger.put()
         ride.num_passengers = ride.num_passengers + 1
-        ride.passengers.append(user_name)
+        ride.passengers.append(pass_key)
         ride.put()
 
         if ride.num_passengers == ride.max_passengers:
@@ -277,13 +307,12 @@ class HomeHandler(webapp.RequestHandler):
       drive = db.Query(Ride)
       drive.filter('driver =', username)
       driverides = drive.fetch(limit=100)
-      rides = db.Query(Ride)
-      allrides = rides.fetch(limit=200)
+      passengers = db.Query(Passenger)
+      passengers.filter('name =', username)
+      passengerList = passengers.fetch(limit=100) # All passenger objects with 'my' name
       passengerrides = []
-      for ride in allrides:
-        for p in ride.passengers:
-          if p == username:
-            passengerrides.append(ride)
+      for p in passengerList:
+        passengerrides.append(p.ride)
       doRender(self, 'home.html', { 
                           'user': username,
                           'driverides': driverides, 
