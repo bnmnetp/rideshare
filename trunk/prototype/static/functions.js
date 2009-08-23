@@ -73,15 +73,16 @@
 			return full;
 		}
 
-		function newRidePopupHTMLPart2(lat, lng, address4, to)
+		function newRidePopupHTMLPart2(lat, lng, address4, to, contact)
 		{
 			map.closeInfoWindow();
-			var htmlText = getNewRidePopupHTML2(lat, lng, address4, to);
+			var htmlText = getNewRidePopupHTML2(lat, lng, address4, to, contact);
 			map.openInfoWindowHtml(new GLatLng(lat, lng), htmlText);
 		}
 
-		function getNewRidePopupHTML2(lat, lng, address5, to)
+		function getNewRidePopupHTML2(lat, lng, address5, to, contact)
 		{
+      contact = (typeof contact == 'undefined') ? '563-555-1212': contact; // If contact is not defined, then let it be 563-555-1212
 			var line5="<b>Create a new Ride</b> <form onsubmit=\"verifyNewRidePopup("+lat+", "+lng+", '"+address5+"'); return false;\" id=\"newride\"><div id=\"textToAll\">Please ensure that your address is as specific as possible<br />(<i>37</i> Main Street, not <i>30-50</i> Main Street)<br />From <input type=\"text\" id=\"textFrom\" name='textFrom' size=\"50\"";
 			if (to == true)
 			{
@@ -104,7 +105,7 @@
 			line6 = line6 + "><br /></div><br />";
 			var line7="<div id=\"maxpdiv\">";
 			var line8="Maximum number of passengers: <input type=\"text\" name=\"maxp\" id=\"maxp\" maxLength=\"3\" size=\"3\" value=\"2\"><br />";
-			var line9="How can you be contacted by phone? <input type=\"text\" name=\"number\" id=\"number\" maxlength=\"12\" size=\"10\" value=\"563-555-1212\" onclick=\"this.value=''\"></div>";
+			var line9="How can you be contacted by phone? <input type=\"text\" name=\"number\" id=\"number\" maxlength=\"12\" size=\"10\" value=\""+contact+"\" onclick=\"this.value=''\"></div>";
 			var line10="<div id=\"toddiv\">";
 			var line11="Time of Departure: <select name=\"earlylate\" id=\"earlylate\"><option value=\"0\" selected=\"selected\">Early</option><option value=\"1\">Late</option></select>";
 			var line12="<select name=\"partofday\" id=\"partofday\"><option value=\"0\" selected=\"selected\">Morning</option><option value=\"1\">Afternoon</option><option value=\"2\">Evening</option></select>";
@@ -186,6 +187,15 @@
       {
         alert("Please supply an original contact number.");
       }
+      // Ensure to and from are filled
+      else if (to == '')
+      {
+        alert("Please supply a destination.");
+      }
+      else if (from == '')
+      {
+        alert("Please supply a start point.");
+      }
       // Ensure maxp is filled
       else if (maxp == '' || badmaxp)
       {
@@ -262,7 +272,7 @@
         full += from;
         checked = true;
         }
-      full +="', "+checked.toString()+");\"/></form>";
+      full +="', "+checked.toString()+", "+number+");\"/></form>";
       return full;
     }
 
@@ -271,7 +281,9 @@
     {
       if (ride.destination.title == "Luther College, Decorah, IA")
       {
-        gmarkerOptions['title'] = ride.driver;
+        var tooltext = '';
+        tooltext += ride.ToD.toDateString();
+        gmarkerOptions['title'] = tooltext;
         var amarker = new GMarker(new GLatLng(ride.start_point.latitude, ride.start_point.longitude), gmarkerOptions);
         GEvent.addListener(amarker, "click", function(latlng)
         // From function() to function(latlng)
@@ -285,7 +297,9 @@
       }
       else if (ride.start_point.title == "Luther College, Decorah, IA")
       {
-        rmarkerOptions['title'] = ride.driver;
+        var tooltext = '';
+        tooltext += ride.ToD.toDateString();
+        rmarkerOptions['title'] = tooltext;
         var bmarker = new GMarker(new GLatLng(ride.destination.latitude, ride.destination.longitude), rmarkerOptions);
         GEvent.addListener(bmarker, "click", function(latlng)
         // From function() to function(latlng)
@@ -419,8 +433,9 @@ Options out: click on map, 'Use this Location', or 'Cancel'
       thismarker.openInfoWindowHtml(infowindowtext);
     }
 
-    function getPopupWindowMessage2(rideNum, doOrPu, lat, lng, address8)
+    function getPopupWindowMessage2(rideNum, doOrPu, lat, lng, address8, contact)
     {
+      contact = (typeof contact == 'undefined') ? '563-555-1212': contact; // If contact is not defined, then let it be 563-555-1212
       if (address8 == '') {
         if (doOrPu == 0) {
           address8 = rides[rideNum].destination.title;
@@ -437,7 +452,7 @@ Options out: click on map, 'Use this Location', or 'Cancel'
         text += "Pick Up At: ";
         }
       text += "<input type='text' id='address' value='"+address8+"' size='30' /><br />";
-      text += "Contact: <input type='text' id='contact' value='563-555-1212' onclick='this.value=\"\"' /><br />";
+      text += "Contact: <input type='text' id='contact' maxlength='12' size='10' value='"+contact+"' onclick='this.value=\"\"' /><br />";
       text += "<input type='submit' id='submit' value='Okay' />";
       var ride_key = rides[rideNum].key;
       text += "<input type='button' id='back' value='Back' onclick='addPassengerPart2(\""+ride_key+"\", "+doOrPu+", "+lat+", "+lng+", "+rideNum+"); return false;' /></form>";
@@ -461,7 +476,7 @@ Options out: click on map, 'Use this Location', or 'Cancel'
       else if (contact == '' || contact.length == 11 || contact.length < 10) { // Number is too short or too long
         alert("Please supply a 10 digit contact number");
         }
-      else if (contact == '563-555-1212') {
+      else if (contact == '563-555-1212') { // Didn't change from example
         alert("Please supply an original contact number");
         }
       else if (address == '') {
@@ -476,7 +491,7 @@ Options out: click on map, 'Use this Location', or 'Cancel'
         text += 'Address: '+address+'<br />';
         text += 'Contact: '+contact+'<br />';
         text += "<input type='submit' id='submit' value='Submit' />";
-        text += "<input type='button' id='back' value='Back' onclick='map.openInfoWindowHtml(newGLatLng("+lat+", "+lng+"), getPopupWindowMessage2("+rideNum+", "+doOrPu+", "+lat+", "+lng+", \""+address+"\"));' /></form>";
+        text += "<input type='button' id='back' value='Back' onclick='map.openInfoWindowHtml(new GLatLng("+lat+", "+lng+"), getPopupWindowMessage2("+rideNum+", "+doOrPu+", "+lat+", "+lng+", \""+address+"\", \""+contact+"\"));' /></form>";
         rides[rideNum].marker.openInfoWindow(text);
         }
       }

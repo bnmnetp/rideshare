@@ -265,7 +265,7 @@ class AddPassengerHandler(webapp.RequestHandler):
       # Check if the current user is already on the ride
       already = False
       for p in ride.passengers:
-        if db.get(db.Key(p)).name == user_name:
+        if db.get(p).name == user_name:
           already = True
       if already:
         temp = os.path.join(os.path.dirname(__file__), 'templates/error.html')
@@ -307,17 +307,45 @@ class HomeHandler(webapp.RequestHandler):
       drive = db.Query(Ride)
       drive.filter('driver =', username)
       driverides = drive.fetch(limit=100)
+      for ride in driverides:
+        ride.passengerobjects = []
+        for p in ride.passengers:
+          ride.passengerobjects.append(db.get(p))
       passengers = db.Query(Passenger)
       passengers.filter('name =', username)
       passengerList = passengers.fetch(limit=100) # All passenger objects with 'my' name
-      passengerrides = []
+      passengerrides = [] # Will contain all Rides the user is a passenger for
       for p in passengerList:
         passengerrides.append(p.ride)
+      for ride in passengerrides:
+        ride.passengerobjects = [] # Will contain all Passenger objects for each Ride
+        for p in ride.passengers:
+          ride.passengerobjects.append(db.get(p))
       doRender(self, 'home.html', { 
                           'user': username,
                           'driverides': driverides, 
                           'passengerrides': passengerrides })
 
+class RideInfoHandler(webapp.RequestHandler):
+    """
+    Displays information regarding a specific ride
+    Reached through a person's home page
+    """
+    def get(self):
+      key = self.request.get('key')
+      ride = db.get(key)
+      ride.jsmonth = ride.ToD.month
+      ride.jsyear = ride.ToD.year
+      ride.jsday = ride.ToD.day 
+      ride.passengerobjects = [] # Holds the Passenger objects
+      for p in ride.passengers:
+        ride.passengerobjects.append(db.get(p))
+      if ride.start_point_title == 'Luther College, Decorah, IA':
+        ride.doOrPu = 0
+      else:
+        ride.doOrPu = 1
+      doRender(self, 'rideinfo.html', {'ride': ride})
+    
 class DeleteRideHandler(webapp.RequestHandler):
     """
     Deletes a ride using a key
@@ -411,6 +439,7 @@ def main():
                                   ("/newride", NewRideHandler),
                                   ("/addpass", AddPassengerHandler),
                                   ('/home', HomeHandler),
+                                  ('/rideinfo', RideInfoHandler),
                                   ('/deleteride', DeleteRideHandler),
                                   ('/removepassenger', RemovePassengerHandler),
                                   ],
