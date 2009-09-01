@@ -3,58 +3,98 @@
 {% block title %}{{ user }}'s Home Page{% endblock %}
 
 {% block bodycontent %}
-Welcome to your personal homepage, {{ user }}!<br /><br />
+<style type="text/css">
+table.passenger {padding-left:50px;}
+h4, h3, h2 {margin-bottom: 10px;}
+</style>
+Welcome to your personal homepage, {{ user }}!<br />
 {% if driverides %}
-You are listed to drive for the following rides:<br /><br />
-
-<table border="3" id="driveRidesTable">
+<h2>You are a driver for the following rides:</h2>
+{% for ride in driverides %}
+<h3>Driver</h3> - <a href='/rideinfo?key={{ ride.key }}'>See Map of Ride</a>
+<table border='1'>
 <tr><th>From</th>
-  <th>To</th>
-  <th>Time of Departure</th>
-  <th>Passengers</th>
-  <th>Delete?</th>
+    <th>To</th>
+    <th>Driver</th>
+    <th>Departing</th>
+    <th>Contact</th>
+    <th>Modify</th>
 </tr>
-{% for r in driverides %}
-<tr><td>{{ r.start_point_title }}</td>
-    <td>{{ r.destination_title }}</td>
-    <td>{{ r.part_of_day }} {{ r.ToD }}</td>
-    <td><table border="0">
-      {% for p in r.passengers %}
-      <tr><td>{{ p.name }}</td></tr>
-      {% endfor %}</table></td>
-    <td><a href='/rideinfo?key={{ r.key }}'>More Info</a><br /><input type="button" value="Delete" onclick="if(confirm('Are you sure you want to delete this ride?')) location.href='/deleteride?key={{r.key}}'" /></td>
-</tr>
-{% endfor %}
-</table><br /><br />
-{% else %}
-You are not listed as a driver for any rides.<br /><br />
-{% endif %}
-{% if passengerrides %}
-You are listed as a passenger for the following rides:<br /><br />
+<tr><td>{{ ride.start_point_title }}</td>
+    <td>{{ ride.destination_title }}</td>
+    <td>{{ ride.driver }}</td>
+    <td>{{ ride.part_of_day }}<br />{{ ride.jsmonth }}-{{ ride.jsday }}-{{ ride.jsyear }}</td>
+    <td>{{ ride.contact }}</td>
+    <td><input type="button" value="Delete" onclick="if(confirm('Are you sure you want to delete this ride?')) location.href='/deleteride?key={{ ride.key }}'" /></td>
+</tr></table>
 
-<table border="3" id="passengerRidesTable">
-<tr><th>Driver</th>
-  <th>From</th>
-  <th>To</th>
-  <th>Time of Departure</th>
-  <th>Passengers</th>
-  <th>Remove?</th>
+{% if ride.passengerobjects %}
+<h4>Passengers</h4>
+<table class='passenger' border='0'>
+<tr><th>Name</th>
+    <th>
+    {% ifequal ride.doOrPu 0 %}Drop Off Location
+    {% else %}Pick Up Location{% endifequal %}</th>
+    <th>Contact</th>
+    <th>Modify</th>
 </tr>
-{% for r in passengerrides %}
-<tr><td>{{ r.driver }}</td>
-    <td>{{ r.start_point_title }}</td>
-    <td>{{ r.destination_title }}</td>
-    <td>{{ r.part_of_day }} {{ r.ToD }}</td>
-    <td><table border="0">
-        {% for p in r.passengerobjects %}
-      <tr><td>{{ p.name }}</td></tr>
-        {% endfor %}
-      </table></td>
-    <td><a href='/rideinfo?key={{ r.key }}'>More Info</a><br /><input type="button" value="Remove" onclick="if(confirm('Are you sure you want to remove yourself from this ride?')) location.href='/removepassenger?key={{ r.key }}'" /></td>
+{% for p in ride.passengerobjects %}
+<tr><td>{{ p.name }}</td>
+    <td>{{ p.location }}</td>
+    <td>{{ p.contact }}</td>
+    <td><input type="button" value="Remove" onclick="if(confirm('Are you sure you want to remove {{ p.name }} from this ride?')) location.href='/removepassenger?key={{ ride.key }}'" /></td>
 </tr>
 {% endfor %}
 </table>
-{% else %}
-You are not listed as a passenger for any rides.
+{% else %}<p style='text-indent:50px'>There are no passengers registered for this ride.</p>
+{% endif %}<hr>
+{% endfor %}
+{% else %}<p>You are not a driver for any rides.</p>
 {% endif %}
+
+{% if passengerrides %}
+<h2>You are a passenger for the following rides:</h2>
+{% for ride in passengerrides %}
+<h3>Driver</h3> - <a href='/rideinfo?key={{ ride.key }}'>See Map of Ride</a>
+<table border='1'>
+<tr><th>From</th>
+    <th>To</th>
+    <th>Driver</th>
+    <th>Departing</th>
+    <th>Contact</th>
+    <th>Modify</th>
+</tr>
+<tr><td>{{ ride.start_point_title }}</td>
+    <td>{{ ride.destination_title }}</td>
+    <td>{{ ride.driver }}</td>
+    <td>{{ ride.part_of_day }}<br />{{ ride.jsmonth }}-{{ ride.jsday }}-{{ ride.jsyear }}</td>
+    <td>{{ ride.contact }}</td>
+    <td><input type='button' value='Delete' disabled='disabled' /></td>
+</tr></table>
+
+{% if ride.passengerobjects %}
+<h3 style='text-indent:50px'>Passengers</h3>
+<table class='passenger' border='0'>
+<tr><th>Name</th>
+    <th>
+    {% ifequal ride.doOrPu 0 %}Drop Off Location
+    {% else %}Pick Up Location{% endifequal %}</th>
+    <th>Contact</th>
+    <th>Modify</th>
+</tr>
+{% for p in ride.passengerobjects %}
+<tr><td>{{ p.name }}</td>
+    <td>{{ p.location }}</td>
+    <td>{{ p.contact }}</td>
+    <td><input type="button" value="Remove" {% ifnotequal p.name user %}disabled='disabled'{% endifnotequal %} onclick="if(confirm('Are you sure you want to remove yourself from this ride?')) location.href='/removepassenger?key={{ ride.key }}'" /></td>
+</tr>
+{% endfor %}
+</table>
+{% else %}<p>There are no passengers registered for this ride.</p>
+{% endif %}
+{% if not forloop.last %}<hr>{% endif %}
+{% endfor %}
+{% else %}<p>You are not a passenger for any rides.</p>
+{% endif %}
+
 {% endblock %}

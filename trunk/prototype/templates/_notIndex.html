@@ -2,10 +2,11 @@
 <html>
 
 <head>
-<title>{% block title %}Luther RideShare{% endblock %}</title>
+<title>Luther Ride Share | {% block title %}Luther RideShare{% endblock %}</title>
+{% block head %}{% endblock %}
 </head>
 
-<body>
+<body {% block onLoadText %}{% endblock %}>
 
 {% block bodycontent %}
 

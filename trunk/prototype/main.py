@@ -309,6 +309,13 @@ class HomeHandler(webapp.RequestHandler):
       driverides = drive.fetch(limit=100)
       for ride in driverides:
         ride.passengerobjects = []
+        ride.jsmonth = ride.ToD.month
+        ride.jsyear = ride.ToD.year
+        ride.jsday = ride.ToD.day 
+        if ride.start_point_title == 'Luther College, Decorah, IA':
+          ride.doOrPu = 0
+        else:
+          ride.doOrPu = 1
         for p in ride.passengers:
           ride.passengerobjects.append(db.get(p))
       passengers = db.Query(Passenger)
@@ -318,34 +325,52 @@ class HomeHandler(webapp.RequestHandler):
       for p in passengerList:
         passengerrides.append(p.ride)
       for ride in passengerrides:
+        if ride.start_point_title == 'Luther College, Decorah, IA':
+          ride.doOrPu = 0
+        else:
+          ride.doOrPu = 1
         ride.passengerobjects = [] # Will contain all Passenger objects for each Ride
+        ride.jsmonth = ride.ToD.month
+        ride.jsyear = ride.ToD.year
+        ride.jsday = ride.ToD.day 
         for p in ride.passengers:
           ride.passengerobjects.append(db.get(p))
       doRender(self, 'home.html', { 
                           'user': username,
                           'driverides': driverides, 
                           'passengerrides': passengerrides })
-
+    
 class RideInfoHandler(webapp.RequestHandler):
     """
-    Displays information regarding a specific ride
-    Reached through a person's home page
+    Displays detailed information regarding a specific ride
+    Holds a GMap detailing the trip
     """
     def get(self):
+      username = users.get_current_user()
       key = self.request.get('key')
       ride = db.get(key)
-      ride.jsmonth = ride.ToD.month
-      ride.jsyear = ride.ToD.year
-      ride.jsday = ride.ToD.day 
-      ride.passengerobjects = [] # Holds the Passenger objects
-      for p in ride.passengers:
-        ride.passengerobjects.append(db.get(p))
-      if ride.start_point_title == 'Luther College, Decorah, IA':
-        ride.doOrPu = 0
+      if ride == None:
+        doRender(self, 'error.html', {
+                              'error_message': "No such ride exists."})
       else:
-        ride.doOrPu = 1
-      doRender(self, 'rideinfo.html', {'ride': ride})
-    
+        ride.passengerobjects = []
+        ride.jsmonth = ride.ToD.month
+        ride.jsyear = ride.ToD.year
+        ride.jsday = ride.ToD.day
+        if ride.start_point_title == 'Luther College, Decorah, IA':
+          ride.doOrPu = 0
+        else:
+          ride.doOrPu = 1
+        for p in ride.passengers:
+          passenger = db.get(p)
+          if (ride.start_point_lat == passenger.lat and ride.start_point_long == passenger.long) or (ride.destination_lat == passenger.lat and ride.destination_long == passenger.lng):
+            passenger.samePlace = True;
+          else:
+            passenger.samePlace = False;
+          ride.passengerobjects.append(passenger)           
+        doRender(self, 'rideinfo.html', {
+                              'ride': ride})
+
 class DeleteRideHandler(webapp.RequestHandler):
     """
     Deletes a ride using a key
@@ -368,10 +393,22 @@ class RemovePassengerHandler(webapp.RequestHandler):
       key = self.request.get('key')
       ride = db.get(key)
       username = users.get_current_user()
-      ride.passengers.remove(username)
+      passengers = db.Query(Passenger)
+      passengers.filter('name =', username)
+      passenger = passengers.fetch(limit=1)
+      ride.passengers.remove(passenger[0].key())
+      passenger[0].delete()
       ride.num_passengers -= 1
       ride.put()
       self.response.out.write("Removed!")
+
+class IncorrectHandler(webapp.RequestHandler):
+    """
+    Returns an error for URLs not defined
+    """
+    def get(self):
+      doRender(self, 'error.html', {
+                            'error_message': "Page does not exist."})
         
 def doRender(handler, name='index.html', value={}):
     temp = os.path.join(os.path.dirname(__file__), 'templates/' + name)
@@ -442,6 +479,7 @@ def main():
                                   ('/rideinfo', RideInfoHandler),
                                   ('/deleteride', DeleteRideHandler),
                                   ('/removepassenger', RemovePassengerHandler),
+                                  ('/.*', IncorrectHandler),
                                   ],
                                   debug=True)
     wsgiref.handlers.CGIHandler().run(application)
