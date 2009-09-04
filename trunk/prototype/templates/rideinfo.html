@@ -1,0 +1,150 @@
+{% extends "_notIndex.html" %}
+
+{% block title %}Ride Information{% endblock %}
+
+{% block head %}
+<script src="static/functions.js" type="text/javascript"></script>
+<script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false&amp;key=ABQIAAAAn9H2MPjtzJCGP4OYVLJuOxQbtjENHIgppMgd3dAaKy16g5o_8xTNamzlZZNZ42SPIkttrL_Smwh7RQ" type="text/javascript"></script>
+<script type='text/javascript'>
+var map;
+var geocoder;
+
+var ride = new Ride({{ ride.max_passengers }},
+                        '{{ ride.driver }}',
+                        '{{ ride.start_point_title }}',
+                        {{ ride.start_point_lat }},
+                        {{ ride.start_point_long }},
+                        '{{ ride.destination_title }}',
+                        {{ ride.destination_lat }},
+                        {{ ride.destination_long }},
+                        new Date({{ ride.ToD.year }}, 
+                                 {{ ride.ToD.month }} - 1, 
+                                 {{ ride.ToD.day }}), 
+                        '{{ ride.part_of_day }}', [{% for p in ride.passengers %}{% if not forloop.first %}, {% endif %}'{{ p }}'{% endfor %}],
+                        '{{ ride.contact }}',
+                        '{{ ride.key }}');
+
+    function initMap() 
+    {
+      if (GBrowserIsCompatible()) 
+      {
+        map = new GMap2(document.getElementById("map_canvas"));
+        var lat = (ride.start_point.latitude + ride.destination.latitude)/2;
+        var lng = (ride.start_point.longitude + ride.destination.longitude)/2;
+        map.setCenter(new GLatLng(lat,lng), 7);
+        map.addControl(new GLargeMapControl());
+        geocoder = new GClientGeocoder();
+
+        // Create Icon for Luther
+        var myIcon = new GIcon();
+        myIcon.image = 'static/image.png';
+        myIcon.shadow = 'static/shadow.png';
+        myIcon.iconSize = new GSize(20,17);
+        myIcon.shadowSize = new GSize(29,17);
+        myIcon.iconAnchor = new GPoint(10,17);
+        myIcon.infoWindowAnchor = new GPoint(10,0);
+        myIcon.printImage = 'static/printImage.gif';
+        myIcon.mozPrintImage = 'static/mozPrintImage.gif';
+        myIcon.printShadow = 'static/printShadow.gif';
+        myIcon.transparent = 'static/transparent.png';
+        myIcon.imageMap = [19,0,19,1,19,2,18,3,18,4,17,5,16,6,19,7,19,8,19,9,19,10,16,11,19,12,13,13,13,14,15,15,19,16,8,16,7,15,6,14,6,13,5,12,5,11,5,10,4,9,4,8,4,7,3,6,2,5,1,4,1,3,0,2,0,1,0,0];
+        var marker = new GMarker(new GLatLng(43.313059,-91.799501), { icon:myIcon });
+        GEvent.addListener(marker, "click", function()
+          { marker.openInfoWindowHtml(
+                {% ifequal ride.doOrPu 0 %} 'Leave Luther <br />{{ ride.part_of_day }} '+ride.ToD.toDateString()
+                {% else %} 'Arrive at Luther!' {% endifequal %}
+                                      ); 
+          });
+        map.addOverlay(marker);
+
+// Add marker for startpoint / destination
+        var driverIcon = new GIcon();
+        driverIcon.shadow = "http://labs.google.com/ridefinder/images/mm_20_shadow.png";
+        driverIcon.iconSize = new GSize(14, 22);
+        driverIcon.shadowSize = new GSize(22, 20);
+        driverIcon.iconAnchor = new GPoint(6, 20);
+        driverIcon.infoWindowAnchor = new GPoint(5, 1);
+
+      {% ifequal ride.doOrPu 0 %} 
+        var driverLat = ride.destination.latitude;
+        var driverLng = ride.destination.longitude;
+        var driverText = 'Arrive at '+ride.destination.title;
+        driverIcon.image = "http://www.google.com/mapfiles/dd-end.png";
+      {% else %}
+        var driverLat = ride.start_point.latitude;
+        var driverLng = ride.start_point.longitude;
+        var driverText = 'Depart '+ride.start_point.title+' '+ride.part_of_day+' '+ride.ToD.toDateString();
+        driverIcon.image = "http://www.google.com/mapfiles/dd-start.png";
+      {% endifequal %}
+        var driverMarker = new GMarker(new GLatLng(driverLat, driverLng), { icon:driverIcon });
+        GEvent.addListener(driverMarker, 'click', function()
+          {
+            driverMarker.openInfoWindowHtml(driverText);
+          });
+        map.addOverlay(driverMarker);
+        
+// Add markers for pickup / dropoff locations
+        var passIcon = new GIcon();
+        passIcon.shadow = 'http://labs.google.com/ridefinder/images/mm_20_shadow.png';
+        passIcon.iconSize = new GSize(12, 20);
+        passIcon.shadowSize = new GSize(22, 20);
+        passIcon.iconAnchor = new GPoint(6, 20);
+        passIcon.infoWindowAnchor = new GPoint(5,1);
+        passIcon.image = 'http://labs.google.com/ridefinder/images/mm_20_blue.png'; // TODO: Diff colors for diff markers 
+      {% for p in ride.passengerobjects %}
+        var passMarker = new GMarker(new GLatLng({{ p.lat }}, {{ p.lng }}), { icon:passIcon });
+        GEvent.addListener(passMarker, 'click', function()
+          {
+            var popupText = '';
+            popupText += '{% ifequal ride.doOrPu 0 %}Drop off{% else %}Pick up {% endifequal %}';
+            popupText += ' {{ p.name }} at {{ p.location }}.<br />';
+            popupText += "<input type='button' value='Remove' onclick=\"if(confirm('Are you sure you want to remove {{ p.name }} from this ride?')) location.href='/removepassenger?rkey={{ ride.key }}&pkey={{ p.key }}'\" />";
+            passMarker.openInfoWindowHtml(popupText);
+          });
+        map.addOverlay(passMarker);
+      {% endfor %}
+      }
+    }
+</script>
+{% endblock %}
+
+{% block onLoadText %}onload="initMap()" onunload="GUnload()" style="font-family: Arial;border: 0 none;"{% endblock %}
+
+{% block bodycontent %}
+<h2>Ride Information</h2> - <a href='/home'>Back to Home.</a>
+<h3>Driver</h3>
+<table border='1'>
+<tr><th>From</th>
+    <th>To</th>
+    <th>Driver</th>
+    <th>Departing</th>
+    <th>Contact</th>
+</tr>
+<tr><td>{{ ride.start_point_title }}</td>
+    <td>{{ ride.destination_title }}</td>
+    <td>{{ ride.driver }}</td>
+    <td>{{ ride.part_of_day }}<br />{{ ride.jsmonth }}-{{ ride.jsday }}-{{ ride.jsyear }}</td>
+    <td>{{ ride.contact }}</td>
+</tr></table>
+
+{% if ride.passengerobjects %}
+<h3>Passengers</h3>
+<table border='1'>
+<tr><th>Name</th>
+    <th>
+    {% ifequal ride.doOrPu 0 %}Drop Off Location
+    {% else %}Pick Up Location{% endifequal %}</th>
+    <th>Contact</th>
+</tr>
+{% for p in ride.passengerobjects %}
+<tr><td>{{ p.name }}</td>
+    <td>{{ p.location }}</td>
+    <td>{{ p.contact }}</td>
+</tr>
+{% endfor %}
+</table>
+{% else %}<br />There are no passengers registered for this ride.
+{% endif %}
+<br /><br />
+<div id="map_canvas" style="width: 800px; height: 300px;"></div>
+{% endblock %}

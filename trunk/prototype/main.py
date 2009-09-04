@@ -213,23 +213,19 @@ class NewRideHandler(webapp.RequestHandler):
         newRide.ToD = datetime.datetime(int(y),int(m),int(d))
         newRide.passengers = []
         newRide.put()
-
-        temp = os.path.join(os.path.dirname(__file__),'templates/success.html')
-        outstr = template.render(temp,{
-                  'maxp': newRide.max_passengers,
-                  'num_passengers': newRide.num_passengers,
-                  'driver': newRide.driver,
-                  'startloc': newRide.start_point_title,
-                  'startlong': newRide.start_point_long,
-                  'startlat': newRide.start_point_lat,
-                  'dest': newRide.destination_title,
-                  'destlong': newRide.destination_long,
-                  'destlat': newRide.destination_lat,
-                  'partofday': newRide.part_of_day,
-                  'ToD': newRide.ToD,
-                  'contact': newRide.contact,
-                  })
-        self.response.out.write(outstr)
+        query = db.Query(Ride)
+        ride_list = query.fetch(limit=100)
+        user = users.get_current_user()
+        greeting = ''
+        if user:
+            greeting = ("Welcome, %s! (<a href=\"%s\">sign out</a>) Go to your <a href='/home'>Home Page</a>" %
+                  (user.nickname(), users.create_logout_url("/")))
+        message = 'Your ride has been created!'
+        self.response.out.write(template.render('index.html', {
+            'ride_list': ride_list, 
+            'greeting': greeting,
+            'message': message
+            }))
   
 class AddPassengerHandler(webapp.RequestHandler):
     """
@@ -271,6 +267,9 @@ class AddPassengerHandler(webapp.RequestHandler):
         temp = os.path.join(os.path.dirname(__file__), 'templates/error.html')
         outstr = template.render(temp, {'error_message': 'You are already registered for this ride!'})
         self.response.out.write(outstr)
+      # Check if the current user is already the driver for the ride
+      elif user_name == ride.driver:
+        doRender(self, 'error.html', {'error_message': 'You can\'t be a passenger for a ride which you a driving.'})
       else:
         passenger = Passenger()
         passenger.name = user_name
@@ -289,14 +288,19 @@ class AddPassengerHandler(webapp.RequestHandler):
         else:
           num_left = ride.max_passengers - ride.num_passengers
           capacity_message = 'can hold ' + str(num_left) + ' more passengers.'
-        temp = os.path.join(os.path.dirname(__file__), 
-                          'templates/addpass.html')
-        outstr = template.render(temp, {
-                          'user_name': user_name,
-                          'driver': ride.driver,
-                          'capacity_message': capacity_message
-                          })
-        self.response.out.write(outstr)
+        query = db.Query(Ride)
+        ride_list = query.fetch(limit=100)
+        user = users.get_current_user()
+        greeting = ''
+        if user:
+            greeting = ("Welcome, %s! (<a href=\"%s\">sign out</a>) Go to your <a href='/home'>Home Page</a>" %
+                  (user.nickname(), users.create_logout_url("/")))
+        message = 'You have been added to %s\'s ride.' % (ride.driver)
+        self.response.out.write(template.render('index.html', {
+            'ride_list': ride_list, 
+            'greeting': greeting,
+            'message': message
+            }))
 
 class HomeHandler(webapp.RequestHandler):
     """
@@ -383,24 +387,55 @@ class DeleteRideHandler(webapp.RequestHandler):
                               'error_message': "No such ride exists."})
       else:
         db.delete(ride)
-        self.response.out.write("Deleted!")
+        query = db.Query(Ride)
+        ride_list = query.fetch(limit=100)
+        user = users.get_current_user()
+        greeting = ''
+        if user:
+            greeting = ("Welcome, %s! (<a href=\"%s\">sign out</a>) Go to your <a href='/home'>Home Page</a>" %
+                  (user.nickname(), users.create_logout_url("/")))
+        message = 'Your ride has been deleted.'
+        self.response.out.write(template.render('index.html', {
+            'ride_list': ride_list, 
+            'greeting' : greeting,
+            'message' : message
+            }))
 
 class RemovePassengerHandler(webapp.RequestHandler):
     """
     Removes a passenger using a key and the current user
     """
     def get(self):
-      key = self.request.get('key')
-      ride = db.get(key)
-      username = users.get_current_user()
-      passengers = db.Query(Passenger)
-      passengers.filter('name =', username)
-      passenger = passengers.fetch(limit=1)
-      ride.passengers.remove(passenger[0].key())
-      passenger[0].delete()
-      ride.num_passengers -= 1
-      ride.put()
-      self.response.out.write("Removed!")
+      rkey = self.request.get('rkey')
+      ride = db.get(rkey)
+      pkey = self.request.get('pkey')
+      passenger = db.get(pkey)
+      #self.response.out.write('Would remove %s from %s ride' % (passenger.name, ride.driver))
+      if ride == None:
+        doRender(self, 'error.html', {
+                              'error_message': "No such ride exists."})
+      elif passenger == None:
+        doRender(self, 'error.html', {
+                              'error_message': "No such passenger exists."})
+      else:
+        name = passenger.name
+        ride.passengers.remove(passenger.key())
+        passenger.delete()
+        ride.num_passengers -= 1
+        ride.put()
+        query = db.Query(Ride)
+        ride_list = query.fetch(limit=100)
+        user = users.get_current_user()
+        greeting = ''
+        if user:
+            greeting = ("Welcome, %s! (<a href=\"%s\">sign out</a>) Go to your <a href='/home'>Home Page</a>" %
+                  (user.nickname(), users.create_logout_url("/")))
+        message = '%s has been removed from %s\'s ride.' % (name, ride.driver)
+        self.response.out.write(template.render('index.html', {
+            'ride_list': ride_list, 
+            'greeting' : greeting,
+            'message' : message
+            }))
 
 class IncorrectHandler(webapp.RequestHandler):
     """

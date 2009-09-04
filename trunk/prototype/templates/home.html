@@ -42,7 +42,7 @@ Welcome to your personal homepage, {{ user }}!<br />
 <tr><td>{{ p.name }}</td>
     <td>{{ p.location }}</td>
     <td>{{ p.contact }}</td>
-    <td><input type="button" value="Remove" onclick="if(confirm('Are you sure you want to remove {{ p.name }} from this ride?')) location.href='/removepassenger?key={{ ride.key }}'" /></td>
+    <td><input type="button" value="Remove" onclick="if(confirm('Are you sure you want to remove {{ p.name }} from this ride?')) location.href='/removepassenger?rkey={{ ride.key }}&pkey={{ p.key }}'" /></td>
 </tr>
 {% endfor %}
 </table>
@@ -86,7 +86,7 @@ Welcome to your personal homepage, {{ user }}!<br />
 <tr><td>{{ p.name }}</td>
     <td>{{ p.location }}</td>
     <td>{{ p.contact }}</td>
-    <td><input type="button" value="Remove" {% ifnotequal p.name user %}disabled='disabled'{% endifnotequal %} onclick="if(confirm('Are you sure you want to remove yourself from this ride?')) location.href='/removepassenger?key={{ ride.key }}'" /></td>
+    <td><input type="button" value="Remove" {% ifnotequal p.name user %}disabled='disabled'{% endifnotequal %} onclick="if(confirm('Are you sure you want to remove yourself from this ride?')) location.href='/removepassenger?rkey={{ ride.key }}&pkey={{ p.key }}'" /></td>
 </tr>
 {% endfor %}
 </table>

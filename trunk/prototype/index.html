@@ -89,6 +89,9 @@
   </head>
 
   <body onload="initialize()" onunload="GUnload()" style="font-family: Arial;border: 0 none;">
+    {% if message %}
+    <p>{{ message }}</p>
+    {% endif %}
     {{ greeting }}
     <form action="#" onsubmit="showAddress(this.address.value); return false">
        <p>Where do you want to go?
