@@ -98,13 +98,13 @@
          <input type="text" size="60" name="address" value="700 College Dr., Decorah, IA" />
          <input type="submit" value="Go!" />
        </p>
-       <p>To add a Ride, click on a destination or starting point that is not Decorah.  Then, select whether the point is a starting point or destination, choose the date of the trip, and click 'OK'.</p>
-       <p>You can also add yourself to a ride by clicking on a ride on the map and selecting 'Join this Ride'.</p>
-       <p>However, you can't join a ride the day before the trip leaves.</p>
+       <p>To add a Ride, click anywhere on the map to create a destination or starting point that is not Decorah, show whether you will be going To or From the Luther Campus, and fill out the following form.</p>
+       <p>You can also add yourself to a ride by clicking on one of the red and green pushpins on the map. After choosing to 'Join this Ride', you can choose to be picked up or dropped off at that location, or to choose another location.</p>
+       <p>You can't join a ride the day before the trip leaves, nor can you be a passenger for your own ride.</p>
        <div id="map_canvas" style="width: 800px; height: 600px;"></div>
     </form>
 <br /> <br />
-
+<p>Use these drop down menus to limit the rides shown on the map by date of departure.</p>
 <form action="#" name="dateForm" onsubmit="changeDates(this.imonth.options.valueOf().selectedIndex, this.iday.options.valueOf().selectedIndex, this.iyear.options.valueOf().selectedIndex, this.fmonth.options.valueOf().selectedIndex, this.fday.options.valueOf().selectedIndex, this.fyear.options.valueOf().selectedIndex); return false;">
       <p>Beginning: 
       <select name="imonth" onChange="changeDays(document.forms.dateForm.iday, this); return false;">
@@ -142,7 +142,7 @@
       </select>
       <input type="submit" value="Submit" /></p>
     </form><br />
-
+<p>Below is a table listing all available rides.</p>
 <script type="text/javascript">changefDays(); changeiDays();</script>
     <table border="-1" id="rideTable">
       <tr>
