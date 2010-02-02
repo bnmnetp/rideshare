@@ -97,8 +97,8 @@
     {% if message %}
     <p>{{ message }}</p>
     {% endif %}
-    {{ greeting }}
-      </p>
+   {{ greeting }}
+
        <p>To add a Ride, click anywhere on the map to create a destination or starting point that is not Decorah, show whether you will be going To or From the Luther Campus, and fill out the following form.</p>
        <p>You can also add yourself to a ride by clicking on one of the red and green pushpins on the map. After choosing to 'Join this Ride', you can choose to be picked up or dropped off at that location, or to choose another location.</p>
        <p>You can't join a ride the day before the trip leaves, nor can you be a passenger for your own ride.</p>
@@ -107,11 +107,11 @@
 <div id="map_canvas" style="width: 800px; height: 600px;"></div>
 
 <div id="filters">
-<br /> <br />
+<br /> 
     <form action="#" onsubmit="showAddress(this.address.value); return false">
-       <p>Where do you want to go?
+       <p>Enter an address directly instead of clicking: 
          <input type="text" size="60" name="address" value="700 College Dr., Decorah, IA" />
-         <input type="submit" value="Go!" />
+         <input type="submit" value="Go!" /></p>
     </form>
 
 <p>Use these drop down menus to limit the rides shown on the map by date of departure.</p>

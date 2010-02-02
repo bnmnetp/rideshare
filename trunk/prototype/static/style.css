@@ -19,8 +19,8 @@ h1 {
 
 #titleblock {
     margin: 0 auto;
-    max-width: 800px;
-    min-height: 30px;
+    width: 800px;
+    height: 60px;
     background: #003175;
     color: #fff;
     text-align: center;
@@ -32,10 +32,16 @@ h1 {
 
 #instructions {
     margin: 0 auto;
-    max-width: 800px;
+    width: 800px;
+    color: #EEE;
+    height:180px;
     background: #4C75AE;
 }
 
+#instructions p {
+    margin-left: 12px;
+    margin-right: 12px;
+}
 #filters {
     margin: 0 auto;
     max-width: 800px;
