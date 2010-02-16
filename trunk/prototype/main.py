@@ -458,7 +458,7 @@ def geocode(address):
  # This isn't an actual maps key, you'll have to get one yourself.
  # Sign up for one here: http://code.google.com/apis/maps/signup.html
 #  mapsKey = 'ABQIAAAAn9H2MPjtzJCGP4OYVLJuOxQbtjENHIgppMgd3dAaKy16g5o_8xTNamzlZZNZ42SPIkttrL_Smwh7RQ'
-  mapsKey = 'ABQIAAAAg9WbCE_zwMIRW7jDFE_3ixS0LiYWImofzW4gd3oCqtkHKt0IaBT-STdq-gdH-mW2_ejMPXqxnfJjgw'
+  mapsKey = 'ABQIAAAAg9WbCE_zwMIRW7jDFE_3ixQBt47ovwU8IazTX5LkSGXanblBzRQJaPiuqEuQPPVgQQrXPvh4MOcbCA'
   mapsUrl = 'http://maps.google.com/maps/geo?q='
      
  # This joins the parts of the URL together into one string.
