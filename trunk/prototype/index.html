@@ -125,31 +125,27 @@ Welcome, {{nick}}
 </td>
 <td id="filterside">
 
-    <form action="#" onsubmit="showAddress(this.address.value); return false">
+   <form action="#" onsubmit="showAddress(this.address.value); return false">
        Enter an address:
          <input type="text" size="60" name="address" value="700 College Dr., Decorah, IA" />
          <input type="submit" value="Go!" />
     </form>
+
+<!--  Date Filtering Form  -->
+
 <table id="begend">
-<form action="#" name="dateForm"
-      onsubmit="changeDates(this.imonth.options.valueOf().selectedIndex,
-		this.iday.options.valueOf().selectedIndex,
-		this.iyear.options.valueOf().selectedIndex,
-		this.fmonth.options.valueOf().selectedIndex,
-		this.fday.options.valueOf().selectedIndex,
-		this.fyear.options.valueOf().selectedIndex); return
-		false;">
+<form name="dateForm">
 <tr>
 <td>
       Beginning: 
 </td>
 <td>
-      <select name="imonth" onChange="changeDays(document.forms.dateForm.iday, this); return false;">
+      <select name="imonth" id="imonth" onChange="changeDays(document.forms.dateForm.iday, this); return false;">
         <script type="text/javascript">{monthOptions();}</script>
       </select>
       <select name="iday" id="iday"> <!-- Populated in later script -->
       </select>
-      <select name="iyear">
+      <select name="iyear" id="iyear">
         <script type="text/javascript">
           {yearOptions();}
         </script>
@@ -162,12 +158,12 @@ Welcome, {{nick}}
       Ending:
 </td>
 <td>
-      <select name="fmonth" onChange="changeDays(document.forms.dateForm.fday, this); return false;">
+      <select name="fmonth" id="fmonth" onChange="changeDays(document.forms.dateForm.fday, this); return false;">
         <script type="text/javascript">{monthOptions();}</script>
       </select>
       <select name="fday" id="fday"> <!-- Populated in later script -->
       </select>
-      <select name="fyear">
+      <select name="fyear" id="fyear">
         <script type="text/javascript">
           {
             yearOptions();
@@ -187,7 +183,14 @@ Welcome, {{nick}}
 </tr>
 <tr>
 <td>
-      <input type="submit" value="Show Matching Rides" />
+      <input type="button" value="Show Matching Rides" 
+               onclick="changeDates(document.getElementById('imonth').options.valueOf().selectedIndex,
+		document.getElementById('iday').options.valueOf().selectedIndex,
+		document.getElementById('iyear').options.valueOf().selectedIndex,
+		document.getElementById('fmonth').options.valueOf().selectedIndex,
+		document.getElementById('fday').options.valueOf().selectedIndex,
+		document.getElementById('fyear').options.valueOf().selectedIndex);"
+/>
 </td></tr>
 </table>
     </form>
