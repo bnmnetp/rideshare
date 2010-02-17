@@ -86,13 +86,17 @@ class MainHandler(webapp.RequestHandler):
         ride_list = query.fetch(limit=100)
         user = users.get_current_user()
         greeting = ''
+        logout = ''
         if user:
             greeting = ("Welcome, %s! (<a href=\"%s\">sign out</a>) Go to your <a href='/home'>Home Page</a>" %
                   (user.nickname(), users.create_logout_url("/")))
+            logout = users.create_logout_url("/")
        
         self.response.out.write(template.render('index.html', {
             'ride_list': ride_list, 
-            'greeting' : greeting
+            'greeting' : greeting,
+            'nick' : user.nickname(),
+            'logout':logout
             }))
 
 

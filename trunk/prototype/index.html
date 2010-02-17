@@ -92,31 +92,58 @@
   <body onload="initialize()" onunload="GUnload()" style="font-family: Arial;border: 0 none;">
     <div id="titleblock">
     <h1>Luther College Rideshare</h1>
+<div id="navbar">
+<ul>
+<li>
+Welcome, {{nick}}
+</li>
+<li>
+<a href="{{logout}}">sign out</a>
+</li>
+<li>
+<a href="/home">Your Rides</a>
+</li>
+<li>
+<a href="/static/help.html">Help</a>
+</li>
+</ul>
+</div>
     </div>
    <div id="instructions">
     {% if message %}
     <p>{{ message }}</p>
     {% endif %}
-   {{ greeting }}
+<table>
+<tr>
+<td width=50%>
+       Click anywhere on the map to create a
+       destination or starting point.  You can
+       add yourself to a ride by clicking on one of the red or
+       green pushpins on the map.  <br><br>
+       Enter an address or filter the pushpins by date using the
+       controls on the right.
+</td>
+<td id="filterside">
 
-       <p>To add a Ride, click anywhere on the map to create a destination or starting point that is not Decorah, show whether you will be going To or From the Luther Campus, and fill out the following form.</p>
-       <p>You can also add yourself to a ride by clicking on one of the red and green pushpins on the map. After choosing to 'Join this Ride', you can choose to be picked up or dropped off at that location, or to choose another location.</p>
-       <p>You can't join a ride the day before the trip leaves, nor can you be a passenger for your own ride.</p>
-       </div>
-
-<div id="map_canvas" style="width: 800px; height: 600px;"></div>
-
-<div id="filters">
-<br /> 
     <form action="#" onsubmit="showAddress(this.address.value); return false">
-       <p>Enter an address directly instead of clicking: 
+       Enter an address:
          <input type="text" size="60" name="address" value="700 College Dr., Decorah, IA" />
-         <input type="submit" value="Go!" /></p>
+         <input type="submit" value="Go!" />
     </form>
-
-<p>Use these drop down menus to limit the rides shown on the map by date of departure.</p>
-<form action="#" name="dateForm" onsubmit="changeDates(this.imonth.options.valueOf().selectedIndex, this.iday.options.valueOf().selectedIndex, this.iyear.options.valueOf().selectedIndex, this.fmonth.options.valueOf().selectedIndex, this.fday.options.valueOf().selectedIndex, this.fyear.options.valueOf().selectedIndex); return false;">
-      <p>Beginning: 
+<table id="begend">
+<form action="#" name="dateForm"
+      onsubmit="changeDates(this.imonth.options.valueOf().selectedIndex,
+		this.iday.options.valueOf().selectedIndex,
+		this.iyear.options.valueOf().selectedIndex,
+		this.fmonth.options.valueOf().selectedIndex,
+		this.fday.options.valueOf().selectedIndex,
+		this.fyear.options.valueOf().selectedIndex); return
+		false;">
+<tr>
+<td>
+      Beginning: 
+</td>
+<td>
       <select name="imonth" onChange="changeDays(document.forms.dateForm.iday, this); return false;">
         <script type="text/javascript">{monthOptions();}</script>
       </select>
@@ -127,8 +154,14 @@
           {yearOptions();}
         </script>
       </select>
-      </p>
-      <p>Ending:
+</td>
+</tr>
+
+<tr>
+<td>
+      Ending:
+</td>
+<td>
       <select name="fmonth" onChange="changeDays(document.forms.dateForm.fday, this); return false;">
         <script type="text/javascript">{monthOptions();}</script>
       </select>
@@ -150,8 +183,25 @@
           }
         </script>
       </select>
-      <input type="submit" value="Submit" /></p>
-    </form><br />
+</td>
+</tr>
+<tr>
+<td>
+      <input type="submit" value="Show Matching Rides" />
+</td></tr>
+</table>
+    </form>
+
+
+</td>
+</table>
+       </div>
+
+<div id="map_canvas" style="width: 800px; height: 600px;"></div>
+
+<div id="filters">
+<br /> 
+<br />
 </div>
 <p>Below is a table listing all available rides.</p>
 <script type="text/javascript">changefDays(); changeiDays();</script>

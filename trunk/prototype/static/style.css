@@ -20,10 +20,14 @@ h1 {
 #titleblock {
     margin: 0 auto;
     width: 800px;
-    height: 60px;
+    height: 70px;
     background: #003175;
     color: #fff;
     text-align: center;
+}
+
+titleblock#a {
+    color: #fff;
 }
 
 #map_canvas {
@@ -32,16 +36,28 @@ h1 {
 
 #instructions {
     margin: 0 auto;
+    padding-top: 5px;
     width: 800px;
     color: #EEE;
-    height:180px;
+    height:140px;
     background: #4C75AE;
 }
 
-#instructions p {
+td#filterside {
     margin-left: 12px;
     margin-right: 12px;
+    border-left-style: solid;
+    border-width: medium;
 }
+
+table#begend {
+    margin-top: 7px;
+    border-top-style: solid;
+    border-width: 1px;
+}
+
+
+
 #filters {
     margin: 0 auto;
     max-width: 800px;
@@ -107,9 +123,9 @@ tr.sbodd {
 }
 */
 #navbar {
-    background-color: #43836E;
+    margin: 0 auto;
+    background: #003175;
     height: 20px;
-    padding: 10;
 }
 
 #navbar ul li {
@@ -123,9 +139,21 @@ tr.sbodd {
     margin-left: 3px;
     border: 1px solid #669;
     border-bottom: none;
-    background #ccf;
     text-decoration: none;
 }
+
+#navbar a:link {
+    color: #fff;
+}
+
+#navbar a:visited {
+    color: #fff;
+}
+
+#navbar a:hover {
+    background: #4C75AE;
+}
+
 #leftbar {
     background: #B9D193;
     float: left;
@@ -224,10 +252,6 @@ li.optmenu a:hover {
     padding-bottom: 10px;    
     padding-top: 10px;
     }
-/*  
-A:link  {color: #FFFF00; text-decoration: none}
-A:visited  {color: #FFFF00; text-decoration: none} 
-*/
 
 img.bottombanner {
     width: 468px;
