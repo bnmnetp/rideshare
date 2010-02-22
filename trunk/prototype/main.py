@@ -35,6 +35,8 @@ import logging
 import urllib
 import os.path
 
+MAP_API=""
+
 # Make this very flat to start with, then add references later...
 class Ride(db.Model):
     max_passengers = db.IntegerProperty()
@@ -74,6 +76,9 @@ class Passenger(db.Model):
     Change method of display in entire project regarding passengers
     """
 
+class ApplicationParameters(db.Model):
+    apikey = db.StringProperty()
+
 class MyClass:
     max_passengers = 0
     num_passengers = 0
@@ -96,7 +101,8 @@ class MainHandler(webapp.RequestHandler):
             'ride_list': ride_list, 
             'greeting' : greeting,
             'nick' : user.nickname(),
-            'logout':logout
+            'logout':logout,
+            'mapkey':MAP_APIKEY
             }))
 
 
@@ -377,7 +383,9 @@ class RideInfoHandler(webapp.RequestHandler):
             passenger.samePlace = False;
           ride.passengerobjects.append(passenger)           
         doRender(self, 'rideinfo.html', {
-                              'ride': ride})
+            'ride': ride,
+            'mapkey':MAP_API
+            })
 
 class DeleteRideHandler(webapp.RequestHandler):
     """
@@ -462,11 +470,11 @@ def geocode(address):
  # This isn't an actual maps key, you'll have to get one yourself.
  # Sign up for one here: http://code.google.com/apis/maps/signup.html
 #  mapsKey = 'ABQIAAAAn9H2MPjtzJCGP4OYVLJuOxQbtjENHIgppMgd3dAaKy16g5o_8xTNamzlZZNZ42SPIkttrL_Smwh7RQ'
-  mapsKey = 'ABQIAAAAg9WbCE_zwMIRW7jDFE_3ixQ2JlMNfqnGb2qqWZtmZLchh1TSjRS0zuchuhlR8g4tlMGrjg34sNmyjQ'
+
   mapsUrl = 'http://maps.google.com/maps/geo?q='
      
  # This joins the parts of the URL together into one string.
-  url = ''.join([mapsUrl,urllib.quote(address),'&output=csv&key=',mapsKey])
+  url = ''.join([mapsUrl,urllib.quote(address),'&output=csv&key=',MAP_APIKEY])
     
  # This retrieves the URL from Google, parses out the longitude and latitude,
  # and then returns them as a string.
@@ -476,9 +484,10 @@ def geocode(address):
 
 
 def main():
+    global MAP_APIKEY
+
     logging.getLogger().setLevel(logging.DEBUG)
     # prepopulate the database
-
     query = db.Query(Ride)
 
     
@@ -509,7 +518,15 @@ def main():
         newRide.passengers = []
         newRide.put()
     
-    
+    apiQuery = db.Query(ApplicationParameters)
+    if apiQuery.count() < 1:
+        bootstrap = ApplicationParameters()
+        bootstrap.apikey = 'ABQIAAAAg9WbCE_zwMIRW7jDFE_3ixQ2JlMNfqnGb2qqWZtmZLchh1TSjRS0zuchuhlR8g4tlMGrjg34sNmyjQ'
+        MAP_APIKEY = bootstrap.apikey
+        bootstrap.put()
+    else:
+        apilist = apiQuery.fetch(limit=1)
+        MAP_APIKEY = apilist[0].apikey
     
     application = webapp.WSGIApplication([('/', MainHandler),
                                   ('/getrides', RideQueryHandler ),
@@ -527,3 +544,8 @@ def main():
 
 if __name__ == '__main__':
   main()
+
+
+# lutherrideshare.appspot key: ABQIAAAAg9WbCE_zwMIRW7jDFE_3ixS0LiYWImofzW4gd3oCqtkHKt0IaBT-STdq-gdH-mW2_ejMPXqxnfJjgw
+
+# rideshare.luther.edu key:  ABQIAAAAg9WbCE_zwMIRW7jDFE_3ixQ2JlMNfqnGb2qqWZtmZLchh1TSjRS0zuchuhlR8g4tlMGrjg34sNmyjQ
