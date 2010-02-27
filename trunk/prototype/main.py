@@ -35,7 +35,7 @@ import logging
 import urllib
 import os.path
 
-MAP_API=""
+MAP_APIKEY=""
 
 # Make this very flat to start with, then add references later...
 class Ride(db.Model):
@@ -384,7 +384,7 @@ class RideInfoHandler(webapp.RequestHandler):
           ride.passengerobjects.append(passenger)           
         doRender(self, 'rideinfo.html', {
             'ride': ride,
-            'mapkey':MAP_API
+            'mapkey':MAP_APIKEY
             })
 
 class DeleteRideHandler(webapp.RequestHandler):
