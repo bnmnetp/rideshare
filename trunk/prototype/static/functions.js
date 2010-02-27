@@ -156,6 +156,8 @@
       var maxp = document.getElementById("maxp").value;
       var incorrect = false;
       //var alpha = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      var currentTime = new Date();
+      var rideDate = new Date(year, month-1, day);
       for (n in number)
       {
         for (a in alpha)
@@ -200,6 +202,10 @@
       else if (maxp == '' || badmaxp)
       {
         alert("Please supply a valid maximum number of passengers.");
+      }
+      // test date.. make sure it is in the future
+      else if (rideDate < currentTime) {
+	alert("The date for a ride must be in the future");
       }
       // Bring up confirm window
       else
