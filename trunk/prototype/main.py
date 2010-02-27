@@ -88,6 +88,7 @@ class MainHandler(webapp.RequestHandler):
 
     def get(self):
         query = db.Query(Ride)
+        query.filter("ToD > ", datetime.datetime.now())
         ride_list = query.fetch(limit=100)
         user = users.get_current_user()
         greeting = ''
@@ -224,6 +225,7 @@ class NewRideHandler(webapp.RequestHandler):
         newRide.passengers = []
         newRide.put()
         query = db.Query(Ride)
+        query.filter("ToD > ", datetime.datetime.now())
         ride_list = query.fetch(limit=100)
         user = users.get_current_user()
         greeting = ''
@@ -299,6 +301,7 @@ class AddPassengerHandler(webapp.RequestHandler):
           num_left = ride.max_passengers - ride.num_passengers
           capacity_message = 'can hold ' + str(num_left) + ' more passengers.'
         query = db.Query(Ride)
+        query.filter("ToD > ", datetime.datetime.now())
         ride_list = query.fetch(limit=100)
         user = users.get_current_user()
         greeting = ''
@@ -400,6 +403,7 @@ class DeleteRideHandler(webapp.RequestHandler):
       else:
         db.delete(ride)
         query = db.Query(Ride)
+        query.filter("ToD > ", datetime.datetime.now())
         ride_list = query.fetch(limit=100)
         user = users.get_current_user()
         greeting = ''
@@ -436,6 +440,7 @@ class RemovePassengerHandler(webapp.RequestHandler):
         ride.num_passengers -= 1
         ride.put()
         query = db.Query(Ride)
+        query.filter("ToD > ", datetime.datetime.now())
         ride_list = query.fetch(limit=100)
         user = users.get_current_user()
         greeting = ''
