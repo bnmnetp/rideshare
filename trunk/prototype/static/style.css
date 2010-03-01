@@ -31,16 +31,40 @@ titleblock#a {
 }
 
 #map_canvas {
+    width: 800px;
+    height: 600px;
     margin: 0 auto;
 }
 
 #instructions {
-    margin: 0 auto;
-    padding-top: 5px;
     width: 800px;
-    color: #EEE;
     height:140px;
+    margin: 0 auto;
+    padding-top: 10px;
+    padding-bottom: 15px;
+    color: #EEE;
     background: #4C75AE;
+}
+
+#help {
+    width: 800px;
+    margin: 0 auto;
+    padding-top: 10px;
+    padding-bottom: 15px;
+    color: #EEE;
+    background: #4C75AE;
+}
+
+.clearfix:after {
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+}
+
+#instructions table {
+    margin: 0 auto;
 }
 
 td#filterside {
