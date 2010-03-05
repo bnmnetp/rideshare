@@ -103,7 +103,7 @@ class MainHandler(webapp.RequestHandler):
             'greeting' : greeting,
             'nick' : user.nickname(),
             'logout':logout,
-            'mapkey':MAP_APIKEY
+            'mapkey':MAP_APIKEY,
             }))
 
 
@@ -236,7 +236,8 @@ class NewRideHandler(webapp.RequestHandler):
         self.response.out.write(template.render('index.html', {
             'ride_list': ride_list, 
             'greeting': greeting,
-            'message': message
+            'message': message,
+            'mapkey' : MAP_APIKEY,
             }))
   
 class AddPassengerHandler(webapp.RequestHandler):
@@ -312,7 +313,8 @@ class AddPassengerHandler(webapp.RequestHandler):
         self.response.out.write(template.render('index.html', {
             'ride_list': ride_list, 
             'greeting': greeting,
-            'message': message
+            'message': message,
+            'mapkey':MAP_APIKEY,            
             }))
 
 class HomeHandler(webapp.RequestHandler):
@@ -414,7 +416,8 @@ class DeleteRideHandler(webapp.RequestHandler):
         self.response.out.write(template.render('index.html', {
             'ride_list': ride_list, 
             'greeting' : greeting,
-            'message' : message
+            'message' : message,
+            'mapkey':MAP_APIKEY,            
             }))
 
 class RemovePassengerHandler(webapp.RequestHandler):
@@ -451,7 +454,8 @@ class RemovePassengerHandler(webapp.RequestHandler):
         self.response.out.write(template.render('index.html', {
             'ride_list': ride_list, 
             'greeting' : greeting,
-            'message' : message
+            'message' : message,
+            'mapkey' : MAP_APIKEY,
             }))
 
 class IncorrectHandler(webapp.RequestHandler):

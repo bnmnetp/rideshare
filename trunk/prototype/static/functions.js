@@ -157,7 +157,7 @@
       var incorrect = false;
       //var alpha = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
       var currentTime = new Date();
-      var rideDate = new Date(year, month-1, day);
+      var rideDate = new Date(year, month, day);
       for (n in number)
       {
         for (a in alpha)
@@ -205,7 +205,7 @@
       }
       // test date.. make sure it is in the future
       else if (rideDate < currentTime) {
-	alert("The date for a ride must be in the future");
+	alert("The date for a ride must be in the future"+rideDate);
       }
       // Bring up confirm window
       else
