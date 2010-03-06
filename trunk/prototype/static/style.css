@@ -55,6 +55,13 @@ titleblock#a {
     background: #4C75AE;
 }
 
+#ridelist {
+    width: 800px;
+    margin: 0 auto;
+    padding-bottom: 20px;
+
+}
+
 .clearfix:after {
     content: ".";
     display: block;
@@ -81,11 +88,20 @@ table#begend {
 }
 
 
-
-#filters {
+#rtablehead {
     margin: 0 auto;
     max-width: 800px;
     background: #4C75AE;
+}
+
+#rtablehead h2 {
+    text-align: center;
+    color: #eee;
+}
+
+#rtablehead p {
+    text-align: center;
+    color: #eee;
 }
 
 h1 span { 

@@ -203,12 +203,13 @@ Welcome, {{nick}}
 
 <div id="map_canvas" ></div>
 
-<div id="filters">
-<br /> 
+<div id="rtablehead">
 <br />
+<h2>All Available Rides.</h2>
+<p>Click Destination to join</p>
 </div>
-<p>Below is a table listing all available rides.</p>
 <script type="text/javascript">changefDays(); changeiDays();</script>
+<div id="ridelist">
     <table border="-1" id="rideTable">
       <tr>
         <th>Driver's Name</th>
@@ -219,6 +220,7 @@ Welcome, {{nick}}
         <th>Time of Departure</th>
       </tr>
     </table>
+</div>
 <script type="text/javascript">
 
     var table = document.getElementById("rideTable");
@@ -235,11 +237,12 @@ Welcome, {{nick}}
       var c3 = row.insertCell(3);
       c3.innerHTML = rides[r].start_point.title;
       var c4 = row.insertCell(4);
-      c4.innerHTML = rides[r].destination.title;
+      c4.innerHTML = '<a href="#" onClick="joinRideByNumber(' + r + ')">' +
+                     rides[r].destination.title + '</a>';
       var c5 = row.insertCell(5);
       c5.innerHTML = rides[r].part_of_day + " " + numToTextMonth(rides[r].ToD.getMonth())+" "+rides[r].ToD.getDate()+", "+rides[r].ToD.getFullYear();
     }
 
 </script>
   </body>
-</html>​
+</html>

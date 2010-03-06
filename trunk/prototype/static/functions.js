@@ -320,11 +320,25 @@
       return ride.marker;
     }
 
+    function joinRideByNumber(rideNum) {
+        map.removeOverlay(rides[rideNum].marker);
+        var marker = addRideToMap(rides[rideNum], rideNum);
+        marker.openInfoWindowHtml(getPopupWindowMessage(rides[rideNum], 
+			      rideNum, 
+			      rides[rideNum].destination.latitude,
+			      rides[rideNum].destination.longitude));
+    }
 /* 
 Returns the HTML to be contained in a popup window in the GMap
 Asks whether the user wants to join this ride
 */
     function getPopupWindowMessage(ride, rideNum, lat, lng)
+    /*
+    * ride -- a full ride object as constructed in index.html
+    * rideNum  - the index of the ride in the rides array in index.html
+    * lat -- latitude
+    * lng -- longitude 
+    */
     {
       var msg;
       var space_left = ride.max_passengers - ride.num_passengers;
