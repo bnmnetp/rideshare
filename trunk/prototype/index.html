@@ -110,9 +110,6 @@ Welcome, {{nick}}
 </div>
     </div>
    <div id="instructions" class="clearfix">
-    {% if message %}
-    <p>{{ message }}</p>
-    {% endif %}
 <table>
 <tr>
 <td width=50%>
@@ -122,6 +119,10 @@ Welcome, {{nick}}
        green pushpins on the map.  <br><br>
        Enter an address or filter the pushpins by date using the
        controls on the right.
+{% if message %}
+    <p>{{ message }}</p>
+{% endif %}
+
 </td>
 <td id="filterside">
 
@@ -198,7 +199,8 @@ Welcome, {{nick}}
 
 </td>
 </table>
-       </div>
+
+</div>
 <div style="clear: both;"></div>
 
 <div id="map_canvas" ></div>
