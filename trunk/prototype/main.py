@@ -84,6 +84,26 @@ class MyClass:
     num_passengers = 0
     driver = "Brad"
 
+class Review:
+    text = db.StringProperty()
+    rating = db.FloatProperty()
+
+class UserProfile:
+    #Overall
+    smoking = db.BooleanProperty()
+    music_preference = db.StringProperty()
+    #Driver Info
+    smoking = db.BooleanProperty()
+    car = db.StringPropery()
+    passengers = db.IntegerProperty()
+    4wd = db.BooleanProperty()
+    pay_for_gas = db.BooleanProperty()
+    rating_driver = db.FloatProperty()
+    reviews_driver = db.ListProperty(db.ReferenceProperty())
+    #Rider Info
+    rating_rider = db.FloatProperty()
+    reviews_driver = db.ListProperty(db.ReferenceProperty())
+
 class MainHandler(webapp.RequestHandler):
 
     def get(self):
