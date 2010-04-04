@@ -86,23 +86,22 @@ class MyClass:
 
 class Review:
     text = db.StringProperty()
-    rating = db.FloatProperty()
+    rating = db.FloatProperty() #1,2,3,4,5 as Float for easy averages
 
 class UserProfile:
     #Overall
     smoking = db.BooleanProperty()
     music_preference = db.StringProperty()
     #Driver Info
-    smoking = db.BooleanProperty()
-    car = db.StringPropery()
-    passengers = db.IntegerProperty()
-    4wd = db.BooleanProperty()
-    pay_for_gas = db.BooleanProperty()
-    rating_driver = db.FloatProperty()
-    reviews_driver = db.ListProperty(db.ReferenceProperty())
+    car = db.StringPropery() #Make/model
+    passengers = db.IntegerProperty() #Capacity
+    fwd = db.BooleanProperty() #Four wheel drive
+    pay_for_gas = db.BooleanProperty() #Should the rider expect to pay?
+    rating_driver = db.FloatProperty() #Given by riders
+    reviews_driver = db.ListProperty(db.ReferenceProperty()) #Text reviews from riders
     #Rider Info
-    rating_rider = db.FloatProperty()
-    reviews_driver = db.ListProperty(db.ReferenceProperty())
+    rating_rider = db.FloatProperty() #Given by drivers and other riders
+    reviews_driver = db.ListProperty(db.ReferenceProperty()) #Text reviews from drivers and other riders
 
 class MainHandler(webapp.RequestHandler):
 
