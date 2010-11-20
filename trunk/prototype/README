@@ -1,0 +1,17 @@
+# README development notes
+
+
+# Configuring
+
+the first thing to note is that the app engine app name is a little misleading.  The deployed application is actually running under the ridesharebeta app id.  This is the API key for the maps API.
+
+     # This has the app id of ridesharebeta   and is also on ridesharebeta.appspot.com
+     # rideshare.luther.edu key:  ABQIAAAAg9WbCE_zwMIRW7jDFE_3ixQ2JlMNfqnGb2qqWZtmZLchh1TSjRS0zuchuhlR8g4tlMGrjg34sNmyjQ
+
+
+To deploy to a test server use lutherrideshare.appspot.com  and the lutherrideshare app engine app id.  The API key for this one is:
+
+     # This is actually the development one.
+     # lutherrideshare.appspot key: ABQIAAAAg9WbCE_zwMIRW7jDFE_3ixS0LiYWImofzW4gd3oCqtkHKt0IaBT-STdq-gdH-mW2_ejMPXqxnfJjgw
+
+

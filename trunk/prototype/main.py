@@ -35,54 +35,10 @@ import logging
 import urllib
 import os.path
 
+from model import *
+
 MAP_APIKEY=""
 
-# Make this very flat to start with, then add references later...
-class Ride(db.Model):
-    max_passengers = db.IntegerProperty()
-    num_passengers = db.IntegerProperty()
-    driver = db.UserProperty()
-    start_point_title = db.StringProperty()
-    start_point_lat = db.FloatProperty()
-    start_point_long = db.FloatProperty()
-    destination_title = db.StringProperty()
-    destination_lat = db.FloatProperty()
-    destination_long = db.FloatProperty()
-    ToD = db.DateTimeProperty()
-    part_of_day = db.StringProperty()
-    passengers = db.ListProperty(db.Key)
-    contact = db.StringProperty()
-
-    def to_dict(self):
-        res = {}
-        for k in Ride._properties:   ## special case ToD
-            if k != 'ToD':
-                res[k] = getattr(self,k) #eval('self.'+k)
-        res['ToD'] = str(self.ToD)
-        return res
-
-class Passenger(db.Model):
-    name = db.UserProperty()
-    contact = db.StringProperty()
-    location = db.StringProperty()
-    lat = db.FloatProperty()
-    lng = db.FloatProperty()
-    ride = db.ReferenceProperty()
-    
-    """
-    Check home page functionality regarding the search for passenger rides
-    & list of passengers for driver rides
-    
-    Change method of display in entire project regarding passengers
-    """
-
-class ApplicationParameters(db.Model):
-    apikey = db.StringProperty()
-
-class MyClass:
-    max_passengers = 0
-    num_passengers = 0
-    driver = "Brad"
 
 class MainHandler(webapp.RequestHandler):
 
@@ -97,8 +53,8 @@ class MainHandler(webapp.RequestHandler):
             greeting = ("Welcome, %s! (<a href=\"%s\">sign out</a>) Go to your <a href='/home'>Home Page</a>" %
                   (user.nickname(), users.create_logout_url("/")))
             logout = users.create_logout_url("/")
-       
-        self.response.out.write(template.render('index.html', {
+        path = os.path.join(os.path.dirname(__file__), 'templates/index.html')
+        self.response.out.write(template.render(path, {
             'ride_list': ride_list, 
             'greeting' : greeting,
             'nick' : user.nickname(),
@@ -554,7 +510,8 @@ def main():
 if __name__ == '__main__':
   main()
 
-
+# This is actually the development one.
 # lutherrideshare.appspot key: ABQIAAAAg9WbCE_zwMIRW7jDFE_3ixS0LiYWImofzW4gd3oCqtkHKt0IaBT-STdq-gdH-mW2_ejMPXqxnfJjgw
 
+# This has the app id of ridesharebeta   and is also on ridesharebeta.appspot.com
 # rideshare.luther.edu key:  ABQIAAAAg9WbCE_zwMIRW7jDFE_3ixQ2JlMNfqnGb2qqWZtmZLchh1TSjRS0zuchuhlR8g4tlMGrjg34sNmyjQ
