@@ -24,7 +24,7 @@ class Ride(db.Model):
             if k != 'ToD' and k != 'driver':
                 res[k] = getattr(self,k) #eval('self.'+k)
         res['ToD'] = str(self.ToD)
-        res['email'] = self.driver.email()
+        res['driver'] = self.driver.email()
         return res
 
 class Passenger(db.Model):

@@ -1,34 +1,126 @@
-    function initialize() 
+// initalize rides array then plot them.
+// The rides array is declared in index.html
+
+var rides = new Array();
+var map;
+var geocoder;
+var address2;
+
+function initialize() 
+{
+    if (GBrowserIsCompatible()) 
     {
-      if (GBrowserIsCompatible()) 
-      {
+	var request = new XMLHttpRequest();
+	var today = new Date();
+	request.open("GET","/getrides?after="+today.getFullYear()+"-"+today.getMonth()+"-"+today.getDay(),false);
+	request.send(null);
+	if (request.status == 200) {
+	    // loop over all
+	    rides = eval(request.responseText);
+	    for (r in rides) {
+		rides[r].ToD = new Date(rides[r].ToD);
+	    }
+	}
+
+
+
+
+     // Begin creation of Icons for Rides
+      var greenIcon = new GIcon();
+      greenIcon.image = "http://www.google.com/mapfiles/dd-start.png";
+//      greenIcon.image = "http://www.google.com/intl/en_us/mapfiles/ms/micons/green-dot.png";
+      greenIcon.shadow = "http://labs.google.com/ridefinder/images/mm_20_shadow.png";
+      greenIcon.iconSize = new GSize(12, 20); // 12, 20
+      greenIcon.shadowSize = new GSize(22, 20);
+      greenIcon.iconAnchor = new GPoint(6, 20); // 6, 20
+      greenIcon.infoWindowAnchor = new GPoint(10, 1);
+
+      gmarkerOptions = { icon:greenIcon };
+
+      var redIcon = new GIcon();
+      redIcon.image = "http://www.google.com/mapfiles/dd-end.png";
+      redIcon.shadow = "http://labs.google.com/ridefinder/images/mm_20_shadow.png";
+      redIcon.iconSize = new GSize(12, 20);
+      redIcon.shadowSize = new GSize(22, 20);
+      redIcon.iconAnchor = new GPoint(6, 20);
+      redIcon.infoWindowAnchor = new GPoint(5, 1);
+
+      rmarkerOptions = { icon:redIcon };
+
+      // Sample custom marker code created with Google Map Custom Marker Maker
+      // http://www.powerhut.co.uk/googlemaps/custom_markers.php
+
+      var myIcon = new GIcon();
+      myIcon.image = 'static/image.png';
+      myIcon.shadow = 'static/shadow.png';
+      myIcon.iconSize = new GSize(20,17);
+      myIcon.shadowSize = new GSize(29,17);
+      myIcon.iconAnchor = new GPoint(10,17);
+      myIcon.infoWindowAnchor = new GPoint(10,0);
+      myIcon.printImage = 'static/printImage.gif';
+      myIcon.mozPrintImage = 'static/mozPrintImage.gif';
+      myIcon.printShadow = 'static/printShadow.gif';
+      myIcon.transparent = 'static/transparent.png';
+      myIcon.imageMap = [19,0,19,1,19,2,18,3,18,4,17,5,16,6,19,7,19,8,19,9,19,10,16,11,19,12,13,13,13,14,15,15,19,16,8,16,7,15,6,14,6,13,5,12,5,11,5,10,4,9,4,8,4,7,3,6,2,5,1,4,1,3,0,2,0,1,0,0];
+
+      bmarkerOptions = { icon:myIcon };
+      // End creation of Icon for Rides
+
+      var blueIcon = new GIcon(G_DEFAULT_ICON);
+      blueIcon.image = "http://labs.google.com/ridefinder/images/mm_20_blue.png";
+      blueIcon.iconSize = new GSize(20, 20);
+      markerOptions = { icon:myIcon };
+      var marker = new GMarker(new GLatLng(43.313059,-91.799501), markerOptions);
+
+      var alpha = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+
         map = new GMap2(document.getElementById("map_canvas"), {draggableCursor: 'crosshair'});
         map.setCenter(new GLatLng(43.313059,-91.799501), 6);
         map.addControl(new GLargeMapControl());
         //map.setUIToDefault();
         geocoder = new GClientGeocoder();
         GEvent.addListener(marker, "click", function()
-          { marker.openInfoWindowHtml("Luther College<br />Decorah, Iowa"); });
+			   { marker.openInfoWindowHtml("Luther College<br />Decorah, Iowa"); });
         map.addOverlay(marker);
 
         var r;
         for(r in rides)
         {
-          addRideToMap(rides[r], r);
+            addRideToMap(rides[r], r);
         }
         GEvent.addListener(map, "click", getAddress);
-      }
-/*
-      GEvent.addListener(map, "click", function(overlay, point)
-        {
-          var fpoint = point;
-          var newRide = new GMarker(point, gmarkerOptions);
-          var html = ("<b>Create a new Ride</b>" + getNewRidePopupHTML(fpoint));
-          map.openInfoWindowHtml(point, html);
-        });
-*/
-
     }
+
+    makeRideTable();
+
+}
+
+
+
+function makeRideTable() {
+    var table = document.getElementById("rideTable");
+    var r;
+    for (r in rides)
+    {
+	var row = table.insertRow(table.rows.length);
+	var c0 = row.insertCell(0);
+	c0.innerHTML = rides[r].driver;
+	var c1 = row.insertCell(1);
+	c1.innerHTML = rides[r].max_passengers;
+	var c2 = row.insertCell(2);
+	c2.innerHTML = rides[r].num_passengers;
+	var c3 = row.insertCell(3);
+	c3.innerHTML = rides[r].start_point_title;
+	var c4 = row.insertCell(4);
+	c4.innerHTML = '<a href="#" onClick="joinRideByNumber(' + r + ')">' +
+            rides[r].destination_title + '</a>';
+	var c5 = row.insertCell(5);
+	var myToD = rides[r].ToD;
+	c5.innerHTML = rides[r].part_of_day + " " + numToTextMonth(myToD.getMonth())+" "+myToD.getDate()+", "+myToD.getFullYear();
+    }
+
+}
 
     function getAddress(overlay, latlng)
     {
@@ -285,12 +377,12 @@
 // Adds a popup to the GoogleMap that fits 'ride'
     function addRideToMap(ride, rideNum)
     {
-      if (ride.destination.title == "Luther College, Decorah, IA")
+      if (ride.destination_title == "Luther College, Decorah, IA")
       {
         var tooltext = '';
-        tooltext += ride.ToD.toDateString();
+        tooltext += ride.ToD;
         gmarkerOptions['title'] = tooltext;
-        var amarker = new GMarker(new GLatLng(ride.start_point.latitude, ride.start_point.longitude), gmarkerOptions);
+        var amarker = new GMarker(new GLatLng(ride.start_point_lat, ride.start_point_long), gmarkerOptions);
         GEvent.addListener(amarker, "click", function(latlng)
         // From function() to function(latlng)
         {
@@ -301,12 +393,12 @@
         ride.marker = amarker;
         map.addOverlay(amarker);
       }
-      else if (ride.start_point.title == "Luther College, Decorah, IA")
+      else if (ride.start_point_title == "Luther College, Decorah, IA")
       {
         var tooltext = '';
-        tooltext += ride.ToD.toDateString();
+          tooltext += ride.ToD;
         rmarkerOptions['title'] = tooltext;
-        var bmarker = new GMarker(new GLatLng(ride.destination.latitude, ride.destination.longitude), rmarkerOptions);
+        var bmarker = new GMarker(new GLatLng(ride.destination_lat, ride.destination_long), rmarkerOptions);
         GEvent.addListener(bmarker, "click", function(latlng)
         // From function() to function(latlng)
         {
@@ -325,8 +417,8 @@
         var marker = addRideToMap(rides[rideNum], rideNum);
         marker.openInfoWindowHtml(getPopupWindowMessage(rides[rideNum], 
 			      rideNum, 
-			      rides[rideNum].destination.latitude,
-			      rides[rideNum].destination.longitude));
+			      rides[rideNum].destination_lat,
+			      rides[rideNum].destination_long));
     }
 /* 
 Returns the HTML to be contained in a popup window in the GMap
@@ -370,9 +462,9 @@ Asks whether the user wants to join this ride
       else {
         disabled = "";
         }
-      var text1 = ("Driver: "+ride.driver+"<br><i>"+ride.start_point.title+"</i> --> <i>"+ride.destination.title+"</i><br>Date: "+ride.part_of_day+" "+numToTextMonth(ride.ToD.getMonth())+" "+ride.ToD.getDate()+", "+ride.ToD.getFullYear()+"<br>"+msg);
+      var text1 = ("Driver: "+ride.driver+"<br><i>"+ride.start_point_title+"</i> --> <i>"+ride.destination_title+"</i><br>Date: "+ride.part_of_day+" "+numToTextMonth(ride.ToD.getMonth())+" "+ride.ToD.getDate()+", "+ride.ToD.getFullYear()+"<br>"+msg);
       var drop_off_or_pick_up; // drop_off = 0, pick_up = 1
-      if (ride.start_point.title == "Luther College, Decorah, IA") {
+      if (ride.start_point_title == "Luther College, Decorah, IA") {
         drop_off_or_pick_up = 0;
         }
       else {
@@ -458,10 +550,10 @@ Options out: click on map, 'Use this Location', or 'Cancel'
       contact = (typeof contact == 'undefined') ? '563-555-1212': contact; // If contact is not defined, then let it be 563-555-1212
       if (address8 == '') {
         if (doOrPu == 0) {
-          address8 = rides[rideNum].destination.title;
+          address8 = rides[rideNum].destination_title;
           }
         else {
-          address8 = rides[rideNum].start_point.title;
+          address8 = rides[rideNum].start_point_title;
           }
         }
       var text = "<form onsubmit='addPassengerPart3("+rideNum+", "+lat+", "+lng+", "+doOrPu+"); return false;'>Please ensure that your address is as specific as possible<br />(<i>37</i> Main Street, not <i>30-50</i> Main Street)<br />";

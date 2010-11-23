@@ -189,7 +189,8 @@ class NewRideHandler(webapp.RequestHandler):
             greeting = ("Welcome, %s! (<a href=\"%s\">sign out</a>) Go to your <a href='/home'>Home Page</a>" %
                   (user.nickname(), users.create_logout_url("/")))
         message = 'Your ride has been created!'
-        self.response.out.write(template.render('index.html', {
+        path = os.path.join(os.path.dirname(__file__), 'templates/index.html')
+        self.response.out.write(template.render(path, {
             'ride_list': ride_list, 
             'greeting': greeting,
             'message': message,
@@ -266,7 +267,8 @@ class AddPassengerHandler(webapp.RequestHandler):
             greeting = ("Welcome, %s! (<a href=\"%s\">sign out</a>) Go to your <a href='/home'>Home Page</a>" %
                   (user.nickname(), users.create_logout_url("/")))
         message = 'You have been added to %s\'s ride.' % (ride.driver)
-        self.response.out.write(template.render('index.html', {
+        path = os.path.join(os.path.dirname(__file__), 'templates/index.html')
+        self.response.out.write(template.render(path, {
             'ride_list': ride_list, 
             'greeting': greeting,
             'message': message,
@@ -369,7 +371,8 @@ class DeleteRideHandler(webapp.RequestHandler):
             greeting = ("Welcome, %s! (<a href=\"%s\">sign out</a>) Go to your <a href='/home'>Home Page</a>" %
                   (user.nickname(), users.create_logout_url("/")))
         message = 'Your ride has been deleted.'
-        self.response.out.write(template.render('index.html', {
+        path = os.path.join(os.path.dirname(__file__), 'templates/index.html')
+        self.response.out.write(template.render(path, {
             'ride_list': ride_list, 
             'greeting' : greeting,
             'message' : message,
@@ -407,7 +410,8 @@ class RemovePassengerHandler(webapp.RequestHandler):
             greeting = ("Welcome, %s! (<a href=\"%s\">sign out</a>) Go to your <a href='/home'>Home Page</a>" %
                   (user.nickname(), users.create_logout_url("/")))
         message = '%s has been removed from %s\'s ride.' % (name, ride.driver)
-        self.response.out.write(template.render('index.html', {
+        path = os.path.join(os.path.dirname(__file__), 'templates/index.html')
+        self.response.out.write(template.render(path, {
             'ride_list': ride_list, 
             'greeting' : greeting,
             'message' : message,
