@@ -59,7 +59,7 @@ Welcome to your personal homepage, {{ user }}!<br />
 {% if passengerrides %}
 <h2>You are a passenger for the following rides:</h2>
 {% for ride in passengerrides %}
-<h3>Driver</h3> - <a href='/rideinfo?key={{ ride.key }}'>See Map of Ride</a>
+<a href='/rideinfo?key={{ ride.key }}'>See Map of Ride</a>
 <table border='1'>
 <tr><th>From</th>
     <th>To</th>
