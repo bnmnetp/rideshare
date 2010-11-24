@@ -1,6 +1,6 @@
 from google.appengine.ext import db
 from google.appengine.api import users
-
+import logging
 
 # Make this very flat to start with, then add references later...
 class Ride(db.Model):
@@ -21,10 +21,14 @@ class Ride(db.Model):
     def to_dict(self):
         res = {}
         for k in Ride._properties:   ## special case ToD
-            if k != 'ToD' and k != 'driver':
+            logging.debug("key = %s" % k)
+            if k != 'ToD' and k != 'driver' and k != 'passengers':
                 res[k] = getattr(self,k) #eval('self.'+k)
         res['ToD'] = str(self.ToD)
         res['driver'] = self.driver.email()
+        res['key'] = unicode(self.key())
+        res['passengers'] = [str(p) for p in self.passengers]
+        logging.debug("dict is " + str(res))
         return res
 
 class Passenger(db.Model):
