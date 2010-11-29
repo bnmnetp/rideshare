@@ -127,6 +127,8 @@ class NewRideHandler(webapp.RequestHandler):
         - part_of_day
         - ToD
         - contact
+        - ridecomments
+        - driver
         """
 
         newRide = Ride()
@@ -134,9 +136,13 @@ class NewRideHandler(webapp.RequestHandler):
         inumber = self.request.get("contact")
         number = inumber[0:3]+'-'+inumber[3:6]+'-'+inumber[6:]
         newRide.contact = number
-        newRide.max_passengers = int(maxp)
-        newRide.num_passengers = 0
-        newRide.driver = users.get_current_user()
+
+        isDriver = self.request.get("driver")
+        if isDriver.lower() == "false":
+            isDriver = False
+        else:
+            isDriver = True
+        
 
         """ # For testing
         latlng = ['41.517658', '-95.452065']
@@ -178,8 +184,32 @@ class NewRideHandler(webapp.RequestHandler):
           part_of_day += 'Evening'
         newRide.part_of_day = part_of_day
         newRide.ToD = datetime.datetime(int(y),int(m),int(d))
+
+        newRide.max_passengers = int(maxp)
+        newRide.num_passengers = 0
         newRide.passengers = []
-        newRide.put()
+
+
+        if isDriver:
+            newRide.driver = users.get_current_user()
+        else:
+            user_name = users.get_current_user()
+            passenger = Passenger()
+            passenger.name = user_name
+            passenger.contact = number
+            passenger.location = newRide.destination_title
+            passenger.lat = lat
+            passenger.lng = lng
+            pass_key = passenger.put()
+            newRide.passengers.append(pass_key)
+            newRide.num_passengers = 1
+
+        newRide.comment = self.request.get("ridecomment")
+        ride_key = newRide.put()
+        if not isDriver:
+            passenger.ride = ride_key
+            passenger.put()
+
         query = db.Query(Ride)
         query.filter("ToD > ", datetime.datetime.now())
         ride_list = query.fetch(limit=100)
@@ -275,6 +305,22 @@ class AddPassengerHandler(webapp.RequestHandler):
             'mapkey':MAP_APIKEY,            
             }))
 
+
+class AddDriverHandler(webapp.RequestHandler):
+
+    def get(self):
+        ride_key = self.request.get("key")
+        contact = self.request.get("contact")
+        numpass = self.request.get("numpass")
+        
+        ride = Ride.get(ride_key)
+        ride.driver = users.get_current_user()
+        ride.contact = contact
+        ride.max_passengers = int(numpass)
+        ride.put()
+
+        self.response.out.write("OK")
+        
 class HomeHandler(webapp.RequestHandler):
     """
     Displays personal homepage
@@ -501,6 +547,7 @@ def main():
                                   ('/getrides', RideQueryHandler ),
                                   ("/newride", NewRideHandler),
                                   ("/addpass", AddPassengerHandler),
+                                  ("/adddriver", AddDriverHandler),                                          
                                   ('/home', HomeHandler),
                                   ('/rideinfo', RideInfoHandler),
                                   ('/deleteride', DeleteRideHandler),

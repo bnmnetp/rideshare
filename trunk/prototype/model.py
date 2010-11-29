@@ -17,6 +17,7 @@ class Ride(db.Model):
     part_of_day = db.StringProperty()
     passengers = db.ListProperty(db.Key)
     contact = db.StringProperty()
+    comment = db.StringProperty()
 
     def to_dict(self):
         res = {}
@@ -25,7 +26,10 @@ class Ride(db.Model):
             if k != 'ToD' and k != 'driver' and k != 'passengers':
                 res[k] = getattr(self,k) #eval('self.'+k)
         res['ToD'] = str(self.ToD)
-        res['driver'] = self.driver.email()
+        if self.driver:
+            res['driver'] = self.driver.email()
+        else:
+            res['driver'] = "needs driver"
         res['key'] = unicode(self.key())
         res['passengers'] = [str(p) for p in self.passengers]
         logging.debug("dict is " + str(res))
