@@ -241,8 +241,8 @@ class NewRideHandler(webapp.RequestHandler):
             to = p.email()
             passengerName = p.nickname()
             
-        sender = "millbr02@luther.edu"
-        announceAddr = "bonelake@gmail.com"
+        sender = "bonelake@gmail.com"
+        announceAddr = "millbr02@luther.edu"
         subject = "New Ride "
         if driverName:
             subject += "Announcement"
@@ -354,7 +354,7 @@ class AddPassengerHandler(webapp.RequestHandler):
             return
 
         to = ride.driver.email()
-        sender = "millbr02@luther.edu"
+        sender = "bonelake@gmail.com"
         subject = "New Passenger for your ride"
         p = db.get(ride.passengers[-1])
         

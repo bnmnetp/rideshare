@@ -112,17 +112,17 @@ function makeRideTable() {
 	var c0 = row.insertCell(0);
 	c0.innerHTML = rides[r].driver;
 	var c1 = row.insertCell(1);
-	c1.innerHTML = rides[r].max_passengers;
-	var c2 = row.insertCell(2);
-	c2.innerHTML = rides[r].num_passengers;
-	var c3 = row.insertCell(3);
+	c1.innerHTML = rides[r].max_passengers - rides[r].num_passengers;
+	var c3 = row.insertCell(2);
 	c3.innerHTML = rides[r].start_point_title;
-	var c4 = row.insertCell(4);
+	var c4 = row.insertCell(3);
 	c4.innerHTML = '<a href="#" onClick="joinRideByNumber(' + r + ')">' +
             rides[r].destination_title + '</a>';
-	var c5 = row.insertCell(5);
+	var c5 = row.insertCell(4);
 	var myToD = rides[r].ToD;
 	c5.innerHTML = rides[r].part_of_day + " " + numToTextMonth(myToD.getMonth())+" "+myToD.getDate()+", "+myToD.getFullYear();
+	var c6 = row.insertCell(5);
+	c6.innerHTML = rides[r].comment;
     }
 
 }
