@@ -22,6 +22,8 @@ import wsgiref.handlers
 import datetime
 from datetime import date
 from django.utils import simplejson
+from google.appengine.api import mail
+
 ##from django.core import serializers
 
 from google.appengine.ext import webapp
@@ -214,6 +216,7 @@ class NewRideHandler(webapp.RequestHandler):
         query.filter("ToD > ", datetime.datetime.now())
         ride_list = query.fetch(limit=100)
         user = users.get_current_user()
+        self.sendRideEmail(newRide)
         greeting = ''
         if user:
             greeting = ("Welcome, %s! (<a href=\"%s\">sign out</a>) Go to your <a href='/home'>Home Page</a>" %
@@ -223,10 +226,49 @@ class NewRideHandler(webapp.RequestHandler):
         self.response.out.write(template.render(path, {
             'ride_list': ride_list, 
             'greeting': greeting,
-            'message': message,
+#            'message': message,
             'mapkey' : MAP_APIKEY,
             }))
-  
+
+    def sendRideEmail(self,ride):
+        driverName = None
+        passengerName = None
+        if ride.driver:
+            to = ride.driver.email()
+            driverName = ride.driver.nickname()
+        else:
+            p = db.get(ride.passengers[0]).name
+            to = p.email()
+            passengerName = p.nickname()
+            
+        sender = "millbr02@luther.edu"
+        announceAddr = "bonelake@gmail.com"
+        subject = "New Ride "
+        if driverName:
+            subject += "Announcement"
+            body = """
+A new ride is being offered.  %s is offering a ride from %s to %s on %s.
+Please go to http://rideshare.luther.edu if you want to join this ride.
+
+Thanks,
+
+The Luther Rideshare Team
+""" % (driverName,ride.start_point_title,ride.destination_title,ride.ToD)
+        else:
+            subject += "Request"
+            body = """
+A new ride request has been posted.  %s is looking for a ride from %s to %s on %s.
+If you are able to take this person in your car, please go to http://rideshare.luther.edu
+        
+Thanks,
+
+The Luther Rideshare Team
+""" % (passengerName,ride.start_point_title,ride.destination_title,ride.ToD)
+
+        logging.debug(body)
+        mail.send_mail(sender,announceAddr,subject,body)
+
+
 class AddPassengerHandler(webapp.RequestHandler):
     """
     Handles addition of passengers
@@ -297,6 +339,7 @@ class AddPassengerHandler(webapp.RequestHandler):
             greeting = ("Welcome, %s! (<a href=\"%s\">sign out</a>) Go to your <a href='/home'>Home Page</a>" %
                   (user.nickname(), users.create_logout_url("/")))
         message = 'You have been added to %s\'s ride.' % (ride.driver)
+        self.sendDriverEmail(ride)
         path = os.path.join(os.path.dirname(__file__), 'templates/index.html')
         self.response.out.write(template.render(path, {
             'ride_list': ride_list, 
@@ -304,6 +347,32 @@ class AddPassengerHandler(webapp.RequestHandler):
             'message': message,
             'mapkey':MAP_APIKEY,            
             }))
+
+    def sendDriverEmail(self,ride):
+
+        if not ride.driver:
+            return
+
+        to = ride.driver.email()
+        sender = "millbr02@luther.edu"
+        subject = "New Passenger for your ride"
+        p = db.get(ride.passengers[-1])
+        
+        body = """
+Dear %s
+We wanted to let you know that %s has add themselves to your ride
+from %s to %s on %s.  If you need to contact %s you can do so at %s.
+
+Thanks for being a driver!
+
+Sincerely,
+
+The Luther Rideshare Team
+""" % (ride.driver.nickname(), p.name.nickname(), ride.start_point_title, ride.destination_title,
+       ride.ToD, p.name.nickname(), p.contact)
+
+        logging.debug(body)
+        mail.send_mail(sender,to,subject,body)
 
 
 class AddDriverHandler(webapp.RequestHandler):

@@ -22,7 +22,6 @@ class Ride(db.Model):
     def to_dict(self):
         res = {}
         for k in Ride._properties:   ## special case ToD
-            logging.debug("key = %s" % k)
             if k != 'ToD' and k != 'driver' and k != 'passengers':
                 res[k] = getattr(self,k) #eval('self.'+k)
         res['ToD'] = str(self.ToD)
@@ -32,7 +31,6 @@ class Ride(db.Model):
             res['driver'] = "needs driver"
         res['key'] = unicode(self.key())
         res['passengers'] = [str(p) for p in self.passengers]
-        logging.debug("dict is " + str(res))
         return res
 
 class Passenger(db.Model):
@@ -52,3 +50,5 @@ class Passenger(db.Model):
 
 class ApplicationParameters(db.Model):
     apikey = db.StringProperty()
+    notifyEmailAddr = db.EmailProperty()
+    

@@ -101,6 +101,10 @@ function initialize()
 
 function makeRideTable() {
     var table = document.getElementById("rideTable");
+
+    for(var i = table.rows.length; i > 1;i--) {
+	table.deleteRow(i -1);
+    }
     var r;
     for (r in rides)
     {
@@ -315,7 +319,7 @@ function verifyNewRidePopup(lat, lng, address6, isDriver)
     if (isDriver) {
 	var maxp = document.getElementById("maxp").value;
     } else{
-	var maxp = "-1";
+	var maxp = "3";
     }
     var goodContact = false;
 
