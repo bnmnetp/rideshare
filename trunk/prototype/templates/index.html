@@ -28,7 +28,7 @@ pageTracker._trackPageview();
 </script>
 
 
-<body onload="initialize()" onunload="GUnload()" style="font-family: Arial;border: 0 none;">
+<body onload="initialize('{{message}}')" onunload="GUnload()" style="font-family: Arial;border: 0 none;">
     <div id="titleblock">
     <h1>Luther College Rideshare</h1>
 <div id="navbar">
@@ -58,9 +58,6 @@ Welcome, {{nick}}
        green pushpins on the map.  <br><br>
        Enter an address or filter the pushpins by date using the
        controls on the right.
-{% if message %}
-    <p>{{ message }}</p>
-{% endif %}
 
 </td>
 <td id="filterside">

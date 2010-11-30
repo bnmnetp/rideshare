@@ -6,7 +6,7 @@ var map;
 var geocoder;
 var address2;
 
-function initialize() 
+function initialize(mess) 
 {
     if (GBrowserIsCompatible()) 
     {
@@ -94,7 +94,9 @@ function initialize()
     }
 
     makeRideTable();
-
+    if (mess) {
+	alert(mess);
+    }
 }
 
 

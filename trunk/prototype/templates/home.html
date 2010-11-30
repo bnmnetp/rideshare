@@ -29,7 +29,7 @@ Welcome to your personal homepage, {{ user }}!<br />
     <td>{{ ride.driver }}</td>
     <td>{{ ride.part_of_day }}<br />{{ ride.jsmonth }}-{{ ride.jsday }}-{{ ride.jsyear }}</td>
     <td>{{ ride.contact }}</td>
-    <td><input type="button" value="Delete" onclick="if(confirm('Are you sure you want to delete this ride?')) location.href='/deleteride?key={{ ride.key }}'" /></td>
+    <td><input type="button" value="Edit" onclick="location.href='/editride?key={{ ride.key }}'" /></td>
 </tr></table>
 
 {% if ride.passengerobjects %}

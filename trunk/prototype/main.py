@@ -41,7 +41,9 @@ from model import *
 
 MAP_APIKEY=""
 
-
+early_late_strings = { "0": "Early", "1": "Late" }
+part_of_day_strings = { "0": "Morning", "1": "Afternoon", "2": "Evening" }
+    
 class MainHandler(webapp.RequestHandler):
 
     def get(self):
@@ -173,6 +175,7 @@ class NewRideHandler(webapp.RequestHandler):
         d = int(self.request.get("day"))
         early_late_value = int(self.request.get("earlylate"))
         part_of_day_value = int(self.request.get("partofday"))
+        # TODO:  replace this logic with the global dictionaries.
         part_of_day = ''
         if early_late_value == 0:
           part_of_day += 'Early '
@@ -226,7 +229,7 @@ class NewRideHandler(webapp.RequestHandler):
         self.response.out.write(template.render(path, {
             'ride_list': ride_list, 
             'greeting': greeting,
-#            'message': message,
+            'message': message,
             'mapkey' : MAP_APIKEY,
             }))
 
@@ -389,7 +392,49 @@ class AddDriverHandler(webapp.RequestHandler):
         ride.put()
 
         self.response.out.write("OK")
+
+
+class EditRideHandler(webapp.RequestHandler):
+    def get(self):
+        ride_key = self.request.get("key")
+        ride = db.get(ride_key)
+        username = users.get_current_user()
+        dayparts = ride.part_of_day.split()
         
+        plist = []
+        for p in ride.passengers:
+            plist.append(db.get(p).name)
+        
+        doRender(self, 'edit.html', { 
+                          'user': username,
+                          'ride': ride,
+                          'earlylate' : dayparts[0],
+                          'mae' : dayparts[1],
+                          'plist': plist
+                                         }
+                 )
+
+class ChangeRideHandler(webapp.RequestHandler):
+    def post(self):
+        username = users.get_current_user()
+        ride = Ride.get(self.request.get("key"))
+
+        contact = self.request.get("contact")
+        comment = self.request.get("ridecomment")
+        partofday = self.request.get("partofday")
+        earlylate = self.request.get("earlylate")
+        maxp = self.request.get("numpass")
+
+        pofd = early_late_strings[earlylate] + " " + part_of_day_strings[partofday]
+
+        ride.part_of_day = pofd
+        ride.contact = contact
+        ride.comment = comment
+        ride.max_passengers = int(maxp)
+
+        ride.put()
+        self.redirect("/")
+
 class HomeHandler(webapp.RequestHandler):
     """
     Displays personal homepage
@@ -470,16 +515,19 @@ class DeleteRideHandler(webapp.RequestHandler):
     Deletes a ride using a key
     """
     def get(self):
-      key = self.request.get('key')
-      ride = db.get(key)
-      if ride == None:
-        doRender(self, 'error.html', {
+        key = self.request.get('key')
+        ride = db.get(key)
+        if ride == None:
+            doRender(self, 'error.html', {
                               'error_message': "No such ride exists."})
-      else:
-        db.delete(ride)
-        query = db.Query(Ride)
-        query.filter("ToD > ", datetime.datetime.now())
-        ride_list = query.fetch(limit=100)
+        elif ride.num_passengers == 0:
+            db.delete(ride)
+
+        else:
+            ride.driver = None
+            ride.put()
+            # TODO:  send notification email
+            
         user = users.get_current_user()
         greeting = ''
         if user:
@@ -488,7 +536,6 @@ class DeleteRideHandler(webapp.RequestHandler):
         message = 'Your ride has been deleted.'
         path = os.path.join(os.path.dirname(__file__), 'templates/index.html')
         self.response.out.write(template.render(path, {
-            'ride_list': ride_list, 
             'greeting' : greeting,
             'message' : message,
             'mapkey':MAP_APIKEY,            
@@ -620,6 +667,8 @@ def main():
                                   ('/home', HomeHandler),
                                   ('/rideinfo', RideInfoHandler),
                                   ('/deleteride', DeleteRideHandler),
+                                  ('/editride', EditRideHandler),
+                                  ('/applyedits', ChangeRideHandler),
                                   ('/removepassenger', RemovePassengerHandler),
                                   ('/.*', IncorrectHandler),
                                   ],
