@@ -341,7 +341,7 @@ class AddPassengerHandler(webapp.RequestHandler):
         if user:
             greeting = ("Welcome, %s! (<a href=\"%s\">sign out</a>) Go to your <a href='/home'>Home Page</a>" %
                   (user.nickname(), users.create_logout_url("/")))
-        message = 'You have been added to %s\'s ride.' % (ride.driver)
+        message = 'You have been added to %s ride.' % (ride.driver)
         self.sendDriverEmail(ride)
         path = os.path.join(os.path.dirname(__file__), 'templates/index.html')
         self.response.out.write(template.render(path, {
@@ -362,8 +362,8 @@ class AddPassengerHandler(webapp.RequestHandler):
         p = db.get(ride.passengers[-1])
         
         body = """
-Dear %s
-We wanted to let you know that %s has add themselves to your ride
+Dear %s,
+We wanted to let you know that %s has been added to your ride
 from %s to %s on %s.  If you need to contact %s you can do so at %s.
 
 Thanks for being a driver!
@@ -391,7 +391,34 @@ class AddDriverHandler(webapp.RequestHandler):
         ride.max_passengers = int(numpass)
         ride.put()
 
+        for p in ride.passengers:
+            to = Passenger.get(p).name
+            self.sendRiderEmail(ride,to)
+
         self.response.out.write("OK")
+
+    def sendRiderEmail(self, ride, to):
+
+        sender = "bonelake@gmail.com"
+        subject = "Change in your ride"
+        
+        body = """
+Dear %s,
+
+We have good news about your request for a ride from %s to %s on %s.
+%s has agreed to drive.  You can contact the driver at %s, or by email
+at %s.
+
+Have a safe trip!
+
+Sincerely,
+
+The Luther Rideshare Team
+""" % (to.nickname(),  ride.start_point_title, ride.destination_title, ride.ToD,
+       ride.driver.nickname(), ride.contact, ride.driver.email())
+
+        logging.debug(body)
+        mail.send_mail(sender,to.email(),subject,body)
 
 
 class EditRideHandler(webapp.RequestHandler):
@@ -526,7 +553,9 @@ class DeleteRideHandler(webapp.RequestHandler):
         else:
             ride.driver = None
             ride.put()
-            # TODO:  send notification email
+            for p in ride.passengers:
+                to = Passenger.get(p).name
+                self.sendRiderEmail(ride,to)
             
         user = users.get_current_user()
         greeting = ''
@@ -540,6 +569,30 @@ class DeleteRideHandler(webapp.RequestHandler):
             'message' : message,
             'mapkey':MAP_APIKEY,            
             }))
+
+    def sendRiderEmail(self, ride, to):
+
+        sender = "bonelake@gmail.com"
+        subject = "Change in your ride"
+        
+        body = """
+Dear %s,
+
+We wanted to let you know that there has been a change in status of your ride
+from %s to %s on %s.  Unfortunately the driver is unable to drive anymore.
+The ride will remain on http://rideshare.luther.edu but it will appear as a ride
+that is in need of a driver.  When a new driver is found you will be notified
+by email.
+
+
+Sincerely,
+
+The Luther Rideshare Team
+""" % (to.nickname(),  ride.start_point_title, ride.destination_title)
+
+        logging.debug(body)
+        mail.send_mail(sender,to.email(),subject,body)
+    
 
 class RemovePassengerHandler(webapp.RequestHandler):
     """
