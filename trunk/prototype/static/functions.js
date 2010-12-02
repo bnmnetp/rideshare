@@ -269,18 +269,17 @@ function getNewRidePopupHTML2(lat, lng, address5, to, isDriver, contact)
     var line10="<div id=\"toddiv\">";
     var line11="Time of Departure: <select name=\"earlylate\" id=\"earlylate\"><option value=\"0\" selected=\"selected\">Early</option><option value=\"1\">Late</option></select>";
     var line12="<select name=\"partofday\" id=\"partofday\"><option value=\"0\" selected=\"selected\">Morning</option><option value=\"1\">Afternoon</option><option value=\"2\">Evening</option></select>";
-    var line13="<select name=\"month\" id='month' onChange=\"changeDays(document.getElementById('day'), this); return false;\"><option value=\"0\" selected=\"selected\">January</option><option value=\"1\">February</option><option value=\"2\">March</option><option value=\"3\">April</option><option value=\"4\">May</option><option value=\"5\">June</option><option value=\"6\">July</option><option value=\"7\">August</option><option value=\"8\">September</option><option value=\"9\">October</ption><option value=\"10\">November</option><option value=\"11\">December</option></select>";
+    var line13="<select name=\"month\" id='month' onChange=\"changeDays(document.getElementById('day'), this); return false;\">" + getMonthOptions() + "</select>";
     var line14="<select name=\"day\" id=\"day\">";
+    var today = (new Date()).getDate();
+    
     for (var i = 1; i < 32; i++)
     {
-        if (i == 1)
-        {
-            line14 += "<option value=\""+i+"\" selected=\"selected\">"+i+"</option>";
+        line14 += "<option value=\""+i+"\" ";
+	if ( today+2 == i ) {
+	    line14 += "selected=\"selected\"";
         }
-        else
-        {
-	    line14 = line14 + "<option value=\""+i+"\">"+i+"</option>";
-        }
+	line14 += ">"+ i + "</option>";
     }
     line14 = line14 + "</select>";
     var line15="<select name=\"year\" id='year'>";
@@ -815,6 +814,21 @@ function Location(title, latitude, longitude)
     this.title = title;
     this.latitude = latitude;
     this.longitude = longitude;
+}
+
+// Create a dropdown list of months with this month selected.
+function getMonthOptions() {
+    var today = new Date();
+    var monthList = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    res = ""
+    for (i=0; i< 12; i++) {
+	res += '<option value="'+i+'" ';
+	if (today.getMonth() == i) {
+	    res += 'selected="true" ';
+	}
+	res += '>'+monthList[i]+'</option>\n';
+    }
+    return res;
 }
 
 // Used to add all months to a drop-down list

@@ -40,6 +40,8 @@ import os.path
 from model import *
 
 MAP_APIKEY=""
+FROM_EMAIL_ADDR=""
+NOTIFY_EMAIL_ADDR=""
 
 early_late_strings = { "0": "Early", "1": "Late" }
 part_of_day_strings = { "0": "Morning", "1": "Afternoon", "2": "Evening" }
@@ -244,8 +246,8 @@ class NewRideHandler(webapp.RequestHandler):
             to = p.email()
             passengerName = p.nickname()
             
-        sender = "bonelake@gmail.com"
-        announceAddr = "millbr02@luther.edu"
+        sender = FROM_EMAIL_ADDR
+        announceAddr = NOTIFY_EMAIL_ADDR
         subject = "New Ride "
         if driverName:
             subject += "Announcement"
@@ -357,7 +359,7 @@ class AddPassengerHandler(webapp.RequestHandler):
             return
 
         to = ride.driver.email()
-        sender = "bonelake@gmail.com"
+        sender = FROM_EMAIL_ADDR
         subject = "New Passenger for your ride"
         p = db.get(ride.passengers[-1])
         
@@ -399,7 +401,7 @@ class AddDriverHandler(webapp.RequestHandler):
 
     def sendRiderEmail(self, ride, to):
 
-        sender = "bonelake@gmail.com"
+        sender = FROM_EMAIL_ADDR
         subject = "Change in your ride"
         
         body = """
@@ -572,7 +574,7 @@ class DeleteRideHandler(webapp.RequestHandler):
 
     def sendRiderEmail(self, ride, to):
 
-        sender = "bonelake@gmail.com"
+        sender = FROM_EMAIL_ADDR
         subject = "Change in your ride"
         
         body = """
@@ -588,7 +590,7 @@ by email.
 Sincerely,
 
 The Luther Rideshare Team
-""" % (to.nickname(),  ride.start_point_title, ride.destination_title)
+""" % (to.nickname(),  ride.start_point_title, ride.destination_title, ride.ToD)
 
         logging.debug(body)
         mail.send_mail(sender,to.email(),subject,body)
@@ -668,7 +670,7 @@ def geocode(address):
 
 
 def main():
-    global MAP_APIKEY
+    global MAP_APIKEY, FROM_EMAIL_ADDR, NOTIFY_EMAIL_ADDR
 
     logging.getLogger().setLevel(logging.DEBUG)
     # prepopulate the database
@@ -706,11 +708,19 @@ def main():
     if apiQuery.count() < 1:
         bootstrap = ApplicationParameters()
         bootstrap.apikey = 'ABQIAAAAg9WbCE_zwMIRW7jDFE_3ixQ2JlMNfqnGb2qqWZtmZLchh1TSjRS0zuchuhlR8g4tlMGrjg34sNmyjQ'
+        bootstrap.notifyEmailAddr = 'bonelake@gmail.com'
+        bootstrap.fromEmailAddr = 'bonelake@gmail.com'
+        
         MAP_APIKEY = bootstrap.apikey
+        FROM_EMAIL_ADDR = bootstrap.fromEmailAddr
+        NOTIFY_EMAIL_ADDR = bootstrap.notifyEmailAddr
+        
         bootstrap.put()
     else:
         apilist = apiQuery.fetch(limit=1)
         MAP_APIKEY = apilist[0].apikey
+        FROM_EMAIL_ADDR = apilist[0].fromEmailAddr
+        NOTIFY_EMAIL_ADDR = apilist[0].notifyEmailAddr
     
     application = webapp.WSGIApplication([('/', MainHandler),
                                   ('/getrides', RideQueryHandler ),

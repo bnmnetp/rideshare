@@ -50,5 +50,6 @@ class Passenger(db.Model):
 
 class ApplicationParameters(db.Model):
     apikey = db.StringProperty()
-    notifyEmailAddr = db.EmailProperty()
+    notifyEmailAddr = db.StringProperty()
+    fromEmailAddr = db.StringProperty()    
     
