@@ -610,9 +610,9 @@ function submitDriverForRide(ride,contact,numPass) {
 
 function validatePhoneNumber(phone) {
     var incorrect = false;
-    phone = phone.replace("-","");
-    phone = phone.replace(" ","");
-    phone = phone.replace(".","");
+    phone = phone.replace(/-/g,"");
+    phone = phone.replace(/ /g,"");
+    phone = phone.replace(/./g,"");
 
     if (/\d{10}/.test(phone)) {
 	return true;
