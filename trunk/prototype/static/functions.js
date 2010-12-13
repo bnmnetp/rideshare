@@ -18,7 +18,8 @@ function initialize(mess)
 	    // loop over all
 	    rides = eval(request.responseText);
 	    for (r in rides) {
-		rides[r].ToD = new Date(rides[r].ToD);
+		var tod = rides[r].ToD
+		rides[r].ToD = new Date(tod.substring(0,4),tod.substring(5,7)-1,tod.substring(8,10));
 	    }
 	}
 
@@ -118,8 +119,11 @@ function makeRideTable() {
 	var c3 = row.insertCell(2);
 	c3.innerHTML = rides[r].start_point_title;
 	var c4 = row.insertCell(3);
-	c4.innerHTML = '<a href="#" onClick="joinRideByNumber(' + r + ')">' +
-            rides[r].destination_title + '</a>';
+	if (rides[r].driver == "needs driver") {
+	c4.innerHTML = '<a href="#" onClick="addDriverToRideNumber(' + r + ')">' + rides[r].destination_title + '</a>';
+	} else {
+	c4.innerHTML = '<a href="#" onClick="joinRideByNumber(' + r + ')">' + rides[r].destination_title + '</a>';
+	}
 	var c5 = row.insertCell(4);
 	var myToD = rides[r].ToD;
 	c5.innerHTML = rides[r].part_of_day + " " + numToTextMonth(myToD.getMonth())+" "+myToD.getDate()+", "+myToD.getFullYear();
@@ -385,6 +389,32 @@ function getNewRidePopupHTML3(lat, lng, from, to, maxp, number, earlylate, parto
    alert("month = "+month);
    alert("day = "+day);
    alert("year = "+year); */
+    var vals = {};
+    vals['lat'] = lat;
+    vals['lng'] = lng;
+    vals['from'] = from;
+    vals['to'] = to;
+    vals['maxp'] = maxp;
+    vals['contact'] = number;
+    vals['earlylate'] = earlylate;
+    vals['partofday'] = partofday;
+    vals['month'] = month;
+    vals['day'] = day;
+    vals['year'] = year;
+    vals['isDriver'] = isDriver;
+    vals['comment'] = comment;
+    if (from == "Luther College, Decorah, Iowa") {
+	vals['toLuther'] = false;
+    } else {
+	vals['toLuther'] = true;
+    }
+
+//    var funcall = 'saveRide({lat},{lng},{toLuther},"{from}","{to}",{maxp},{earlylate},{partofday},"{contact}",{month},{day},{year},{isDriver},"{comment}");';
+
+//    var t = jsontemplate.Template(funcall);
+//    funcall = t.expand(vals);
+    var funcall = 'saveRide('+JSON.stringify(vals)+')';
+    alert(funcall);
     var full;
     full = "<b>Is the following information correct?</b><br />";
     full += "From <i>"+from+"</i><br />";
@@ -409,17 +439,8 @@ function getNewRidePopupHTML3(lat, lng, from, to, maxp, number, earlylate, parto
     full += "Maximum of <i>" + maxp + "</i> passengers<br />";
     full += "Contact Number: <i>" + number + "</i><br />";
     number = number.slice(0,3) + number.slice(4,7) + number.slice(8);
-    full += "<form method='post' action=\"/newride?lat="+lat+"&amp;lng="+lng+"&amp;checked=";
-    if (from == "Luther College, Decorah, Iowa") {
-        full += "false&amp;to="+to;
-    }
-    else {
-        full += "true&amp;from="+from;
-    }
-    full += "&amp;maxp="+maxp+"&amp;earlylate="+earlylate+"&amp;";
-    full += "partofday="+partofday+"&amp;year="+year+"&amp;";
-    full += "month="+month+"&amp;day="+day+"&amp;contact="+number+"&amp;driver="+isDriver+"&amp;ridecomment="+comment+"\"";
-    full += "><input type='submit' id='submit' name='submit' value='Submit' />";
+    full += "<form>";
+    full += "<input type='button' id='submit' name='submit' value='Submit' onclick='" + funcall + "'/>";
     full += "<input type='button' id='cancel' name='cancel' value='Back' onclick=\"newRidePopupHTMLPart2(";
     full += lat+", "+lng+", '";
     var checked;
@@ -435,6 +456,28 @@ function getNewRidePopupHTML3(lat, lng, from, to, maxp, number, earlylate, parto
     return full;
 }
 
+function  saveRide(vals) {
+
+    var request = new XMLHttpRequest();
+
+    var reqStr = '/newride?';
+
+
+    for (var prop in vals) {
+	reqStr += prop + "=" + vals[prop] + "&";
+    }
+
+    request.open("GET",reqStr,false);
+    request.send(null);
+    if (request.status == 200) {
+	initialize();
+    } else {
+	alert("An error occurred, check your responses and try again.");
+    }
+
+}
+
+
 // Adds a popup to the GoogleMap that fits 'ride'
 function addRideToMap(ride, rideNum)
 {
@@ -442,7 +485,11 @@ function addRideToMap(ride, rideNum)
     if (ride.driver == "needs driver") {
 	var tooltext = 'needs driver';
 	reqMarkerOptions['title'] = tooltext;
-        var amarker = new GMarker(new GLatLng(ride.destination_lat, ride.destination_long), reqMarkerOptions);
+	if (ride.destination_title == "Luther College, Decorah, IA") {
+            var amarker = new GMarker(new GLatLng(ride.start_point_lat, ride.start_point_long), reqMarkerOptions);
+	} else {
+            var amarker = new GMarker(new GLatLng(ride.destination_lat, ride.destination_long), reqMarkerOptions);
+	}
         GEvent.addListener(amarker, "click", function(latlng)
 			   {
 			       if (latlng) {
@@ -551,6 +598,16 @@ function getPopupWindowMessage(ride, rideNum, lat, lng)
     return result;
 }
 
+function addDriverToRideNumber(rideNum) {
+    map.removeOverlay(rides[rideNum].marker);
+    var marker = addRideToMap(rides[rideNum], rideNum);
+    marker.openInfoWindowHtml(addDriverPopup(rides[rideNum], 
+						    rideNum, 
+						    rides[rideNum].destination_lat,
+						    rides[rideNum].destination_long));
+}
+
+
 function addDriverPopup(ride, rideNum, lat, lng) {
     ride.rideNum = rideNum;
     var htmlText = "<b>Driver Needed</b> <br />";
@@ -612,7 +669,7 @@ function validatePhoneNumber(phone) {
     var incorrect = false;
     phone = phone.replace(/-/g,"");
     phone = phone.replace(/ /g,"");
-    phone = phone.replace(/./g,"");
+    phone = phone.replace(/\./g,"");
 
     if (/\d{10}/.test(phone)) {
 	return true;
@@ -750,21 +807,13 @@ function addPassengerPart3(rideNum, lat, lng, doOrPu) {
     }
 }
 
+
+
 // Changes a numerical month returned from a Date object to a String
 function numToTextMonth(num)
 {
-    if (num==0) {return "January";}
-    else if (num==1) {return "February";}
-    else if (num==2) {return "March";}
-    else if (num==3) {return "April";}
-    else if (num==4) {return "May";}
-    else if (num==5) {return "June";}
-    else if (num==6) {return "July";}
-    else if (num==7) {return "August";}
-    else if (num==8) {return "September";}
-    else if (num==9) {return "October";}
-    else if (num==10) {return "November";}
-    else if (num==11) {return "December";}
+    var monthList = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    return monthList[num];
 }
 
 function showAddress(address1) 

@@ -113,7 +113,7 @@ class NewRideHandler(webapp.RequestHandler):
     For new Rides
     """
 
-    def post(self):
+    def get(self):
         """
         Called when a new ride needs to be added to the database.
         Probably with all of this data it should be done as a form post.
@@ -140,10 +140,13 @@ class NewRideHandler(webapp.RequestHandler):
         newRide = Ride()
         maxp = self.request.get("maxp")
         inumber = self.request.get("contact")
-        number = inumber[0:3]+'-'+inumber[3:6]+'-'+inumber[6:]
+        if not "-" in inumber:
+            number = inumber[0:3]+'-'+inumber[3:6]+'-'+inumber[6:]
+        else:
+            number = inumber
         newRide.contact = number
 
-        isDriver = self.request.get("driver")
+        isDriver = self.request.get("isDriver")
         if isDriver.lower() == "false":
             isDriver = False
         else:
@@ -157,7 +160,7 @@ class NewRideHandler(webapp.RequestHandler):
         """
         lat = float(self.request.get("lat"))
         lng = float(self.request.get("lng"))
-        checked = self.request.get("checked")
+        checked = self.request.get("toLuther")
         if checked == 'true':
           newRide.start_point_title = self.request.get("from")
           newRide.start_point_lat = lat
@@ -211,7 +214,7 @@ class NewRideHandler(webapp.RequestHandler):
             newRide.passengers.append(pass_key)
             newRide.num_passengers = 1
 
-        newRide.comment = self.request.get("ridecomment")
+        newRide.comment = self.request.get("comment")
         ride_key = newRide.put()
         if not isDriver:
             passenger.ride = ride_key
@@ -724,7 +727,7 @@ def main():
     
     application = webapp.WSGIApplication([('/', MainHandler),
                                   ('/getrides', RideQueryHandler ),
-                                  ("/newride", NewRideHandler),
+                                  ("/newride.*", NewRideHandler),
                                   ("/addpass", AddPassengerHandler),
                                   ("/adddriver", AddDriverHandler),                                          
                                   ('/home', HomeHandler),
