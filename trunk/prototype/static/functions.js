@@ -414,7 +414,6 @@ function getNewRidePopupHTML3(lat, lng, from, to, maxp, number, earlylate, parto
 //    var t = jsontemplate.Template(funcall);
 //    funcall = t.expand(vals);
     var funcall = 'saveRide('+JSON.stringify(vals)+')';
-    alert(funcall);
     var full;
     full = "<b>Is the following information correct?</b><br />";
     full += "From <i>"+from+"</i><br />";
