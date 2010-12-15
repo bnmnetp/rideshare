@@ -281,7 +281,7 @@ class AddPassengerHandler(webapp.RequestHandler):
     """
     Handles addition of passengers
     """
-    def post(self):
+    def get(self):
       """
       Called when adding a passenger to a ride
       

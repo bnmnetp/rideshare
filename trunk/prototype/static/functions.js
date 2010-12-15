@@ -796,17 +796,38 @@ function addPassengerPart3(rideNum, lat, lng, doOrPu) {
         if (contact.length == 10) { // 3194317934 => 319-431-7934
             contact = contact.slice(0,3)+"-"+contact.slice(3,6)+"-"+contact.slice(6);
         }
-        var text = "<form method='post' action='/addpass?ride_key="+rides[rideNum].key+"&amp;contact="+contact+"&amp;address="+address+"&amp;lat="+lat+"&amp;lng="+lng+"'>";
+	var funcall = 'saveNewPass("'+rides[rideNum].key+'","'+contact+'","'+address+'",'+lat+','+lng+');';
+
+        var text = "<form>";
         text += '<h4>Is the following information correct?</h4>';
         text += 'Address: '+address+'<br />';
         text += 'Contact: '+contact+'<br />';
-        text += "<input type='submit' id='submit' value='Submit' />";
+        text += "<input type='button' id='submit' value='Submit' onclick='"+funcall+"' />";
         text += "<input type='button' id='back' value='Back' onclick='map.openInfoWindowHtml(new GLatLng("+lat+", "+lng+"), getPopupWindowMessage2("+rideNum+", "+doOrPu+", "+lat+", "+lng+", \""+address+"\", \""+contact+"\"));' /></form>";
+	alert(text);
         rides[rideNum].marker.openInfoWindow(text);
     }
 }
 
+function saveNewPass(ride_key, contact, address, lat, lng) {
+    var request = new XMLHttpRequest();
+    var reqStr = '/addpass?';
 
+    reqStr += 'ride_key='+ride_key+'&';
+    reqStr += 'contact='+contact+'&';
+    reqStr += 'address='+address+'&';
+    reqStr += 'lat='+lat+'&';
+    reqStr += 'lng='+lng;
+
+    request.open("GET",reqStr,false);
+    request.send(null);
+    if (request.status == 200) {
+	initialize();
+    } else {
+	alert("An error occurred, check your responses and try again.");
+    }
+
+}
 
 // Changes a numerical month returned from a Date object to a String
 function numToTextMonth(num)
