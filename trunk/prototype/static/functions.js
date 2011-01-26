@@ -574,7 +574,7 @@ function getPopupWindowMessage(ride, rideNum, lat, lng)
     if (ride.ToD < new Date(today.getFullYear(), today.getMonth(), today.getDate() + 2))
     {
         disabled = "disabled=\"disabled\"";
-        msg = "It is too late to join this ride";
+        msg = "It is too late to join this ride. <br />You might try to call the driver directly at: " + ride.contact;
     }
     else if (ride.max_passengers <= ride.num_passengers) {
         disabled = "disabled=\"disabled\"";
