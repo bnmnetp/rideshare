@@ -1,7 +1,0 @@
-Hello {{rider.first_name}}:
-
-The driver of you trip to {{trip.destination}} on {{trip.date_of_trip}} Can no longer drive.  If a new driver for this trip is found you may be able to ride with that person.  If you are able to be a driver for this trip please visit  http://decorahrideshare.com/rideshare/get_my_trips/  and volunteer to drive for this trip.
-
-Thank You!
-
-DecorahRideshare.com
