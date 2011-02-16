@@ -2,14 +2,14 @@
 // The rides array is declared in index.html
 
 var rides = new Array();
+var overlays = new Array();
+var windows = new Array();
 var map;
 var geocoder;
 var address2;
 
 function initialize(mess) 
 {
-    if (GBrowserIsCompatible()) 
-    {
 	var request = new XMLHttpRequest();
 	var today = new Date();
 	request.open("GET","/getrides?after="+today.getFullYear()+"-"+(today.getMonth()+1)+"-"+today.getDate(),false);
@@ -21,77 +21,130 @@ function initialize(mess)
 		var tod = rides[r].ToD
 		rides[r].ToD = new Date(tod.substring(0,4),tod.substring(5,7)-1,tod.substring(8,10));
 	    }
-	}
 
 
 
 
 	// Begin creation of Icons for Rides
-	var greenIcon = new GIcon();
-	greenIcon.image = "http://www.google.com/mapfiles/dd-start.png";
+
+	var greenIconMarker = new google.maps.MarkerImage("http://www.google.com/mapfiles/dd-start.png",
+            new google.maps.Size(12,20),
+            null,
+            new google.maps.Point(6,20));
+
+        var shadow = new google.maps.MarkerImage("http://labs.google.com/ridefinder/images/mm_20_shadow.png",{
+            size:new google.maps.Size(22,20)});
+         
+        //var window = new google.maps.InfoWindow({
+            //pixelOffset: new google.maps.Size(
+
+        var greenIcon = new google.maps.Marker({
+            icon: greenIconMarker,
+            shadow: shadow
+            });
+
 	//      greenIcon.image = "http://www.google.com/intl/en_us/mapfiles/ms/micons/green-dot.png";
-	greenIcon.shadow = "http://labs.google.com/ridefinder/images/mm_20_shadow.png";
-	greenIcon.iconSize = new GSize(12, 20); // 12, 20
-	greenIcon.shadowSize = new GSize(22, 20);
-	greenIcon.iconAnchor = new GPoint(6, 20); // 6, 20
-	greenIcon.infoWindowAnchor = new GPoint(10, 1);
+	//greenIcon.shadow = ;
+	//greenIcon.iconSize = new GSize(12, 20); // 12, 20
+	//greenIcon.shadowSize = new GSize(22, 20);
+	//greenIcon.iconAnchor = new GPoint(6, 20); // 6, 20
+	//greenIcon.infoWindowAnchor = new GPoint(10, 1);
 
 	gmarkerOptions = { icon:greenIcon };
 
-	var redIcon = new GIcon();
-	redIcon.image = "http://www.google.com/mapfiles/dd-end.png";
-	redIcon.shadow = "http://labs.google.com/ridefinder/images/mm_20_shadow.png";
-	redIcon.iconSize = new GSize(12, 20);
-	redIcon.shadowSize = new GSize(22, 20);
-	redIcon.iconAnchor = new GPoint(6, 20);
-	redIcon.infoWindowAnchor = new GPoint(5, 1);
+        var redIconMarker = new google.maps.MarkerImage("http://www.google.com/mapfiles/dd-end.png",
+            new google.maps.Size(12,20),
+            null,
+            new google.maps.Point(6,20));
+
+        var redIcon = new google.maps.Marker({
+            icon: redIconMarker,
+            shadow: shadow
+            });
+
+	//var redIcon = new GIcon();
+	//redIcon.image = ;
+	//redIcon.shadow = "http://labs.google.com/ridefinder/images/mm_20_shadow.png";
+	//redIcon.iconSize = new GSize(12, 20);
+	//redIcon.shadowSize = new GSize(22, 20);
+	//redIcon.iconAnchor = new GPoint(6, 20);
+	///redIcon.infoWindowAnchor = new GPoint(5, 1);
 
 	rmarkerOptions = { icon:redIcon };
 
 	// Sample custom marker code created with Google Map Custom Marker Maker
 	// http://www.powerhut.co.uk/googlemaps/custom_markers.php
 	
-	var myIcon = new GIcon();
-	myIcon.image = 'static/image.png';
-	myIcon.shadow = 'static/shadow.png';
-	myIcon.iconSize = new GSize(20,17);
-	myIcon.shadowSize = new GSize(29,17);
-	myIcon.iconAnchor = new GPoint(10,17);
-	myIcon.infoWindowAnchor = new GPoint(10,0);
-	myIcon.printImage = 'static/printImage.gif';
-	myIcon.mozPrintImage = 'static/mozPrintImage.gif';
-	myIcon.printShadow = 'static/printShadow.gif';
-	myIcon.transparent = 'static/transparent.png';
-	myIcon.imageMap = [19,0,19,1,19,2,18,3,18,4,17,5,16,6,19,7,19,8,19,9,19,10,16,11,19,12,13,13,13,14,15,15,19,16,8,16,7,15,6,14,6,13,5,12,5,11,5,10,4,9,4,8,4,7,3,6,2,5,1,4,1,3,0,2,0,1,0,0];
+	var myIconMarker = new google.maps.MarkerImage('static/image.png',
+            new google.maps.Size(20,17),
+            null,
+            new google.maps.Point(10,17));
+
+        //var myshadow = new google.maps.MarkerImager('static/shadow.png',
+            //new google.maps.Size(29,17));
+
+        var myIcon = new google.maps.Marker({
+            icon: myIconMarker,
+            shadow: shadow
+            });
+	//myIcon.image = ;
+	//myIcon.shadow = ;
+	//myIcon.iconSize = new GSize(20,17);
+	//myIcon.shadowSize = new GSize(29,17);
+	//myIcon.iconAnchor = new GPoint(10,17);
+	//myIcon.infoWindowAnchor = new GPoint(10,0);
+	//myIcon.printImage = 'static/printImage.gif';
+	//myIcon.mozPrintImage = 'static/mozPrintImage.gif';
+	//myIcon.printShadow = 'static/printShadow.gif';
+	//myIcon.transparent = 'static/transparent.png';
+	//myIcon.imageMap = [19,0,19,1,19,2,18,3,18,4,17,5,16,6,19,7,19,8,19,9,19,10,16,11,19,12,13,13,13,14,15,15,19,16,8,16,7,15,6,14,6,13,5,12,5,11,5,10,4,9,4,8,4,7,3,6,2,5,1,4,1,3,0,2,0,1,0,0];
 
 	bmarkerOptions = { icon:myIcon };
 
-	var blueIcon = new GIcon(G_DEFAULT_ICON);
-	blueIcon.image = "http://www.google.com/intl/en_us/mapfiles/ms/micons/blue-dot.png";
-	blueIcon.iconSize = new GSize(20, 17);
-	blueIcon.iconAnchor = new GPoint(10,17);
-	blueIcon.shadowSize = new GSize(29,16)
-	blueIcon.infoWindowAnchor = new GPoint(10,0);
+        var blueIconMarker = new google.maps.MarkerImage("http://www.google.com/intl/en_us/mapfiles/ms/micons/blue-dot.png",
+            new google.maps.Size(20,17),
+            null,
+            new google.maps.Point(10,17));
+
+        var blueshadow = new google.maps.MarkerImage('static/shadow.png',
+            new google.maps.Size(29,16));
+
+        var blueIcon = new google.maps.Marker({
+            icon: blueIconMarker,
+            shadow: blueshadow
+            });
+
+	//var blueIcon = new GIcon(G_DEFAULT_ICON);
+	//blueIcon.image = "http://www.google.com/intl/en_us/mapfiles/ms/micons/blue-dot.png";
+	//blueIcon.iconSize = new GSize(20, 17);
+	//blueIcon.iconAnchor = new GPoint(10,17);
+	//blueIcon.shadowSize = new GSize(29,16)
+
+	//blueIcon.infoWindowAnchor = new GPoint(10,0);
 	markerOptions = { icon:myIcon };
-	var marker = new GMarker(new GLatLng(43.313059,-91.799501), markerOptions);
 
-        reqMarkerOptions = {icon:blueIcon}
+	//var marker = new GMarker(new GLatLng(43.313059,-91.799501), markerOptions);
 
-        map = new GMap2(document.getElementById("map_canvas"), {draggableCursor: 'crosshair'});
-        map.setCenter(new GLatLng(43.313059,-91.799501), 6);
-        map.addControl(new GLargeMapControl());
+        reqMarkerOptions = {icon:blueIcon};
+
+        map = new google.maps.Map(document.getElementById("map_canvas"), {draggableCursor: 'crosshair'});
+        map.setCenter(new google.maps.LatLng(43.313059,-91.799501), 6);
+        //map.addControl(new GLargeMapControl());
         //map.setUIToDefault();
-        geocoder = new GClientGeocoder();
-        GEvent.addListener(marker, "click", function()
-			   { marker.openInfoWindowHtml("Luther College<br />Decorah, Iowa"); });
-        map.addOverlay(marker);
+        geocoder = new google.maps.Geocoder();
+        var window = new google.maps.InfoWindow({content:"Luther College<br />Decorah, Iowa"});
+        windows.push(window);
+        google.maps.event.addListener(myIcon, "click", function()
+			   { window.open(map,myIcon); });
+        myIcon.setMap(map);
+        overlays.push(myIcon);
 
         var r;
         for(r in rides)
         {
             addRideToMap(rides[r], r);
         }
-        GEvent.addListener(map, "click", getAddress);
+        google.maps.event.addListener(map, "click", getAddress);
     }
 
     makeRideTable();
@@ -138,7 +191,7 @@ function getAddress(overlay, latlng)
     if (latlng != null) 
     {
         address2 = latlng;
-        geocoder.getLocations(latlng, showAddressClick);
+        geocoder.geocode(latlng, showAddressClick);
     }
 }
 
@@ -152,13 +205,16 @@ function showAddressClick(response)
     else 
     {
         place = response.Placemark[0];
-        point = new GLatLng(place.Point.coordinates[1],
+        point = new google.maps.LatLng(place.Point.coordinates[1],
                             place.Point.coordinates[0]);
         //marker = new GMarker(point);
         //map.addOverlay(marker);
-        map.openInfoWindowHtml(point, 
+        var window = new google.maps.InfoWindow({position:point,content:getNewRidePopupHTML(place.Point.coordinates[1], place.Point.coordinates[0], place.address)});
+        windows.push(window);
+        window.open(map);
+        //map.openInfoWindowHtml(point, 
 			       // '<b>latlng: </b>' + place.Point.coordinates[1] + "," + place.Point.coordinates[0] + '<br>' +
-			       getNewRidePopupHTML(place.Point.coordinates[1], place.Point.coordinates[0], place.address));
+			      // getNewRidePopupHTML(place.Point.coordinates[1], place.Point.coordinates[0], place.address));
     }
 }
 
@@ -187,9 +243,12 @@ function getNewRidePopupHTML(lat, lng, address3)
 
 function newRidePopupHTMLPart2(lat, lng, address4, to, contact)
 {
-    map.closeInfoWindow();
+    windows.pop().close();
     var htmlText = getNewRideIsDriverHTML(lat, lng, address4, to, contact);
-    map.openInfoWindowHtml(new GLatLng(lat, lng), htmlText);
+    var window = new google.maps.InfoWindow({position:new google.maps.LatLng(lat, lng),content:htmlText});
+    window.open(map);
+    windows.push(window);
+    //map.openInfoWindowHtml(new GLatLng(lat, lng), htmlText);
 }
 
 // Returns the html for Step 2 in Ride Creation
@@ -228,9 +287,11 @@ function getNewRideIsDriverHTML(lat, lng, address, to, contact)
 
 function newRidePopupHTMLPart2b(lat, lng, address4, to, driver)
 {
-    map.closeInfoWindow();
+    windows.pop().close();
     var htmlText = getNewRidePopupHTML2(lat, lng, address4, to, driver);
-    map.openInfoWindowHtml(new GLatLng(lat, lng), htmlText);
+    var window = new google.maps.InfoWindow({position:new google.mapsLatLng(lat, lng),content:htmlText});
+    window.open(map);
+    windows.push(window);
 }
 
 //
@@ -300,7 +361,7 @@ function getNewRidePopupHTML2(lat, lng, address5, to, isDriver, contact)
     }
     line16 = line16 + "</select></div>";
     line16 = line16 + "Comments: <input type=\"text\" id=\"ridecomment\" name=\"ridecomment\" size=\"50\">"
-    var line17="<div id=\"buttons\"><input type=\"submit\" id=\"submit\" name=\"submit\" value=\"Okay\"><input type=\"button\" id=\"cancel\" name='cancel' value='Cancel' onclick='map.closeInfoWindow();'></div><input type=\"hidden\" name=\"driver\" value=\""+isDriver+"\">   </form>";
+    var line17="<div id=\"buttons\"><input type=\"submit\" id=\"submit\" name=\"submit\" value=\"Okay\"><input type=\"button\" id=\"cancel\" name='cancel' value='Cancel' onclick='windows.pop().close();'></div><input type=\"hidden\" name=\"driver\" value=\""+isDriver+"\">   </form>";
     var full = line5+line6+line7+line8+line9+line10+line11+line12+line13+line14+line15+line16+line17;
     return full;
 }
@@ -370,9 +431,11 @@ function verifyNewRidePopup(lat, lng, address6, isDriver)
         if (number.length == 10) {
             number = number.slice(0, 3) + '-' + number.slice(3, 6) + '-' + number.slice(6);
         }
-        map.closeInfoWindow();
+        windows.pop().close()
         var htmlText = getNewRidePopupHTML3(lat, lng, from, to, maxp, number, earlylate, partofday, month, day, year,isDriver,comment);
-        map.openInfoWindowHtml(new GLatLng(lat, lng), htmlText);
+        var window = new google.maps.InfoWindow({position:new google.maps.LatLng(lat, lng),content:htmlText});
+        window.open(map);
+        windows.push(window);
     }  
 }
 
@@ -485,60 +548,87 @@ function addRideToMap(ride, rideNum)
 	var tooltext = 'needs driver';
 	reqMarkerOptions['title'] = tooltext;
 	if (ride.destination_title == "Luther College, Decorah, IA") {
-            var amarker = new GMarker(new GLatLng(ride.start_point_lat, ride.start_point_long), reqMarkerOptions);
+            blueIcon.setPosition(new google.maps.LatLng(ride.start_point_lat, ride.start_point_long));
+            //var amarker = new GMarker(new GLatLng(ride.start_point_lat, ride.start_point_long), reqMarkerOptions);
 	} else {
-            var amarker = new GMarker(new GLatLng(ride.destination_lat, ride.destination_long), reqMarkerOptions);
+            blueIcon.setPosition(new google.maps.LatLng(ride.destination_lat, ride.destination_long));
+            //var amarker = new GMarker(new GLatLng(ride.destination_lat, ride.destination_long), reqMarkerOptions);
 	}
-        GEvent.addListener(amarker, "click", function(latlng)
+        google.maps.event.addListener(blueIcon, "click", function(latlng)
 			   {
 			       if (latlng) {
-				   amarker.openInfoWindowHtml(addDriverPopup(ride, rideNum, latlng.lat(), latlng.lng()));
+                                   var window = new google.maps.InfoWindow({position:new google.maps.LatLng(latlng.lat(),latlng.lng()),content:addDriverPopup(ride, rideNum, latlng.lat(), latlng.lng())});
+				   windows.push(window);
+                                   window.open(map);
+				   //amarker.openInfoWindowHtml(addDriverPopup(ride, rideNum, latlng.lat(), latlng.lng()));
 			       }
 			   });
-        ride.marker = amarker;
-        map.addOverlay(amarker);
+        ride.marker = blueIcon;
+        blueIcon.setMap(map);
+        overlays.push(blueIcon);
+        //map.addOverlay(blueIcon);
     } else if (ride.destination_title == "Luther College, Decorah, IA")
     {
         var tooltext = '';
         tooltext += ride.ToD;
         gmarkerOptions['title'] = tooltext;
-        var amarker = new GMarker(new GLatLng(ride.start_point_lat, ride.start_point_long), gmarkerOptions);
-        GEvent.addListener(amarker, "click", function(latlng)
+        greenIcon.setPosition(new goole.maps.LatLng(ride.start_point_lat, ride.start_point_long))
+        //var amarker = new GMarker(new GLatLng(ride.start_point_lat, ride.start_point_long), gmarkerOptions);
+        google.maps.event.addListener(amarker, "click", function(latlng)
 			   // From function() to function(latlng)
 			   {
 			       if (latlng) {
-				   amarker.openInfoWindowHtml(getPopupWindowMessage(ride, rideNum, latlng.lat(), latlng.lng()));
+                                   var window = new google.maps.InfoWindow({position:new google.maps.LatLng(latlng.lat(),latlng.lng()),content:addDriverPopup(ride, rideNum, latlng.lat(), latlng.lng())});
+				   windows.push(window);
+                                   window.open(map);
+				   //amarker.openInfoWindowHtml(getPopupWindowMessage(ride, rideNum, latlng.lat(), latlng.lng()));
 			       }
 			   });
-        ride.marker = amarker;
-        map.addOverlay(amarker);
+        ride.marker = greenIcon;
+        greenIcon.setMap(map);
+        overlays.push(greenIcon);
+        //map.addOverlay(amarker);
     }
     else if (ride.start_point_title == "Luther College, Decorah, IA")
     {
         var tooltext = '';
         tooltext += ride.ToD;
         rmarkerOptions['title'] = tooltext;
-        var bmarker = new GMarker(new GLatLng(ride.destination_lat, ride.destination_long), rmarkerOptions);
-        GEvent.addListener(bmarker, "click", function(latlng)
+        redIcon.setPosition(new google.maps.LatLng(ride.destination_lat, ride.destination_long));
+        //var bmarker = new GMarker(new GLatLng(ride.destination_lat, ride.destination_long), rmarkerOptions);
+        google.maps.event.addListener(bmarker, "click", function(latlng)
 			   // From function() to function(latlng)
 			   {
 			       if (latlng) {
-				   bmarker.openInfoWindowHtml(getPopupWindowMessage(ride, rideNum, latlng.lat(), latlng.lng()));
+                                   var window = new google.maps.InfoWindow({position:new google.maps.LatLng(latlng.lat(),latlng.lng()),content:addDriverPopup(ride, rideNum, latlng.lat(), latlng.lng())});
+				   windows.push(window);
+                                   window.open(map);
+				   //bmarker.openInfoWindowHtml(getPopupWindowMessage(ride, rideNum, latlng.lat(), latlng.lng()));
 			       }
 			   });
-        ride.marker = bmarker;
-        map.addOverlay(bmarker);
+        ride.marker = redIcon;
+        redIcon.setMap(map);
+        overlays.push(redIcon);
+        //map.addOverlay(bmarker);
     }
     return ride.marker;
 }
 
 function joinRideByNumber(rideNum) {
-    map.removeOverlay(rides[rideNum].marker);
+    rides[rideNum].marker.setMap(null);
+    //map.removeOverlay(rides[rideNum].marker);
     var marker = addRideToMap(rides[rideNum], rideNum);
-    marker.openInfoWindowHtml(getPopupWindowMessage(rides[rideNum], 
+    overlays.push(marker)
+    var window = new google.maps.InfoWindow({position:new google.maps.LatLng(latlng.lat(),latlng.lng()),content:getPopupWindowMessage(rides[rideNum], 
 						    rideNum, 
 						    rides[rideNum].destination_lat,
-						    rides[rideNum].destination_long));
+						    rides[rideNum].destination_long)});
+    windows.push(window);
+    window.open(map);
+    //marker.openInfoWindowHtml(getPopupWindowMessage(rides[rideNum], 
+						    //rideNum, 
+						    //rides[rideNum].destination_lat,
+						    //rides[rideNum].destination_long));
 }
 /* 
    Returns the HTML to be contained in a popup window in the GMap
@@ -598,12 +688,16 @@ function getPopupWindowMessage(ride, rideNum, lat, lng)
 }
 
 function addDriverToRideNumber(rideNum) {
-    map.removeOverlay(rides[rideNum].marker);
+    rides[rideNum].marker.setMap(null);
     var marker = addRideToMap(rides[rideNum], rideNum);
-    marker.openInfoWindowHtml(addDriverPopup(rides[rideNum], 
-						    rideNum, 
-						    rides[rideNum].destination_lat,
-						    rides[rideNum].destination_long));
+    overlays.push(marker);
+    var window = new google.maps.InfoWindow({position:new google.maps.LatLng(latlng.lat(),latlng.lng()),content:addDriverPopup(ride, rideNum, latlng.lat(), latlng.lng())});
+    windows.push(window);
+    window.open(map);
+    //marker.openInfoWindowHtml(addDriverPopup(rides[rideNum], 
+						    //rideNum, 
+						    //rides[rideNum].destination_lat,
+						    //rides[rideNum].destination_long));
 }
 
 
@@ -630,15 +724,20 @@ function getDriverContact(rideNum) {
     htmlText += '<input type="button" name="Cancel" value="Cancel" onclick="closePopup({rideNum});"><br />';
 
     var t = jsontemplate.Template(htmlText);
-    map.removeOverlay(ride.marker);
+    ride.marker.setMap(null);
     var marker = addRideToMap(rides[rideNum], rideNum);
-    marker.openInfoWindowHtml(t.expand(ride));
+    overlays.push(marker);
+    var window = new google.maps.InfoWindow({position:new google.maps.LatLng(ride.marker.getPosition()),content:t.expand(ride)});
+    windows.push(window);
+    window.open(map);
+    //marker.openInfoWindowHtml(t.expand(ride));
 }
 
 
 function closePopup(rideNum) {
-    map.removeOverlay(ride.marker);
+    ride.marker.setMap(null);
     var marker = addRideToMap(rides[rideNum], rideNum);
+    overlays.push(marker);
 }
 
 function addDriverToRide(rideNum) {
@@ -684,10 +783,11 @@ function validatePhoneNumber(phone) {
 // drop_off = 0, pick_up = 1
 function addPassengerPart2(ride_key, drop_off_or_pick_up, lat, lng, rideNum)
 {
-    map.closeInfoWindow();
+    windows.pop()
     // remove all listeners
-    GEvent.clearListeners(map);
-    map.clearOverlays();
+    google.maps.event.clearListeners(map);
+    overlays.length= 0;
+    //map.clearOverlays();
 
     // Create text for popup window
     var infowindowtext = '';
@@ -706,24 +806,29 @@ function addPassengerPart2(ride_key, drop_off_or_pick_up, lat, lng, rideNum)
         infowindowtext += 'drop off';
     }
     infowindowtext += ' point.<br />';
-    infowindowtext += "<input type='button' onclick='rides["+rideNum+"].marker.openInfoWindowHtml(getPopupWindowMessage2("+rideNum+", "+drop_off_or_pick_up+", "+lat+", "+lng+", \"\"))' value='Use this location' />";
-    infowindowtext += "<input type='button' onclick='initialize();' value='Cancel' />"; //TODO:  something other than init here
+    infowindowtext += "<input type='button' onclick='var window = new google.maps.InfoWindow({position:new google.maps.LatLng(rides["+rideNum+"].marker.getPosition(),content:getPopupWindowMessage2("+rideNum+", "+drop_off_or_pick_up+", "+lat+", "+lng+", \"\")});window.open(map)' value='Use this location' />";
+    infowindowtext += "<input type='button' onclick='initialize();' value='Cancel' />"; //TODO:  something other than init here     //HEY YOU LOOK HERE
     // Keep marker for ride's location (lat, lng)
     var thismarker = rides[rideNum].marker;
-    GEvent.addListener(thismarker, "click", function(latlng)
+    google.maps.event.addListener(thismarker, "click", function(latlng)
 		       // From function() to function(latlng)
 		       {
 			   if (latlng) {
-			       thismarker.openInfoWindowHtml(infowindowtext);
+                               var window = new google.maps.InfoWindow({content:infowindowtext,position:thismarker.getPosition()});
+                               windows.push(window);
+                               window.open(map);
+			       //thismarker.openInfoWindowHtml(infowindowtext);
 			   }
 		       });
-    map.addOverlay(thismarker);
+    thismarker.setMap(map);
+    overlays.push(thismarker);
+    //map.addOverlay(thismarker);
 
-    GEvent.addListener(map, 'click', function(overlay, latlng) 
+    google.maps.event.addListener(map, 'click', function(overlay, latlng) 
 		       {
 			   if (latlng != null) 
 			   {
-			       geocoder.getLocations(latlng, function(response) 
+			       geocoder.geocode(latlng, function(response) 
 						     {
 							 if (!response || response.Status.code != 200) 
 							 {
@@ -732,19 +837,27 @@ function addPassengerPart2(ride_key, drop_off_or_pick_up, lat, lng, rideNum)
 							 else
 							 {
 							     var place = response.Placemark[0];
-							     point = new GLatLng(place.Point.coordinates[1],
+							     point = new google.maps.LatLng(place.Point.coordinates[1],
 										 place.Point.coordinates[0]);
 							     var doOrPu = drop_off_or_pick_up; // drop_off = 0, pick_up = 1
-							     map.openInfoWindowHtml(point, getPopupWindowMessage2(rideNum, doOrPu, 
+                                                             var window = new google.maps.InfoWindow({position: new google.maps.LatLng(point.lat(),point.lng()),content:       															  getPopupWindowMessage2(rideNum, doOrPu, 
 														  point.lat(), 
-														  point.lng(), place.address));
+														  point.lng(), place.address)});
+                                                            windows.push(window);
+                                                            window.open(map);
+							     //map.openInfoWindowHtml(point, getPopupWindowMessage2(rideNum, doOrPu, 
+														  //point.lat(), 
+														  //point.lng(), place.address));
 							 }
 						     });
 			   }
 		       });
 
     // Popup regarding choice of pickup / dropoff point
-    thismarker.openInfoWindowHtml(infowindowtext);
+    var window = new google.maps.InfoWindow({position: new google.maps.LatLng(thismarker.getPosition()),content:infowindowtext});
+    windows.push(window);
+    window.open(map);
+    //thismarker.openInfoWindowHtml(infowindowtext);
 }
 
 function getPopupWindowMessage2(rideNum, doOrPu, lat, lng, address8, contact)
@@ -803,7 +916,7 @@ function addPassengerPart3(rideNum, lat, lng, doOrPu) {
         text += 'Address: '+address+'<br />';
         text += 'Contact: '+contact+'<br />';
         text += "<input type='button' id='submit' value='Submit' onclick='"+funcall+"' />";
-        text += "<input type='button' id='back' value='Back' onclick='map.openInfoWindowHtml(new GLatLng("+lat+", "+lng+"), getPopupWindowMessage2("+rideNum+", "+doOrPu+", "+lat+", "+lng+", \""+address+"\", \""+contact+"\"));' /></form>";
+        text += "<input type='button' id='back' value='Back' onclick='map.openInfoWindowHtml(new GLatLng("+lat+", "+lng+"), getPopupWindowMessage2("+rideNum+", "+doOrPu+", "+lat+", "+lng+", \""+address+"\", \""+contact+"\"));' /></form>";                  //HEY YOU LOOK HERE AGAIN
 	alert(text);
         rides[rideNum].marker.openInfoWindow(text);
     }
@@ -840,7 +953,7 @@ function showAddress(address1)
 {
     if (geocoder) 
     {
-        geocoder.getLatLng(
+        geocoder.geocode(
             address1,
             function(point) 
             {
@@ -853,7 +966,10 @@ function showAddress(address1)
 		    //map.setCenter(point, 13);
 		    //var marker = new GMarker(point);
 		    //map.addOverlay(marker);
-		    map.openInfoWindowHtml(point, getNewRidePopupHTML(point.lat(), point.lng(), address1));
+                    var window = new google.maps.InfoWindow({position: new google.maps.LatLng(point.lat(),point.lng()),content:getNewRidePopupHTML(point.lat(), point.lng(), 			    address1)});
+                    windows.push(window);
+                    window.open(map);
+		    //map.openInfoWindowHtml(point, getNewRidePopupHTML(point.lat(), point.lng(), address1));        
 		}
             }
         );
@@ -941,8 +1057,9 @@ function changeDays(day, month)
 // Removes all overlays on the GoogleMap, adds only the popups that fit between the selected years
 function changeDates(imonth, iday, iyear, fmonth, fday, fyear)
 {
-    map.clearOverlays();
-    map.addOverlay(marker);
+    overlays.length = 0;
+    //overlays.push(marker);
+    //map.addOverlay(marker);
     // Change the data from pull-downs to accurate dates
     var today = new Date();
     var yr = today.getFullYear() - 1;
@@ -958,7 +1075,9 @@ function changeDates(imonth, iday, iyear, fmonth, fday, fyear)
     {
         if (rides[y].ToD >= iDate && rides[y].ToD <= fDate)
         {
-            map.addOverlay(rides[y].marker);
+            rides[y].marker.setMap(map);
+            overlays.add(rides[y].marker);                                            //???????????????????????????????????????
+            //map.addOverlay(rides[y].marker);
         }
     }
 }
@@ -994,8 +1113,12 @@ function addPassengerFromPopup(login, rideNum)
             // Change popups
             map.removeOverlay(rides[rideNum].marker);
             var marker = addRideToMap(rides[rideNum], rideNum);
+    
+            var window = new google.maps.InfoWindow({position: new google.maps.LatLng(marker.getPosition()),content:"You have been added<br />to this ride!"});
+            windows.push(window);
+            window.open(map);
 
-            marker.openInfoWindowHtml("You have been added<br />to this ride!");
+            //marker.openInfoWindowHtml("You have been added<br />to this ride!");                                     
 	}
 	else
 	{
