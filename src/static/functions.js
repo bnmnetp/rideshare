@@ -126,9 +126,15 @@ function initialize(mess)
 	//var marker = new GMarker(new GLatLng(43.313059,-91.799501), markerOptions);
 
         reqMarkerOptions = {icon:blueIcon};
-
-        map = new google.maps.Map(document.getElementById("map_canvas"), {draggableCursor: 'crosshair'});
-        map.setCenter(new google.maps.LatLng(43.313059,-91.799501), 6);
+        var centerLL = new google.maps.LatLng(43.313059,-91.799501);
+        var myOptions = {
+	    draggableCursor: 'crosshair',
+	    center: centerLL,
+	    mapTypeId: google.maps.MapTypeId.ROADMAP,
+	    zoom: 6
+        };
+        map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+        //map.setCenter(new , 6);
         //map.addControl(new GLargeMapControl());
         //map.setUIToDefault();
         geocoder = new google.maps.Geocoder();
