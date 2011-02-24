@@ -844,7 +844,6 @@ function addPassengerPart2(ride_key, drop_off_or_pick_up, lat, lng, rideNum)
 							 }
 							 else
 							 {
-                                                           alert(event);
 							     //var place = response.Placemark[0];
 							     var point = results[0].geometry.location;
 							     var doOrPu = drop_off_or_pick_up; // drop_off = 0, pick_up = 1
