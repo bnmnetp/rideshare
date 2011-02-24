@@ -8,7 +8,7 @@ var icons= {};
 var map;
 var geocoder;
 var address2;
-clickListener;
+var clickListener;
 
 function initialize(mess) 
 {
@@ -308,7 +308,9 @@ function newRidePopupHTMLPart2b(lat, lng, address4, to, driver)
 function getNewRidePopupHTML2(lat, lng, address5, to, isDriver, contact)
 {
     contact = (typeof contact == 'undefined') ? '563-555-1212': contact; // If contact is not defined, then let it be 563-555-1212
-    var line5="<b>Create a new Ride</b> <form onsubmit=\"verifyNewRidePopup("+lat+", "+lng+", '"+address5+"', "+isDriver+"); return false;\" id=\"newride\"><div id=\"textToAll\">Please ensure that your address is as specific as possible<br />(<i>37</i> Main Street, not <i>30-50</i> Main Street)<br />From <input type=\"text\" id=\"textFrom\" name='textFrom' size=\"50\"";
+    var line5="<b>Create a new Ride</b>";
+    //line5 +="<input type='button' id='submit' value='Submit' onclick='verifyNewRidePopup("+lat+", "+lng+", '"+address5+"', "+isDriver+");' />";
+    line5 +="<div id=\"textToAll\">Please ensure that your address is as specific as possible<br />(<i>37</i> Main Street, not <i>30-50</i> Main Street)<br />From <input type=\"text\" id=\"textFrom\" name='textFrom' size=\"50\"";
     if (to == true)
     {
 	line5 = line5 + "value='"+address5+"'";
@@ -365,7 +367,7 @@ function getNewRidePopupHTML2(lat, lng, address5, to, isDriver, contact)
     }
     line16 = line16 + "</select></div>";
     line16 = line16 + "Comments: <input type=\"text\" id=\"ridecomment\" name=\"ridecomment\" size=\"50\">"
-    var line17="<div id=\"buttons\"><input type=\"submit\" id=\"submit\" name=\"submit\" value=\"Okay\"><input type=\"button\" id=\"cancel\" name='cancel' value='Cancel' onclick='windows.pop().close();'></div><input type=\"hidden\" name=\"driver\" value=\""+isDriver+"\">   </form>";
+    var line17="<div id=\"buttons\"><input type=\"submit\" id=\"submit\" name=\"submit\" value=\"Okay\" onclick=\"verifyNewRidePopup("+lat+", "+lng+", '"+address5+"', "+isDriver+"); return false;\"'><input type=\"button\" id=\"cancel\" name='cancel' value='Cancel' onclick='windows.pop().close();putListener();'></div><input type=\"hidden\" name=\"driver\" value=\""+isDriver+"\">";
     var full = line5+line6+line7+line8+line9+line10+line11+line12+line13+line14+line15+line16+line17;
     return full;
 }
@@ -535,6 +537,7 @@ function  saveRide(vals) {
 
     request.open("GET",reqStr,false);
     request.send(null);
+    clickListener = google.maps.event.addListener(map, "click", getAddress);
     if (request.status == 200) {
 	initialize();
     } else {
@@ -690,6 +693,7 @@ function getPopupWindowMessage(ride, rideNum, lat, lng)
     text1 += "<br />" + ride.comment + "<br />";
 
     var text2 = ("<br /><form id=\"addPass\" onsubmit=\"addPassengerPart2('"+ride.key+"', "+drop_off_or_pick_up+", "+lat+", "+lng+", "+rideNum+"); return false;\"><input type=\"submit\" value=\"Join this Ride\""+disabled+"/></form>");
+    //var text2= "<input type='button' name='OK' value='Join this Ride'"+disabled+" onclick='addPassengerPart2('"+ride.key+"', "+drop_off_or_pick_up+", "+lat+", "+lng+", "+rideNum+"); return false;'>";
     var result = text1 + text2;
     return result;
 }
@@ -744,6 +748,7 @@ function closePopup(rideNum) {
     ride.marker.setMap(null);
     var marker = addRideToMap(rides[rideNum], rideNum);
     overlays.push(marker);
+    clickListener = google.maps.event.addListener(map, "click", getAddress);
 }
 
 function addDriverToRide(rideNum) {
@@ -762,6 +767,7 @@ function submitDriverForRide(ride,contact,numPass) {
 
     request.open("GET","/adddriver?key="+ride.key+"&contact="+contact+"&numpass="+numPass,false);
     request.send(null);
+    clickListener = google.maps.event.addListener(map, "click", getAddress);
     if (request.status == 200) {
 	initialize();
     } else {
@@ -790,9 +796,12 @@ function validatePhoneNumber(phone) {
 function addPassengerPart2(ride_key, drop_off_or_pick_up, lat, lng, rideNum)
 {
     // remove all listeners
-    google.maps.event.clearListeners(map);
+    google.maps.event.clearListeners(map, 'click');
     overlays.length=0;
     //map.clearOverlays();
+   
+    // Keep marker for ride's location (lat, lng)
+    var thismarker = rides[rideNum].marker;
 
     // Create text for popup window
     var infowindowtext = '';
@@ -812,14 +821,11 @@ function addPassengerPart2(ride_key, drop_off_or_pick_up, lat, lng, rideNum)
     }
     infowindowtext += ' point.<br />';
     infowindowtext += "<input type='button' onclick='windowOpen(rides["+rideNum+"].marker.getPosition(),getPopupWindowMessage2("+rideNum+", "+drop_off_or_pick_up+", "+lat+", "+lng+", \"\"));' value='Use this location' />";
-    infowindowtext += "<input type='button' onclick='initialize();' value='Cancel' />"; //TODO:  something other than init here     
-    // Keep marker for ride's location (lat, lng)
-    var thismarker = rides[rideNum].marker;
-    //windowOpen(thismarker.getPosition(),infowindowtext);
-    google.maps.event.addListener(thismarker, 'click', function()
-		       // From function() to function(latlng)
+    infowindowtext += "<input type='button' onclick='initialize()' value='Cancel' />"; //TODO:  something other than init here     
+    windowOpen(thismarker.getPosition(),infowindowtext);
+    google.maps.event.addListener(thismarker, 'click', function(event)
 		       {
-			   if (thismarker.getPosition()) {
+			   if (event) {
                                windowOpen(thismarker.getPosition(),infowindowtext);
 		                       }
 		       });
@@ -827,22 +833,22 @@ function addPassengerPart2(ride_key, drop_off_or_pick_up, lat, lng, rideNum)
     overlays.push(thismarker);
     //map.addOverlay(thismarker);
 
-    google.maps.event.addListener(map, 'click', function(event) 
+    google.maps.event.addListener(map, 'click', function(event)
 		       {
-			   if (event.latLng != null) 
-			   {
-			       geocoder.geocode(event.latLng, function(results,status) 
-						     {
+			   if (event!=null) 
+			   { 
+			       geocoder.geocode({'latLng':event.latLng}, function(results,status){
 							 if (!status || status != google.maps.GeocoderStatus.OK) 
 							 {
 							     alert("Status: " + status);
 							 }
 							 else
 							 {
+                                                           alert(event);
 							     //var place = response.Placemark[0];
 							     var point = results[0].geometry.location;
 							     var doOrPu = drop_off_or_pick_up; // drop_off = 0, pick_up = 1
-                                                            windowOpen(new google.maps.LatLng(point.lat(),point.lng()),getPopupWindowMessage2(rideNum, doOrPu, 
+                                                            windowOpen(point,getPopupWindowMessage2(rideNum, doOrPu, 
 														  point.lat(), 
 														  point.lng(), results[0].formatted_address));
 							     //map.openInfoWindowHtml(point, getPopupWindowMessage2(rideNum, doOrPu, 
@@ -854,7 +860,7 @@ function addPassengerPart2(ride_key, drop_off_or_pick_up, lat, lng, rideNum)
 		       });
 
     // Popup regarding choice of pickup / dropoff point
-    windowOpen(new google.maps.LatLng(thismarker.getPosition()),infowindowtext);
+   // windowOpen(new google.maps.LatLng(thismarker.getPosition()),infowindowtext);
     //thismarker.openInfoWindowHtml(infowindowtext);
 }
 
@@ -869,7 +875,7 @@ function getPopupWindowMessage2(rideNum, doOrPu, lat, lng, address8, contact)
             address8 = rides[rideNum].start_point_title;
         }
     }
-    var text = "<form onsubmit='addPassengerPart3("+rideNum+", "+lat+", "+lng+", "+doOrPu+"); return false;'>Please ensure that your address is as specific as possible<br />(<i>37</i> Main Street, not <i>30-50</i> Main Street)<br />";
+    var text = "Please ensure that your address is as specific as possible<br />(<i>37</i> Main Street, not <i>30-50</i> Main Street)<br />";
     if (doOrPu == 0) {
         text += "Drop Off At: ";
     }
@@ -878,7 +884,8 @@ function getPopupWindowMessage2(rideNum, doOrPu, lat, lng, address8, contact)
     }
     text += "<input type='text' id='address' value='"+address8+"' size='30' /><br />";
     text += "Contact: <input type='text' id='contact' maxlength='12' size='10' value='"+contact+"' onclick='this.value=\"\"' /><br />";
-    text += "<input type='submit' id='submit' value='Okay' />";
+    text += "<input type='button' name='Okay' value='Okay' onclick='addPassengerPart3("+rideNum+", "+lat+", "+lng+", "+doOrPu+"); return false;'>";
+    //text += "<input type='submit' id='submit' value='Okay' />";
     var ride_key = rides[rideNum].key;
     text += "<input type='button' id='back' value='Back' onclick='addPassengerPart2(\""+ride_key+"\", "+doOrPu+", "+lat+", "+lng+", "+rideNum+"); return false;' /></form>";
     return text;
@@ -907,7 +914,7 @@ function addPassengerPart3(rideNum, lat, lng, doOrPu) {
         if (contact.length == 10) { // 3194317934 => 319-431-7934
             contact = contact.slice(0,3)+"-"+contact.slice(3,6)+"-"+contact.slice(6);
         }
-	var funcall = 'saveNewPass("'+rides[rideNum].key+'","'+contact+'","'+address+'",'+lat+','+lng+');';
+	var funcall = 'saveNewPass("'+rides[rideNum].key+'","'+contact+'","'+address+'",'+lat+','+lng+');clickListener = google.maps.event.addListener(map, "click", getAddress);';
 
         var text = "<form>";
         text += '<h4>Is the following information correct?</h4>';
@@ -916,9 +923,6 @@ function addPassengerPart3(rideNum, lat, lng, doOrPu) {
         text += "<input type='button' id='submit' value='Submit' onclick='"+funcall+"' />";
         text += "<input type='button' id='back' value='Back' onclick='var window = new google.maps.InfoWindow({position:new google.maps.LatLng("+lat+", "+lng+"),content:getPopupWindowMessage2("+rideNum+", "+doOrPu+", "+lat+", "+lng+", \""+address+"\", \""+contact+"\")});' /></form>";                  
 	//(text);
-        //var window = new google.maps.InfoWindow({position:rides[rideNum].marker.getPosition(),content:text});
-        //windows.push(window);
-        //window.open(map);
         windowOpen(rides[rideNum].marker.getPosition(),text);
         //rides[rideNum].marker.openInfoWindow(text);
     }
@@ -1161,18 +1165,27 @@ function addOption(selectbox, value, text)
 function windowOpen(position1,content1)
 {
     var window = new google.maps.InfoWindow({position:position1, content:content1});
-    if (windows.length ==1)
+    google.maps.event.addListener(window,"closeclick",function(){
+             clickListener = google.maps.event.addListener(map, "click", getAddress);
+             });
+    google.maps.event.removeListener(clickListener);
+    if (windows.length !=0)
       {
          windows.pop().close();
-         windows.push(window);
          window.open(map);
+         windows.push(window);
       }
     else
       {
-        windows.push(window);
         window.open(map);
+        windows.push(window);
       }
+    
 
 }
 
+function putListener()
+{
+   clickListener = google.maps.event.addListener(map, "click", getAddress);
+}
 
