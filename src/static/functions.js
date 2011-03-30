@@ -1,6 +1,8 @@
 // initalize rides array then plot them.
 // The rides array is declared in index.html
 
+//Present
+
 var rides = new Array();
 var overlays = new Array();
 var windows = new Array();
@@ -12,6 +14,7 @@ var clickListener;
 
 function initialize(mess) 
 {
+
 	var request = new XMLHttpRequest();
 	var today = new Date();
 	request.open("GET","/getrides?after="+today.getFullYear()+"-"+(today.getMonth()+1)+"-"+today.getDate(),false);
@@ -20,7 +23,7 @@ function initialize(mess)
 	    // loop over all
 	    rides = eval(request.responseText);
 	    for (r in rides) {
-		var tod = rides[r].ToD
+		var tod = rides[r].ToD;
 		rides[r].ToD = new Date(tod.substring(0,4),tod.substring(5,7)-1,tod.substring(8,10));
 	    }
 
@@ -36,22 +39,12 @@ function initialize(mess)
 
         var shadow = new google.maps.MarkerImage("http://labs.google.com/ridefinder/images/mm_20_shadow.png",{
             size:new google.maps.Size(22,20)});
-         
-        //var window = new google.maps.InfoWindow({
-            //pixelOffset: new google.maps.Size(
 
         var greenIcon ={
             icon: greenIconMarker,
             shadow: shadow
             };
         icons.green= greenIcon;
-
-	//      greenIcon.image = "http://www.google.com/intl/en_us/mapfiles/ms/micons/green-dot.png";
-	//greenIcon.shadow = ;
-	//greenIcon.iconSize = new GSize(12, 20); // 12, 20
-	//greenIcon.shadowSize = new GSize(22, 20);
-	//greenIcon.iconAnchor = new GPoint(6, 20); // 6, 20
-	//greenIcon.infoWindowAnchor = new GPoint(10, 1);
 
 	gmarkerOptions = { icon:greenIcon };
 
@@ -66,14 +59,6 @@ function initialize(mess)
             };
         icons.red = redIcon;
 
-	//var redIcon = new GIcon();
-	//redIcon.image = ;
-	//redIcon.shadow = "http://labs.google.com/ridefinder/images/mm_20_shadow.png";
-	//redIcon.iconSize = new GSize(12, 20);
-	//redIcon.shadowSize = new GSize(22, 20);
-	//redIcon.iconAnchor = new GPoint(6, 20);
-	///redIcon.infoWindowAnchor = new GPoint(5, 1);
-
 	rmarkerOptions = { icon:redIcon };
 
 	// Sample custom marker code created with Google Map Custom Marker Maker
@@ -84,25 +69,12 @@ function initialize(mess)
             null,
             new google.maps.Point(10,17));
 
-        //var myshadow = new google.maps.MarkerImager('static/shadow.png',
-            //new google.maps.Size(29,17));
 
         var myIcon ={
             icon: myIconMarker,
             shadow: shadow
             };
         icons.my = myIcon;
-	//myIcon.image = ;
-	//myIcon.shadow = ;
-	//myIcon.iconSize = new GSize(20,17);
-	//myIcon.shadowSize = new GSize(29,17);
-	//myIcon.iconAnchor = new GPoint(10,17);
-	//myIcon.infoWindowAnchor = new GPoint(10,0);
-	//myIcon.printImage = 'static/printImage.gif';
-	//myIcon.mozPrintImage = 'static/mozPrintImage.gif';
-	//myIcon.printShadow = 'static/printShadow.gif';
-	//myIcon.transparent = 'static/transparent.png';
-	//myIcon.imageMap = [19,0,19,1,19,2,18,3,18,4,17,5,16,6,19,7,19,8,19,9,19,10,16,11,19,12,13,13,13,14,15,15,19,16,8,16,7,15,6,14,6,13,5,12,5,11,5,10,4,9,4,8,4,7,3,6,2,5,1,4,1,3,0,2,0,1,0,0];
 
 	bmarkerOptions = { icon:blueIcon };
 
@@ -118,14 +90,8 @@ function initialize(mess)
             icon: blueIconMarker,
             shadow: blueshadow
             };
-       icons.blue = blueIcon;
-	//var blueIcon = new GIcon(G_DEFAULT_ICON);
-	//blueIcon.image = "http://www.google.com/intl/en_us/mapfiles/ms/micons/blue-dot.png";
-	//blueIcon.iconSize = new GSize(20, 17);
-	//blueIcon.iconAnchor = new GPoint(10,17);
-	//blueIcon.shadowSize = new GSize(29,16)
 
-	//blueIcon.infoWindowAnchor = new GPoint(10,0);
+        icons.blue = blueIcon;
 	markerOptions = { icon:myIcon };
 
 	var marker = new google.maps.Marker(new google.maps.LatLng(43.313059,-91.799501));
@@ -140,11 +106,7 @@ function initialize(mess)
 	    zoom: 6
         };
         map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
-        //map.setCenter(new , 6);
-        //map.addControl(new GLargeMapControl());
-        //map.setUIToDefault();
         geocoder = new google.maps.Geocoder();
-       // windowOpen(centerLL,"Luther College<br />Decorah, Iowa");
         google.maps.event.addListener(marker, "click", function()
 			   { windowOpen(centerLL,"Luther College<br />Decorah, Iowa"); });
         marker.setMap(map);
@@ -217,9 +179,6 @@ function showAddressClick(results,status)
     {
         var point = results[0].geometry.location;
         windowOpen(point,getNewRidePopupHTML(point.lat(),point.lng(), results[0].formatted_address));
-        //map.openInfoWindowHtml(point, 
-			       // '<b>latlng: </b>' + place.Point.coordinates[1] + "," + place.Point.coordinates[0] + '<br>' +
-			      // getNewRidePopupHTML(place.Point.coordinates[1], place.Point.coordinates[0], place.address));
     }
 }
 
@@ -583,7 +542,6 @@ function addRideToMap(ride, rideNum)
         var amarker = new google.maps.Marker({position:new google.maps.LatLng(ride.start_point_lat, ride.start_point_long)});
         amarker.setOptions(icons.green);
         google.maps.event.addListener(amarker, "click", function()
-			   // From function() to function(latlng)
 			   {
 			       if (amarker.getPosition()) {
                                    windowOpen(amarker.getPosition(),getPopupWindowMessage(ride, rideNum, amarker.getPosition().lat(), amarker.getPosition().lng()));
@@ -603,6 +561,7 @@ function addRideToMap(ride, rideNum)
         //redIcon.setPosition(new google.maps.LatLng(ride.destination_lat, ride.destination_long));
         var bmarker = new google.maps.Marker({position:new google.maps.LatLng(ride.destination_lat, ride.destination_long)});
         bmarker.setOptions(icons.red);
+
         google.maps.event.addListener(bmarker, "click", function()
 			   // From function() to function(latlng)
 			   {
@@ -812,7 +771,7 @@ function addPassengerPart2(ride_key, drop_off_or_pick_up, lat, lng, rideNum)
     else {
         infowindowtext += 'dropped off';
     }
-    infowindowtext += ' at this location?<br />If not, please click on the map to select a new ';
+    infowindowtext += ' at this location?<br />If not, please click the "Use other location" button, then click on the map to select a new ';
     if (drop_off_or_pick_up == 1) {
         infowindowtext += 'pick up';
     }
@@ -821,7 +780,8 @@ function addPassengerPart2(ride_key, drop_off_or_pick_up, lat, lng, rideNum)
     }
     infowindowtext += ' point.<br />';
     infowindowtext += "<input type='button' onclick='windowOpen(rides["+rideNum+"].marker.getPosition(),getPopupWindowMessage2("+rideNum+", "+drop_off_or_pick_up+", "+lat+", "+lng+", \"\"));' value='Use this location' />";
-    infowindowtext += "<input type='button' onclick='initialize()' value='Cancel' />"; //TODO:  something other than init here     
+    infowindowtext += "<input type='button' onclick='windows.pop().close();selectAddress("+drop_off_or_pick_up+","+rideNum+","+false+");' value='Use other Location' />";
+    infowindowtext += "<input type='button' onclick='initialize()' value='Cancel' />"; //TODO:  something other than init here
     windowOpen(thismarker.getPosition(),infowindowtext);
     google.maps.event.addListener(thismarker, 'click', function(event)
 		       {
@@ -832,39 +792,11 @@ function addPassengerPart2(ride_key, drop_off_or_pick_up, lat, lng, rideNum)
     thismarker.setMap(map);
     overlays.push(thismarker);
     //map.addOverlay(thismarker);
-
-    google.maps.event.addListener(map, 'click', function(event)
-		       {
-			   if (event!=null) 
-			   { 
-			       geocoder.geocode({'latLng':event.latLng}, function(results,status){
-							 if (!status || status != google.maps.GeocoderStatus.OK) 
-							 {
-							     alert("Status: " + status);
-							 }
-							 else
-							 {
-							     //var place = response.Placemark[0];
-							     var point = results[0].geometry.location;
-							     var doOrPu = drop_off_or_pick_up; // drop_off = 0, pick_up = 1
-                                                            windowOpen(point,getPopupWindowMessage2(rideNum, doOrPu, 
-														  point.lat(), 
-														  point.lng(), results[0].formatted_address));
-							     //map.openInfoWindowHtml(point, getPopupWindowMessage2(rideNum, doOrPu, 
-														  //point.lat(), 
-														  //point.lng(), place.address));
-							 }
-						     });
-			   }
-		       });
-
-    // Popup regarding choice of pickup / dropoff point
-   // windowOpen(new google.maps.LatLng(thismarker.getPosition()),infowindowtext);
-    //thismarker.openInfoWindowHtml(infowindowtext);
 }
 
 function getPopupWindowMessage2(rideNum, doOrPu, lat, lng, address8, contact)
 {
+    google.maps.event.removeListener(clickListener);
     contact = (typeof contact == 'undefined') ? '563-555-1212': contact; // If contact is not defined, then let it be 563-555-1212
     if (address8 == '') {
         if (doOrPu == 0) {
@@ -920,7 +852,8 @@ function addPassengerPart3(rideNum, lat, lng, doOrPu) {
         text += 'Address: '+address+'<br />';
         text += 'Contact: '+contact+'<br />';
         text += "<input type='button' id='submit' value='Submit' onclick='"+funcall+"' />";
-        text += "<input type='button' id='back' value='Back' onclick='var window = new google.maps.InfoWindow({position:new google.maps.LatLng("+lat+", "+lng+"),content:getPopupWindowMessage2("+rideNum+", "+doOrPu+", "+lat+", "+lng+", \""+address+"\", \""+contact+"\")});' /></form>";                  
+        text += "<input type='button' id='back' value='Back' onclick='openWindow(new google.maps.LatLng("+lat+", "+lng+"),getPopupWindowMessage2("+rideNum+", "+doOrPu+", "+lat+", "+lng+", \""+address+"\", \""+contact+"\"));'/></form>";
+        //text += "<input type='button' id='back' value='Back' onclick='var window = new google.maps.InfoWindow({position:new google.maps.LatLng("+lat+", "+lng+"),content:getPopupWindowMessage2("+rideNum+", "+doOrPu+", "+lat+", "+lng+", \""+address+"\", \""+contact+"\")});' /></form>";                  
 	//(text);
         windowOpen(rides[rideNum].marker.getPosition(),text);
         //rides[rideNum].marker.openInfoWindow(text);
@@ -1171,13 +1104,15 @@ function windowOpen(position1,content1)
     if (windows.length !=0)
       {
          windows.pop().close();
-         window.open(map);
          windows.push(window);
+         window.open(map);
+         
       }
     else
       {
-        window.open(map);
         windows.push(window);
+        window.open(map);
+        
       }
     
 
@@ -1186,5 +1121,41 @@ function windowOpen(position1,content1)
 function putListener()
 {
    clickListener = google.maps.event.addListener(map, "click", getAddress);
+}
+
+function selectAddress(DooPu,rideNum,openableBoole)
+{
+
+google.maps.event.addListener(map, 'click', function(event)
+		       {
+			   if (event!=null) 
+			   { 
+			       geocoder.geocode({latLng:event.latLng}, function(results,status){
+							 if (!status || status != google.maps.GeocoderStatus.OK) 
+							 {
+							     alert("Status: " + status);
+							 }
+							 else
+							 {
+							     //var place = response.Placemark[0];
+							     var point = results[0].geometry.location;
+							     var doOrPu = DooPu; // drop_off = 0, pick_up
+                                                            if (openableBoole ==true)
+                                                              {
+                                                            windowOpen(point,getPopupWindowMessage2(rideNum, doOrPu, 
+														  point.lat(), 
+														  point.lng(), results[0].formatted_address));
+							     //map.openInfoWindowHtml(point, getPopupWindowMessage2(rideNum, doOrPu, 
+														  //point.lat(), 
+														  //point.lng(), place.address));
+                                                               }
+                                                             else
+                                                               {
+                                                                openableBoole = true;
+                					        }
+							 }
+						     });
+			   }
+		       });
 }
 
