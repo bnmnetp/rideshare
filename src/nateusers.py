@@ -152,7 +152,6 @@ class LoginHandler(BaseHandler):
                 urllib.urlencode(dict(access_token=access_token))))
             logging.debug("profile = " + str(profile))
             user = FBUser.get_by_key_name(profile["id"])
-            userId = profile["id"]
             if not user:
                 logging.debug("User not found:  id = " + str(profile["id"]))
                 user = FBUser(key_name=str(profile["id"]), id=str(profile["id"]),

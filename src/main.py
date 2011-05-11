@@ -79,7 +79,7 @@ class MainHandler(BaseHandler):
             }))
 
 
-class RideQueryHandler(webapp.RequestHandler):
+class RideQueryHandler(BaseHandler):
     """
     Parse and process requests for rides
     returns json
@@ -426,6 +426,8 @@ class AddDriverHandler(BaseHandler):
 
     def sendRiderEmail(self, ride, to):
 
+        if choice != "facebook":
+           to = FBUser.get_by_key_name(to.name)
         sender = FROM_EMAIL_ADDR
         subject = "Change in your ride"
         
@@ -447,8 +449,7 @@ The Luther Rideshare Team
            logging.debug(body)
            mail.send_mail(sender,to.email(),subject,body)
         else:
-           user = FBUser.get_by_key_name(to.name)
-           graph = facebook.GraphAPI(user.access_token)
+           graph = facebook.GraphAPI(to.access_token)
            graph.put_object("me", "feed", message=body)
 
 class EditRideHandler(webapp.RequestHandler):
@@ -536,13 +537,13 @@ class HomeHandler(BaseHandler):
                           'driverides': driverides, 
                           'passengerrides': passengerrides })
     
-class RideInfoHandler(webapp.RequestHandler):
+class RideInfoHandler(BaseHandler):
     """
     Displays detailed information regarding a specific ride
     Holds a GMap detailing the trip
     """
     def get(self):
-      username = users.get_current_user()
+      username = self.current_user
       key = self.request.get('key')
       ride = db.get(key)
       if ride == None:
@@ -603,7 +604,9 @@ class DeleteRideHandler(BaseHandler):
             }))
 
     def sendRiderEmail(self, ride, to):
-
+        
+        if choice != "facebook":   
+          to = FBUser.get_by_key_name(to)
         sender = FROM_EMAIL_ADDR
         subject = "Change in your ride"
         
@@ -621,9 +624,14 @@ Sincerely,
 
 The Luther Rideshare Team
 """ % (to.nickname(),  ride.start_point_title, ride.destination_title, ride.ToD)
+ 
+        if choice != "facebook":
+          logging.debug(body)
+          mail.send_mail(sender,to.email(),subject,body)
+        else:
+          graph = facebook.GraphAPI(to.access_token)
+          graph.put_object("me", "feed", message=body)
 
-        logging.debug(body)
-        mail.send_mail(sender,to.email(),subject,body)
     
 
 class RemovePassengerHandler(BaseHandler):
