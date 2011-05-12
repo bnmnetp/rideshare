@@ -26,7 +26,7 @@ class Ride(db.Model):
                 res[k] = getattr(self,k) #eval('self.'+k)
         res['ToD'] = str(self.ToD)
         if self.driver:
-            res['driver'] = self.driver.name
+            res['driver'] = self.driver
         else:
             res['driver'] = "needs driver"
         res['key'] = unicode(self.key())

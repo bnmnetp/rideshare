@@ -36,7 +36,7 @@ if choice != "facebook":
    from google.appengine.api import users
 else:
    import nateusers as users
-   from nateusers import LoginHandler, LogoutHandler, BaseHandler
+   from nateusers import LoginHandler, LogoutHandler, BaseHandler, FBUser
 
 import logging
 import urllib
@@ -66,9 +66,13 @@ class MainHandler(BaseHandler):
             greeting = ("Welcome, %s! (<a href=\"%s\">sign out</a>) Go to your <a href='/home'>Home Page</a>" %
                   (user.nickname(), users.create_logout_url("/")))
             logout = users.create_logout_url("/")
+            logging.debug(logout)
         else:
             logging.debug("HEY")
             self.redirect('/auth/login')
+            return
+        
+        logging.debug(logout)
         path = os.path.join(os.path.dirname(__file__), 'templates/index.html')
         self.response.out.write(template.render(path, {
             'ride_list': ride_list, 
@@ -255,12 +259,12 @@ class NewRideHandler(BaseHandler):
         if ride.driver:
             if choice != "facebook":
                to = ride.driver.email()
-            driverName = ride.driver.nickname()
+            driverName = self.current_user.nickname()
         else:
             p = db.get(ride.passengers[0]).name
             if choice != "facebook":
                to = p.email()
-            passengerName = p.nickname()
+            passengerName = self.current_user.nickname()
             
         sender = FROM_EMAIL_ADDR
         announceAddr = NOTIFY_EMAIL_ADDR
@@ -292,7 +296,7 @@ The Luther Rideshare Team
           graph = facebook.GraphAPI(self.current_user.access_token)
           graph.put_object("me", "feed", message=body)
 
-class AddPassengerHandler(BaseHandler):
+class AddPassengerHandler(BaseHandler): #NEEDS WORK
     """
     Handles addition of passengers
     """
@@ -326,7 +330,7 @@ class AddPassengerHandler(BaseHandler):
       # Check if the current user is already on the ride
       already = False
       for p in ride.passengers:
-        if db.get(p).id== user_name:
+        if db.get(p).name== user_name:
           already = True
       if already:
         temp = os.path.join(os.path.dirname(__file__), 'templates/error.html')
@@ -378,7 +382,9 @@ class AddPassengerHandler(BaseHandler):
         if choice != "facebook":
            to = ride.driver.email()
         else:
+           logging.debug(ride.driver)
            to = FBUser.get_by_key_name(ride.driver)
+           logging.debug(to)
         sender = FROM_EMAIL_ADDR
         subject = "New Passenger for your ride"
         p = db.get(ride.passengers[-1])
@@ -393,18 +399,19 @@ Thanks for being a driver!
 Sincerely,
 
 The Luther Rideshare Team
-""" % (ride.driver.nickname(), p.name.nickname(), ride.start_point_title, ride.destination_title,
-       ride.ToD, p.name.nickname(), p.contact)
+""" % (ride.driver, p.name, ride.start_point_title, ride.destination_title,
+       ride.ToD, p.name, p.contact)
 
         if choice != "facebook":
           logging.debug(body)
           mail.send_mail(sender,to,subject,body)
         else:
           graph = facebook.GraphAPI(to.access_token)
+          logging.debug(graph)
           graph.put_object("me", "feed", message=body)
 
 
-class AddDriverHandler(BaseHandler):
+class AddDriverHandler(BaseHandler): #NEEDS WORK
 
     def get(self):
         ride_key = self.request.get("key")
@@ -426,8 +433,9 @@ class AddDriverHandler(BaseHandler):
 
     def sendRiderEmail(self, ride, to):
 
-        if choice != "facebook":
-           to = FBUser.get_by_key_name(to.name)
+        if choice == "facebook":
+           to = FBUser.get_by_key_name(to)
+           logging.debug(to)
         sender = FROM_EMAIL_ADDR
         subject = "Change in your ride"
         
@@ -443,8 +451,8 @@ Have a safe trip!
 Sincerely,
 
 The Luther Rideshare Team
-""" % (to.nickname(),  ride.start_point_title, ride.destination_title, ride.ToD,
-       ride.driver.nickname(), ride.contact, ride.driver.email())
+""" % (to.name,  ride.start_point_title, ride.destination_title, ride.ToD,
+       ride.driver.name, ride.contact, ride.driver.email())
         if choice != "facebook": 
            logging.debug(body)
            mail.send_mail(sender,to.email(),subject,body)
@@ -452,7 +460,7 @@ The Luther Rideshare Team
            graph = facebook.GraphAPI(to.access_token)
            graph.put_object("me", "feed", message=body)
 
-class EditRideHandler(webapp.RequestHandler):
+class EditRideHandler(BaseHandler):
     def get(self):
         ride_key = self.request.get("key")
         ride = db.get(ride_key)
@@ -475,7 +483,7 @@ class EditRideHandler(webapp.RequestHandler):
 class ChangeRideHandler(BaseHandler):
     def post(self):
         user = self.current_user
-        username = user.email
+        username = user.id
         ride = Ride.get(self.request.get("key"))
 
         contact = self.request.get("contact")
@@ -570,7 +578,7 @@ class RideInfoHandler(BaseHandler):
             'mapkey':MAP_APIKEY
             })
 
-class DeleteRideHandler(BaseHandler):
+class DeleteRideHandler(BaseHandler): #NEEDS WORK
     """
     Deletes a ride using a key
     """
@@ -605,8 +613,9 @@ class DeleteRideHandler(BaseHandler):
 
     def sendRiderEmail(self, ride, to):
         
-        if choice != "facebook":   
+        if choice == "facebook":   
           to = FBUser.get_by_key_name(to)
+          logging.debug(to)
         sender = FROM_EMAIL_ADDR
         subject = "Change in your ride"
         
