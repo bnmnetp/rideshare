@@ -289,14 +289,14 @@ Thanks,
 The Luther Rideshare Team
 """ % (passengerName,ride.start_point_title,ride.destination_title,ride.ToD)
 
-        if choice != "facebook": 
-          logging.debug(body)
+        if choice != "facebook":
           mail.send_mail(sender,announceAddr,subject,body)
         else:
+          logging.debug(self.current_user.access_token)
           graph = facebook.GraphAPI(self.current_user.access_token)
           graph.put_object("me", "feed", message=body)
 
-class AddPassengerHandler(BaseHandler): #NEEDS WORK
+class AddPassengerHandler(BaseHandler):
     """
     Handles addition of passengers
     """
@@ -388,7 +388,7 @@ class AddPassengerHandler(BaseHandler): #NEEDS WORK
         sender = FROM_EMAIL_ADDR
         subject = "New Passenger for your ride"
         p = db.get(ride.passengers[-1])
-        
+        user = FBUser.get_by_key_name(p.name)
         body = """
 Dear %s,
 We wanted to let you know that %s has been added to your ride
@@ -399,8 +399,8 @@ Thanks for being a driver!
 Sincerely,
 
 The Luther Rideshare Team
-""" % (ride.driver, p.name, ride.start_point_title, ride.destination_title,
-       ride.ToD, p.name, p.contact)
+""" % (to.nickname(), user.nickname(), ride.start_point_title, ride.destination_title,
+       ride.ToD, user.nickname(), p.contact)
 
         if choice != "facebook":
           logging.debug(body)
@@ -411,7 +411,7 @@ The Luther Rideshare Team
           graph.put_object("me", "feed", message=body)
 
 
-class AddDriverHandler(BaseHandler): #NEEDS WORK
+class AddDriverHandler(BaseHandler):
 
     def get(self):
         ride_key = self.request.get("key")
@@ -435,6 +435,7 @@ class AddDriverHandler(BaseHandler): #NEEDS WORK
 
         if choice == "facebook":
            to = FBUser.get_by_key_name(to)
+           user = self.current_user
            logging.debug(to)
         sender = FROM_EMAIL_ADDR
         subject = "Change in your ride"
@@ -451,8 +452,8 @@ Have a safe trip!
 Sincerely,
 
 The Luther Rideshare Team
-""" % (to.name,  ride.start_point_title, ride.destination_title, ride.ToD,
-       ride.driver.name, ride.contact, ride.driver.email())
+""" % (to.nickname(),  ride.start_point_title, ride.destination_title, ride.ToD,
+       user.nickname(), ride.contact, user.email)
         if choice != "facebook": 
            logging.debug(body)
            mail.send_mail(sender,to.email(),subject,body)

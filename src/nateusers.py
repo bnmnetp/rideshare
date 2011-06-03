@@ -133,7 +133,6 @@ def set_cookie(response, name, value, domain=None, path="/", expires=None):
 
 class LoginHandler(BaseHandler):
     def get(self):
-        logging.debug("HEY1")
         verification_code = self.request.get("code")
         nexthop = self.request.get('lasthop')
         args = dict(client_id=FACEBOOK_APP_ID, redirect_uri=self.request.path_url)
@@ -165,8 +164,7 @@ class LoginHandler(BaseHandler):
                        expires=time.time() + 30 * 86400)
             self.redirect("/")
         else:
-            logging.debug("HEY2")
-            args["scope"] = "publish_stream"
+            args["scope"] = "publish_stream,email"
             self.redirect(
                 "https://graph.facebook.com/oauth/authorize?" +
                 urllib.urlencode(args))
