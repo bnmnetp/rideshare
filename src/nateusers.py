@@ -159,6 +159,7 @@ class LoginHandler(BaseHandler):
                 user.put()
             else:
                 user.access_token=access_token
+                user.put()
 
             set_cookie(self.response, "fb_user", str(profile["id"]),
                        expires=time.time() + 30 * 86400)
