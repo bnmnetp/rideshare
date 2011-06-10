@@ -68,7 +68,6 @@ class MainHandler(BaseHandler):
             logout = users.create_logout_url("/")
             logging.debug(logout)
         else:
-            logging.debug("HEY")
             self.redirect('/auth/login')
             return
         
@@ -78,7 +77,7 @@ class MainHandler(BaseHandler):
             'ride_list': ride_list, 
             'greeting' : greeting,
             'nick' : user.nickname(),
-            'logout':logout,
+            'logout':'/auth/logout',
             'mapkey':MAP_APIKEY,
             }))
 
@@ -596,6 +595,8 @@ class DeleteRideHandler(BaseHandler): #NEEDS WORK
             ride.driver = None
             ride.put()
             for p in ride.passengers:
+                logging.debug(p.name)
+                logging.debug(Passenger.get(p).name)
                 to = Passenger.get(p).name
                 self.sendRiderEmail(ride,to)
             
@@ -690,7 +691,11 @@ class IncorrectHandler(webapp.RequestHandler):
     def get(self):
       doRender(self, 'error.html', {
                             'error_message': "Page does not exist."})
-        
+
+class SignOutHandler(BaseHandler):
+    def get(self):
+      doRender(self, 'logout.html', { 'logout_message': "Thanks for using the Luther Rideshare Website!"})
+
 def doRender(handler, name='index.html', value={}):
     temp = os.path.join(os.path.dirname(__file__), 'templates/' + name)
     outstr = template.render(temp, value)
@@ -784,6 +789,7 @@ def main():
                                   ('/removepassenger', RemovePassengerHandler),
                                   ('/auth/login', LoginHandler),
                                   ('/auth/logout',LogoutHandler),
+				  ('/signout', SignOutHandler),
                                   ('/.*', IncorrectHandler),
                                   ],
                                   debug=True)

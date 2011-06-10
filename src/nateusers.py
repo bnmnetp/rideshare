@@ -173,5 +173,5 @@ class LoginHandler(BaseHandler):
 class LogoutHandler(BaseHandler):
     def get(self):
         set_cookie(self.response, "fb_user", "", expires=time.time() - 86400)
-        self.redirect("/")
+        self.redirect("/signout")
 
