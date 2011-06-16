@@ -295,7 +295,7 @@ The Luther Rideshare Team
           graph = facebook.GraphAPI(self.current_user.access_token)
           graph.put_object("me", "feed", message=body)
 
-class AddPassengerHandler(BaseHandler):
+class AddPassengerHandler(BaseHandler): # Check
     """
     Handles addition of passengers
     """
@@ -405,12 +405,12 @@ The Luther Rideshare Team
           logging.debug(body)
           mail.send_mail(sender,to,subject,body)
         else:
-          graph = facebook.GraphAPI(to.access_token)
+          graph = facebook.GraphAPI(ride.driver)
           logging.debug(graph)
           graph.put_object("me", "feed", message=body)
 
 
-class AddDriverHandler(BaseHandler):
+class AddDriverHandler(BaseHandler): #LOOK
 
     def get(self):
         ride_key = self.request.get("key")
