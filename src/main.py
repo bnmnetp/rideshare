@@ -405,7 +405,7 @@ The Luther Rideshare Team
           logging.debug(body)
           mail.send_mail(sender,to,subject,body)
         else:
-          graph = facebook.GraphAPI(ride.driver)
+          graph = facebook.GraphAPI(to.access_token)
           logging.debug(graph)
           graph.put_object("me", "feed", message=body)
 
