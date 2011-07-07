@@ -534,7 +534,7 @@ function addRideToMap(ride, rideNum)
         google.maps.event.addListener(amarker, "click", function()
 			   {
 			       if (amarker.getPosition()) {
-                                   windowOpen(amarker.getPosition(),getPopupWindowMessage(ride, rideNum, amarker.getPosition().lat(), amarker.getPosition().lng()));\
+                                   windowOpen(amarker.getPosition(),getPopupWindowMessage(ride, rideNum, amarker.getPosition().lat(), amarker.getPosition().lng()));
 			       }
 			   });
         ride.marker = amarker;
