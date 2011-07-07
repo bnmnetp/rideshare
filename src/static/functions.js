@@ -210,8 +210,6 @@ function newRidePopupHTMLPart2(lat, lng, address4, to, contact)
 {
     var htmlText = getNewRideIsDriverHTML(lat, lng, address4, to, contact);
     windowOpen(new google.maps.LatLng(lat, lng),htmlText);
-
-    //map.openInfoWindowHtml(new GLatLng(lat, lng), htmlText);
 }
 
 // Returns the html for Step 2 in Ride Creation
@@ -397,9 +395,6 @@ function verifyNewRidePopup(lat, lng, address6, isDriver)
             number = number.slice(0, 3) + '-' + number.slice(3, 6) + '-' + number.slice(6);
         }
         var htmlText = getNewRidePopupHTML3(lat, lng, from, to, maxp, number, earlylate, partofday, month, day, year,isDriver,comment);
-        //var window = new google.maps.InfoWindow({position:new google.maps.LatLng(lat, lng),content:htmlText});
-        //window.open(map);
-        //windows.push(window);
         windowOpen(new google.maps.LatLng(lat,lng),htmlText);
     }  
 }
@@ -514,11 +509,9 @@ function addRideToMap(ride, rideNum)
 	var tooltext = 'needs driver';
 	reqMarkerOptions['title'] = tooltext;
 	if (ride.destination_title == "Luther College, Decorah, IA") {
-            //blueIcon.setPosition(new google.maps.LatLng(ride.start_point_lat, ride.start_point_long));
             var amarker = new google.maps.Marker({position:new google.maps.LatLng(ride.start_point_lat, ride.start_point_long)});
             amarker.setOptions(icons.blue);
 	} else {
-            //blueIcon.setPosition(new google.maps.LatLng(ride.destination_lat, ride.destination_long));
             var amarker = new google.maps.Marker({position:new google.maps.LatLng(ride.destination_lat, ride.destination_long)});
             amarker.setOptions(icons.blue);
 	}
@@ -526,39 +519,33 @@ function addRideToMap(ride, rideNum)
 			   {
 			       if (amarker.getPosition()) {
                                    windowOpen(amarker.getPosition(),addDriverPopup(ride, rideNum, amarker.getPosition().lat(), amarker.getPosition().lng()));
-				   //amarker.openInfoWindowHtml(addDriverPopup(ride, rideNum, latlng.lat(), latlng.lng()));
 			       }
 			   });
         ride.marker = amarker;
         amarker.setMap(map);
         overlays.push(amarker);
-        //map.addOverlay(blueIcon);
     } else if (ride.destination_title == "Luther College, Decorah, IA")
     {
         var tooltext = '';
         tooltext += ride.ToD;
         gmarkerOptions['title'] = tooltext;
-        //greenIcon.setPosition(new goole.maps.LatLng(ride.start_point_lat, ride.start_point_long))
         var amarker = new google.maps.Marker({position:new google.maps.LatLng(ride.start_point_lat, ride.start_point_long)});
         amarker.setOptions(icons.green);
         google.maps.event.addListener(amarker, "click", function()
 			   {
 			       if (amarker.getPosition()) {
-                                   windowOpen(amarker.getPosition(),getPopupWindowMessage(ride, rideNum, amarker.getPosition().lat(), amarker.getPosition().lng()));
-				   //amarker.openInfoWindowHtml(getPopupWindowMessage(ride, rideNum, latlng.lat(), latlng.lng()));
+                                   windowOpen(amarker.getPosition(),getPopupWindowMessage(ride, rideNum, amarker.getPosition().lat(), amarker.getPosition().lng()));\
 			       }
 			   });
         ride.marker = amarker;
         amarker.setMap(map);
         overlays.push(amarker);
-        //map.addOverlay(amarker);
     }
     else if (ride.start_point_title == "Luther College, Decorah, IA")
     {
         var tooltext = '';
         tooltext += ride.ToD;
         rmarkerOptions['title'] = tooltext;
-        //redIcon.setPosition(new google.maps.LatLng(ride.destination_lat, ride.destination_long));
         var bmarker = new google.maps.Marker({position:new google.maps.LatLng(ride.destination_lat, ride.destination_long)});
         bmarker.setOptions(icons.red);
 
@@ -567,13 +554,11 @@ function addRideToMap(ride, rideNum)
 			   {
 			       if (bmarker.getPosition()) {
                                    windowOpen(bmarker.getPosition(),getPopupWindowMessage(ride, rideNum, bmarker.getPosition().lat(), bmarker.getPosition().lng()));
-				   //bmarker.openInfoWindowHtml(getPopupWindowMessage(ride, rideNum, latlng.lat(), latlng.lng()));
 			       }
 			   });
         ride.marker = bmarker;
         bmarker.setMap(map);
         overlays.push(bmarker);
-        //map.addOverlay(bmarker);
     }
     return ride.marker;
 }
@@ -583,21 +568,13 @@ function joinRideByNumber(rideNum) {
     rides[rideNum].marker=null;
     //map.removeOverlay(rides[rideNum].marker);
     var marker = addRideToMap(rides[rideNum], rideNum);
-    overlays.push(marker)
-    //var window = new google.maps.InfoWindow({position:new google.maps.LatLng(marker.getPosition().lat(),marker.getPosition().lng()),content:getPopupWindowMessage(rides[rideNum], 
-						    //rideNum, 
-						    //rides[rideNum].destination_lat,
-						    //rides[rideNum].destination_long)});
+    overlays.push(marker);
     //windows.push(window);
     //window.open(map);
     windowOpen(marker.getPosition(),getPopupWindowMessage(rides[rideNum], 
 						    rideNum, 
 						    rides[rideNum].destination_lat,
 						    rides[rideNum].destination_long));
-    //marker.openInfoWindowHtml(getPopupWindowMessage(rides[rideNum], 
-						    //rideNum, 
-						    //rides[rideNum].destination_lat,
-						    //rides[rideNum].destination_long));
 }
 /* 
    Returns the HTML to be contained in a popup window in the GMap
@@ -664,10 +641,6 @@ function addDriverToRideNumber(rideNum) {
     marker.setMap(map);
     overlays.push(marker);
     windowOpen(marker.getPosition(),addDriverPopup(rides[rideNum], rideNum, rides[rideNum].destination_lat, rides[rideNum].destination_long));
-    //marker.openInfoWindowHtml(addDriverPopup(rides[rideNum], 
-						    //rideNum, 
-						    //rides[rideNum].destination_lat,
-						    //rides[rideNum].destination_long));
 }
 
 
