@@ -165,7 +165,7 @@ class LoginHandler(BaseHandler):
                        expires=time.time() + 30 * 86400)
             self.redirect("/")
         else:
-            args["scope"] = "publish_stream,email"
+            args["scope"] = "publish_stream,email,offline_access"
             self.redirect(
                 "https://graph.facebook.com/oauth/authorize?" +
                 urllib.urlencode(args))

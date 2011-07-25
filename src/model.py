@@ -7,6 +7,7 @@ class Ride(db.Model):
     max_passengers = db.IntegerProperty()
     num_passengers = db.IntegerProperty()
     driver = db.StringProperty()
+    drivername = db.StringProperty()
     start_point_title = db.StringProperty()
     start_point_lat = db.FloatProperty()
     start_point_long = db.FloatProperty()
@@ -35,6 +36,7 @@ class Ride(db.Model):
 
 class Passenger(db.Model):
     name = db.StringProperty()
+    fullname = db.StringProperty()
     contact = db.StringProperty()
     location = db.StringProperty()
     lat = db.FloatProperty()

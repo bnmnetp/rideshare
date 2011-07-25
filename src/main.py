@@ -215,10 +215,13 @@ class NewRideHandler(BaseHandler):
 
         if isDriver:
             newRide.driver = user.id
+            newRide.drivername = FBUser.get_by_key_name(user.id).nickname()
         else:
             user_name = user.id
             passenger = Passenger()
             passenger.name = user_name
+            passenger.fullname = FBUser.get_by_key_name(user.id).nickname()
+            logging.debug(FBUser.get_by_key_name(user.id).nickname())
             passenger.contact = number
             passenger.location = newRide.destination_title
             passenger.lat = lat
@@ -295,7 +298,7 @@ The Luther Rideshare Team
           graph = facebook.GraphAPI(self.current_user.access_token)
           graph.put_object("me", "feed", message=body)
 
-class AddPassengerHandler(BaseHandler): # Check
+class AddPassengerHandler(BaseHandler): 
     """
     Handles addition of passengers
     """
@@ -341,6 +344,7 @@ class AddPassengerHandler(BaseHandler): # Check
       else:
         passenger = Passenger()
         passenger.name = user_name
+        passenger.fullname = FBUser.get_by_key_name(user_name).nickname()
         passenger.contact = contact
         passenger.location = address
         passenger.lat = lat
@@ -410,7 +414,7 @@ The Luther Rideshare Team
           graph.put_object("me", "feed", message=body)
 
 
-class AddDriverHandler(BaseHandler): #LOOK
+class AddDriverHandler(BaseHandler):
 
     def get(self):
         ride_key = self.request.get("key")
@@ -443,8 +447,7 @@ class AddDriverHandler(BaseHandler): #LOOK
 Dear %s,
 
 We have good news about your request for a ride from %s to %s on %s.
-%s has agreed to drive.  You can contact the driver at %s, or by email
-at %s.
+%s has agreed to drive.  You can contact the driver at %s.
 
 Have a safe trip!
 
@@ -452,7 +455,7 @@ Sincerely,
 
 The Luther Rideshare Team
 """ % (to.nickname(),  ride.start_point_title, ride.destination_title, ride.ToD,
-       user.nickname(), ride.contact, user.email)
+       user.nickname(), ride.contact)
         if choice != "facebook": 
            logging.debug(body)
            mail.send_mail(sender,to.email(),subject,body)
@@ -469,6 +472,7 @@ class EditRideHandler(BaseHandler):
         
         plist = []
         for p in ride.passengers:
+            logging.debug(db.get(p).name)
             plist.append(db.get(p).name)
         
         doRender(self, 'edit.html', { 
