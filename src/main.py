@@ -424,6 +424,7 @@ class AddDriverHandler(BaseHandler):
         
         ride = Ride.get(ride_key)
         ride.driver = user.id
+        ride.drivername = FBUser.get_by_key_name(user.id).nickname()
         ride.contact = contact
         ride.max_passengers = int(numpass)
         ride.put()
@@ -619,7 +620,8 @@ class DeleteRideHandler(BaseHandler): #NEEDS WORK
 
     def sendRiderEmail(self, ride, to):
         
-        if choice == "facebook":   
+        if choice == "facebook":
+          
           to = FBUser.get_by_key_name(to)
           logging.debug(to)
         sender = FROM_EMAIL_ADDR
@@ -630,7 +632,7 @@ Dear %s,
 
 We wanted to let you know that there has been a change in status of your ride
 from %s to %s on %s.  Unfortunately the driver is unable to drive anymore.
-The ride will remain on http://rideshare.luther.edu but it will appear as a ride
+The ride will remain, but it will appear as a ride
 that is in need of a driver.  When a new driver is found you will be notified
 by email.
 
@@ -641,11 +643,15 @@ The Luther Rideshare Team
 """ % (to.nickname(),  ride.start_point_title, ride.destination_title, ride.ToD)
  
         if choice != "facebook":
-          logging.debug(body)
           mail.send_mail(sender,to.email(),subject,body)
         else:
-          graph = facebook.GraphAPI(to.access_token)
-          graph.put_object("me", "feed", message=body)
+ 	  try:
+             
+             graph = facebook.GraphAPI(to.access_token)
+             graph.put_object("me", "feed", message=body)
+
+	  except:
+	     logging.debug(graph.put_object("me", "feed", message=body))
 
     
 
