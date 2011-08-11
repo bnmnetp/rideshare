@@ -11,10 +11,11 @@ var map;
 var geocoder;
 var address2;
 var clickListener;
+var mc;
 
 function initialize(mess) 
 {
-
+        
 	var request = new XMLHttpRequest();
 	var today = new Date();
 	request.open("GET","/getrides?after="+today.getFullYear()+"-"+(today.getMonth()+1)+"-"+today.getDate(),false);
@@ -106,6 +107,7 @@ function initialize(mess)
 	    zoom: 6
         };
         map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+	mc = new MarkerClusterer(map);
         geocoder = new google.maps.Geocoder();
         google.maps.event.addListener(marker, "click", function()
 			   { windowOpen(centerLL,"Luther College<br />Decorah, Iowa"); });
@@ -115,11 +117,12 @@ function initialize(mess)
         var r;
         for(r in rides)
         {
+		    
             addRideToMap(rides[r], r);
         }
         clickListener = google.maps.event.addListener(map, "click", getAddress);
     }
-
+    
     makeRideTable();
     if (mess) {
 	alert(mess);
@@ -524,6 +527,8 @@ function addRideToMap(ride, rideNum)
         ride.marker = amarker;
         amarker.setMap(map);
         overlays.push(amarker);
+        mc.addMarker(amarker);
+        //checkSame(amarker);
     } else if (ride.destination_title == "Luther College, Decorah, IA")
     {
         var tooltext = '';
@@ -540,6 +545,8 @@ function addRideToMap(ride, rideNum)
         ride.marker = amarker;
         amarker.setMap(map);
         overlays.push(amarker);
+        mc.addMarker(amarker);
+        //checkSame(amarker);
     }
     else if (ride.start_point_title == "Luther College, Decorah, IA")
     {
@@ -559,6 +566,8 @@ function addRideToMap(ride, rideNum)
         ride.marker = bmarker;
         bmarker.setMap(map);
         overlays.push(bmarker);
+        mc.addMarker(bmarker);
+        //checkSame(bmarker);
     }
     return ride.marker;
 }
@@ -607,7 +616,7 @@ function getPopupWindowMessage(ride, rideNum, lat, lng)
     }
     var disabled;
     var today = new Date();
-    if (ride.ToD < new Date(today.getFullYear(), today.getMonth(), today.getDate() + 2))
+    if (ride.ToD.getDate == new Date(today.getFullYear(), today.getMonth(), today.getDate()))
     {
         disabled = "disabled=\"disabled\"";
         msg = "It is too late to join this ride. <br />You might try to call the driver directly at: " + ride.contact;
@@ -618,7 +627,6 @@ function getPopupWindowMessage(ride, rideNum, lat, lng)
     else {
         disabled = "";
     }
-    var text1 = ("Driver: "+ride.driver+"<br><i>"+ride.start_point_title+"</i> --> <i>"+ride.destination_title+"</i><br>Date: "+ride.part_of_day+" "+numToTextMonth(ride.ToD.getMonth())+" "+ride.ToD.getDate()+", "+ride.ToD.getFullYear()+"<br>"+msg);
     var drop_off_or_pick_up; // drop_off = 0, pick_up = 1
     if (ride.start_point_title == "Luther College, Decorah, IA") {
         drop_off_or_pick_up = 0;
@@ -1090,6 +1098,23 @@ function windowOpen(position1,content1)
     
 
 }
+
+function checkSame(marker)
+{
+  for (r in overlays)
+            {
+		
+	       mPos = marker.getPosition();
+	       rPos = r.getPosition();
+	       if (mPos == rPos)
+		   {
+		      mc.addMarker(marker);
+	              mc.addMarker(r);
+		   }
+	     }
+}
+
+
 
 function putListener()
 {
