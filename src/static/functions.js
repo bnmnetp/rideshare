@@ -627,6 +627,7 @@ function getPopupWindowMessage(ride, rideNum, lat, lng)
     else {
         disabled = "";
     }
+     var text1 = ("Driver: "+ride.drivername+"<br><i>"+ride.start_point_title+"</i> --> <i>"+ride.destination_title+"</i><br>Date: "+ride.part_of_day+" "+numToTextMonth(ride.ToD.getMonth())+" "+ride.ToD.getDate()+", "+ride.ToD.getFullYear()+"<br>"+msg);
     var drop_off_or_pick_up; // drop_off = 0, pick_up = 1
     if (ride.start_point_title == "Luther College, Decorah, IA") {
         drop_off_or_pick_up = 0;
