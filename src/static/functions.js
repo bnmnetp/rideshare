@@ -12,7 +12,7 @@ var geocoder;
 var address2;
 var clickListener;
 var mc;
-
+var clusterClick = false;
 function initialize(mess) 
 {
         
