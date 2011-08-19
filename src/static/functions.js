@@ -108,6 +108,10 @@ function initialize(mess)
         };
         map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
 	mc = new MarkerClusterer(map);
+	mc.setGridSize(10);
+        google.maps.event.addListener(mc, "clusterclick", function(cluster){
+	    clusterClick = true;
+	});
         geocoder = new google.maps.Geocoder();
         google.maps.event.addListener(marker, "click", function()
 			   { windowOpen(centerLL,"Luther College<br />Decorah, Iowa"); });
@@ -164,11 +168,18 @@ function makeRideTable() {
 
 function getAddress(event)
 { 
-    if (event != null) 
-    {
-        address2 = event.latLng;
-        geocoder.geocode({latLng:event.latLng}, showAddressClick);
-    }
+  setTimeout(function(){
+    if (!clusterClick){
+       if (event != null) 
+       {
+           address2 = event.latLng;
+           geocoder.geocode({latLng:event.latLng}, showAddressClick);
+       }
+     }
+    else{
+       clusterClick = false;
+     }
+    },0);
 }
 
 
