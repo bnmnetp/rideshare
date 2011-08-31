@@ -95,8 +95,8 @@ function initialize(mess)
         icons.blue = blueIcon;
 	markerOptions = { icon:myIcon };
 
-	var marker = new google.maps.Marker(new google.maps.LatLng(43.313059,-91.799501));
-        marker.setOptions(icons.my);
+	var mymarker = new google.maps.Marker(new google.maps.LatLng(43.313059,-91.799501));
+        mymarker.setOptions(icons.my);
 
         reqMarkerOptions = {icon:blueIcon};
         var centerLL = new google.maps.LatLng(43.313059,-91.799501);
@@ -113,10 +113,10 @@ function initialize(mess)
 	    clusterClick = true;
 	});
         geocoder = new google.maps.Geocoder();
-        google.maps.event.addListener(marker, "click", function()
+        google.maps.event.addListener(mymarker, "click", function()
 			   { windowOpen(centerLL,"Luther College<br />Decorah, Iowa"); });
-        marker.setMap(map);
-        overlays.push(marker);
+        mymarker.setMap(map);
+        overlays.push(mymarker);
 
         var r;
         for(r in rides)
@@ -146,7 +146,9 @@ function makeRideTable() {
     {
 	var row = table.insertRow(table.rows.length);
 	var c0 = row.insertCell(0);
-	c0.innerHTML = rides[r].driver;
+        if (rides[r].drivername!=null){
+	c0.innerHTML = '<a href="/driverrating?drivernum=' + rides[r].driver + '">'+ rides[r].drivername + '</a>';
+        }
 	var c1 = row.insertCell(1);
 	c1.innerHTML = rides[r].max_passengers - rides[r].num_passengers;
 	var c3 = row.insertCell(2);

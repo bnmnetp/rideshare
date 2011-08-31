@@ -507,6 +507,22 @@ class ChangeRideHandler(BaseHandler):
         ride.put()
         self.redirect("/")
 
+class SubmitRatingHandler(BaseHandler):
+    def post(self):
+      drivernum = self.request.get("driver")
+      text = self.request.get("ratetext")
+      ooFrating = self.request.get("ooFrating")
+      user= FBUser.get_by_key_name(drivernum)
+      user.drivercomments.append(text)
+      user.numrates = user.numrates + 1
+      if user.rating== None:
+         user.rating= float(ooFrating)
+      else:
+         (user.rating + float(ooFrating))/user.numrates
+      user.put()
+      doRender(self, "submit.html",{})
+      self.redirect("/home")
+
 class HomeHandler(BaseHandler):
     """
     Displays personal homepage
@@ -655,6 +671,17 @@ The Luther Rideshare Team
 
     
 
+class RateHandler(BaseHandler):
+    
+    def get(self):
+      drivernum = self.request.get('dkey')
+      user = FBUser.get_by_key_name(drivernum)
+      doRender(self, 'ratedriver.html', {
+            'driver': user.nickname(),
+            'drivernum':drivernum
+            })
+      
+
 class RemovePassengerHandler(BaseHandler):
     """
     Removes a passenger using a key and the current user
@@ -693,6 +720,23 @@ class RemovePassengerHandler(BaseHandler):
             'message' : message,
             'mapkey' : MAP_APIKEY,
             }))
+
+class DriverRatingHandler(BaseHandler):
+
+    def get(self):
+      drivernum = self.request.get('drivernum')
+      user = FBUser.get_by_key_name(drivernum)
+      ratingslist= user.drivercomments
+      name = user.nickname()
+      rating = user.rating
+      numrates = user.numrates
+      
+      doRender(self, 'driverrating.html', {
+          'ratingslist': ratingslist,
+          'name': name,
+          'rating':rating,
+          'numrates':numrates })
+      
 
 class IncorrectHandler(webapp.RequestHandler):
     """
@@ -799,7 +843,10 @@ def main():
                                   ('/removepassenger', RemovePassengerHandler),
                                   ('/auth/login', LoginHandler),
                                   ('/auth/logout',LogoutHandler),
-				  ('/signout', SignOutHandler),
+				  ('/signout', SignOutHandler),                
+				  ('/ratedriver', RateHandler),
+				  ('/submittext', SubmitRatingHandler),
+                                  ('/driverrating',DriverRatingHandler),
                                   ('/.*', IncorrectHandler),
                                   ],
                                   debug=True)

@@ -53,9 +53,13 @@ class FBUser(db.Model):
     profile_url = db.StringProperty(required=True)
     access_token = db.StringProperty(required=True)
     email = db.EmailProperty()
-    recipes = db.ListProperty(db.Key)
+    drivercomments = db.StringListProperty()
     public_link = db.StringProperty()
+    rating = db.FloatProperty()
+    numrates= db.IntegerProperty(default=0)
     
+
+
     def nickname(self):
        return self.name
   

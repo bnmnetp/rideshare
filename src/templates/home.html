@@ -70,8 +70,8 @@ Welcome to your personal homepage, {{ user }}!<br />
 </tr>
 <tr><td>{{ ride.start_point_title }}</td>
     <td>{{ ride.destination_title }}</td>
-    <td>{{ ride.drivername }}</td>
-    <td>{{ ride.part_of_day }}<br />{{ ride.jsmonth }}-{{ ride.jsday }}-{{ ride.jsyear }}</td>
+    <td>{{ ride.drivername }}<br /> <a href='/ratedriver?dkey={{ride.driver}}'> Rate Your Driver</a></td>
+    <td>{{ ride.part_of_day }}<br />{{ ride.jsmonth }}-{{ ride.jsday }}-{{ ride.jsyear }}<td>
     <td>{{ ride.contact }}</td>
     <td><input type='button' value='Delete' disabled='disabled' /></td>
 </tr></table>
