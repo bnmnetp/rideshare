@@ -13,14 +13,13 @@ html {
 </style>
 
 {% if ratingslist %}
-<h2>{{name}} has been rated by {{numrates}} passenger(s),and has an everage rating of {{rating}}/5.</h2>
+<h2>{{name}} has been rated by {{numrates}} passenger(s),and has an average rating of {{rating}}/5</h2>
 
  
 <p>See what other users had to say about their experience with {{name}}:</p>
-{% for comment in ratingslist %}
 <table border='1'>
-<tr><th>Comments</th>
-</tr>
+<tr><th>Comments</tr></th>
+{% for comment in ratingslist %}
 
 <tr><td>{{comment}}</td>
 </tr>

@@ -518,7 +518,7 @@ class SubmitRatingHandler(BaseHandler):
       if user.rating== None:
          user.rating= float(ooFrating)
       else:
-         (user.rating + float(ooFrating))/user.numrates
+         user.rating= user.rating + float(ooFrating)
       user.put()
       doRender(self, "submit.html",{})
       self.redirect("/home")
@@ -728,13 +728,13 @@ class DriverRatingHandler(BaseHandler):
       user = FBUser.get_by_key_name(drivernum)
       ratingslist= user.drivercomments
       name = user.nickname()
-      rating = user.rating
+      rating = user.rating/user.numrates
       numrates = user.numrates
       
       doRender(self, 'driverrating.html', {
           'ratingslist': ratingslist,
           'name': name,
-          'rating':rating,
+          'rating':str(rating)[0:3],
           'numrates':numrates })
       
 
