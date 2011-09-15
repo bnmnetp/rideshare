@@ -13,6 +13,9 @@ var address2;
 var clickListener;
 var mc;
 var clusterClick = false;
+
+//var mycollege = new College("Luther College","700 College Drive Decorah,IA",43.313059,-91.799501);
+var mycollege = new College("UW-LaCrosse","1725 State Street, La Crosse, WI",43.812834,-91.229022);
 function initialize(mess) 
 {
         
@@ -77,8 +80,6 @@ function initialize(mess)
             };
         icons.my = myIcon;
 
-	bmarkerOptions = { icon:blueIcon };
-
         var blueIconMarker = new google.maps.MarkerImage("http://www.google.com/intl/en_us/mapfiles/ms/micons/blue-dot.png",
             new google.maps.Size(30,28),
             null,
@@ -93,7 +94,6 @@ function initialize(mess)
             };
 
         icons.blue = blueIcon;
-	markerOptions = { icon:myIcon };
 
 	var mymarker = new google.maps.Marker(new google.maps.LatLng(43.313059,-91.799501));
         mymarker.setOptions(icons.my);
@@ -128,11 +128,11 @@ function initialize(mess)
     }
     
     makeRideTable();
+    
     if (mess) {
 	alert(mess);
     }
 }
-
 
 
 function makeRideTable() {
@@ -211,12 +211,12 @@ function getNewRidePopupHTML(lat, lng, address3)
     full += "<form><p style=\"text-align: left;\">";
 
     full += "<input onclick=\"newRidePopupHTMLPart2("+lat+", "+lng+", '" 
-              + address3 +"', false);\" type=\"radio\" name=\"rideType\" value=\"0\" id=\"rideType\""+"/>From Luther to <br />";
+              + address3 +"', false);\" type=\"radio\" name=\"rideType\" value=\"0\" id=\"rideType\""+"/>From "+ mycollege.name+" to <br />";
 
     full += address3 + "<br />";
 
     full += "<input onclick=\"newRidePopupHTMLPart2("+lat+", "+lng+", '" 
-              + address3 + "', true);\" type=\"radio\" name=\"rideType\" value=\"1\" id=\"rideType\"/>To Luther</p></form>";
+              + address3 + "', true);\" type=\"radio\" name=\"rideType\" value=\"1\" id=\"rideType\"/>To "+mycollege.name + "</p></form>";
 
     return full;
 }
@@ -251,11 +251,11 @@ function getNewRideIsDriverHTML(lat, lng, address, to, contact)
     if (to) {
 	full += address + "<br />";
     } else {
-	full += "Luther College <br />";
+	full += mycollege.name+"<br />";
     }
     full += "To: <br />";
     if (to) {
-	full += "Luther College";
+	full += mycollege.name;
     } else {
 	full += address;
     }
@@ -290,7 +290,7 @@ function getNewRidePopupHTML2(lat, lng, address5, to, isDriver, contact)
     }
     else
     {
-	line5 = line5 + "value='Luther College, Decorah, Iowa' readonly='readonly'";
+	line5 = line5 + "value='"+mycollege.name + "'readonly='readonly'";
     }
     line5 = line5 + "></div>";
     var line6="<div id=\"textFromAll\">To <input type=\"text\" id=\"textTo\" name='textTo' size=\"50\"";
@@ -300,7 +300,7 @@ function getNewRidePopupHTML2(lat, lng, address5, to, isDriver, contact)
     }
     else
     {
-	line6 = line6 + "value='Luther College, Decorah, Iowa' readonly='readonly'";
+	line6 = line6 + "value='"+mycollege.name + "'readonly='readonly'";
     }
     line6 = line6 + "><br /></div>";
     var line7="<div id=\"maxpdiv\">";
@@ -442,7 +442,7 @@ function getNewRidePopupHTML3(lat, lng, from, to, maxp, number, earlylate, parto
     vals['year'] = year;
     vals['isDriver'] = isDriver;
     vals['comment'] = comment;
-    if (from == "Luther College, Decorah, Iowa") {
+    if (from == mycollege.name) {
 	vals['toLuther'] = false;
     } else {
 	vals['toLuther'] = true;
@@ -482,7 +482,7 @@ function getNewRidePopupHTML3(lat, lng, from, to, maxp, number, earlylate, parto
     full += "<input type='button' id='cancel' name='cancel' value='Back' onclick=\"newRidePopupHTMLPart2(";
     full += lat+", "+lng+", '";
     var checked;
-    if (from == "Luther College, Decorah, Iowa") {
+    if (from == mycollege.name) {
         full += to;
         checked = false;
     }
@@ -524,7 +524,7 @@ function addRideToMap(ride, rideNum)
     if (ride.driver == "needs driver") {
 	var tooltext = 'needs driver';
 	reqMarkerOptions['title'] = tooltext;
-	if (ride.destination_title == "Luther College, Decorah, IA") {
+	if (ride.destination_title == mycollege.name) {
             var amarker = new google.maps.Marker({position:new google.maps.LatLng(ride.start_point_lat, ride.start_point_long)});
             amarker.setOptions(icons.blue);
 	} else {
@@ -542,7 +542,7 @@ function addRideToMap(ride, rideNum)
         overlays.push(amarker);
         mc.addMarker(amarker);
         //checkSame(amarker);
-    } else if (ride.destination_title == "Luther College, Decorah, IA")
+    } else if (ride.destination_title == mycollege.name)
     {
         var tooltext = '';
         tooltext += ride.ToD;
@@ -561,7 +561,7 @@ function addRideToMap(ride, rideNum)
         mc.addMarker(amarker);
         //checkSame(amarker);
     }
-    else if (ride.start_point_title == "Luther College, Decorah, IA")
+    else if (ride.start_point_title == mycollege.name)
     {
         var tooltext = '';
         tooltext += ride.ToD;
@@ -588,11 +588,20 @@ function addRideToMap(ride, rideNum)
 function joinRideByNumber(rideNum) {
     rides[rideNum].marker.setMap(null);
     rides[rideNum].marker=null;
-    //map.removeOverlay(rides[rideNum].marker);
     var marker = addRideToMap(rides[rideNum], rideNum);
+    /*for (amarker in overlays){ 
+        alert(amarker);
+        if (marker.getPosition() == amarker.getPosition()){
+           windowOpen(marker.getPosition(),getPopupWindowMessage(rides[rideNum], 
+						    rideNum, 
+						    rides[rideNum].destination_lat,
+						    rides[rideNum].destination_long));
+           alert('HEY');
+           return;
+           }
+        }*/
     overlays.push(marker);
-    //windows.push(window);
-    //window.open(map);
+    
     windowOpen(marker.getPosition(),getPopupWindowMessage(rides[rideNum], 
 						    rideNum, 
 						    rides[rideNum].destination_lat,
@@ -642,7 +651,7 @@ function getPopupWindowMessage(ride, rideNum, lat, lng)
     }
      var text1 = ("Driver: "+ride.drivername+"<br><i>"+ride.start_point_title+"</i> --> <i>"+ride.destination_title+"</i><br>Date: "+ride.part_of_day+" "+numToTextMonth(ride.ToD.getMonth())+" "+ride.ToD.getDate()+", "+ride.ToD.getFullYear()+"<br>"+msg);
     var drop_off_or_pick_up; // drop_off = 0, pick_up = 1
-    if (ride.start_point_title == "Luther College, Decorah, IA") {
+    if (ride.start_point_title == mycollege.name) {
         drop_off_or_pick_up = 0;
     }
     else {
@@ -660,8 +669,16 @@ function addDriverToRideNumber(rideNum) {
     rides[rideNum].marker.setMap(null);
     rides[rideNum].marker=null;
     var marker = addRideToMap(rides[rideNum], rideNum);
+    /*for (amarker in overlays)
+      {  
+        if (marker.getPosition() == amarker.getPosition()){
+              windowOpen(marker.getPosition(),addDriverPopup(rides[rideNum], rideNum, rides[rideNum].destination_lat, rides[rideNum].destination_long));
+              return;
+              }
+      }*/
     marker.setMap(map);
     overlays.push(marker);
+    
     windowOpen(marker.getPosition(),addDriverPopup(rides[rideNum], rideNum, rides[rideNum].destination_lat, rides[rideNum].destination_long));
 }
 
@@ -917,12 +934,20 @@ function Ride(max_passengers, driver, start_point_title, start_point_lat, start_
     this.start_point = new Location(start_point_title, start_point_lat, start_point_long);
     this.destination = new Location(destination_title, destination_lat, destination_long);
     this.ToD = new Date(ToD);
-    //      this.marker = new GMarker(new GLatLng(this.start_point.latitude, this.start_point.longitude), gmarkerOptions);
     this.part_of_day = part_of_day;
     this.marker = null;
     this.passengers = passengers;
     this.contact = contact;
     this.key = key;
+}
+//Class that stores information about the college
+
+function College(name, address, lat, lng)
+{
+this.name = name;
+this.address = address;
+this.lat= lat;
+this.lng= lng;
 }
 
 // Class that stores information for a location

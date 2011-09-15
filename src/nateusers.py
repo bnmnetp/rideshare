@@ -147,6 +147,7 @@ class LoginHandler(BaseHandler):
                 "https://graph.facebook.com/oauth/access_token?" +
                 urllib.urlencode(args)).read())
             access_token = response["access_token"][-1]
+   
 
             # Download the user profile and cache a local instance of the
             # basic profile info
@@ -169,7 +170,7 @@ class LoginHandler(BaseHandler):
                        expires=time.time() + 30 * 86400)
             self.redirect("/")
         else:
-            args["scope"] = "publish_stream,email,offline_access"
+            args["scope"] = "publish_stream,email,offline_access,manage_pages"
             self.redirect(
                 "https://graph.facebook.com/oauth/authorize?" +
                 urllib.urlencode(args))

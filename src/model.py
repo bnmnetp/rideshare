@@ -50,6 +50,14 @@ class Passenger(db.Model):
     Change method of display in entire project regarding passengers
     """
 
+class College(db.Model):
+    name = db.StringProperty()
+    address = db.StringProperty()
+    lat = db.FloatProperty()
+    lng = db.FloatProperty()
+    appId= db.StringProperty()
+    appSecret= db.StringProperty()
+
 class ApplicationParameters(db.Model):
     apikey = db.StringProperty()
     notifyEmailAddr = db.StringProperty()

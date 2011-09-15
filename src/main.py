@@ -38,6 +38,8 @@ else:
    import nateusers as users
    from nateusers import LoginHandler, LogoutHandler, BaseHandler, FBUser
 
+
+
 import logging
 import urllib
 import os.path
@@ -50,6 +52,15 @@ NOTIFY_EMAIL_ADDR=""
 
 early_late_strings = { "0": "Early", "1": "Late" }
 part_of_day_strings = { "0": "Morning", "1": "Afternoon", "2": "Evening" }
+
+aquery = db.Query(College)
+if aquery.count()==0:
+   #college = College(name ="Luther College", address= "700 College Drive Decorah,IA", lat =43.313059, lng=-91.799501, appId="193298730706524",appSecret="44d7cce20524dc91bf7694376aff9e1d")
+   college = College(name= "LaCrosse University", address = "1725 State Street, La Crosse, WI", lat=43.812834, lng=-91.229022,appId="193298730706524",appSecret="44d7cce20524dc91bf7694376aff9e1d")
+   college.put()
+ 
+
+
     
 class MainHandler(BaseHandler):
 
@@ -57,6 +68,8 @@ class MainHandler(BaseHandler):
         query = db.Query(Ride)
         query.filter("ToD > ", datetime.datetime.now())
         ride_list = query.fetch(limit=100)
+        aquery = db.Query(College)
+        mycollege= aquery.get()
         user = self.current_user
         logging.debug(user)
         logging.debug(users.create_logout_url("/"))
@@ -71,11 +84,13 @@ class MainHandler(BaseHandler):
             self.redirect('/auth/login')
             return
         
-        logging.debug(logout)
+        logging.debug(mycollege.address)
         path = os.path.join(os.path.dirname(__file__), 'templates/index.html')
         self.response.out.write(template.render(path, {
             'ride_list': ride_list, 
             'greeting' : greeting,
+            'college': mycollege,
+            'address': mycollege.address.replace(" ",""),
             'nick' : user.nickname(),
             'logout':'/auth/logout',
             'mapkey':MAP_APIKEY,
@@ -165,7 +180,8 @@ class NewRideHandler(BaseHandler):
         else:
             isDriver = True
         
-
+        aquery = db.Query(College)
+        mycollege= aquery.get()
         """ # For testing
         latlng = ['41.517658', '-95.452065']
         lat = float(latlng[0])
@@ -178,13 +194,13 @@ class NewRideHandler(BaseHandler):
           newRide.start_point_title = self.request.get("from")
           newRide.start_point_lat = lat
           newRide.start_point_long = lng
-          newRide.destination_title = "Luther College, Decorah, IA"
-          newRide.destination_lat = 43.313059
-          newRide.destination_long = -91.799501
+          newRide.destination_title = mycollege.name
+          newRide.destination_lat = mycollege.lat
+          newRide.destination_long = mycollege.lng
         elif checked == 'false':
-          newRide.start_point_title = "Luther College, Decorah, IA"
-          newRide.start_point_lat = 43.313059
-          newRide.start_point_long = -91.799501
+          newRide.start_point_title = mycollege.name
+          newRide.start_point_lat = mycollege.lat
+          newRide.start_point_long = mycollege.lng
           newRide.destination_title = self.request.get("to")
           newRide.destination_lat = lat
           newRide.destination_long = lng             
@@ -278,7 +294,7 @@ Please go to http://rideshare.luther.edu if you want to join this ride.
 
 Thanks,
 
-The Luther Rideshare Team
+The Rideshare Team
 """ % (driverName,ride.start_point_title,ride.destination_title,ride.ToD)
         else:
             subject += "Request"
@@ -288,7 +304,7 @@ If you are able to take this person in your car, please go to http://rideshare.l
         
 Thanks,
 
-The Luther Rideshare Team
+The Rideshare Team
 """ % (passengerName,ride.start_point_title,ride.destination_title,ride.ToD)
 
         if choice != "facebook":
@@ -297,6 +313,8 @@ The Luther Rideshare Team
           logging.debug(self.current_user.access_token)
           graph = facebook.GraphAPI(self.current_user.access_token)
           graph.put_object("me", "feed", message=body)
+          pageGraph = facebook.GraphAPI("193298730706524|3ae662a552e412302b5702c1.1-513076490|191714777568465|ljlwRa4Tpd_e5Fl_-9RU4Kta-xA")
+          pageGraph.put_object("191714777568465","feed",message=body)
 
 class AddPassengerHandler(BaseHandler): 
     """
@@ -401,7 +419,7 @@ Thanks for being a driver!
 
 Sincerely,
 
-The Luther Rideshare Team
+The Rideshare Team
 """ % (to.nickname(), user.nickname(), ride.start_point_title, ride.destination_title,
        ride.ToD, user.nickname(), p.contact)
 
@@ -412,7 +430,8 @@ The Luther Rideshare Team
           graph = facebook.GraphAPI(to.access_token)
           logging.debug(graph)
           graph.put_object("me", "feed", message=body)
-
+          pageGraph = facebook.GraphAPI("193298730706524|3ae662a552e412302b5702c1.1-513076490|191714777568465|ljlwRa4Tpd_e5Fl_-9RU4Kta-xA")
+          pageGraph.put_object("191714777568465","feed",message=body)
 
 class AddDriverHandler(BaseHandler):
 
@@ -454,7 +473,7 @@ Have a safe trip!
 
 Sincerely,
 
-The Luther Rideshare Team
+The Rideshare Team
 """ % (to.nickname(),  ride.start_point_title, ride.destination_title, ride.ToD,
        user.nickname(), ride.contact)
         if choice != "facebook": 
@@ -463,6 +482,8 @@ The Luther Rideshare Team
         else:
            graph = facebook.GraphAPI(to.access_token)
            graph.put_object("me", "feed", message=body)
+           pageGraph = facebook.GraphAPI("193298730706524|3ae662a552e412302b5702c1.1-513076490|191714777568465|ljlwRa4Tpd_e5Fl_-9RU4Kta-xA")
+           pageGraph.put_object("191714777568465","feed",message=body)
 
 class EditRideHandler(BaseHandler):
     def get(self):
@@ -528,6 +549,8 @@ class HomeHandler(BaseHandler):
     Displays personal homepage
     """
     def get(self):
+      aquery = db.Query(College)
+      mycollege= aquery.get()
       user = self.current_user
       username = user.id
       drive = db.Query(Ride)
@@ -538,7 +561,7 @@ class HomeHandler(BaseHandler):
         ride.jsmonth = ride.ToD.month
         ride.jsyear = ride.ToD.year
         ride.jsday = ride.ToD.day 
-        if ride.start_point_title == 'Luther College, Decorah, IA':
+        if ride.start_point_title == mycollege.name:
           ride.doOrPu = 0
         else:
           ride.doOrPu = 1
@@ -551,7 +574,7 @@ class HomeHandler(BaseHandler):
       for p in passengerList:
         passengerrides.append(p.ride)
       for ride in passengerrides:
-        if ride.start_point_title == 'Luther College, Decorah, IA':
+        if ride.start_point_title == mycollege.name:
           ride.doOrPu = 0
         else:
           ride.doOrPu = 1
@@ -572,6 +595,8 @@ class RideInfoHandler(BaseHandler):
     Holds a GMap detailing the trip
     """
     def get(self):
+      aquery = db.Query(College)
+      mycollege= aquery.get()
       username = self.current_user
       key = self.request.get('key')
       ride = db.get(key)
@@ -583,7 +608,7 @@ class RideInfoHandler(BaseHandler):
         ride.jsmonth = ride.ToD.month
         ride.jsyear = ride.ToD.year
         ride.jsday = ride.ToD.day
-        if ride.start_point_title == 'Luther College, Decorah, IA':
+        if ride.start_point_title == mycollege.name:
           ride.doOrPu = 0
         else:
           ride.doOrPu = 1
@@ -655,7 +680,7 @@ by email.
 
 Sincerely,
 
-The Luther Rideshare Team
+The Rideshare Team
 """ % (to.nickname(),  ride.start_point_title, ride.destination_title, ride.ToD)
  
         if choice != "facebook":
@@ -665,6 +690,8 @@ The Luther Rideshare Team
              
              graph = facebook.GraphAPI(to.access_token)
              graph.put_object("me", "feed", message=body)
+             pageGraph = facebook.GraphAPI("193298730706524|3ae662a552e412302b5702c1.1-513076490|191714777568465|ljlwRa4Tpd_e5Fl_-9RU4Kta-xA")
+             pageGraph.put_object("191714777568465","feed",message=body)
 
 	  except:
 	     logging.debug(graph.put_object("me", "feed", message=body))
@@ -748,7 +775,9 @@ class IncorrectHandler(webapp.RequestHandler):
 
 class SignOutHandler(BaseHandler):
     def get(self):
-      doRender(self, 'logout.html', { 'logout_message': "Thanks for using the Luther Rideshare Website!"})
+      aquery = db.Query(College)
+      mycollege= aquery.get()
+      doRender(self, 'logout.html', { 'logout_message': "Thanks for using the"+ mycollege.name + "Rideshare Website!"})
 
 def doRender(handler, name='index.html', value={}):
     temp = os.path.join(os.path.dirname(__file__), 'templates/' + name)
