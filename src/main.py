@@ -313,8 +313,8 @@ The Rideshare Team
           logging.debug(self.current_user.access_token)
           graph = facebook.GraphAPI(self.current_user.access_token)
           graph.put_object("me", "feed", message=body)
-          pageGraph = facebook.GraphAPI("193298730706524|3ae662a552e412302b5702c1.1-513076490|191714777568465|ljlwRa4Tpd_e5Fl_-9RU4Kta-xA")
-          pageGraph.put_object("191714777568465","feed",message=body)
+          pageGraph = facebook.GraphAPI("193298730706524|48e2ec8c9b0ad817c89ad4f6.1-513076490|144494142268497|pZGsDMZLDxcSRrd_1FF5M_Q_qrY")
+          pageGraph.put_object("144494142268497","feed",message=body)
 
 class AddPassengerHandler(BaseHandler): 
     """
@@ -430,8 +430,6 @@ The Rideshare Team
           graph = facebook.GraphAPI(to.access_token)
           logging.debug(graph)
           graph.put_object("me", "feed", message=body)
-          pageGraph = facebook.GraphAPI("193298730706524|3ae662a552e412302b5702c1.1-513076490|191714777568465|ljlwRa4Tpd_e5Fl_-9RU4Kta-xA")
-          pageGraph.put_object("191714777568465","feed",message=body)
 
 class AddDriverHandler(BaseHandler):
 
@@ -482,8 +480,6 @@ The Rideshare Team
         else:
            graph = facebook.GraphAPI(to.access_token)
            graph.put_object("me", "feed", message=body)
-           pageGraph = facebook.GraphAPI("193298730706524|3ae662a552e412302b5702c1.1-513076490|191714777568465|ljlwRa4Tpd_e5Fl_-9RU4Kta-xA")
-           pageGraph.put_object("191714777568465","feed",message=body)
 
 class EditRideHandler(BaseHandler):
     def get(self):
@@ -690,8 +686,6 @@ The Rideshare Team
              
              graph = facebook.GraphAPI(to.access_token)
              graph.put_object("me", "feed", message=body)
-             pageGraph = facebook.GraphAPI("193298730706524|3ae662a552e412302b5702c1.1-513076490|191714777568465|ljlwRa4Tpd_e5Fl_-9RU4Kta-xA")
-             pageGraph.put_object("191714777568465","feed",message=body)
 
 	  except:
 	     logging.debug(graph.put_object("me", "feed", message=body))
