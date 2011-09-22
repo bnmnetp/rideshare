@@ -55,8 +55,8 @@ part_of_day_strings = { "0": "Morning", "1": "Afternoon", "2": "Evening" }
 
 aquery = db.Query(College)
 if aquery.count()==0:
-   #college = College(name ="Luther College", address= "700 College Drive Decorah,IA", lat =43.313059, lng=-91.799501, appId="193298730706524",appSecret="44d7cce20524dc91bf7694376aff9e1d")
-   college = College(name= "LaCrosse University", address = "1725 State Street, La Crosse, WI", lat=43.812834, lng=-91.229022,appId="193298730706524",appSecret="44d7cce20524dc91bf7694376aff9e1d")
+   college = College(name ="Luther College", address= "700 College Drive Decorah,IA", lat =43.313059, lng=-91.799501, appId="193298730706524",appSecret="44d7cce20524dc91bf7694376aff9e1d")
+   #college = College(name= "LaCrosse University", address = "1725 State Street, La Crosse, WI", lat=43.812834, lng=-91.229022,appId="193298730706524",appSecret="44d7cce20524dc91bf7694376aff9e1d")
    college.put()
  
 
@@ -90,7 +90,7 @@ class MainHandler(BaseHandler):
             'ride_list': ride_list, 
             'greeting' : greeting,
             'college': mycollege,
-            'address': mycollege.address.replace(" ",""),
+            'address': mycollege.address,
             'nick' : user.nickname(),
             'logout':'/auth/logout',
             'mapkey':MAP_APIKEY,
