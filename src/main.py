@@ -760,7 +760,12 @@ class DriverRatingHandler(BaseHandler):
           'name': name,
           'rating':str(rating)[0:3],
           'numrates':numrates })
+
+class SchoolErrorHandler(BaseHandler):
+    
+    def get(self):
       
+      doRender(self, 'schoolerror.html')
 
 class IncorrectHandler(webapp.RequestHandler):
     """
@@ -873,6 +878,7 @@ def main():
 				  ('/ratedriver', RateHandler),
 				  ('/submittext', SubmitRatingHandler),
                                   ('/driverrating',DriverRatingHandler),
+				  ('/school',SchoolErrorHandler),
                                   ('/.*', IncorrectHandler),
                                   ],
                                   debug=True)

@@ -154,21 +154,29 @@ class LoginHandler(BaseHandler):
             profile = json.load(urllib2.urlopen(
                 "https://graph.facebook.com/me?" +
                 urllib.urlencode(dict(access_token=access_token))))
+            logging.debug(profile["education"][0]["school"]["id"])
+            schoolList = []
+            for item in profile["education"]:
+		schoolList.append(item["school"]["name"])
             logging.debug("profile = " + str(profile))
-            user = FBUser.get_by_key_name(profile["id"])
-            if not user:
-                logging.debug("User not found:  id = " + str(profile["id"]))
-                user = FBUser(key_name=str(profile["id"]), id=str(profile["id"]),
-                              name=profile["name"], access_token=access_token,
-                              profile_url=profile["link"],public_link=profile["id"])
-                user.put()
-            else:
-                user.access_token=access_token
-                user.put()
+            if "Luther College" in schoolList:
+            	user = FBUser.get_by_key_name(profile["id"])
+            	if not user:
+                	logging.debug("User not found:  id = " + str(profile["id"]))
+                	user = FBUser(key_name=str(profile["id"]), id=str(profile["id"]),
+                	              name=profile["name"], access_token=access_token,
+                	              profile_url=profile["link"],public_link=profile["id"])
+                	user.put()
+            	else:
+                	user.access_token=access_token
+                	user.put()
 
-            set_cookie(self.response, "fb_user", str(profile["id"]),
-                       expires=time.time() + 30 * 86400)
-            self.redirect("/")
+            	set_cookie(self.response, "fb_user", str(profile["id"]),
+                	       expires=time.time() + 30 * 86400)
+            	self.redirect("/")
+	    else:
+		self.redirect("/school")
+ 
         else:
             args["scope"] = "publish_stream,email,offline_access,manage_pages"
             self.redirect(
