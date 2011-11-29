@@ -13,9 +13,11 @@ var address2;
 var clickListener;
 var mc;
 var clusterClick = false;
+var directionsService;
+var directionsDisplay;
 
-//var mycollege = new College("Luther College","700 College Drive Decorah,IA",43.313059,-91.799501);
-var mycollege = new College("UW-LaCrosse","1725 State Street, La Crosse, WI",43.812834,-91.229022);
+var mycollege = new College("Luther College","700 College Drive Decorah,IA",43.313059,-91.799501);
+//var mycollege = new College("UW-LaCrosse","1725 State Street, La Crosse, WI",43.812834,-91.229022);
 function initialize(mess) 
 {
         
@@ -69,7 +71,7 @@ function initialize(mess)
 	// http://www.powerhut.co.uk/googlemaps/custom_markers.php
 	
 	var myIconMarker = new google.maps.MarkerImage('static/image.png',
-            new google.maps.Size(30,28),
+            new google.maps.Size(30,28), 
             null,
             new google.maps.Point(10,17));
 
@@ -107,21 +109,26 @@ function initialize(mess)
 	    zoom: 6
         };
         map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+
+        directionsService = new google.maps.DirectionsService();
+        directionsDisplay = new google.maps.DirectionsRenderer({preserveViewport:false});
+        
+
 	mc = new MarkerClusterer(map);
 	mc.setGridSize(10);
         google.maps.event.addListener(mc, "clusterclick", function(cluster){
 	    clusterClick = true;
 	});
+
         geocoder = new google.maps.Geocoder();
         google.maps.event.addListener(mymarker, "click", function()
 			   { windowOpen(centerLL,"Luther College<br />Decorah, Iowa"); });
-        mymarker.setMap(map);
-        overlays.push(mymarker);
+      //  mymarker.setMap(map);
+      //  overlays.push(mymarker);
 
         var r;
         for(r in rides)
         {
-		    
             addRideToMap(rides[r], r);
         }
         clickListener = google.maps.event.addListener(map, "click", getAddress);
@@ -520,7 +527,6 @@ function  saveRide(vals) {
 // Adds a popup to the GoogleMap that fits 'ride'
 function addRideToMap(ride, rideNum)
 {
-
     if (ride.driver == "needs driver") {
 	var tooltext = 'needs driver';
 	reqMarkerOptions['title'] = tooltext;
@@ -541,6 +547,7 @@ function addRideToMap(ride, rideNum)
         amarker.setMap(map);
         overlays.push(amarker);
         mc.addMarker(amarker);
+        pathListener(amarker);
         //checkSame(amarker);
     } else if (ride.destination_title == mycollege.name)
     {
@@ -559,6 +566,7 @@ function addRideToMap(ride, rideNum)
         amarker.setMap(map);
         overlays.push(amarker);
         mc.addMarker(amarker);
+        pathListener(amarker);
         //checkSame(amarker);
     }
     else if (ride.start_point_title == mycollege.name)
@@ -580,6 +588,7 @@ function addRideToMap(ride, rideNum)
         bmarker.setMap(map);
         overlays.push(bmarker);
         mc.addMarker(bmarker);
+        pathListener(bmarker);
         //checkSame(bmarker);
     }
     return ride.marker;
@@ -1159,6 +1168,55 @@ function putListener()
 {
    clickListener = google.maps.event.addListener(map, "click", getAddress);
 }
+
+
+rad = function(x) {return x*Math.PI/180;}
+
+distHaversine = function(p1, p2) {
+  var R = 6371;
+  var dLat  = rad(p2.lat() - p1.lat());
+  var dLong = rad(p2.lng() - p1.lng());
+
+  var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+          Math.cos(rad(p1.lat())) * Math.cos(rad(p2.lat())) * Math.sin(dLong/2) * Math.sin(dLong/2);
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  var d = R * c;
+
+  return d.toFixed(3);
+}
+function pathListener(marker)
+{
+  
+  google.maps.event.addListener(marker,"mouseover", function(){
+        directionsDisplay.setMap(map)
+	var request = {
+           origin:new google.maps.LatLng(mycollege.lat,mycollege.lng),
+           destination:marker.getPosition(),
+           travelMode: google.maps.TravelMode.DRIVING
+         };
+        directionsService.route(request, function(result, status) {
+              if (status == google.maps.DirectionsStatus.OK) {
+                directionsDisplay.setDirections(result);
+                 pointsArray = result.routes[0].overview_path;
+                 for (var i=0;i<pointsArray.length; i++){
+                     for (var j=0;j<overlays.length;j++){
+                          distance = distHaversine(pointsArray[i],overlays[j].getPosition());
+                          if (distance <100){
+                             alert("Found One");
+                             alert(distance);
+                         }
+                     }
+                 }
+              }
+        });
+  });
+
+  google.maps.event.addListener(marker,"mouseout",function(){
+        directionsDisplay.setMap(null)
+  });
+                                                                     
+}
+
 
 function selectAddress(DooPu,rideNum,openableBoole)
 {

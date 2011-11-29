@@ -767,6 +767,29 @@ class SchoolErrorHandler(BaseHandler):
       
       doRender(self, 'schoolerror.html')
 
+class RideSuccessHandler(BaseHandler):
+    
+    def get(self):
+       noDriver = 0
+       noPass = 0
+       goodRide = 0
+       myquery = db.Query(Ride)
+       rides = myquery.fetch(limit=1000000)
+       for ride in rides:
+           logging.debug(ride.driver)
+           if ride.driver == None:
+               noDriver += 1
+           else:
+               if ride.num_passengers >0:
+                   goodRide += 1
+               else:
+                   noPass += 1
+       doRender(self, 'ridesuccess.html', {
+                'noDriver': noDriver,
+                'noPass': noPass,
+                'goodRide': goodRide,
+                'totalRides':len(rides)})   
+
 class IncorrectHandler(webapp.RequestHandler):
     """
     Returns an error for URLs not defined
@@ -879,6 +902,7 @@ def main():
 				  ('/submittext', SubmitRatingHandler),
                                   ('/driverrating',DriverRatingHandler),
 				  ('/school',SchoolErrorHandler),
+                                  ('/ridesuccess',RideSuccessHandler),
                                   ('/.*', IncorrectHandler),
                                   ],
                                   debug=True)
