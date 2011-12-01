@@ -547,7 +547,7 @@ function addRideToMap(ride, rideNum)
         amarker.setMap(map);
         overlays.push(amarker);
         mc.addMarker(amarker);
-        pathListener(amarker);
+        //pathListener(amarker);
         //checkSame(amarker);
     } else if (ride.destination_title == mycollege.name)
     {
@@ -566,7 +566,7 @@ function addRideToMap(ride, rideNum)
         amarker.setMap(map);
         overlays.push(amarker);
         mc.addMarker(amarker);
-        pathListener(amarker);
+        //pathListener(amarker);
         //checkSame(amarker);
     }
     else if (ride.start_point_title == mycollege.name)
@@ -588,7 +588,7 @@ function addRideToMap(ride, rideNum)
         bmarker.setMap(map);
         overlays.push(bmarker);
         mc.addMarker(bmarker);
-        pathListener(bmarker);
+        //pathListener(bmarker);
         //checkSame(bmarker);
     }
     return ride.marker;
