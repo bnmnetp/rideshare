@@ -55,7 +55,10 @@ part_of_day_strings = { "0": "Morning", "1": "Afternoon", "2": "Evening" }
 
 aquery = db.Query(College)
 if aquery.count()==0:
-   college = College(name ="Luther College", address= "700 College Drive Decorah,IA", lat =43.313059, lng=-91.799501, appId="193298730706524",appSecret="44d7cce20524dc91bf7694376aff9e1d")
+  # development site
+   #college = College(name ="Luther College", address= "700 College Drive Decorah,IA", lat =43.313059, lng=-91.799501, appId="193298730706524",appSecret="44d7cce20524dc91bf7694376aff9e1d")
+  # live site   
+   college = College(name ="Luther College", address= "700 College Drive Decorah,IA", lat =43.313059, lng=-91.799501, appId="284196238289386",appSecret="07e3ea3ffda4aa08f8c597bccd218e75")   
    #college = College(name= "LaCrosse University", address = "1725 State Street, La Crosse, WI", lat=43.812834, lng=-91.229022,appId="193298730706524",appSecret="44d7cce20524dc91bf7694376aff9e1d")
    college.put()
  
@@ -678,7 +681,6 @@ Sincerely,
 
 The Rideshare Team
 """ % (to.nickname(),  ride.start_point_title, ride.destination_title, ride.ToD)
- 
         if choice != "facebook":
           mail.send_mail(sender,to.email(),subject,body)
         else:

@@ -26,8 +26,14 @@ from myutil import *
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import util
 
-FACEBOOK_APP_ID = "193298730706524"
-FACEBOOK_APP_SECRET = "44d7cce20524dc91bf7694376aff9e1d"
+# FACEBOOK_APP_ID = "193298730706524"  # for localhost testing
+#FACEBOOK_APP_ID = "206075606121536" # for beta site
+FACEBOOK_APP_ID = "284196238289386"  # for live site
+
+#FACEBOOK_APP_SECRET = "44d7cce20524dc91bf7694376aff9e1d" # for localhost
+#FACEBOOK_APP_SECRET = "2c4151f8959ea75522b49ea6ccbb1469" # for beta
+FACEBOOK_APP_SECRET = "07e3ea3ffda4aa08f8c597bccd218e75"  # for live site
+
 userId= None
 logging.getLogger().setLevel(logging.DEBUG)
 

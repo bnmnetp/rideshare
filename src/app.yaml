@@ -1,7 +1,11 @@
-application: lutherrideshare
-version: 1
+application: ridesharebeta
+version: 2
 runtime: python
 api_version: 1
+
+builtins:
+- remote_api: on
+- datastore_admin: on
 
 handlers:
 - url: /static
@@ -9,3 +13,4 @@ handlers:
 
 - url: /.*
   script: main.py
+
