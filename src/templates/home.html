@@ -26,7 +26,7 @@ Welcome to your personal homepage, {{ user }}!<br />
 </tr>
 <tr><td>{{ ride.start_point_title }}</td>
     <td>{{ ride.destination_title }}</td>
-    <td>{{ ride.driver }}</td>
+    <td>{{ user }}</td>
     <td>{{ ride.part_of_day }}<br />{{ ride.jsmonth }}-{{ ride.jsday }}-{{ ride.jsyear }}</td>
     <td>{{ ride.contact }}</td>
     <td><input type="button" value="Edit" onclick="location.href='/editride?key={{ ride.key }}'" /></td>
@@ -43,7 +43,7 @@ Welcome to your personal homepage, {{ user }}!<br />
     <th>Modify</th>
 </tr>
 {% for p in ride.passengerobjects %}
-<tr><td>{{ p.name }}</td>
+<tr><td>{{ p.fullname }}</td>
     <td>{{ p.location }}</td>
     <td>{{ p.contact }}</td>
     <td><input type="button" value="Remove" onclick="if(confirm('Are you sure you want to remove {{ p.name }} from this ride?')) location.href='/removepassenger?rkey={{ ride.key }}&pkey={{ p.key }}'" /></td>
@@ -70,8 +70,8 @@ Welcome to your personal homepage, {{ user }}!<br />
 </tr>
 <tr><td>{{ ride.start_point_title }}</td>
     <td>{{ ride.destination_title }}</td>
-    <td>{{ ride.driver }}</td>
-    <td>{{ ride.part_of_day }}<br />{{ ride.jsmonth }}-{{ ride.jsday }}-{{ ride.jsyear }}</td>
+    <td>{{ ride.drivername }}<br /> <a href='/ratedriver?dkey={{ride.driver}}'> Rate Your Driver</a></td>
+    <td>{{ ride.part_of_day }}<br />{{ ride.jsmonth }}-{{ ride.jsday }}-{{ ride.jsyear }}<td>
     <td>{{ ride.contact }}</td>
     <td><input type='button' value='Delete' disabled='disabled' /></td>
 </tr></table>
@@ -87,10 +87,10 @@ Welcome to your personal homepage, {{ user }}!<br />
     <th>Modify</th>
 </tr>
 {% for p in ride.passengerobjects %}
-<tr><td>{{ p.name }}</td>
+<tr><td>{{ p.fullname }}</td>
     <td>{{ p.location }}</td>
     <td>{{ p.contact }}</td>
-    <td><input type="button" value="Remove" {% ifnotequal p.name user %}disabled='disabled'{% endifnotequal %} onclick="if(confirm('Are you sure you want to remove yourself from this ride?')) location.href='/removepassenger?rkey={{ ride.key }}&pkey={{ p.key }}'" /></td>
+    <td><input type="button" value="Remove" {% ifnotequal p.fullname user %}disabled='disabled'{% endifnotequal %} onclick="if(confirm('Are you sure you want to remove yourself from this ride?')) location.href='/removepassenger?rkey={{ ride.key }}&pkey={{ p.key }}'" /></td>
 </tr>
 {% endfor %}
 </table>

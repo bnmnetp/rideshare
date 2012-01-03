@@ -6,7 +6,8 @@ import logging
 class Ride(db.Model):
     max_passengers = db.IntegerProperty()
     num_passengers = db.IntegerProperty()
-    driver = db.UserProperty()
+    driver = db.StringProperty()
+    drivername = db.StringProperty()
     start_point_title = db.StringProperty()
     start_point_lat = db.FloatProperty()
     start_point_long = db.FloatProperty()
@@ -26,7 +27,7 @@ class Ride(db.Model):
                 res[k] = getattr(self,k) #eval('self.'+k)
         res['ToD'] = str(self.ToD)
         if self.driver:
-            res['driver'] = self.driver.email()
+            res['driver'] = self.driver
         else:
             res['driver'] = "needs driver"
         res['key'] = unicode(self.key())
@@ -34,7 +35,8 @@ class Ride(db.Model):
         return res
 
 class Passenger(db.Model):
-    name = db.UserProperty()
+    name = db.StringProperty()
+    fullname = db.StringProperty()
     contact = db.StringProperty()
     location = db.StringProperty()
     lat = db.FloatProperty()
@@ -47,6 +49,14 @@ class Passenger(db.Model):
     
     Change method of display in entire project regarding passengers
     """
+
+class College(db.Model):
+    name = db.StringProperty()
+    address = db.StringProperty()
+    lat = db.FloatProperty()
+    lng = db.FloatProperty()
+    appId= db.StringProperty()
+    appSecret= db.StringProperty()
 
 class ApplicationParameters(db.Model):
     apikey = db.StringProperty()

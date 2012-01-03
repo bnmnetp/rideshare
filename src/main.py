@@ -16,7 +16,7 @@
 #
 
 
-
+choice = "facebook"
 
 import wsgiref.handlers
 import datetime
@@ -28,10 +28,17 @@ from google.appengine.api import mail
 
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
+import facebook
 
 #from appengine_django.models import BaseModel
 from google.appengine.ext import db
-from google.appengine.api import users
+if choice != "facebook":
+   from google.appengine.api import users
+else:
+   import nateusers as users
+   from nateusers import LoginHandler, LogoutHandler, BaseHandler, FBUser
+
+
 
 import logging
 import urllib
@@ -45,31 +52,55 @@ NOTIFY_EMAIL_ADDR=""
 
 early_late_strings = { "0": "Early", "1": "Late" }
 part_of_day_strings = { "0": "Morning", "1": "Afternoon", "2": "Evening" }
+
+aquery = db.Query(College)
+if aquery.count()==0:
+  # development site
+   #college = College(name ="Luther College", address= "700 College Drive Decorah,IA", lat =43.313059, lng=-91.799501, appId="193298730706524",appSecret="44d7cce20524dc91bf7694376aff9e1d")
+  # live site   
+   college = College(name ="Luther College", address= "700 College Drive Decorah,IA", lat =43.313059, lng=-91.799501, appId="284196238289386",appSecret="07e3ea3ffda4aa08f8c597bccd218e75")   
+   #college = College(name= "LaCrosse University", address = "1725 State Street, La Crosse, WI", lat=43.812834, lng=-91.229022,appId="193298730706524",appSecret="44d7cce20524dc91bf7694376aff9e1d")
+   college.put()
+ 
+
+
     
-class MainHandler(webapp.RequestHandler):
+class MainHandler(BaseHandler):
 
     def get(self):
         query = db.Query(Ride)
         query.filter("ToD > ", datetime.datetime.now())
         ride_list = query.fetch(limit=100)
-        user = users.get_current_user()
+        aquery = db.Query(College)
+        mycollege= aquery.get()
+        user = self.current_user
+        logging.debug(user)
+        logging.debug(users.create_logout_url("/"))
         greeting = ''
         logout = ''
         if user:
             greeting = ("Welcome, %s! (<a href=\"%s\">sign out</a>) Go to your <a href='/home'>Home Page</a>" %
                   (user.nickname(), users.create_logout_url("/")))
             logout = users.create_logout_url("/")
+            logging.debug(logout)
+        else:
+            self.redirect('/auth/login')
+            return
+        
+        logging.debug(mycollege.address)
         path = os.path.join(os.path.dirname(__file__), 'templates/index.html')
         self.response.out.write(template.render(path, {
             'ride_list': ride_list, 
             'greeting' : greeting,
+            'college': mycollege,
+            'address': mycollege.address,
             'nick' : user.nickname(),
-            'logout':logout,
+            'logout':'/auth/logout',
             'mapkey':MAP_APIKEY,
             }))
 
 
-class RideQueryHandler(webapp.RequestHandler):
+class RideQueryHandler(BaseHandler):
     """
     Parse and process requests for rides
     returns json
@@ -108,7 +139,7 @@ class RideQueryHandler(webapp.RequestHandler):
         logging.debug('end get')
     
 
-class NewRideHandler(webapp.RequestHandler):
+class NewRideHandler(BaseHandler):
     """
     For new Rides
     """
@@ -136,7 +167,7 @@ class NewRideHandler(webapp.RequestHandler):
         - ridecomments
         - driver
         """
-
+        user = self.current_user
         newRide = Ride()
         maxp = self.request.get("maxp")
         inumber = self.request.get("contact")
@@ -152,7 +183,8 @@ class NewRideHandler(webapp.RequestHandler):
         else:
             isDriver = True
         
-
+        aquery = db.Query(College)
+        mycollege= aquery.get()
         """ # For testing
         latlng = ['41.517658', '-95.452065']
         lat = float(latlng[0])
@@ -165,13 +197,13 @@ class NewRideHandler(webapp.RequestHandler):
           newRide.start_point_title = self.request.get("from")
           newRide.start_point_lat = lat
           newRide.start_point_long = lng
-          newRide.destination_title = "Luther College, Decorah, IA"
-          newRide.destination_lat = 43.313059
-          newRide.destination_long = -91.799501
+          newRide.destination_title = mycollege.name
+          newRide.destination_lat = mycollege.lat
+          newRide.destination_long = mycollege.lng
         elif checked == 'false':
-          newRide.start_point_title = "Luther College, Decorah, IA"
-          newRide.start_point_lat = 43.313059
-          newRide.start_point_long = -91.799501
+          newRide.start_point_title = mycollege.name
+          newRide.start_point_lat = mycollege.lat
+          newRide.start_point_long = mycollege.lng
           newRide.destination_title = self.request.get("to")
           newRide.destination_lat = lat
           newRide.destination_long = lng             
@@ -201,11 +233,14 @@ class NewRideHandler(webapp.RequestHandler):
 
 
         if isDriver:
-            newRide.driver = users.get_current_user()
+            newRide.driver = user.id
+            newRide.drivername = FBUser.get_by_key_name(user.id).nickname()
         else:
-            user_name = users.get_current_user()
+            user_name = user.id
             passenger = Passenger()
             passenger.name = user_name
+            passenger.fullname = FBUser.get_by_key_name(user.id).nickname()
+            logging.debug(FBUser.get_by_key_name(user.id).nickname())
             passenger.contact = number
             passenger.location = newRide.destination_title
             passenger.lat = lat
@@ -223,7 +258,6 @@ class NewRideHandler(webapp.RequestHandler):
         query = db.Query(Ride)
         query.filter("ToD > ", datetime.datetime.now())
         ride_list = query.fetch(limit=100)
-        user = users.get_current_user()
         self.sendRideEmail(newRide)
         greeting = ''
         if user:
@@ -239,19 +273,22 @@ class NewRideHandler(webapp.RequestHandler):
             }))
 
     def sendRideEmail(self,ride):
+      
         driverName = None
         passengerName = None
+        subject = "New Ride "
         if ride.driver:
-            to = ride.driver.email()
-            driverName = ride.driver.nickname()
+            if choice != "facebook":
+               to = ride.driver.email()
+            driverName = self.current_user.nickname()
         else:
             p = db.get(ride.passengers[0]).name
-            to = p.email()
-            passengerName = p.nickname()
+            if choice != "facebook":
+               to = p.email()
+            passengerName = self.current_user.nickname()
             
         sender = FROM_EMAIL_ADDR
         announceAddr = NOTIFY_EMAIL_ADDR
-        subject = "New Ride "
         if driverName:
             subject += "Announcement"
             body = """
@@ -260,7 +297,7 @@ Please go to http://rideshare.luther.edu if you want to join this ride.
 
 Thanks,
 
-The Luther Rideshare Team
+The Rideshare Team
 """ % (driverName,ride.start_point_title,ride.destination_title,ride.ToD)
         else:
             subject += "Request"
@@ -270,14 +307,19 @@ If you are able to take this person in your car, please go to http://rideshare.l
         
 Thanks,
 
-The Luther Rideshare Team
+The Rideshare Team
 """ % (passengerName,ride.start_point_title,ride.destination_title,ride.ToD)
 
-        logging.debug(body)
-        mail.send_mail(sender,announceAddr,subject,body)
+        if choice != "facebook":
+          mail.send_mail(sender,announceAddr,subject,body)
+        else:
+          logging.debug(self.current_user.access_token)
+          graph = facebook.GraphAPI(self.current_user.access_token)
+          graph.put_object("me", "feed", message=body)
+          pageGraph = facebook.GraphAPI("193298730706524|48e2ec8c9b0ad817c89ad4f6.1-513076490|144494142268497|pZGsDMZLDxcSRrd_1FF5M_Q_qrY")
+          pageGraph.put_object("144494142268497","feed",message=body)
 
-
-class AddPassengerHandler(webapp.RequestHandler):
+class AddPassengerHandler(BaseHandler): 
     """
     Handles addition of passengers
     """
@@ -293,7 +335,7 @@ class AddPassengerHandler(webapp.RequestHandler):
       - ride_key
       """
       # The current user can add himself to the ride.  No need for this in the form.
-      user_name = users.get_current_user()
+      user_name = self.current_user.id
       
       ride_key = self.request.get('ride_key')
       contact = self.request.get('contact')
@@ -311,7 +353,7 @@ class AddPassengerHandler(webapp.RequestHandler):
       # Check if the current user is already on the ride
       already = False
       for p in ride.passengers:
-        if db.get(p).name == user_name:
+        if db.get(p).name== user_name:
           already = True
       if already:
         temp = os.path.join(os.path.dirname(__file__), 'templates/error.html')
@@ -323,6 +365,7 @@ class AddPassengerHandler(webapp.RequestHandler):
       else:
         passenger = Passenger()
         passenger.name = user_name
+        passenger.fullname = FBUser.get_by_key_name(user_name).nickname()
         passenger.contact = contact
         passenger.location = address
         passenger.lat = lat
@@ -341,7 +384,7 @@ class AddPassengerHandler(webapp.RequestHandler):
         query = db.Query(Ride)
         query.filter("ToD > ", datetime.datetime.now())
         ride_list = query.fetch(limit=100)
-        user = users.get_current_user()
+        user = self.current_user
         greeting = ''
         if user:
             greeting = ("Welcome, %s! (<a href=\"%s\">sign out</a>) Go to your <a href='/home'>Home Page</a>" %
@@ -360,12 +403,16 @@ class AddPassengerHandler(webapp.RequestHandler):
 
         if not ride.driver:
             return
-
-        to = ride.driver.email()
+        if choice != "facebook":
+           to = ride.driver.email()
+        else:
+           logging.debug(ride.driver)
+           to = FBUser.get_by_key_name(ride.driver)
+           logging.debug(to)
         sender = FROM_EMAIL_ADDR
         subject = "New Passenger for your ride"
         p = db.get(ride.passengers[-1])
-        
+        user = FBUser.get_by_key_name(p.name)
         body = """
 Dear %s,
 We wanted to let you know that %s has been added to your ride
@@ -375,23 +422,29 @@ Thanks for being a driver!
 
 Sincerely,
 
-The Luther Rideshare Team
-""" % (ride.driver.nickname(), p.name.nickname(), ride.start_point_title, ride.destination_title,
-       ride.ToD, p.name.nickname(), p.contact)
+The Rideshare Team
+""" % (to.nickname(), user.nickname(), ride.start_point_title, ride.destination_title,
+       ride.ToD, user.nickname(), p.contact)
 
-        logging.debug(body)
-        mail.send_mail(sender,to,subject,body)
+        if choice != "facebook":
+          logging.debug(body)
+          mail.send_mail(sender,to,subject,body)
+        else:
+          graph = facebook.GraphAPI(to.access_token)
+          logging.debug(graph)
+          graph.put_object("me", "feed", message=body)
 
-
-class AddDriverHandler(webapp.RequestHandler):
+class AddDriverHandler(BaseHandler):
 
     def get(self):
         ride_key = self.request.get("key")
         contact = self.request.get("contact")
         numpass = self.request.get("numpass")
+        user = self.current_user
         
         ride = Ride.get(ride_key)
-        ride.driver = users.get_current_user()
+        ride.driver = user.id
+        ride.drivername = FBUser.get_by_key_name(user.id).nickname()
         ride.contact = contact
         ride.max_passengers = int(numpass)
         ride.put()
@@ -404,6 +457,10 @@ class AddDriverHandler(webapp.RequestHandler):
 
     def sendRiderEmail(self, ride, to):
 
+        if choice == "facebook":
+           to = FBUser.get_by_key_name(to)
+           user = self.current_user
+           logging.debug(to)
         sender = FROM_EMAIL_ADDR
         subject = "Change in your ride"
         
@@ -411,30 +468,32 @@ class AddDriverHandler(webapp.RequestHandler):
 Dear %s,
 
 We have good news about your request for a ride from %s to %s on %s.
-%s has agreed to drive.  You can contact the driver at %s, or by email
-at %s.
+%s has agreed to drive.  You can contact the driver at %s.
 
 Have a safe trip!
 
 Sincerely,
 
-The Luther Rideshare Team
+The Rideshare Team
 """ % (to.nickname(),  ride.start_point_title, ride.destination_title, ride.ToD,
-       ride.driver.nickname(), ride.contact, ride.driver.email())
+       user.nickname(), ride.contact)
+        if choice != "facebook": 
+           logging.debug(body)
+           mail.send_mail(sender,to.email(),subject,body)
+        else:
+           graph = facebook.GraphAPI(to.access_token)
+           graph.put_object("me", "feed", message=body)
 
-        logging.debug(body)
-        mail.send_mail(sender,to.email(),subject,body)
-
-
-class EditRideHandler(webapp.RequestHandler):
+class EditRideHandler(BaseHandler):
     def get(self):
         ride_key = self.request.get("key")
         ride = db.get(ride_key)
-        username = users.get_current_user()
+        username = self.current_user.id
         dayparts = ride.part_of_day.split()
         
         plist = []
         for p in ride.passengers:
+            logging.debug(db.get(p).name)
             plist.append(db.get(p).name)
         
         doRender(self, 'edit.html', { 
@@ -446,9 +505,10 @@ class EditRideHandler(webapp.RequestHandler):
                                          }
                  )
 
-class ChangeRideHandler(webapp.RequestHandler):
+class ChangeRideHandler(BaseHandler):
     def post(self):
-        username = users.get_current_user()
+        user = self.current_user
+        username = user.id
         ride = Ride.get(self.request.get("key"))
 
         contact = self.request.get("contact")
@@ -467,12 +527,31 @@ class ChangeRideHandler(webapp.RequestHandler):
         ride.put()
         self.redirect("/")
 
-class HomeHandler(webapp.RequestHandler):
+class SubmitRatingHandler(BaseHandler):
+    def post(self):
+      drivernum = self.request.get("driver")
+      text = self.request.get("ratetext")
+      ooFrating = self.request.get("ooFrating")
+      user= FBUser.get_by_key_name(drivernum)
+      user.drivercomments.append(text)
+      user.numrates = user.numrates + 1
+      if user.rating== None:
+         user.rating= float(ooFrating)
+      else:
+         user.rating= user.rating + float(ooFrating)
+      user.put()
+      doRender(self, "submit.html",{})
+      self.redirect("/home")
+
+class HomeHandler(BaseHandler):
     """
     Displays personal homepage
     """
     def get(self):
-      username = users.get_current_user()
+      aquery = db.Query(College)
+      mycollege= aquery.get()
+      user = self.current_user
+      username = user.id
       drive = db.Query(Ride)
       drive.filter('driver =', username)
       driverides = drive.fetch(limit=100)
@@ -481,7 +560,7 @@ class HomeHandler(webapp.RequestHandler):
         ride.jsmonth = ride.ToD.month
         ride.jsyear = ride.ToD.year
         ride.jsday = ride.ToD.day 
-        if ride.start_point_title == 'Luther College, Decorah, IA':
+        if ride.start_point_title == mycollege.name:
           ride.doOrPu = 0
         else:
           ride.doOrPu = 1
@@ -494,7 +573,7 @@ class HomeHandler(webapp.RequestHandler):
       for p in passengerList:
         passengerrides.append(p.ride)
       for ride in passengerrides:
-        if ride.start_point_title == 'Luther College, Decorah, IA':
+        if ride.start_point_title == mycollege.name:
           ride.doOrPu = 0
         else:
           ride.doOrPu = 1
@@ -505,17 +584,19 @@ class HomeHandler(webapp.RequestHandler):
         for p in ride.passengers:
           ride.passengerobjects.append(db.get(p))
       doRender(self, 'home.html', { 
-                          'user': username,
+                          'user': user.nickname(),
                           'driverides': driverides, 
                           'passengerrides': passengerrides })
     
-class RideInfoHandler(webapp.RequestHandler):
+class RideInfoHandler(BaseHandler):
     """
     Displays detailed information regarding a specific ride
     Holds a GMap detailing the trip
     """
     def get(self):
-      username = users.get_current_user()
+      aquery = db.Query(College)
+      mycollege= aquery.get()
+      username = self.current_user
       key = self.request.get('key')
       ride = db.get(key)
       if ride == None:
@@ -526,7 +607,7 @@ class RideInfoHandler(webapp.RequestHandler):
         ride.jsmonth = ride.ToD.month
         ride.jsyear = ride.ToD.year
         ride.jsday = ride.ToD.day
-        if ride.start_point_title == 'Luther College, Decorah, IA':
+        if ride.start_point_title == mycollege.name:
           ride.doOrPu = 0
         else:
           ride.doOrPu = 1
@@ -542,7 +623,7 @@ class RideInfoHandler(webapp.RequestHandler):
             'mapkey':MAP_APIKEY
             })
 
-class DeleteRideHandler(webapp.RequestHandler):
+class DeleteRideHandler(BaseHandler): #NEEDS WORK
     """
     Deletes a ride using a key
     """
@@ -559,10 +640,12 @@ class DeleteRideHandler(webapp.RequestHandler):
             ride.driver = None
             ride.put()
             for p in ride.passengers:
+                logging.debug(p.name)
+                logging.debug(Passenger.get(p).name)
                 to = Passenger.get(p).name
                 self.sendRiderEmail(ride,to)
             
-        user = users.get_current_user()
+        user = self.current_user
         greeting = ''
         if user:
             greeting = ("Welcome, %s! (<a href=\"%s\">sign out</a>) Go to your <a href='/home'>Home Page</a>" %
@@ -576,7 +659,11 @@ class DeleteRideHandler(webapp.RequestHandler):
             }))
 
     def sendRiderEmail(self, ride, to):
-
+        
+        if choice == "facebook":
+          
+          to = FBUser.get_by_key_name(to)
+          logging.debug(to)
         sender = FROM_EMAIL_ADDR
         subject = "Change in your ride"
         
@@ -585,21 +672,40 @@ Dear %s,
 
 We wanted to let you know that there has been a change in status of your ride
 from %s to %s on %s.  Unfortunately the driver is unable to drive anymore.
-The ride will remain on http://rideshare.luther.edu but it will appear as a ride
+The ride will remain, but it will appear as a ride
 that is in need of a driver.  When a new driver is found you will be notified
 by email.
 
 
 Sincerely,
 
-The Luther Rideshare Team
+The Rideshare Team
 """ % (to.nickname(),  ride.start_point_title, ride.destination_title, ride.ToD)
+        if choice != "facebook":
+          mail.send_mail(sender,to.email(),subject,body)
+        else:
+ 	  try:
+             
+             graph = facebook.GraphAPI(to.access_token)
+             graph.put_object("me", "feed", message=body)
 
-        logging.debug(body)
-        mail.send_mail(sender,to.email(),subject,body)
+	  except:
+	     logging.debug(graph.put_object("me", "feed", message=body))
+
     
 
-class RemovePassengerHandler(webapp.RequestHandler):
+class RateHandler(BaseHandler):
+    
+    def get(self):
+      drivernum = self.request.get('dkey')
+      user = FBUser.get_by_key_name(drivernum)
+      doRender(self, 'ratedriver.html', {
+            'driver': user.nickname(),
+            'drivernum':drivernum
+            })
+      
+
+class RemovePassengerHandler(BaseHandler):
     """
     Removes a passenger using a key and the current user
     """
@@ -624,7 +730,7 @@ class RemovePassengerHandler(webapp.RequestHandler):
         query = db.Query(Ride)
         query.filter("ToD > ", datetime.datetime.now())
         ride_list = query.fetch(limit=100)
-        user = users.get_current_user()
+        user = self.current_user
         greeting = ''
         if user:
             greeting = ("Welcome, %s! (<a href=\"%s\">sign out</a>) Go to your <a href='/home'>Home Page</a>" %
@@ -638,6 +744,54 @@ class RemovePassengerHandler(webapp.RequestHandler):
             'mapkey' : MAP_APIKEY,
             }))
 
+class DriverRatingHandler(BaseHandler):
+
+    def get(self):
+      drivernum = self.request.get('drivernum')
+      user = FBUser.get_by_key_name(drivernum)
+      ratingslist= user.drivercomments
+      name = user.nickname()
+      if user.rating != None:
+          rating = user.rating/user.numrates
+      else:
+          rating= 0.00
+      numrates = user.numrates
+      
+      doRender(self, 'driverrating.html', {
+          'ratingslist': ratingslist,
+          'name': name,
+          'rating':str(rating)[0:3],
+          'numrates':numrates })
+
+class SchoolErrorHandler(BaseHandler):
+    
+    def get(self):
+      
+      doRender(self, 'schoolerror.html')
+
+class RideSuccessHandler(BaseHandler):
+    
+    def get(self):
+       noDriver = 0
+       noPass = 0
+       goodRide = 0
+       myquery = db.Query(Ride)
+       rides = myquery.fetch(limit=1000000)
+       for ride in rides:
+           logging.debug(ride.driver)
+           if ride.driver == None:
+               noDriver += 1
+           else:
+               if ride.num_passengers >0:
+                   goodRide += 1
+               else:
+                   noPass += 1
+       doRender(self, 'ridesuccess.html', {
+                'noDriver': noDriver,
+                'noPass': noPass,
+                'goodRide': goodRide,
+                'totalRides':len(rides)})   
+
 class IncorrectHandler(webapp.RequestHandler):
     """
     Returns an error for URLs not defined
@@ -645,7 +799,13 @@ class IncorrectHandler(webapp.RequestHandler):
     def get(self):
       doRender(self, 'error.html', {
                             'error_message': "Page does not exist."})
-        
+
+class SignOutHandler(BaseHandler):
+    def get(self):
+      aquery = db.Query(College)
+      mycollege= aquery.get()
+      doRender(self, 'logout.html', { 'logout_message': "Thanks for using the"+ mycollege.name + "Rideshare Website!"})
+
 def doRender(handler, name='index.html', value={}):
     temp = os.path.join(os.path.dirname(__file__), 'templates/' + name)
     outstr = template.render(temp, value)
@@ -680,62 +840,71 @@ def main():
     query = db.Query(Ride)
 
     
-    if query.count() < 2:
-        newRide = Ride()
-        newRide.max_passengers = 3
-        newRide.num_passengers = 0
-        newRide.driver = users.User("bmiller@luther.edu")
-        newRide.start_point_title = "Luther College, Decorah, IA"
-        newRide.start_point_long, newRide.start_point_lat = geocode(newRide.start_point_title)
-        newRide.destination_title = "Plymouth, MN"
-        newRide.destination_long, newRide.destination_lat = geocode(newRide.destination_title)
-        newRide.part_of_day = 'Early Morning'
-        newRide.ToD = datetime.datetime(2009,9,15)
-        newRide.passengers = []
-        newRide.put()
+   # if query.count() < 2:
+   #     newRide = Ride()
+   #     newRide.max_passengers = 3
+   #     newRide.num_passengers = 0
+   #     newRide.driver = users.User("bmiller@luther.edu")
+   #     newRide.start_point_title = "Luther College, Decorah, IA"
+   #     newRide.start_point_long, newRide.start_point_lat = geocode(newRide.start_point_title)
+   #     newRide.destination_title = "Plymouth, MN"
+   #     newRide.destination_long, newRide.destination_lat = geocode(newRide.destination_title)
+   #     newRide.part_of_day = 'Early Morning'
+   #     newRide.ToD = datetime.datetime(2009,9,15)
+   #     newRide.passengers = []
+   #     newRide.put()
 
-        newRide = Ride()
-        newRide.max_passengers = 1
-        newRide.num_passengers = 0
-        newRide.driver = users.User("willke02@luther.edu")
-        newRide.start_point_title = "Luther College, Decorah, IA"
-        newRide.start_point_long, newRide.start_point_lat = geocode(newRide.start_point_title)
-        newRide.destination_title = "Des Moines, IA"
-        newRide.destination_long, newRide.destination_lat = geocode(newRide.destination_title)
-        newRide.part_of_day = 'Late Afternoon'
-        newRide.ToD = datetime.datetime(2009,9,17)
-        newRide.passengers = []
-        newRide.put()
-    
-    apiQuery = db.Query(ApplicationParameters)
-    if apiQuery.count() < 1:
-        bootstrap = ApplicationParameters()
-        bootstrap.apikey = 'ABQIAAAAg9WbCE_zwMIRW7jDFE_3ixQ2JlMNfqnGb2qqWZtmZLchh1TSjRS0zuchuhlR8g4tlMGrjg34sNmyjQ'
-        bootstrap.notifyEmailAddr = 'bonelake@gmail.com'
-        bootstrap.fromEmailAddr = 'bonelake@gmail.com'
+   #     newRide = Ride()
+   #     newRide.max_passengers = 1
+   #     newRide.num_passengers = 0
+   #     newRide.driver = users.User("willke02@luther.edu")
+   #     newRide.start_point_title = "Luther College, Decorah, IA"
+   #     newRide.start_point_long, newRide.start_point_lat = geocode(newRide.start_point_title)
+   #     newRide.destination_title = "Des Moines, IA"
+   #     newRide.destination_long, newRide.destination_lat = geocode(newRide.destination_title)
+   #     newRide.part_of_day = 'Late Afternoon'
+   #     newRide.ToD = datetime.datetime(2009,9,17)
+   #     newRide.passengers = []
+   #     newRide.put()
+   # 
+    #apiQuery = db.Query(ApplicationParameters)
+    #if apiQuery.count() < 1:
+     #   bootstrap = ApplicationParameters()
+      #  bootstrap.apikey = 'ABQIAAAAg9WbCE_zwMIRW7jDFE_3ixQ2JlMNfqnGb2qqWZtmZLchh1TSjRS0zuchuhlR8g4tlMGrjg34sNmyjQ'
+     #   bootstrap.notifyEmailAddr = 'bonelake@gmail.com'
+     #   bootstrap.fromEmailAddr = 'bonelake@gmail.com'
         
-        MAP_APIKEY = bootstrap.apikey
-        FROM_EMAIL_ADDR = bootstrap.fromEmailAddr
-        NOTIFY_EMAIL_ADDR = bootstrap.notifyEmailAddr
+     #   MAP_APIKEY = bootstrap.apikey
+     #   FROM_EMAIL_ADDR = bootstrap.fromEmailAddr
+     #   NOTIFY_EMAIL_ADDR = bootstrap.notifyEmailAddr
         
-        bootstrap.put()
-    else:
-        apilist = apiQuery.fetch(limit=1)
-        MAP_APIKEY = apilist[0].apikey
-        FROM_EMAIL_ADDR = apilist[0].fromEmailAddr
-        NOTIFY_EMAIL_ADDR = apilist[0].notifyEmailAddr
+     #   bootstrap.put()
+    #else:
+     #   apilist = apiQuery.fetch(limit=1)
+      #  MAP_APIKEY = apilist[0].apikey
+       # FROM_EMAIL_ADDR = apilist[0].fromEmailAddr
+       # NOTIFY_EMAIL_ADDR = apilist[0].notifyEmailAddr
     
-    application = webapp.WSGIApplication([('/', MainHandler),
+    application = webapp.WSGIApplication([
+                                  ('/', MainHandler),
                                   ('/getrides', RideQueryHandler ),
                                   ("/newride.*", NewRideHandler),
                                   ("/addpass", AddPassengerHandler),
-                                  ("/adddriver", AddDriverHandler),                                          
+                                  ("/adddriver",AddDriverHandler),                                          
                                   ('/home', HomeHandler),
                                   ('/rideinfo', RideInfoHandler),
                                   ('/deleteride', DeleteRideHandler),
                                   ('/editride', EditRideHandler),
                                   ('/applyedits', ChangeRideHandler),
                                   ('/removepassenger', RemovePassengerHandler),
+                                  ('/auth/login', LoginHandler),
+                                  ('/auth/logout',LogoutHandler),
+				  ('/signout', SignOutHandler),                
+				  ('/ratedriver', RateHandler),
+				  ('/submittext', SubmitRatingHandler),
+                                  ('/driverrating',DriverRatingHandler),
+				  ('/school',SchoolErrorHandler),
+                                  ('/ridesuccess',RideSuccessHandler),
                                   ('/.*', IncorrectHandler),
                                   ],
                                   debug=True)
