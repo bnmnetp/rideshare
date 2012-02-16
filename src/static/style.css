@@ -25,6 +25,14 @@ h1 {
     color: #fff;
     text-align: center;
 }
+#mainfooter {
+    margin: 0 auto;
+    width: 800px;
+    height: 35px;
+    background: #003175;
+    color: #fff;
+    text-align: center;
+}
 
 titleblock#a {
     color: #fff;
