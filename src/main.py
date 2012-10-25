@@ -32,11 +32,9 @@ import facebook
 
 #from appengine_django.models import BaseModel
 from google.appengine.ext import db
-if choice != "facebook":
-   from google.appengine.api import users
-else:
-   import nateusers as users
-   from nateusers import LoginHandler, LogoutHandler, BaseHandler, FBUser
+
+import nateusers as users
+from nateusers import LoginHandler, LogoutHandler, BaseHandler, FBUser
 
 
 
@@ -316,7 +314,7 @@ The Rideshare Team
           logging.debug(self.current_user.access_token)
           graph = facebook.GraphAPI(self.current_user.access_token)
           graph.put_object("me", "feed", message=body)
-          pageGraph = facebook.GraphAPI("193298730706524|48e2ec8c9b0ad817c89ad4f6.1-513076490|144494142268497|pZGsDMZLDxcSRrd_1FF5M_Q_qrY")
+          pageGraph = facebook.GraphAPI("AAAECeZAfUaeoBAHYuYZC8NN9djZAlA6PZBpJnCWvZCxZBnDeEWQcdj3YuBZCWEJbPZA1E35QiCHqYmCxXsNkqT82tn67nMitdirfjxvZBAZBCfWzRKbCFZAHFZCH")
           pageGraph.put_object("144494142268497","feed",message=body)
 
 class AddPassengerHandler(BaseHandler): 
@@ -646,6 +644,8 @@ class DeleteRideHandler(BaseHandler): #NEEDS WORK
                 self.sendRiderEmail(ride,to)
             
         user = self.current_user
+        aquery = db.Query(College)
+        mycollege= aquery.get()
         greeting = ''
         if user:
             greeting = ("Welcome, %s! (<a href=\"%s\">sign out</a>) Go to your <a href='/home'>Home Page</a>" %
@@ -655,7 +655,9 @@ class DeleteRideHandler(BaseHandler): #NEEDS WORK
         self.response.out.write(template.render(path, {
             'greeting' : greeting,
             'message' : message,
-            'mapkey':MAP_APIKEY,            
+            'mapkey':MAP_APIKEY, 
+            'college': mycollege,
+            'nick' : user.nickname()           
             }))
 
     def sendRiderEmail(self, ride, to):
@@ -731,6 +733,8 @@ class RemovePassengerHandler(BaseHandler):
         query.filter("ToD > ", datetime.datetime.now())
         ride_list = query.fetch(limit=100)
         user = self.current_user
+        aquery = db.Query(College)
+        mycollege= aquery.get()
         greeting = ''
         if user:
             greeting = ("Welcome, %s! (<a href=\"%s\">sign out</a>) Go to your <a href='/home'>Home Page</a>" %
@@ -740,8 +744,11 @@ class RemovePassengerHandler(BaseHandler):
         self.response.out.write(template.render(path, {
             'ride_list': ride_list, 
             'greeting' : greeting,
-            'message' : message,
-            'mapkey' : MAP_APIKEY,
+            'college': mycollege,
+            'address': mycollege.address,
+            'nick' : user.nickname(),
+            'logout':'/auth/logout',
+            'mapkey':MAP_APIKEY,
             }))
 
 class DriverRatingHandler(BaseHandler):
