@@ -1,0 +1,82 @@
+
+<html>
+<head>
+
+    <link rel="stylesheet" href="static/style.css" type="text/css" media="screen" />
+    <script type="text/javascript" src="static/jquery-1.8.2.js" ></script>
+    <script type="text/javascript" src="static/jquery-ui-1.10.2.custom.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="static/jquery-ui-1.10.2.custom.css"/>
+</head>
+<script type="text/javascript">
+$(document).ready(function(){
+
+    $(".date").datepicker({dateFormat:"mm-dd-yy"});
+})
+function addField(){
+$("#eventfields").append('<b>Event</b></br>Name:<input type="text" size="35" name="eventname"/>Location:<input type="text" size="35" name="eventlocation"/></br>Date:<input type="text" size="15" name="eventdate" class="date">Time:<input type="text" size="15" name="eventtime"></br>')
+$(".date").datepicker({dateFormat:"mm-dd-yy"});
+}
+
+</script>
+<body>
+    <div id="wrapper">
+        <div id="header">
+            <div id="logo">
+                <h1><a href="/main">{{college.name}} Rideshare   </a></h1>
+            </div>
+        </div>
+
+        <div id="menu">
+            <ul>
+                <li>
+                    <a href="/home">Your Rides</a>
+                </li>
+                <li>
+                    <a href="/static/help.html">Help</a>
+                </li>
+                <li>
+                    <a href="{{logout}}">Sign out</a>
+                </li>
+            </ul>
+        </div>
+
+        <div id="page">
+            <div id="page-bgtop">
+                <div id="page-bgbtm">    
+                    <div id="content">
+
+                        
+
+                                <h2>Add New Events</h2>
+
+
+
+                                <form name="eventForm" action="/addmultipleevents" method="post" >
+                                <div id="eventfields">
+                                    <b>Event</b></br>
+                                    Name:<input type="text" size="35" name="eventname"/>
+                                    Location:<input type="text" size="35" name="eventlocation"/></br>
+                                    Date:<input type="text" size="15" name="eventdate" class="date">
+                                    Time:<input type="text" size="15" name="eventtime"></br>
+                                    
+                                </div>
+                                <input type="hidden" value="{{circle}}" name="circle"/>
+                                <input type="button" onclick="addField()" value="Add New Event Field"></input></br></br>
+                                <input type="submit" value="Submit Events">
+                                </form>
+
+
+
+
+                                    </div> <!--content-->
+                                </div>
+                            </div>
+                        </div>
+                        <div style="clear: both;"></div>
+
+                    <div id="footer">
+                        <p>Developed by Luther College</p>
+                    </div>
+                </body>
+                </html>
+

@@ -14,7 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
+from google.appengine.dist import use_library
+use_library('django', '1.2')
 
 choice = "facebook"
 
@@ -32,21 +33,26 @@ import facebook
 
 #from appengine_django.models import BaseModel
 from google.appengine.ext import db
+if choice != "facebook":
+   from google.appengine.api import users
+else:
+   import nateusers as users
+   from nateusers import LoginHandler, LogoutHandler, BaseHandler, FBUser
 
-import nateusers as users
-from nateusers import LoginHandler, LogoutHandler, BaseHandler, FBUser
-
-
+from pygeocoder import Geocoder
 
 import logging
 import urllib
+import random
 import os.path
 
 from model import *
 
+
 MAP_APIKEY=""
-FROM_EMAIL_ADDR=""
-NOTIFY_EMAIL_ADDR=""
+FROM_EMAIL_ADDR="ridesharedecorah@gmail.com"
+NOTIFY_EMAIL_ADDR="ridesharedecorah@gmail.com"
+rideshareWebsite = "http://www.decorahrideshare.com"
 
 early_late_strings = { "0": "Early", "1": "Late" }
 part_of_day_strings = { "0": "Morning", "1": "Afternoon", "2": "Evening" }
@@ -56,38 +62,67 @@ if aquery.count()==0:
   # development site
    #college = College(name ="Luther College", address= "700 College Drive Decorah,IA", lat =43.313059, lng=-91.799501, appId="193298730706524",appSecret="44d7cce20524dc91bf7694376aff9e1d")
   # live site   
-   college = College(name ="Luther College", address= "700 College Drive Decorah,IA", lat =43.313059, lng=-91.799501, appId="284196238289386",appSecret="07e3ea3ffda4aa08f8c597bccd218e75")   
+   #college = College(name ="Luther College", address= "700 College Drive Decorah,IA", lat =43.313059, lng=-91.799501, appId="284196238289386",appSecret="07e3ea3ffda4aa08f8c597bccd218e75")   
    #college = College(name= "LaCrosse University", address = "1725 State Street, La Crosse, WI", lat=43.812834, lng=-91.229022,appId="193298730706524",appSecret="44d7cce20524dc91bf7694376aff9e1d")
+   college = College(name="Decorah", address="Decorah, IA", appId="177023452434948", appSecret="81a9f8776108bd1f216970823458533d", lat=43.303306, lng=-91.785709)
    college.put()
  
 
 
-    
 class MainHandler(BaseHandler):
+  def get(self):
+
+    user = FBUser.get_by_key_name(self.current_user.id)
+    aquery = db.Query(College)
+    mycollege= aquery.get()
+    eventsList = []
+    circles = []
+    for item in user.circles:
+        query = db.Query(Event)
+        query.filter("ToD > ", datetime.date.today())
+        query.filter("circle =",str(item))
+        event_list = query.fetch(limit=100)
+        logging.debug(event_list)
+        for event in event_list:
+          eventsList.append(event.to_dict())
+        circles.append(Circle.get_by_id(int(item)))
+    path = os.path.join(os.path.dirname(__file__), 'templates/main.html')
+    self.response.out.write(str(template.render(path, {
+            'event_list': eventsList,
+            'circles' : circles,
+            'college':mycollege,
+            'logout':'/auth/logout',
+            'nick':self.current_user.nickname()
+            })))
+
+    
+class MapHandler(BaseHandler):
 
     def get(self):
         query = db.Query(Ride)
-        query.filter("ToD > ", datetime.datetime.now())
+        query.filter("ToD > ", datetime.date.today())
+        logging.debug(self.request.get("circle"))
+        query.filter("circle = ",self.request.get("circle"))
         ride_list = query.fetch(limit=100)
+        
         aquery = db.Query(College)
         mycollege= aquery.get()
         user = self.current_user
-        logging.debug(user)
         logging.debug(users.create_logout_url("/"))
         greeting = ''
         logout = ''
-        if user:
-            greeting = ("Welcome, %s! (<a href=\"%s\">sign out</a>) Go to your <a href='/home'>Home Page</a>" %
-                  (user.nickname(), users.create_logout_url("/")))
-            logout = users.create_logout_url("/")
-            logging.debug(logout)
-        else:
-            self.redirect('/auth/login')
-            return
+        #if user:
+        #    greeting = ("Welcome, %s! (<a href=\"%s\">sign out</a>) Go to your <a href='/home'>Home Page</a>" %
+        #          (user.nickname(), users.create_logout_url("/")))
+        #    logout = users.create_logout_url("/")
+        #    logging.debug(logout)
+        #else:
+        #    self.redirect('/auth/login')
+        #    return
         
         logging.debug(mycollege.address)
-        path = os.path.join(os.path.dirname(__file__), 'templates/index.html')
-        self.response.out.write(template.render(path, {
+        path = os.path.join(os.path.dirname(__file__), 'templates/map.html')
+        self.response.out.write(str(template.render(path, {
             'ride_list': ride_list, 
             'greeting' : greeting,
             'college': mycollege,
@@ -95,7 +130,7 @@ class MainHandler(BaseHandler):
             'nick' : user.nickname(),
             'logout':'/auth/logout',
             'mapkey':MAP_APIKEY,
-            }))
+            })))
 
 
 class RideQueryHandler(BaseHandler):
@@ -112,6 +147,8 @@ class RideQueryHandler(BaseHandler):
         The query may be filtered by after date, and before date.  Expect to get the dates
         in the form YYYY-MM-DD
         """
+        logger = logging.getLogger('MySite')
+        logger.info(str(self.request))
         # Create a query object
         allRides = Ride.all()
         # Check to see if the browser side provided us with before/after dates
@@ -121,22 +158,219 @@ class RideQueryHandler(BaseHandler):
         # using the filter method
         if after_date:
             y,m,d = after_date.split('-')
-            allRides.filter('ToD >= ',datetime.datetime(int(y),int(m),int(d)))
+            allRides.filter('ToD >= ',datetime.date(int(y),int(m),int(d)))
+
 
         if before_date:
             y,m,d = before_date.split("-")
-            allRides.filter('ToD <=',datetime.datetime(int(y),int(m),int(d)))
-        
-
+            allRides.filter('ToD <=',datetime.date(int(y),int(m),int(d)))
+        logging.debug(self.request.get("circle"))
+        allRides.filter('circle =',self.request.get("circle"))
         logging.debug("after %s before %s", after_date, before_date)
-
+    
+        if self.request.get("event"):
+            allRides.filter('event =',self.request.get("event"))
+        else:
+            allRides.filter('event =',None)
         # Now put together the json result to send back to the browser.
         json = simplejson.dumps([r.to_dict() for r in allRides])
         self.response.headers.add_header('content-type','application/json')
         self.response.out.write(json)
         logging.debug('end get')
     
+class EventQueryHandler(BaseHandler):
+    """
+    Parse and process requests for events
+    returns json
+    """
 
+    def get(self):
+        """
+        Arguments:
+        - `self`:
+
+        The query may be filtered by after date, and before date.  Expect to get the dates
+        in the form YYYY-MM-DD
+        """
+        # Create a query object
+        allEvents = Event.all()
+
+        # Check to see if the browser side provided us with before/after dates
+        after_date = self.request.get('after')
+        before_date = self.request.get("before")
+        # If there is an after date then limit the rides to those after the date
+        # using the filter method
+        if after_date:
+            y,m,d = after_date.split('-')
+            allEvents.filter('ToD >= ',datetime.date(int(y),int(m),int(d)))
+
+
+        if before_date:
+            y,m,d = before_date.split("-")
+            allEvents.filter('ToD <=',datetime.date(int(y),int(m),int(d)))
+        logging.debug(self.request.get("circle"))
+        allEvents.filter('circle =',self.request.get("circle"))
+        logging.debug("after %s before %s", after_date, before_date) 
+
+        # Now put together the json result to send back to the browser.
+        json = simplejson.dumps([e.to_dict() for e in allEvents])
+        self.response.headers.add_header('content-type','application/json')
+        self.response.out.write(json)
+        logging.debug('end get')
+
+class NewEventRideHandler(BaseHandler):
+    """
+    For new Event Rides
+    """
+
+    def get(self):
+
+        user = self.current_user
+        newRide = Ride()
+        maxp = self.request.get("maxp")
+        inumber = self.request.get("contact")
+        if not "-" in inumber:
+            number = inumber[0:3]+'-'+inumber[3:6]+'-'+inumber[6:]
+        else:
+            number = inumber
+        newRide.contact = number
+
+        isDriver = self.request.get("isDriver")
+        if isDriver.lower() == "false":
+            isDriver = False
+        else:
+            isDriver = True
+        
+        aquery = db.Query(College)
+        mycollege= aquery.get()
+
+
+        lat = float(self.request.get("lat")) * (random.random() * (1.000001-.999999) + 1.000001)
+        lng = float(self.request.get("lng")) * (random.random() * (1.000001-.999999) + 1.000001)
+        checked = self.request.get("toLuther")
+        if checked == 'true':
+          newRide.start_point_title = self.request.get("from")
+          newRide.start_point_lat = lat
+          newRide.start_point_long = lng
+          newRide.destination_title = mycollege.name
+          newRide.destination_lat = mycollege.lat
+          newRide.destination_long = mycollege.lng
+        elif checked == 'false':
+          newRide.start_point_title = mycollege.name
+          newRide.start_point_lat = mycollege.lat
+          newRide.start_point_long = mycollege.lng
+          newRide.destination_title = self.request.get("to")
+          newRide.destination_lat = lat
+          newRide.destination_long = lng             
+        y = int(self.request.get("year"))
+        m = int(self.request.get("month"))
+        d = int(self.request.get("day"))
+        time = self.request.get("time")
+        early_late_value = int(self.request.get("earlylate"))
+
+        part_of_day = ''
+        newRide.event = self.request.get("eventId")
+        newRide.time = time
+        newRide.part_of_day = part_of_day
+        logger = logging.getLogger('MySite')
+        logger.info(str(m))
+        newRide.ToD = datetime.date(int(y),int(m),int(d))
+
+        newRide.max_passengers = int(maxp)
+        newRide.num_passengers = 0
+        newRide.passengers = []
+
+
+        if isDriver:
+            newRide.driver = user.id
+            newRide.drivername = FBUser.get_by_key_name(user.id).nickname()
+        else:
+            user_name = user.id
+            passenger = Passenger()
+            passenger.name = user_name
+            passenger.fullname = FBUser.get_by_key_name(user.id).nickname()
+            logging.debug(FBUser.get_by_key_name(user.id).nickname())
+            passenger.contact = number
+            passenger.location = newRide.destination_title
+            passenger.lat = lat
+            passenger.lng = lng
+            pass_key = passenger.put()
+            newRide.passengers.append(pass_key)
+            newRide.num_passengers = 1
+
+        newRide.comment = self.request.get("comment")
+        newRide.circle = self.request.get("circleType")
+        ride_key = newRide.put()
+        
+        if not isDriver:
+            passenger.ride = ride_key
+            passenger.put()
+
+        query = db.Query(Ride)
+        query.filter("ToD > ", datetime.date.today())
+        query.filter("circle = ",self.request.get("circle"))
+        ride_list = query.fetch(limit=100)
+        self.sendRideEmail(newRide)
+        greeting = ''
+        if user:
+            greeting = ("Welcome, %s! (<a href=\"%s\">sign out</a>) Go to your <a href='/home'>Home Page</a>" %
+                  (user.nickname(), users.create_logout_url("/")))
+        message = 'Your ride has been created!'
+        path = os.path.join(os.path.dirname(__file__), 'templates/map.html')
+        self.response.out.write(str(template.render(path, {
+            'ride_list': ride_list, 
+            'greeting': greeting,
+            'message': message,
+            'mapkey' : MAP_APIKEY,
+            })))
+
+    def sendRideEmail(self,ride):
+      
+        driverName = None
+        passengerName = None
+        subject = "New Ride "
+        if ride.driver:
+            if self.current_user.loginType == "google":
+               to = self.current_user.email
+               logging.debug(to)
+            driverName = self.current_user.nickname()
+        else:
+            p = db.get(ride.passengers[0])
+            logging.debug(p)
+            #if self.current_user.loginType == "google":
+               #to = p.email
+            passengerName = self.current_user.nickname()
+            
+        sender = FROM_EMAIL_ADDR
+        announceAddr = NOTIFY_EMAIL_ADDR
+        if driverName:
+            subject += "Announcement"
+            body = """
+A new ride is being offered.  %s is offering a ride from %s to %s on %s.
+Please go to %s if you want to join this ride.
+
+Thanks,
+
+The Rideshare Team
+""" % (driverName,ride.start_point_title,ride.destination_title,ride.ToD,rideshareWebsite)
+        else:
+            subject += "Request"
+            body = """
+A new ride request has been posted.  %s is looking for a ride from %s to %s on %s.
+If you are able to take this person in your car, please go to %s
+        
+Thanks,
+
+The Rideshare Team
+""" % (passengerName,ride.start_point_title,ride.destination_title,ride.ToD,rideshareWebsite)
+
+        if self.current_user.loginType == "facebook":
+          logging.debug(self.current_user.access_token)
+          graph = facebook.GraphAPI(self.current_user.access_token)
+          graph.put_object("me", "feed", message=body)
+          #pageGraph = facebook.GraphAPI("AAAECeZAfUaeoBAHYuYZC8NN9djZAlA6PZBpJnCWvZCxZBnDeEWQcdj3YuBZCWEJbPZA1E35QiCHqYmCxXsNkqT82tn67nMitdirfjxvZBAZBCfWzRKbCFZAHFZCH")
+          #pageGraph.put_object("144494142268497","feed",message=body)
+    
 class NewRideHandler(BaseHandler):
     """
     For new Rides
@@ -188,8 +422,8 @@ class NewRideHandler(BaseHandler):
         lat = float(latlng[0])
         lng = float(latlng[1])
         """
-        lat = float(self.request.get("lat"))
-        lng = float(self.request.get("lng"))
+        lat = float(self.request.get("lat")) * (random.random() * (1.000001-.999999) + 1.000001)
+        lng = float(self.request.get("lng")) * (random.random() * (1.000001-.999999) + 1.000001)
         checked = self.request.get("toLuther")
         if checked == 'true':
           newRide.start_point_title = self.request.get("from")
@@ -223,7 +457,7 @@ class NewRideHandler(BaseHandler):
         else:
           part_of_day += 'Evening'
         newRide.part_of_day = part_of_day
-        newRide.ToD = datetime.datetime(int(y),int(m),int(d))
+        newRide.ToD = datetime.date(int(y),int(m),int(d))
 
         newRide.max_passengers = int(maxp)
         newRide.num_passengers = 0
@@ -248,13 +482,15 @@ class NewRideHandler(BaseHandler):
             newRide.num_passengers = 1
 
         newRide.comment = self.request.get("comment")
+        newRide.circle = self.request.get("circleType")
         ride_key = newRide.put()
         if not isDriver:
             passenger.ride = ride_key
             passenger.put()
 
         query = db.Query(Ride)
-        query.filter("ToD > ", datetime.datetime.now())
+        query.filter("ToD > ", datetime.date.today())
+        query.filter("circle = ",self.request.get("circle"))
         ride_list = query.fetch(limit=100)
         self.sendRideEmail(newRide)
         greeting = ''
@@ -262,13 +498,13 @@ class NewRideHandler(BaseHandler):
             greeting = ("Welcome, %s! (<a href=\"%s\">sign out</a>) Go to your <a href='/home'>Home Page</a>" %
                   (user.nickname(), users.create_logout_url("/")))
         message = 'Your ride has been created!'
-        path = os.path.join(os.path.dirname(__file__), 'templates/index.html')
-        self.response.out.write(template.render(path, {
+        path = os.path.join(os.path.dirname(__file__), 'templates/map.html')
+        self.response.out.write(str(template.render(path, {
             'ride_list': ride_list, 
             'greeting': greeting,
             'message': message,
             'mapkey' : MAP_APIKEY,
-            }))
+            })))
 
     def sendRideEmail(self,ride):
       
@@ -276,13 +512,15 @@ class NewRideHandler(BaseHandler):
         passengerName = None
         subject = "New Ride "
         if ride.driver:
-            if choice != "facebook":
-               to = ride.driver.email()
+            if self.current_user.loginType == "google":
+               to = self.current_user.email
+               logging.debug(to)
             driverName = self.current_user.nickname()
         else:
-            p = db.get(ride.passengers[0]).name
-            if choice != "facebook":
-               to = p.email()
+            p = db.get(ride.passengers[0])
+            logging.debug(p)
+            #if self.current_user.loginType == "google":
+               #to = p.email
             passengerName = self.current_user.nickname()
             
         sender = FROM_EMAIL_ADDR
@@ -291,31 +529,29 @@ class NewRideHandler(BaseHandler):
             subject += "Announcement"
             body = """
 A new ride is being offered.  %s is offering a ride from %s to %s on %s.
-Please go to http://rideshare.luther.edu if you want to join this ride.
+Please go to %s if you want to join this ride.
 
 Thanks,
 
 The Rideshare Team
-""" % (driverName,ride.start_point_title,ride.destination_title,ride.ToD)
+""" % (driverName,ride.start_point_title,ride.destination_title,ride.ToD,rideshareWebsite)
         else:
             subject += "Request"
             body = """
 A new ride request has been posted.  %s is looking for a ride from %s to %s on %s.
-If you are able to take this person in your car, please go to http://rideshare.luther.edu
+If you are able to take this person in your car, please go to %s
         
 Thanks,
 
 The Rideshare Team
-""" % (passengerName,ride.start_point_title,ride.destination_title,ride.ToD)
+""" % (passengerName,ride.start_point_title,ride.destination_title,ride.ToD,rideshareWebsite)
 
-        if choice != "facebook":
-          mail.send_mail(sender,announceAddr,subject,body)
-        else:
+        if self.current_user.loginType == "facebook":
           logging.debug(self.current_user.access_token)
           graph = facebook.GraphAPI(self.current_user.access_token)
           graph.put_object("me", "feed", message=body)
-          pageGraph = facebook.GraphAPI("AAAECeZAfUaeoBAHYuYZC8NN9djZAlA6PZBpJnCWvZCxZBnDeEWQcdj3YuBZCWEJbPZA1E35QiCHqYmCxXsNkqT82tn67nMitdirfjxvZBAZBCfWzRKbCFZAHFZCH")
-          pageGraph.put_object("144494142268497","feed",message=body)
+          #pageGraph = facebook.GraphAPI("AAAECeZAfUaeoBAHYuYZC8NN9djZAlA6PZBpJnCWvZCxZBnDeEWQcdj3YuBZCWEJbPZA1E35QiCHqYmCxXsNkqT82tn67nMitdirfjxvZBAZBCfWzRKbCFZAHFZCH")
+          #pageGraph.put_object("144494142268497","feed",message=body)
 
 class AddPassengerHandler(BaseHandler): 
     """
@@ -333,6 +569,8 @@ class AddPassengerHandler(BaseHandler):
       - ride_key
       """
       # The current user can add himself to the ride.  No need for this in the form.
+      aquery = db.Query(College)
+      mycollege= aquery.get()
       user_name = self.current_user.id
       
       ride_key = self.request.get('ride_key')
@@ -380,7 +618,7 @@ class AddPassengerHandler(BaseHandler):
           num_left = ride.max_passengers - ride.num_passengers
           capacity_message = 'can hold ' + str(num_left) + ' more passengers.'
         query = db.Query(Ride)
-        query.filter("ToD > ", datetime.datetime.now())
+        query.filter("ToD > ", datetime.date.today())
         ride_list = query.fetch(limit=100)
         user = self.current_user
         greeting = ''
@@ -389,20 +627,23 @@ class AddPassengerHandler(BaseHandler):
                   (user.nickname(), users.create_logout_url("/")))
         message = 'You have been added to %s ride.' % (ride.driver)
         self.sendDriverEmail(ride)
-        path = os.path.join(os.path.dirname(__file__), 'templates/index.html')
+        path = os.path.join(os.path.dirname(__file__), 'templates/map.html')
         self.response.out.write(template.render(path, {
             'ride_list': ride_list, 
             'greeting': greeting,
             'message': message,
-            'mapkey':MAP_APIKEY,            
+            'mapkey':MAP_APIKEY, 
+            'college':mycollege           
             }))
 
     def sendDriverEmail(self,ride):
-
+        logging.debug(ride.driver)
+        driver = FBUser.get_by_key_name(ride.driver)
+        logging.debug(driver)
         if not ride.driver:
             return
-        if choice != "facebook":
-           to = ride.driver.email()
+        if driver.loginType == "google":
+           to = driver
         else:
            logging.debug(ride.driver)
            to = FBUser.get_by_key_name(ride.driver)
@@ -424,9 +665,9 @@ The Rideshare Team
 """ % (to.nickname(), user.nickname(), ride.start_point_title, ride.destination_title,
        ride.ToD, user.nickname(), p.contact)
 
-        if choice != "facebook":
+        if driver.loginType == "google":
           logging.debug(body)
-          mail.send_mail(sender,to,subject,body)
+          mail.send_mail(sender,to.email,subject,body)
         else:
           graph = facebook.GraphAPI(to.access_token)
           logging.debug(graph)
@@ -448,17 +689,23 @@ class AddDriverHandler(BaseHandler):
         ride.put()
 
         for p in ride.passengers:
-            to = Passenger.get(p).name
-            self.sendRiderEmail(ride,to)
+            logger = logging.getLogger('MySite')
+            logger.info(str(p))
+            passenger = Passenger.get(p)
+            if passenger.loginType =="google":
+              self.sendRiderEmail(ride,passenger.email,"google")
+            elif passenger.loginType=="facebook":
+              self.sendRiderEmail(ride, passenger.name, "facebook")
 
         self.response.out.write("OK")
 
-    def sendRiderEmail(self, ride, to):
+    def sendRiderEmail(self, ride, to,loginType):
 
-        if choice == "facebook":
+        if loginType == "facebook":
            to = FBUser.get_by_key_name(to)
            user = self.current_user
            logging.debug(to)
+
         sender = FROM_EMAIL_ADDR
         subject = "Change in your ride"
         
@@ -475,15 +722,17 @@ Sincerely,
 The Rideshare Team
 """ % (to.nickname(),  ride.start_point_title, ride.destination_title, ride.ToD,
        user.nickname(), ride.contact)
-        if choice != "facebook": 
+        if loginType == "google": 
            logging.debug(body)
-           mail.send_mail(sender,to.email(),subject,body)
+           mail.send_mail(sender,to,subject,body)
         else:
            graph = facebook.GraphAPI(to.access_token)
            graph.put_object("me", "feed", message=body)
 
 class EditRideHandler(BaseHandler):
     def get(self):
+        aquery = db.Query(College)
+        mycollege= aquery.get()
         ride_key = self.request.get("key")
         ride = db.get(ride_key)
         username = self.current_user.id
@@ -499,12 +748,15 @@ class EditRideHandler(BaseHandler):
                           'ride': ride,
                           'earlylate' : dayparts[0],
                           'mae' : dayparts[1],
-                          'plist': plist
+                          'plist': plist,
+                          'college':mycollege
                                          }
                  )
 
 class ChangeRideHandler(BaseHandler):
     def post(self):
+        aquery = db.Query(College)
+        mycollege= aquery.get()
         user = self.current_user
         username = user.id
         ride = Ride.get(self.request.get("key"))
@@ -524,12 +776,121 @@ class ChangeRideHandler(BaseHandler):
 
         ride.put()
         self.redirect("/")
+ 
+class UpdateCirclesHandler(BaseHandler):  #handles processing
+    def post(self):
+      user = FBUser.get_by_key_name(self.current_user.id)
+      
+      user.circles = self.request.str_params.getall("circle")
+      user.put()
+      self.redirect("/main")
+
+
+
+
+class ChangeCirclesHandler(BaseHandler): #actual page for changing circles
+    def get(self):
+      aquery = db.Query(College)
+      mycollege= aquery.get()
+      allCircles = Circle.all()
+      user = FBUser.get_by_key_name(self.current_user.id)
+      doRender(self, "changecircles.html",{"circles":allCircles,"userCircles":user.circles,"college":mycollege})
+
+class NewCircleHandler(BaseHandler): # actual page
+    def get(self):
+      aquery = db.Query(College)
+      mycollege= aquery.get()  
+      doRender(self, "newCircle.html",{"college":mycollege})
+
+
+class AddCircleHandler(BaseHandler): #add Circle Processing
+    def post(self):
+      aquery = db.Query(College)
+      mycollege= aquery.get()
+      circleName = self.request.get("name")
+      circleDesc = self.request.get("description")
+      newCircle = Circle()
+      newCircle.name = circleName
+      newCircle.description = circleDesc
+      newCircle.put()
+      self.redirect("/")
+
+class NewEventHandler(BaseHandler):
+    def get(self):
+      aquery = db.Query(College)
+      mycollege= aquery.get()
+      user = self.current_user
+      newEvent = Event()
+      newEvent.name = self.request.get("name")
+      newEvent.lat = float(self.request.get("lat"))
+      newEvent.lng = float(self.request.get("lng"))
+      newEvent.address = self.request.get("address")
+      newEvent.circle = self.request.get("circle")
+      newEvent.time = self.request.get("time")
+      newEvent.creator = self.current_user.id
+      newEvent.ToD = datetime.date(int(self.request.get("year")),int(self.request.get("month")),int(self.request.get("day")))
+      newEvent.put()
+
+      query = db.Query(Ride)
+      query.filter("ToD > ", datetime.date.today())
+      query.filter("circle = ",self.request.get("circle"))
+      ride_list = query.fetch(limit=100)
+      greeting = ''
+      if user:
+            greeting = ("Welcome, %s! (<a href=\"%s\">sign out</a>) Go to your <a href='/home'>Home Page</a>" %
+                  (user.nickname(), users.create_logout_url("/")))
+      message = 'Your ride has been created!'
+      path = os.path.join(os.path.dirname(__file__), 'templates/map.html')
+      self.response.out.write(str(template.render(path, {
+            'ride_list': ride_list, 
+            'greeting': greeting,
+            'message': message,
+            'mapkey' : MAP_APIKEY,
+            })))
+class AddEventsHandler(BaseHandler):
+    def get(self):
+        aquery = db.Query(College)
+        mycollege= aquery.get()
+        circle = self.request.get("circle")
+        doRender(self,"addevents.html",{"circle":circle,"college":mycollege})
+
+class AddMultipleEventsHandler(BaseHandler):
+    def post(self):
+        logger = logging.getLogger('MySite')
+        locations = self.request.str_params.getall("eventlocation")
+        names = self.request.str_params.getall("eventname")
+        dates = self.request.str_params.getall("eventdate")
+        times = self.request.str_params.getall("eventtime")
+        circle = self.request.get("circle")
+        for i in range(len(locations)):
+            if len(locations[i])>0:
+                result = Geocoder.geocode(str(locations[i]))[0]
+                logger.info(circle)
+                if result:
+                    newEvent = Event()
+                    newEvent.creator = self.current_user.id
+                    newEvent.name = names[i]
+                    newEvent.lat = result.coordinates[0]
+                    newEvent.lng = result.coordinates[1]
+                    newEvent.address = locations[i]
+                    newEvent.circle = circle
+                    newEvent.time = times[i]
+                    date = dates[i]
+                    newEvent.ToD = datetime.date(int(date[6:]),int(date[0:2]),int(date[3:5]))
+                    newEvent.put()
+            
+            
+        self.redirect("/main")
+
+
 
 class SubmitRatingHandler(BaseHandler):
     def post(self):
+      aquery = db.Query(College)
+      mycollege= aquery.get()  
       drivernum = self.request.get("driver")
       text = self.request.get("ratetext")
-      ooFrating = self.request.get("ooFrating")
+      ooFrating = self.request.get("ooFrating") # Out Of Five
       user= FBUser.get_by_key_name(drivernum)
       user.drivercomments.append(text)
       user.numrates = user.numrates + 1
@@ -538,7 +899,7 @@ class SubmitRatingHandler(BaseHandler):
       else:
          user.rating= user.rating + float(ooFrating)
       user.put()
-      doRender(self, "submit.html",{})
+      doRender(self, "submit.html",{"college",mycollege})
       self.redirect("/home")
 
 class HomeHandler(BaseHandler):
@@ -550,6 +911,9 @@ class HomeHandler(BaseHandler):
       mycollege= aquery.get()
       user = self.current_user
       username = user.id
+      events = db.Query(Event)
+      events.filter('creator =',self.current_user.id)
+      event_list = events.fetch(limit=100)
       drive = db.Query(Ride)
       drive.filter('driver =', username)
       driverides = drive.fetch(limit=100)
@@ -582,9 +946,12 @@ class HomeHandler(BaseHandler):
         for p in ride.passengers:
           ride.passengerobjects.append(db.get(p))
       doRender(self, 'home.html', { 
+                          'college':mycollege,  
                           'user': user.nickname(),
                           'driverides': driverides, 
-                          'passengerrides': passengerrides })
+                          'logout':'/auth/logout',
+                          'passengerrides': passengerrides,
+                          'event_list':event_list })
     
 class RideInfoHandler(BaseHandler):
     """
@@ -599,7 +966,7 @@ class RideInfoHandler(BaseHandler):
       ride = db.get(key)
       if ride == None:
         doRender(self, 'error.html', {
-                              'error_message': "No such ride exists."})
+                              'error_message': "No such ride exists.","college":mycollege})
       else:
         ride.passengerobjects = []
         ride.jsmonth = ride.ToD.month
@@ -618,7 +985,8 @@ class RideInfoHandler(BaseHandler):
           ride.passengerobjects.append(passenger)           
         doRender(self, 'rideinfo.html', {
             'ride': ride,
-            'mapkey':MAP_APIKEY
+            'mapkey':MAP_APIKEY,
+            'college': mycollege
             })
 
 class DeleteRideHandler(BaseHandler): #NEEDS WORK
@@ -638,10 +1006,13 @@ class DeleteRideHandler(BaseHandler): #NEEDS WORK
             ride.driver = None
             ride.put()
             for p in ride.passengers:
-                logging.debug(p.name)
-                logging.debug(Passenger.get(p).name)
-                to = Passenger.get(p).name
-                self.sendRiderEmail(ride,to)
+              passenger = Passenger.get(p)
+              passenger = FBUser.get_by_key_name(p.name)
+              if passenger.loginType =="google":
+                self.sendRiderEmail(ride,passenger.email,"google")
+              elif passenger.loginType=="facebook":
+                self.sendRiderEmail(ride, passenger.name, "facebook")
+
             
         user = self.current_user
         aquery = db.Query(College)
@@ -651,19 +1022,18 @@ class DeleteRideHandler(BaseHandler): #NEEDS WORK
             greeting = ("Welcome, %s! (<a href=\"%s\">sign out</a>) Go to your <a href='/home'>Home Page</a>" %
                   (user.nickname(), users.create_logout_url("/")))
         message = 'Your ride has been deleted.'
-        path = os.path.join(os.path.dirname(__file__), 'templates/index.html')
+        path = os.path.join(os.path.dirname(__file__), 'templates/map.html')
         self.response.out.write(template.render(path, {
             'greeting' : greeting,
             'message' : message,
             'mapkey':MAP_APIKEY, 
             'college': mycollege,
-            'nick' : user.nickname()           
+            'nick' : user.nickname()        
             }))
 
-    def sendRiderEmail(self, ride, to):
+    def sendRiderEmail(self, ride, to,loginType):
         
-        if choice == "facebook":
-          
+        if loginType == "facebook":
           to = FBUser.get_by_key_name(to)
           logging.debug(to)
         sender = FROM_EMAIL_ADDR
@@ -683,8 +1053,8 @@ Sincerely,
 
 The Rideshare Team
 """ % (to.nickname(),  ride.start_point_title, ride.destination_title, ride.ToD)
-        if choice != "facebook":
-          mail.send_mail(sender,to.email(),subject,body)
+        if loginType == "google":
+          mail.send_mail(sender,to,subject,body)
         else:
  	  try:
              
@@ -694,16 +1064,28 @@ The Rideshare Team
 	  except:
 	     logging.debug(graph.put_object("me", "feed", message=body))
 
+class LoginPageHandler(BaseHandler):
+  def get(self):
+    aquery = db.Query(College)
+    mycollege= aquery.get()
     
+    user = self.current_user
+    if user:
+      self.redirect("/main")
+    else:
+      doRender(self, 'loginPage.html', {"name":mycollege.name,"college":mycollege})
 
 class RateHandler(BaseHandler):
     
     def get(self):
+      aquery = db.Query(College)
+      mycollege= aquery.get()  
       drivernum = self.request.get('dkey')
       user = FBUser.get_by_key_name(drivernum)
       doRender(self, 'ratedriver.html', {
             'driver': user.nickname(),
-            'drivernum':drivernum
+            'drivernum':drivernum,
+            'college':mycollege
             })
       
 
@@ -730,7 +1112,7 @@ class RemovePassengerHandler(BaseHandler):
         ride.num_passengers -= 1
         ride.put()
         query = db.Query(Ride)
-        query.filter("ToD > ", datetime.datetime.now())
+        query.filter("ToD > ", datetime.date.today())
         ride_list = query.fetch(limit=100)
         user = self.current_user
         aquery = db.Query(College)
@@ -740,8 +1122,8 @@ class RemovePassengerHandler(BaseHandler):
             greeting = ("Welcome, %s! (<a href=\"%s\">sign out</a>) Go to your <a href='/home'>Home Page</a>" %
                   (user.nickname(), users.create_logout_url("/")))
         message = '%s has been removed from %s\'s ride.' % (name, ride.driver)
-        path = os.path.join(os.path.dirname(__file__), 'templates/index.html')
-        self.response.out.write(template.render(path, {
+        path = os.path.join(os.path.dirname(__file__), 'templates/map.html')
+        self.response.out.write(str(template.render(path, {
             'ride_list': ride_list, 
             'greeting' : greeting,
             'college': mycollege,
@@ -749,7 +1131,7 @@ class RemovePassengerHandler(BaseHandler):
             'nick' : user.nickname(),
             'logout':'/auth/logout',
             'mapkey':MAP_APIKEY,
-            }))
+            })))
 
 class DriverRatingHandler(BaseHandler):
 
@@ -770,15 +1152,21 @@ class DriverRatingHandler(BaseHandler):
           'rating':str(rating)[0:3],
           'numrates':numrates })
 
+
+
+
 class SchoolErrorHandler(BaseHandler):
     
     def get(self):
-      
-      doRender(self, 'schoolerror.html')
+      aquery = db.Query(College)
+      mycollege= aquery.get() 
+      doRender(self, 'schoolerror.html',{"college":mycollege})
 
 class RideSuccessHandler(BaseHandler):
     
     def get(self):
+       aquery = db.Query(College)
+       mycollege= aquery.get() 
        noDriver = 0
        noPass = 0
        goodRide = 0
@@ -797,7 +1185,8 @@ class RideSuccessHandler(BaseHandler):
                 'noDriver': noDriver,
                 'noPass': noPass,
                 'goodRide': goodRide,
-                'totalRides':len(rides)})   
+                'totalRides':len(rides),
+                'college':mycollege})   
 
 class IncorrectHandler(webapp.RequestHandler):
     """
@@ -811,12 +1200,13 @@ class SignOutHandler(BaseHandler):
     def get(self):
       aquery = db.Query(College)
       mycollege= aquery.get()
-      doRender(self, 'logout.html', { 'logout_message': "Thanks for using the"+ mycollege.name + "Rideshare Website!"})
+      doRender(self, 'logout.html', { 'logout_message': "Thanks for using the "+ mycollege.name + " Rideshare Website!","college":mycollege})
 
-def doRender(handler, name='index.html', value={}):
+def doRender(handler, name='map.html', value={}):
+    logging.debug("KLLJLKGJLKFJLKJFLKJLKJ")
     temp = os.path.join(os.path.dirname(__file__), 'templates/' + name)
     outstr = template.render(temp, value)
-    handler.response.out.write(outstr)
+    handler.response.out.write(str(outstr))
 
 def geocode(address):
  # This function queries the Google Maps API geocoder with an
@@ -845,55 +1235,11 @@ def main():
     logging.getLogger().setLevel(logging.DEBUG)
     # prepopulate the database
     query = db.Query(Ride)
-
-    
-   # if query.count() < 2:
-   #     newRide = Ride()
-   #     newRide.max_passengers = 3
-   #     newRide.num_passengers = 0
-   #     newRide.driver = users.User("bmiller@luther.edu")
-   #     newRide.start_point_title = "Luther College, Decorah, IA"
-   #     newRide.start_point_long, newRide.start_point_lat = geocode(newRide.start_point_title)
-   #     newRide.destination_title = "Plymouth, MN"
-   #     newRide.destination_long, newRide.destination_lat = geocode(newRide.destination_title)
-   #     newRide.part_of_day = 'Early Morning'
-   #     newRide.ToD = datetime.datetime(2009,9,15)
-   #     newRide.passengers = []
-   #     newRide.put()
-
-   #     newRide = Ride()
-   #     newRide.max_passengers = 1
-   #     newRide.num_passengers = 0
-   #     newRide.driver = users.User("willke02@luther.edu")
-   #     newRide.start_point_title = "Luther College, Decorah, IA"
-   #     newRide.start_point_long, newRide.start_point_lat = geocode(newRide.start_point_title)
-   #     newRide.destination_title = "Des Moines, IA"
-   #     newRide.destination_long, newRide.destination_lat = geocode(newRide.destination_title)
-   #     newRide.part_of_day = 'Late Afternoon'
-   #     newRide.ToD = datetime.datetime(2009,9,17)
-   #     newRide.passengers = []
-   #     newRide.put()
-   # 
-    #apiQuery = db.Query(ApplicationParameters)
-    #if apiQuery.count() < 1:
-     #   bootstrap = ApplicationParameters()
-      #  bootstrap.apikey = 'ABQIAAAAg9WbCE_zwMIRW7jDFE_3ixQ2JlMNfqnGb2qqWZtmZLchh1TSjRS0zuchuhlR8g4tlMGrjg34sNmyjQ'
-     #   bootstrap.notifyEmailAddr = 'bonelake@gmail.com'
-     #   bootstrap.fromEmailAddr = 'bonelake@gmail.com'
-        
-     #   MAP_APIKEY = bootstrap.apikey
-     #   FROM_EMAIL_ADDR = bootstrap.fromEmailAddr
-     #   NOTIFY_EMAIL_ADDR = bootstrap.notifyEmailAddr
-        
-     #   bootstrap.put()
-    #else:
-     #   apilist = apiQuery.fetch(limit=1)
-      #  MAP_APIKEY = apilist[0].apikey
-       # FROM_EMAIL_ADDR = apilist[0].fromEmailAddr
-       # NOTIFY_EMAIL_ADDR = apilist[0].notifyEmailAddr
     
     application = webapp.WSGIApplication([
-                                  ('/', MainHandler),
+                                  ('/', LoginPageHandler),
+                                  ('/map', MapHandler),
+                                  ('/main',MainHandler),
                                   ('/getrides', RideQueryHandler ),
                                   ("/newride.*", NewRideHandler),
                                   ("/addpass", AddPassengerHandler),
@@ -906,12 +1252,21 @@ def main():
                                   ('/removepassenger', RemovePassengerHandler),
                                   ('/auth/login', LoginHandler),
                                   ('/auth/logout',LogoutHandler),
-				  ('/signout', SignOutHandler),                
-				  ('/ratedriver', RateHandler),
-				  ('/submittext', SubmitRatingHandler),
+				                          ('/signout', SignOutHandler),                
+				                          ('/ratedriver', RateHandler),
+				                          ('/submittext', SubmitRatingHandler),
                                   ('/driverrating',DriverRatingHandler),
-				  ('/school',SchoolErrorHandler),
+				                          ('/school',SchoolErrorHandler),
                                   ('/ridesuccess',RideSuccessHandler),
+                                  ('/updateCircles',UpdateCirclesHandler),
+                                  ('/changecircles',ChangeCirclesHandler),
+                                  ('/addCircle', AddCircleHandler),
+                                  ('/newCircle',NewCircleHandler),
+                                  ('/newevent',NewEventHandler),
+                                  ('/getevents',EventQueryHandler),
+                                  ('/neweventride', NewEventRideHandler),
+                                  ('/addevents',AddEventsHandler),
+                                  ('/addmultipleevents',AddMultipleEventsHandler),
                                   ('/.*', IncorrectHandler),
                                   ],
                                   debug=True)

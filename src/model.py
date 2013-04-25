@@ -1,7 +1,8 @@
 from google.appengine.ext import db
 from google.appengine.api import users
 import logging
-
+from google.appengine.dist import use_library
+use_library('django', '1.2')
 # Make this very flat to start with, then add references later...
 class Ride(db.Model):
     max_passengers = db.IntegerProperty()
@@ -14,11 +15,14 @@ class Ride(db.Model):
     destination_title = db.StringProperty()
     destination_lat = db.FloatProperty()
     destination_long = db.FloatProperty()
-    ToD = db.DateTimeProperty()
+    ToD = db.DateProperty()
     part_of_day = db.StringProperty()
+    time = db.StringProperty()
     passengers = db.ListProperty(db.Key)
     contact = db.StringProperty()
     comment = db.StringProperty()
+    circle = db.StringProperty()
+    event = db.StringProperty()
 
     def to_dict(self):
         res = {}
@@ -58,6 +62,33 @@ class College(db.Model):
     appId= db.StringProperty()
     appSecret= db.StringProperty()
 
+class Circle(db.Model):
+    name = db.StringProperty()
+    description = db.StringProperty()
+
+class Event(db.Model):
+    name = db.StringProperty()
+    circle = db.StringProperty()
+    lat = db.FloatProperty()
+    lng= db.FloatProperty()
+    ToD =db.DateProperty()
+    address = db.StringProperty()
+    time= db.StringProperty()
+    creator = db.StringProperty()
+
+    def to_dict(self):
+        res = {}
+        res['ToD'] = str(self.ToD)
+        res['name'] = str(self.name)
+        res['lat'] = self.lat
+        res['lng'] = self.lng
+        res['id'] = str(self.key().id())
+        res['address'] = str(self.address)
+        res['circle']= self.circle
+        res["time"] = self.time
+        logging.debug(str(self.key().id()))
+        return res
+        
 class ApplicationParameters(db.Model):
     apikey = db.StringProperty()
     notifyEmailAddr = db.StringProperty()

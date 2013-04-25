@@ -28,11 +28,19 @@ from google.appengine.ext.webapp import util
 
 #FACEBOOK_APP_ID = "193298730706524"  # for localhost testing
 #FACEBOOK_APP_ID = "206075606121536" # for beta site
-FACEBOOK_APP_ID = "284196238289386"  # for live site
+#FACEBOOK_APP_ID = "284196238289386"  # for live site
+#FACEBOOK_APP_ID =  "177023452434948" # for Decorah site
+FACEBOOK_APP_ID =  "417443711648291" # for Decorah alerts
 
 #FACEBOOK_APP_SECRET = "44d7cce20524dc91bf7694376aff9e1d" # for localhost
 #FACEBOOK_APP_SECRET = "2c4151f8959ea75522b49ea6ccbb1469" # for beta
-FACEBOOK_APP_SECRET = "07e3ea3ffda4aa08f8c597bccd218e75"  # for live site
+#FACEBOOK_APP_SECRET = "07e3ea3ffda4aa08f8c597bccd218e75"  # for live site
+#FACEBOOK_APP_SECRET = "81a9f8776108bd1f216970823458533d" #for Decorah site
+FACEBOOK_APP_SECRET = "2956b8e4d631cf8590ee0959f8b98f66" #for Decorah alerts
+
+from google.appengine.dist import use_library
+use_library('django', '1.2')
+
 
 userId= None
 logging.getLogger().setLevel(logging.DEBUG)
@@ -63,6 +71,8 @@ class FBUser(db.Model):
     public_link = db.StringProperty()
     rating = db.FloatProperty()
     numrates= db.IntegerProperty(default=0)
+    loginType= db.StringProperty()
+    circles = db.ListProperty(str)
     
 
 
@@ -138,60 +148,98 @@ def set_cookie(response, name, value, domain=None, path="/", expires=None):
     if expires:
         cookie[name]["expires"] = email.utils.formatdate(
             expires, localtime=False, usegmt=True)
-    response.headers._headers.append(("Set-Cookie", cookie.output()[12:]))
+    response.headers.add("Set-Cookie", cookie.output()[12:])
+
+
 
 
 class LoginHandler(BaseHandler):
     def get(self):
-        verification_code = self.request.get("code")
-        nexthop = self.request.get('lasthop')
-        args = dict(client_id=FACEBOOK_APP_ID, redirect_uri=self.request.path_url)
-        if self.request.get("code"):
-            args["client_secret"] = FACEBOOK_APP_SECRET
-            args["code"] = self.request.get("code")
-            response = cgi.parse_qs(urllib2.urlopen(
-                "https://graph.facebook.com/oauth/access_token?" +
-                urllib.urlencode(args)).read())
-            access_token = response["access_token"][-1]
-   
+        self.login()
+    def post(self):
+        self.login()
+    def login(self):
 
-            # Download the user profile and cache a local instance of the
-            # basic profile info
-            profile = json.load(urllib2.urlopen(
-                "https://graph.facebook.com/me?" +
-                urllib.urlencode(dict(access_token=access_token))))
-            schoolList = []
+        token = self.request.get('token')
+        if len(token)>1: #check to see if this is the second time this function has been called during this login.
+            logging.debug(token)
+            url = 'https://rpxnow.com/api/v2/auth_info'
+            args = {
+                'format': 'json',
+                'apiKey': '0376383049ef2888862706874fd078d939cd70d1',
+                'token': token
+            }
+            r = urllib2.urlopen(url=url,
+                           data=urllib.urlencode(args)
+                           )
+            profile = json.load(r)['profile']
             logging.debug(profile)
-            logging.debug(profile.keys())
-            if "education" in profile.keys():
-
-                for item in profile["education"]:
-                    schoolList.append(item["school"]["name"])
-                logging.debug("profile = " + str(profile))
-                if "Luther College" in schoolList:
-                    user = FBUser.get_by_key_name(profile["id"])
-                    if not user:
-                       logging.debug("User not found:  id = " + str(profile["id"]))
-                       user = FBUser(key_name=str(profile["id"]), id=str(profile["id"]),
-                                  name=profile["name"], access_token=access_token,
-                                  profile_url=profile["link"],public_link=profile["id"])
-                       user.put()
-                    else:
-                       user.access_token=access_token
-                       user.put()
-
-                    set_cookie(self.response, "fb_user", str(profile["id"]),
-                           expires=time.time() + 30 * 86400)
-                    self.redirect("/")
-                else:
-                    self.redirect("/school")
-            else:
-              self.redirect("/school")
+            provider = profile['providerName']
         else:
-            args["scope"] = "publish_stream,email,offline_access,manage_pages,user_education_history"
-            self.redirect(
-                "https://graph.facebook.com/oauth/authorize?" +
-                urllib.urlencode(args))
+            provider ="Facebook"
+
+        if provider =="Google":
+            user = FBUser.get_by_key_name(profile["googleUserId"])
+            if not user:
+               logging.debug("User not found:  id = " + str(profile["googleUserId"]))
+               user = FBUser(key_name=str(profile["googleUserId"]), id=str(profile["googleUserId"]),
+                          name=profile['displayName'], access_token=" ",
+                          profile_url=profile["url"],email=profile['email'],public_link=profile["googleUserId"],loginType="google")
+               user.put()
+            else:
+               user.access_token=" "
+               user.put()
+
+            set_cookie(self.response, "fb_user", str(profile["googleUserId"]),
+                   expires=time.time() + 30 * 86400)
+            self.redirect("/main")
+        else:
+
+            verification_code = self.request.get("code")
+            nexthop = self.request.get('lasthop')
+            args = dict(client_id=FACEBOOK_APP_ID, redirect_uri=self.request.path_url)
+            logging.debug(verification_code)
+            if self.request.get("code"):
+                logging.debug("SAY WHAAAAAT")
+                args["client_secret"] = FACEBOOK_APP_SECRET
+                args["code"] = self.request.get("code")
+                response = cgi.parse_qs(urllib2.urlopen(
+                    "https://graph.facebook.com/oauth/access_token?" +
+                    urllib.urlencode(args)).read())
+                access_token = response["access_token"][-1]
+       
+
+                # Download the user profile and cache a local instance of the
+                # basic profile info
+                profile = json.load(urllib2.urlopen(
+                    "https://graph.facebook.com/me?" +
+                    urllib.urlencode(dict(access_token=access_token))))
+                logging.debug(profile.keys())
+
+                user = FBUser.get_by_key_name(profile["id"])
+                if not user:
+                   logging.debug("User not found:  id = " + str(profile["id"]))
+                   user = FBUser(key_name=str(profile["id"]), id=str(profile["id"]),
+                              name=profile["name"], access_token=access_token,
+                              profile_url=profile["link"],public_link=profile["id"],loginType="facebook")
+                   user.put()
+                else:
+                   user.access_token=access_token
+                   user.put()
+
+                set_cookie(self.response, "fb_user", str(profile["id"]),
+                       expires=time.time() + 30 * 86400)
+                logging.debug("SAY WHAAAAAT")
+                self.redirect("/main")
+            else:
+                args["scope"] = "publish_stream,email,offline_access,manage_pages"
+                self.redirect(
+                    "https://graph.facebook.com/oauth/authorize?" +
+                    urllib.urlencode(args))
+
+
+
+
 
 
 class LogoutHandler(BaseHandler):

@@ -15,7 +15,8 @@
 # Django settings for google-app-engine-django project.
 
 import os
-
+from google.appengine.dist import use_library
+use_library('django', '1.2')
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
