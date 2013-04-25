@@ -6,16 +6,14 @@
 <style type="text/css">
 table.passenger {padding-left:50px;}
 h4, h3, h2 {margin-bottom: 10px;}
-
-html {
-  background: #e5cb8e;
-}
+h1{padding-top: 10px;}
 </style>
-Welcome to your personal homepage, {{ user }}!<br />
+
+<h1>Welcome to your personal homepage, {{ user }}!</h1><br />
 {% if driverides %}
 <h2>You are a driver for the following rides:</h2>
 {% for ride in driverides %}
-<h3>Driver</h3> - <a href='/rideinfo?key={{ ride.key }}'>See Map of Ride</a>
+<h3>Driver</h3> 
 <table border='1'>
 <tr><th>From</th>
     <th>To</th>

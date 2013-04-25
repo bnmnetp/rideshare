@@ -38,8 +38,6 @@ var ride = new Ride({{ ride.max_passengers }},
 	    zoom: 6
         };
        map.setOptions(myOptions);
-       // map.setCenter(new google.maps.LatLng(lat,lng), 7);
-        //map.addControl(new GLargeMapControl());
         geocoder = new google.maps.Geocoder();
 
         // Create Icon for Luther
@@ -50,18 +48,6 @@ var ride = new Ride({{ ride.max_passengers }},
             icon: myIconMarker,
             shadow: shadow
             };
-        //var myIcon = new GIcon();
-        //myIcon.image = 'static/image.png';
-       // myIcon.shadow = 'static/shadow.png';
-        //myIcon.iconSize = new GSize(20,17);
-        //myIcon.shadowSize = new GSize(29,17);
-        //myIcon.iconAnchor = new GPoint(10,17);
-        //myIcon.infoWindowAnchor = new GPoint(10,0);
-        //myIcon.printImage = 'static/printImage.gif';
-        //myIcon.mozPrintImage = 'static/mozPrintImage.gif';
-        //myIcon.printShadow = 'static/printShadow.gif';
-        //myIcon.transparent = 'static/transparent.png';
-        //myIcon.imageMap = [19,0,19,1,19,2,18,3,18,4,17,5,16,6,19,7,19,8,19,9,19,10,16,11,19,12,13,13,13,14,15,15,19,16,8,16,7,15,6,14,6,13,5,12,5,11,5,10,4,9,4,8,4,7,3,6,2,5,1,4,1,3,0,2,0,1,0,0];
         var marker = new google.maps.Marker(new google.maps.LatLng(43.313059,-91.799501));
         google.maps.event.addListener(marker, "click", function()
           { var window = new google.maps.InfoWindow({position:marker.getPosition(), content:
@@ -79,12 +65,7 @@ var ride = new Ride({{ ride.max_passengers }},
         var drivershadow = new google.maps.MarkerImage("http://labs.google.com/ridefinder/images/mm_20_shadow.png",{size: new google.maps.Size(22,20)});
 
         var driverIcon = {icon:driverIconMarker, shadow: drivershadow};
-        //var driverIcon = new GIcon();
-        //driverIcon.shadow = "http://labs.google.com/ridefinder/images/mm_20_shadow.png";
-        //driverIcon.iconSize = new GSize(14, 22);
-        //driverIcon.shadowSize = new GSize(22, 20);
-        //driverIcon.iconAnchor = new GPoint(6, 20);
-        //driverIcon.infoWindowAnchor = new GPoint(5, 1);
+
 
       {% ifequal ride.doOrPu 0 %} 
         var driverLat = ride.destination.latitude;
@@ -110,13 +91,8 @@ var ride = new Ride({{ ride.max_passengers }},
        var passIconMarker = new google.maps.MarkerImage('http://labs.google.com/ridefinder/images/mm_20_blue.png', new google.maps.Size(12,20), null, new google.maps.Point(6,20));
        var passShadow= new google.maps.MarkerImage('http://labs.google.com/ridefinder/images/mm_20_shadow.png',{size: new google.maps.Size(22,20)});
        var passIcon = {icon:passIconMarker,shadow:passShadow};
-        //var passIcon = new GIcon();
-        //passIcon.shadow = 'http://labs.google.com/ridefinder/images/mm_20_shadow.png';
-        //passIcon.iconSize = new GSize(12, 20);
-        //passIcon.shadowSize = new GSize(22, 20);
-        //passIcon.iconAnchor = new GPoint(6, 20);
-        //passIcon.infoWindowAnchor = new GPoint(5,1);
-        //passIcon.image = 'http://labs.google.com/ridefinder/images/mm_20_blue.png'; // TODO: Diff colors for diff markers 
+        
+
       {% for p in ride.passengerobjects %}
         var passMarker = new google.maps.Marker(new google.maps.LatLng({{ p.lat }}, {{ p.lng }}), { icon:passIcon });
         google.maps.event.addListener(passMarker, 'click', function()

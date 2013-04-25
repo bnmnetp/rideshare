@@ -1,5 +1,21 @@
 
-body,
+
+html, body {
+  min-height:100%;
+  background:#F7FAFC url(/images/luther2010/backgrounds/html-body-gradient-background.png) repeat-x; 
+  background-image:-moz-linear-gradient(0 1000px 90deg, #F7FAFC, #CCDEEB); /* FF3.6 */
+  background-image:-webkit-gradient(linear, 0 0, 0 1000, from(#CCDEEB), to(#F7FAFC)); /* Saf4+, Chrome */	
+  font-family:Arial, Helvetica, sans-serif;
+}
+body {
+ font-size:0.75em; /* 12px */
+ line-height:1.5em; /* 12px * 1.5em = 18px */	
+ margin:auto;
+ padding:0;
+ position:relative;
+ width:964px;
+}
+/*body,
 html {
     margin: 0;
     padding: 0;
@@ -8,23 +24,36 @@ html {
 }
 
 body { 
-/*    font:small sans-serif;  */
+/*    font:small sans-serif;  
     min-width: 800px;
-    }
+    }*/
 
 h1 { 
     font-weight:normal; 
     margin-bottom:.4em; 
+    
 }
 
 #titleblock {
     margin: 0 auto;
     width: 800px;
-    height: 70px;
-    background: #003175;
+    height: 110px;
+    background: #003175; 
     color: #fff;
     text-align: center;
 }
+
+#titleblock h1{
+	padding:5px;
+}
+
+#titleblock h3{
+	text-align:left;
+	padding:5px;
+	height:5px;
+}
+
+
 #mainfooter {
     margin: 0 auto;
     width: 800px;
@@ -170,7 +199,7 @@ tr.sbodd {
     font: 150% "Lucida Grande", "Trebuchet MS", Verdana, sans-serif;
 }
 */
-#navbar {
+/*#navbar {
     margin: 0 auto;
     background: #003175;
     height: 20px;
@@ -200,6 +229,40 @@ tr.sbodd {
 
 #navbar a:hover {
     background: #4C75AE;
+}*/
+#navbar {
+ background:#004789 url(/images/luther2010/backgrounds/navbar-gradient-background.png) repeat-x;	
+ background-image:-moz-linear-gradient(0 45% 90deg, #004789, #2561A8); /* FF3.6 */
+ background-image:-webkit-gradient(linear,0 0,0 45%, from(#2561A8), to(#004789)); /* Saf4+, Chrome */
+ font-size:1.166666em; /* 14px */ 
+ line-height:1.285714em; /* 18px */
+ margin:0 -7px 0.642857em;
+ margin:0 0 0.642857em;
+ overflow:auto;
+ padding:0 15px;
+}
+#navbar ol,
+#navbar ul {
+ list-style:none;
+ margin:0;
+ padding:0;
+}
+#navbar li {
+ float:left;
+ font-weight:bold; 
+ padding:0.928571em 0 1em;
+ text-align:center;
+ margin-right:10px;
+}
+#navbar a,
+#navbar a:link,
+#navbar a:visited,
+#navbar a:hover,
+#navbar a:active,
+#navbar a:focus {
+ color:#fff;
+ padding:0 0.25em;
+ text-decoration:none;
 }
 
 #leftbar {

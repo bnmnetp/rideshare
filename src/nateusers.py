@@ -143,6 +143,9 @@ def set_cookie(response, name, value, domain=None, path="/", expires=None):
 
 class LoginHandler(BaseHandler):
     def get(self):
+        """
+
+        """
         verification_code = self.request.get("code")
         nexthop = self.request.get('lasthop')
         args = dict(client_id=FACEBOOK_APP_ID, redirect_uri=self.request.path_url)
@@ -161,34 +164,31 @@ class LoginHandler(BaseHandler):
                 "https://graph.facebook.com/me?" +
                 urllib.urlencode(dict(access_token=access_token))))
             schoolList = []
-            logging.debug(profile)
-            logging.debug(profile.keys())
-            if "education" in profile.keys():
-
+            if 'education' in profile.keys():
                 for item in profile["education"]:
                     schoolList.append(item["school"]["name"])
                 logging.debug("profile = " + str(profile))
                 if "Luther College" in schoolList:
                     user = FBUser.get_by_key_name(profile["id"])
                     if not user:
-                       logging.debug("User not found:  id = " + str(profile["id"]))
-                       user = FBUser(key_name=str(profile["id"]), id=str(profile["id"]),
-                                  name=profile["name"], access_token=access_token,
-                                  profile_url=profile["link"],public_link=profile["id"])
-                       user.put()
+                        logging.debug("User not found:  id = " + str(profile["id"]))
+                        user = FBUser(key_name=str(profile["id"]), id=str(profile["id"]),
+                                      name=profile["name"], access_token=access_token,
+                                      profile_url=profile["link"],public_link=profile["id"])
+                        user.put()
                     else:
-                       user.access_token=access_token
-                       user.put()
+                        user.access_token=access_token
+                        user.put()
 
                     set_cookie(self.response, "fb_user", str(profile["id"]),
-                           expires=time.time() + 30 * 86400)
+                               expires=time.time() + 30 * 86400)
                     self.redirect("/")
                 else:
                     self.redirect("/school")
             else:
-              self.redirect("/school")
+                self.redirect("/school")
         else:
-            args["scope"] = "publish_stream,email,offline_access,manage_pages,user_education_history"
+            args["scope"] = "publish_stream,email,offline_access,manage_pages"
             self.redirect(
                 "https://graph.facebook.com/oauth/authorize?" +
                 urllib.urlencode(args))
