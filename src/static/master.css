@@ -1,0 +1,2139 @@
+/*-----------------------------------
+Filename: master.css
+Title: Master Style Sheet
+Author: Faust Gertz, Faust@LeeMarvin.com
+Description: Imports other style sheets
+   -----------------------------------*/ 
+
+
+@import url(/stylesheets/luther2010/reset.css);
+
+/* /// HTML & Body \\\ */
+html, body {
+  min-height:100%;
+  background:#F7FAFC url(/images/luther2010/backgrounds/html-body-gradient-background.png) repeat-x; 
+  background-image:-moz-linear-gradient(0 1000px 90deg, #F7FAFC, #CCDEEB); /* FF3.6 */
+  background-image:-webkit-gradient(linear, 0 0, 0 1000, from(#CCDEEB), to(#F7FAFC)); /* Saf4+, Chrome */	
+  font-family:Arial, Helvetica, sans-serif;
+}
+body {
+ font-size:0.75em; /* 12px */
+ line-height:1.5em; /* 12px * 1.5em = 18px */	
+ margin:auto;
+ padding:0;
+ position:relative;
+ width:964px;
+}
+html.sports {
+ background:#111111;
+ background-image:-moz-linear-gradient(0 1000px 90deg, #222222, #000000); /* FF3.6 */
+  background-image:-webkit-gradient(linear, 0 0, 0 1000, from(#222222), to(#000000)); /* Saf4+, Chrome */	
+}
+body.sports {
+ background:#8da1b4;
+ background:#667788;
+ position: static;
+}
+/* \\\ HTML & Body /// */
+
+
+
+/* /// Content \\\ */
+.container {
+ background:#fff;
+ margin:0 7px;
+ width:950px;
+}
+/* Added #home.style-00 .container to account for div.container being added to style-home-00.
+   div.container was not in the original mark-up and was causing layout problems because it 
+   restricted width to 950 pixels.
+*/
+.style-home-00 .container { 
+ background:inherit;	
+ margin:0;
+ width:964px;
+}
+.style-home-01 .container,
+.style-home-02 .container {
+ background:#fff url(/images/luther2010/backgrounds/rules-two-column-page.png) no-repeat 0 9px;
+ border-bottom:1.5em solid #fff;
+}
+.style-home-01 .container {
+ background-position:0 297px;
+ border-bottom:1.5em solid #fff;
+}
+
+.content {
+ color:#191C45;	
+ float:left;	
+ width:234px; 
+}
+.content strong {
+ font-weight:bold;	
+}
+.content em {
+ font-style:italic;	
+}
+
+.content figure {
+ margin:0 0 1.5em;
+}
+.content figcaption {
+ margin:1.5em 0;
+ margin:.75em 0 2.25em; 
+}
+
+.content figure#imagetopframe {
+ overflow:hidden;
+ width:450px;	
+}
+.content figure#imagetopframe img {
+ max-width:450px;
+}
+
+.content dl,
+.content dd,
+.content p,
+.content ol,
+.content ul {
+ margin:0 0 1.5em;	
+}
+.content dt {
+ font-weight:bold;	
+}
+.content dl li dl,
+.content dd li dd,
+.content ol li ol,
+.content ul li ul{
+ margin:0 0 0.25em;
+}
+
+.style-home-01 .content-primary p:first-of-type {
+ font-size:1.333333em;
+ line-height:1.6875em;
+ margin:0 0 1.6875em;
+}
+.content hr {
+ background:#ddd;
+ color:#ddd;
+ clear:both;
+ float:none;
+ width:100%;
+ height:.1em;
+ margin:0 0 1.45em;
+ border:none;
+}
+.content h1,
+.content h2,
+.content h3,
+.content h4,
+.content h5,
+.content h6 {
+ color:#00458A;	
+ font-size:1em;
+ font-weight:bold;
+ line-height:1.5em;
+ margin:1.25em 0 0.25em;
+}
+.content h1 {
+ font-size:2em;	/* 12px * 2em = 24px  double pica or two-line pica */
+ font-weight:normal;
+ line-height:1.5em;
+ margin:1.25em 0 0.25em;	
+}
+
+.content h2 {
+ font-size:1.75em;	/* 12px * 1.75em = 21px  double small pica or double pica */
+ font-weight:normal;
+ line-height:1.714285em;
+ margin:1.428571em 0 0.285714em;	
+}
+.content h3 {
+ font-size:1.5em;	/* 12px * 1.5em = 18px  great primer */
+ font-weight:normal;
+ line-height:2;
+ margin:1.666666em 0 .333333em;		
+}
+.content h4 {
+ font-size:1.16666666666666em;	/* 12px * 1.75em = 14px  engÂ­lish or augustin */
+ line-height:1.285714em;
+ margin:1.071428em 0 0.214285em;	
+}
+
+.content h1.page-title {	
+ font-size:2.333333em;	/* 12px * 2.333333em = 28px  double pica or two-line pica */
+ font-weight:normal;
+ line-height:1em;
+ margin:0 0 0.285714em;
+}
+
+.content h2.pageTitle,                 
+.style-home-02 .content h1.page-title {
+ font-size:2.333333em;	/* 12px * 2.333333em = 28px  double pica or two-line pica */
+ font-weight:normal;
+ line-height:1em;
+ margin:0 0 0.928571em;
+}
+
+
+#pageContent ul,
+#pageContent ul li, 
+#blog.publication .fullPost ul,
+#blog.publication .fullPost ul li {
+ list-style:disc outside;
+}
+#pageContent ol,
+#pageContent ol li,
+#blog.publication .fullPost ol,
+#blog.publication .fullPost ol li {
+ list-style:decimal outside;
+}
+#pageContent li,
+#blog.publication .fullPost li {
+ margin-left:1.25em;
+}
+
+/* / Tables \ */
+.content-primary table {
+ /*background:#FFF6F2;*/
+ background:#FFFFFA;
+ border:1px solid #999;
+ border-collapse:collapse;
+ margin-bottom:1.416666em;
+ width:100%;
+}
+.content-primary th, 
+.content-primary td, 
+.content-primary caption {
+ border:0.833333px solid #999;
+ font-weight:normal;
+ padding:0.333333em 0.5em;
+ text-align:left; 
+}
+.content-primary caption {
+ background:#f2f2f2;
+}
+.content-primary thead th,
+.content-primary thead td {
+ background:#E5E5E5;
+}
+.content-primary .tablesorter thead th,
+.content-primary .tablesorter thead td {
+ background:#d4e4fc;
+}
+.content-primary table.tablesorter thead tr .header {
+	background-image: url(/images/luther2010/interface/asc-desc.png);
+	background-repeat: no-repeat;
+	background-position: center right;
+	cursor: pointer;
+}
+.content-primary table.tablesorter tbody td {
+	padding: 4px;
+	background-color: #fffffa;
+	vertical-align: top;
+}
+.content-primary table.tablesorter tbody tr:nth-child(odd) td {
+	background-color:#F0F0F9;
+}
+.content-primary table.tablesorter thead tr .headerSortUp {
+	background-image: url(/images/luther2010/interface/asc.png);
+}
+.content-primary table.tablesorter thead tr .headerSortDown {
+	background-image: url(/images/luther2010/interface/desc.png);
+}
+.content-primary table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSortUp {
+ background-color:#c0d4f2;
+}
+.content-primary section.events table.tablesorter table, 
+.content-primary section.events table.tablesorter td, 
+.content-primary section.events table.tablesorter th {
+ border:1px solid #ffffff;
+}
+.content-primary section.events table.tablesorter tbody th {
+ background-color: #dddddd;
+ color: #003388;
+ font-weight: bold;
+}
+.content-primary section.events table.tablesorter tbody td {
+	background-color: #fffffa;
+	background-color: #fdfdf6;
+	background-color: #f4f6fb;
+}
+.content-primary section.events table.tablesorter tbody tr:nth-child(odd) td {
+	background-color:#F0F0F9;
+	background-color:#ececf7;
+	background-color:#e0e6f3;
+}
+.content-primary section.events #discoLinear {
+  padding: 0 0 5px 0;
+}
+/* \ Table / */
+
+.content-primary {
+ padding:4.5em 13px 0 14px;
+ position:relative;
+ width:453px;
+}
+.content-secondary {
+ width:234px;	
+}
+.content-tertiary {
+ padding:3em 0 0 14px;	
+ width:222px;
+}
+
+/* \\\ Content /// */
+
+.addthis_toolbox {
+ position:absolute;
+ right:12px;
+ top:1.5em;
+}
+
+
+
+h2.section {
+ background:#AFD0EF;	
+ border-left:7px solid #95B3CD;
+ color:#004A8B;
+ color:#003388;
+ font-size:1.666666em;
+ xfont-weight:500;
+ line-height:0.9em;
+ margin:0 0 0 -7px;
+ padding:0.9em 10px;
+ text-transform:uppercase;
+ width:214px;
+}
+
+
+nav#breadcrumbs {
+ color:#777;	
+ display:block;
+ font-size:0.833333em; /* 10px */
+ line-height:1.1em;
+ margin:1.9em 0;	
+ position:absolute;
+ top:0;
+ width:330px;
+}
+
+
+.content-secondary hr {
+ height: 0;
+ margin: 0;  
+}
+
+.content-secondary nav.banners {
+ margin:0.75em 0;	
+ overflow:hidden;	
+}
+.content-secondary nav.banners li {
+ float:none;	
+ margin:0 0 .75em;
+}
+
+/* username */
+#username {
+ background:#99b7ce;
+ color:#00458a;
+ padding:5px 5px 7px 20px;
+}
+#username a {
+ font-size:1.60em;
+ line-height:0.5;
+ color:#eeeeee;
+}
+#username a:link,
+#username a:visited,
+#username a:hover,
+#username a:active {
+ text-decoration:none;
+}
+#username a:hover {
+ color:#ffe8b8;
+ /*text-decoration:underline;*/
+}
+
+
+
+/* ///  Header \\\ */
+header.global {
+ background-color:#144689; /* Light/Top Color */	
+ background-color:#0A2345; /* Dark/Bottom Color */	
+
+ background:#0A2345 url(/images/luther2010/backgrounds/global-gradient-background.png) repeat-x;
+
+ background-image:-moz-linear-gradient(0 60% 90deg, #0A2345, #113D78); /* FF3.6 */
+ background-image:-webkit-gradient(linear,0 0, 0 60%, from(#113D78), to(#0A2345)); /* Saf4+, Chrome */
+ border:7px solid #8DA1B4;
+ border-bottom:0;
+ border-top:0;
+ 
+ margin:0 -7px;
+ margin:0;
+
+ min-height:54px;
+ padding:18px 30px;
+ position:relative;
+ overflow:auto;
+ width:890px;	
+}
+header.global #luther-logo {
+ float:left;
+ font-size:1em;
+ margin:0;
+ padding:0 0 1em;
+ padding:0;
+ width:325px;
+}
+/* \\\ Header /// */
+
+
+/* /// Navigation \\\ */
+/* // Global Navigation \\ */
+/* / Search Navigation (Head) \ */
+#nav-search {
+ float:right;
+ line-height:1em; 
+ min-height:42px; 
+}
+#nav-search ol,
+#nav-search ul {
+ list-style:none;
+ margin:0;
+ padding:0;
+}
+#nav-search li {
+ border-left:1px solid #fff;	
+ display:inline;
+ padding:0 0.5em;
+}
+#nav-search li:first-child {
+ border-left:0;	
+ padding-left:0;
+}
+#nav-search li:last-child {
+ border-left:0;		
+ padding-right:0;
+}
+#search {
+ display:inline;	
+}
+#search label {	
+ left:-999em;	
+ xline-height:1.5em;
+ position:absolute;	
+}
+#search fieldset.overlabel-wrapper {
+ position:relative;	
+}
+#search fieldset.overlabel-wrapper label.overlabel-apply {
+ color:#0A2345;
+ font-weight:normal;
+ left:0.5em;
+ top:0.416666em;
+ z-index:1;
+}
+
+#search fieldset {
+ border:0;
+ display:inline;
+ margin:0;
+ padding:0;
+}
+#search input {
+ background:#fff;
+ border-color:#fff;
+ border-style:solid;
+ color:#0A2345;	
+ margin:0;
+ padding:0;
+ width:160px;	
+}
+#search button {
+ background:url(/images/luther2010/interface/submit.png) no-repeat center center;
+ text-indent:-999em;
+ width:24px;
+}
+
+
+
+#nav-search a,
+#nav-search a:link,
+#nav-search a:visited,
+#nav-search a:hover,
+#nav-search a:active,
+#nav-search a:focus {
+ color:#fff;
+ text-decoration:none;
+}
+/* \ Search Navigation (Head) / */
+
+/* / Audience Navigation (Head) \ */
+#nav-audience {
+ clear:right;	
+ float:right;	
+ line-height:1em;
+}
+#nav-audience ol,
+#nav-audience ul {
+ list-style:none;
+ margin:0;
+ padding:0;
+}
+#nav-audience li {
+ border-left:1px solid #fff;	
+ display:inline;
+ padding:0 0.5em;
+}
+#nav-audience li:first-child {
+ border-left:0;	
+ padding-left:0;
+}
+#nav-audience li:last-child {
+ padding-right:0;
+}
+#nav-audience a,
+#nav-audience a:link,
+#nav-audience a:visited,
+#nav-audience a:hover,
+#nav-audience a:active,
+#nav-audience a:focus {
+ color:#fff;
+ text-decoration:none;
+}
+/* \ Audience Navigation (Head) / */
+
+/* / Content Navigation (Head) \ */
+#nav-content {
+ background:#004789 url(/images/luther2010/backgrounds/nav-content-gradient-background.png) repeat-x;	
+ background-image:-moz-linear-gradient(0 45% 90deg, #004789, #2561A8); /* FF3.6 */
+ background-image:-webkit-gradient(linear,0 0,0 45%, from(#2561A8), to(#004789)); /* Saf4+, Chrome */
+ border:7px solid #96C2E9;
+ border-bottom:0;
+ border-top:0;
+ font-size:1.166666em; /* 14px */ 
+ line-height:1.285714em; /* 18px */
+ margin:0 -7px 0.642857em;
+ margin:0 0 0.642857em;
+ overflow:auto;
+ padding:0 30px;
+ width:890px;	
+}
+#nav-content ol,
+#nav-content ul {
+ list-style:none;
+ margin:0;
+ padding:0;
+}
+#nav-content li {
+ float:left;
+ font-weight:bold; 
+ padding:0.928571em 0 1em;
+ text-align:center;
+}
+#nav-content a,
+#nav-content a:link,
+#nav-content a:visited,
+#nav-content a:hover,
+#nav-content a:active,
+#nav-content a:focus {
+ color:#fff;
+ padding:0 0.25em;
+ text-decoration:none;
+}
+#nav-content li.admissions {
+ min-width:95px;	
+ text-align:left;
+}
+#nav-content li.academics {
+ min-width:105px;	
+}
+#nav-content li.library-Technology {
+ min-width:170px;	
+}
+#nav-content li.student-life {
+ min-width:110px;	
+}
+#nav-content li.athletics {
+ min-width:85px;	
+}
+#nav-content li.music {
+ min-width:65px;	
+}
+#nav-content li.giving {
+ min-width:70px;	
+}
+#nav-content li.decorah {
+ min-width:85px;	
+}
+#nav-content li.about-luther {
+ min-width:105px;
+ text-align:right;
+}
+#nav-content li.admissions a,
+#nav-content li.admissions a:link,
+#nav-content li.admissions a:visited,
+#nav-content li.admissions a:hover,
+#nav-content li.admissions a:active,
+#nav-content li.admissions a:focus,
+#nav-content li.about-luther a,
+#nav-content li.about-luther a:link,
+#nav-content li.about-luther a:visited,
+#nav-content li.about-luther a:hover,
+#nav-content li.about-luther a:active,
+#nav-content li.about-luther a:focus {
+ padding:0;	
+}
+/* \ Content Navigation (Head) / */
+
+
+#nav-section {
+ border-left:7px solid #95B3CD;	
+ background:#E5ECF0 url(/images/luther2010/backgrounds/nav-section-gradient-background.png) repeat-x;
+ background-image:-moz-linear-gradient(0 340px 90deg, #E5ECF0, #FFFFFF); /* FF3.6 */
+ background-image:-webkit-gradient(linear, 0 0, 0 340, from(#FFFFFF), to(#E5ECF0)); /* Saf4+, Chrome */
+ color:#000; 
+ margin:0 0 0 -7px;
+ padding:0 0 1.5em 9px;
+ width:224;
+}
+#nav-section .navListItem.open.current strong {
+ color:#000;
+ font-weight:bold;
+}
+#nav-section ul {
+ margin:0;
+ padding:0;
+}
+#nav-section li {
+ border-bottom:0.0833333em solid #c7d8ea;
+ margin:0;
+ padding:.416666em 3px .25em;	
+}
+#nav-section li li {
+ border:none;
+ margin:0 0 0 18px;
+ padding:.416666em 0 .333333em;	
+}
+#nav-section li,
+#nav-section li a {
+ color:#006;
+ font-weight:bold;
+ text-decoration:none;
+}
+#nav-section li li,
+#nav-section li li a {
+ font-weight:normal;
+}
+
+
+/* / Site Informqtion (Foot) \ */
+nav.site-info ul,
+nav.site-info li {
+ display:inline;	
+ list-style:none;
+ margin:0;
+ padding:0;
+}
+nav.site-info li {
+ padding:0 0.5em;
+}
+nav.site-info li.about {
+ border-right:1px solid #cde;
+ border-right-color:rgba(255,255,255,0.8);
+}
+nav.site-info a,
+nav.site-info a:link,
+nav.site-info a:visited,
+nav.site-info a:hover,
+nav.site-info a:active,
+nav.site-info a:focus {
+ color:#cde; 	
+ color:rgba(255,255,255,0.8);
+ text-decoration:none;
+}
+/* \ Site Informqtion (Foot) / */
+/* \\ Global Navigation // */
+/* \\\ Navigation /// */
+
+
+/* /// Banners \\\ */
+aside.banners {
+ clear:both;
+ float:left;
+ margin:0 7px; 
+ width:950px;
+}
+aside.banners li {
+ background:url("/images/luther2010/banners/transparent/blue.png") repeat-y scroll 0 0 transparent;
+ background-image:-moz-linear-gradient(110px 200px 0deg, #004788, #789DC0); /* FF3.6 */
+ background-image:-webkit-gradient(linear, 110 0, 200 0, from(#004788), to(#789DC0)); /* Saf4+, Chrome */     
+ float:left;
+ margin:0 6px 0 0;
+ overflow:hidden;
+ position:relative;
+ width:233px; 
+}
+aside.banners li:nth-of-type(4n+1),
+.content-secondary aside.banners li:nth-of-type(4n+3) {
+ background:url("/images/luther2010/banners/transparent/yellow.png") repeat-y scroll 0 0 #ECA424;
+ background-image:-moz-linear-gradient(110px 200px 0deg, #ECA424, #F4CC82); /* FF3.6 */
+ background-image:-webkit-gradient(linear, 110 0, 200 0, from(#ECA424), to(#F4CC82)); /* Saf4+, Chrome */   
+}
+aside.banners li:nth-of-type(4n+2) {
+ background:url("/images/luther2010/banners/transparent/green.png") repeat-y scroll 0 0 #40852D;
+ background-image:-moz-linear-gradient(110px 200px 0deg, #40852D, #95BB8A); /* FF3.6 */
+ background-image:-webkit-gradient(linear, 110 0, 200 0, from(#40852D), to(#95BB8A)); /* Saf4+, Chrome */    
+}
+body.sports .content-secondary aside.banners li,
+aside.banners li:nth-of-type(4n+3),
+.content-secondary aside.banners li:nth-of-type(4n+1) {
+ background:url("/images/luther2010/banners/transparent/blue.png") repeat-y scroll 0 0 #004788;
+ background-image:-moz-linear-gradient(110px 200px 0deg, #004788, #789DC0); /* FF3.6 */
+ background-image:-webkit-gradient(linear, 110 0, 200 0, from(#004788), to(#789DC0)); /* Saf4+, Chrome */  
+}
+aside.banners li:nth-of-type(4n+4) {
+ background:url("/images/luther2010/banners/transparent/red.png") repeat-y scroll 0 0 #A51C18;
+ background-image:-moz-linear-gradient(110px 200px 0deg, #A51C18, #D08684); /* FF3.6 */
+ background-image:-webkit-gradient(linear, 110 0, 200 0, from(#A51C18), to(#D08684)); /* Saf4+, Chrome */   
+ margin:0; 
+}
+aside.banners li a {
+display:block;
+}
+.content-secondary aside.banners {
+margin:0.75em 0;
+overflow:hidden;
+}
+.content-secondary aside.banners li {
+float:none;
+margin:0 0 0.75em;
+width:234px;
+}
+/* \\\ Banners /// */
+
+
+
+/* /// Group - Modular Float Management \\\ */
+.group:after {
+ clear:both;	
+ content:".";
+ display:block;
+ height:0;
+ visibility:hidden;
+}
+/* \\\ Group - Modular Float Management /// */
+
+
+
+/* /// Carousel \\\ */
+#carousel {
+ background:#092D4F;	
+/* border-left:7px solid #95B3CD; */
+ float:left;
+ height:288px; 
+ margin:0;
+ overflow:hidden;
+ position:relative;  
+ width:719px;
+}
+#carousel ol,
+#carousel ul {
+ list-style:none;
+ margin:0;
+ padding:0;
+}
+#slides { 
+ background:#092D4F;
+ height:288px;
+ position:relative; 
+ width:719px;
+}
+#slides .slide {
+ border-right:4px solid #092D4F;
+ border-right:4px solid #092D4F;
+ position:absolute;
+ top:0px;
+ width:475px;
+}
+#slides .slide span {
+ background:transparent url(/images/luther2010/backgrounds/white-semi-transparent-background.png);	
+ background:rgba(255, 255, 255, 0.5) none;
+ display:block;
+ height:288px; 
+ left:0px;
+ position:absolute;
+ top:0px;
+ width:475px;
+}
+#slides .slide.active span  {
+ background:none;
+ background:url(/images/luther2010/interface/red-arrow.png) no-repeat bottom right;
+}
+#slide-1 { 
+ right:240px;
+ z-index:12;
+}
+#slide-2 { 
+ right:192px;
+ z-index:11;
+}
+#slide-3 { 
+ right:144px;
+ z-index:10;
+}
+#slide-4 { 
+ right:96px;
+ z-index:9;
+}
+#slide-5 { 
+ right:48px;
+ z-index:8;
+}
+#slide-6 { 
+ right:0px;
+ z-index:7;
+}
+
+
+.style-home-00 .container-carousel-and-attribute {
+ background:#092D4F;	
+ border-left:7px solid #95B3CD;
+ border-right:7px solid #95B3CD; 
+ margin:0 -7px;
+ margin:0;
+ overflow:auto;
+ width:950px; 
+}
+.style-home-00 #carousel {
+ width:715px;	
+}
+
+.style-home-01 #carousel {
+ width:716px;	
+}
+
+/* \\\ Carousel /// */
+
+
+/* /// Attribute \\\ */
+#attribute {
+ background:#092D4F;	
+ background-image: -moz-linear-gradient(0 125px, #092D4F, #0F3F79); /* FF3.6 */
+ background-image: -webkit-gradient(linear, 0 0, 125 0, from(#092D4F), to(#0F3F79)); /* Saf4+, Chrome */ 
+/* border-right:7px solid #95B3CD; */
+ float:right; 
+ height:288px;  
+/* margin:0 -14px 0 0; */
+ overflow:hidden;
+ padding:0;
+ position:relative;
+ text-align:right;
+ width:235px;
+}
+/* \\\ Attribute /// */
+
+
+/* /// Home Page \\\ */
+
+#home .container-events-news-and-spotlight {
+ background:#fff url(/images/luther2010/backgrounds/rules-for-home-page.png) bottom left no-repeat;	
+ float:left;
+ margin:0 7px 0.75em;
+ padding:0 0 0.75em;
+ overflow:hidden;
+ width:950px;
+}
+
+
+/* // Red Strip Header \\ */
+header.red-stripe {
+ padding:.75em 0;
+}
+.container-events-news-and-spotlight header.red-stripe {
+ padding:0.833333em 0 0.666666em 0;
+}
+header.red-stripe > h1 {
+ background:#a11;
+ color:#004788;
+ font-size:1.5em; /* 18px */
+ font-weight:bold;
+ height:1em;
+ line-height:1em;
+ margin:0;
+ padding:0;
+ text-transform:uppercase;
+}
+header.red-stripe > h1 > span {
+ background:#fff;
+ padding:0 5px 0 0;
+}
+
+.style-home-00 .container-events-news-and-spotlight header.red-stripe,
+.style-home-00 .container-events-news-and-spotlight header.red-stripe > h1 > span {
+ background:#e0ebf4 url(/images/luther2010/backgrounds/html-body-gradient-background.png) repeat-x 0 -434px;
+ background-image: -moz-linear-gradient(0 559px 90deg, #F7FAFC, #e0ebf4); /* FF3.6 */
+ background-image: -webkit-gradient(linear, 0 0, 0 559, from(#E0EbF4), to(#F7FAFC)); /* Saf4+, Chrome */	 /* not working! */  
+}
+.style-home-00 .container-events-news-and-spotlight header.red-stripe > h1 > span {
+ padding:0 5px;	
+}
+/* \\ Red Strip Header // */
+
+
+/* // Blue Strip Header \\ */
+header.blue-stripe {
+ padding:.916666em 0;
+}
+
+header.blue-stripe > h1 {
+ background:#99b7ce;
+ color:#004788;
+ font-size:1.166666em; /* 14px */
+ font-weight:bold;
+ height:1em;
+ line-height:1em;
+ margin:0;
+ padding:0;
+ text-transform:uppercase;
+}
+header.blue-stripe > h1 > span {
+ background:#fff;
+ padding:0 5px 0 0;
+}
+
+/* \\ Blue Strip Header // */
+
+
+.style-home-00 .container-events-news-and-spotlight section.events .hfeed,
+.style-home-00 .container-events-news-and-spotlight section.news .hfeed,
+.style-home-00 .container-events-news-and-spotlight section.spotlight article {
+ border-top:1.5em solid #fff;
+}
+
+
+
+/* /// Contact \\\ */
+.contact-information {
+ margin:1.5em 12px 0;	
+}
+.contact-information h2,
+.contact-information h3 {
+ color:#006;
+ font-size:1em;
+ font-weight:bold;
+ line-height:1.5em;
+ margin:1.5em 0 0;
+}
+body.sports .contact-information h2,
+body.sports .contact-information h3, 
+body.sports .contact-information p {
+ color: #ffffff;
+}
+.contact-info {
+ /*margin-left:18px*/	
+}
+.contact-info > h1:first-child,
+.contact-info > h2:first-child,
+.contact-info > h3:first-child {
+ margin-bottom:1.5em;
+ /*margin-left:-18px*/ 
+}
+/* \\\ Contact /// */
+
+
+
+/* /// Blog Feed \\\ */
+.atom-feed {
+	
+}
+
+.atom-feed .hfeed {
+
+}
+.atom-feed .hfeed  li {
+}
+.atom-feed .hfeed .hentry {
+ background:url(/images/luther2010/backgrounds/blue-rule.png) repeat-x bottom left;	
+ font-size:1em;
+ margin:0.75em 0 0.75em 0; 	 
+ min-height:9em;	
+ padding:0 0 0 77px;
+ position:relative;
+}
+.atom-feed .hfeed .hentry header {
+ font-size:1em;
+ line-height:1.5em;
+ margin:0.75em 0 0.75em 0; 	
+}
+.atom-feed .hfeed .hentry header h1 {
+ font-size:1.333333em;
+ font-weight:bold;
+ line-height:1.125em;
+ margin:.5625em 0 .5625em -77px; 
+}
+.atom-feed .hfeed .hentry a:link,
+.atom-feed .hfeed .hentry a:visited,
+.atom-feed .hfeed .hentry a:hover,
+.atom-feed .hfeed .hentry a:active,
+.atom-feed .hfeed .hentry a:focus {
+ color:#013E7B;
+ text-decoration:none;
+}
+
+.atom-feed .hfeed .hentry .author {
+ font-weight:bold;	
+}
+
+.atom-feed .hfeed .hentry .author figure {
+ left:0;
+ position:absolute;
+ margin-top:-1em;
+}
+.atom-feed .hfeed .hentry .author figure img {
+ border:1px solid #666;	
+}
+.atom-feed .hfeed .hentry .entry-summary {
+ color:#09203E;	
+}
+.atom-feed .hfeed .hentry footer {
+ color:#666;	
+ margin:0.75em 0 0.75em 0; 		
+ padding:0 0 0.75em; 	 
+}
+
+
+/* \\\ Blog Feed /// */
+
+
+
+
+/* /// Events \\\ */
+.events .hfeed {
+ padding:0 2px;
+}
+.events .vevent {
+ clear:both;
+ min-height:6em;
+}
+.events .hfeed .vevent a,
+.events .hfeed .vevent a:link,
+.events .hfeed .vevent a:hover,
+.events .hfeed .vevent a:active,
+.events .hfeed .vevent a:focus {
+ text-decoration: none;
+ color: #003580;
+}
+.events .vevent time.dtstart {
+ float:left;
+ margin:0.333333em 1em 1.222222em 0;
+ margin:0.333333em 1em 0 0; 
+ width:3.75em;
+}
+.events .vevent time.dtstart span {
+ background:#a11;	
+ color:#fff;
+ display:block;
+ font-size:1em; /* 12px */
+ line-height:1.5em; /* 18px */
+ font-weight:bold;
+ text-align:center;
+}
+.events .vevent time.dtstart .month {
+}
+.events .vevent time.dtstart .day {
+ background:#E3ECF6;	
+ color:#000;
+ font-size:1em; /* 12px */
+ line-height:2em; /* 24px */
+ font-weight:bold;
+ margin:0 0 0.75em;
+ padding:0 0 0.25em;
+ text-align:center;
+}
+.events .vevent .summary {
+ color:#003580;
+ font-size:1em;
+ line-height:1.5em;
+ font-weight:bold;
+ margin:0 0 1.5em 4.75em;
+ padding:0;	
+}
+.summary .location {
+ color:#191C45;
+ font-weight:normal;
+}
+
+nav.button a:link,
+nav.button a:visited,
+nav.button a:hover,
+nav.button a:active,
+nav.button a:focus {
+ background:#A5BBD7;
+ clear:both;
+ color:#fff; 
+ display:block;
+ float:left;
+ font-size:1em;
+ line-height:2em;
+ margin:0 0 1em;
+ padding:0 1em;
+ text-decoration:none;
+}
+.container-events-news-and-spotlight nav.view-all {
+ padding:0 12px;	
+}
+
+.style-home-00 .container-events-news-and-spotlight .events > header > h1 > span {
+ padding-left:0;
+}
+.container-events-news-and-spotlight .events {
+ float:left;	
+ width:237px;	
+}
+.container-events-news-and-spotlight .events .hfeed {
+ padding:0 12px;
+}
+
+.style-home-01 .events .hfeed {
+ /*float:left;*/	
+ /*width:240px;*/
+}
+/* are both of these needed? */
+.content-primary .events.with-calendar .hfeed {
+ float: left;
+ width: 240px;
+}
+
+
+
+
+/* /// Events \\\ */
+.style-one-column .content-primary {
+ padding-right:0;
+ width:689px;
+}
+.style-one-column div#calendar div.gridAndOptions {
+ background:none;
+ border:none;
+ border-left:1px solid #ccc;
+ clear:left;
+ float: right;
+ margin-bottom: 12px;
+ margin-left: 7px;
+ margin-top:2px;
+ padding:3em 0 0 14px;		
+ width:222px;	
+}
+
+div#calendar div.views ul li strong,
+div#calendar div.nav {
+ background:#2561A8;
+}
+div#calendar div.views ul li a,
+div#calendar div.views ul li a:link,
+div#calendar div.views ul li a:visited,
+div#calendar div.views ul li a:hover,
+div#calendar div.views ul li a:active,
+div#calendar div.views ul li a:focus {
+ background:#E3ECF6;	
+}
+div#calendar div.views ul li a:hover,
+div#calendar div.views ul li a:active,
+div#calendar div.views ul li a:focus {
+ background-color:#D0DCFA;
+} 
+
+.gridAndOptions .calendarGrid,
+.events .calendarGrid {
+ border:0;
+ padding:0;
+ background:#E3ECF6;	
+ color:#333;
+ float:right;	
+ font-weight:bold;
+ margin:0 10px 0 0;
+ width:188px;	 
+}
+.content-tertiary .events #calendar,
+.content-tertiary .events .calendarGrid {
+ float:none; 
+}
+div#calendar div.gridAndOptions div.calendarGrid {
+ float:none;	
+ margin:0;
+ width:188px;	
+}
+.content-tertiary .events h2 {
+ font-size:1.166666em; /* 14px */
+ font-weight:bold;
+ line-height:1.285714em;
+ margin:1.285714em 0;
+ text-transform:uppercase;
+}
+.gridAndOptions .calendarGrid h4,
+.events .calendarGrid h4 {
+ color:#333;	
+ display:inline;
+ font-size:1em;
+ font-weight:bold;
+ line-height:1.5em;
+ margin:0;
+ padding:0 2.5em;
+}
+.gridAndOptions #calendar header.month .previous,
+.events #calendar header.month .previous {
+ left:1em;
+ position:absolute;
+ text-decoration:none;
+}
+.events #calendar header.month ol,
+.events #calendar header.month ol li {
+ display:inline;	
+}
+.gridAndOptions #calendar header.month .next,
+.events #calendar header.month .next {
+ right:1em;
+ position:absolute;
+}
+.events #calendar header.month a:link,
+.events #calendar header.month a:visited,
+.events #calendar header.month a:hover,
+.events #calendar header.month a:active,
+.events #calendar header.month a:focus {
+ text-decoration:none; 
+}
+.gridAndOptions .calendarGrid table,
+.events .calendarGrid table {
+ background:transparent;
+ border:none;
+ margin-bottom:0;
+}
+.gridAndOptions .calendarGrid th,
+.events .calendarGrid th {
+ font-size:0.75em;
+ line-height:2em;
+ min-height:2em; 
+ border:0;
+}
+.gridAndOptions .calendarGrid td,
+.events .calendarGrid td {
+ border:1px solid #B5C7D7;
+ line-height:26px;  
+ min-height:26px; 
+ border-width:1px 1px 0 0;
+}
+.gridAndOptions .calendarGrid td:last-child,
+.events .calendarGrid td:last-child {
+ border-right-width:0;
+}
+.gridAndOptions .calendarGrid td a,
+.events .calendarGrid td a {
+ padding: 0;
+}
+.gridAndOptions .calendarGrid td.currentlyViewing,
+.events .calendarGrid td.currentlyViewing {
+ /*background-color:#D6E3F6;*/
+ background:#E3ECF6;	
+}
+.gridAndOptions .calendarGrid td.today,
+.gridAndOptions .calendarGrid td.today,
+.events .calendarGrid td.today,
+.events .calendarGrid td.today {
+ background-color: #D0DCFA;
+}
+.gridAndOptions .calendarGrid td,
+.gridAndOptions .calendarGrid th,
+.events .calendarGrid td,
+.events .calendarGrid th {
+ font-weight:bold;	
+ min-width:26px;	 
+ text-align:center;	
+ vertical-align:middle;
+ padding: 0;
+}
+#calendar .gridAndOptions .calendarGrid table a:link,
+#calendar .gridAndOptions .calendarGrid table a:visited,
+#calendar .gridAndOptions .calendarGrid table a:hover,
+#calendar .gridAndOptions .calendarGrid table a:active,
+#calendar .gridAndOptions .calendarGrid table a:focus,
+.events .calendarGrid table a:link,
+.events .calendarGrid table a:visited,
+.events .calendarGrid table a:hover,
+.events .calendarGrid table a:active,
+.events .calendarGrid table a:focus {
+ color:#003580;
+ display:block;
+ font-weight:bold; 
+ height:100%;
+ text-decoration:none;
+}
+.gridAndOptions .calendarGrid table a:hover,
+.events .calendarGrid table a:hover {
+ background:#fff;	
+}
+
+#content div#calendar div.options h4, 
+#content div#calendar div.dateJump h4, 
+#content div#calendar div.gridAndOptions div.search h4 {
+ font-size:1.16666666666666em;	/* 12px * 1.75em = 14px  engÂ­lish or augustin */
+ font-style:normal;
+ line-height:1.285714em;
+ margin:1.071428em 0 0.214285em;		
+}
+#content div#calendar div.options ul,
+#content div#calendar div.options li {
+ font-size:1em;		
+ list-style:disc outside none;
+ margin:0;	
+ padding:0;
+}
+#content div#calendar div.options li {
+ margin-left:1.181818em;	
+}
+div#calendar div.options div {
+ border:none;	
+}
+
+#content #calendar .foot {
+ left:-999em;
+ position:absolute;
+}
+
+.content-secondary .events {	
+ margin:1.5em 0;
+ padding:0 0 0 10px; 
+}
+.content-secondary .events .hfeed {
+ padding-top:1.5em;
+}
+body.sports div.eventDetails div.eventContent {
+border: 0;
+}
+/* \\\ Events /// */
+
+
+
+
+/* /// News \\\ */
+
+.news a {
+ color:#333;	
+ text-decoration:none;	
+}
+.news .hfeed article {
+ margin:0 0 1.5em;
+}
+.news .hfeed article h1 {
+ color:#003580;
+ font-size:1em;
+ line-height:1.5em;
+ font-weight:bold;
+ margin:0;
+ padding:0;
+}
+.container-events-news-and-spotlight .news {
+ float:left;	
+ width:239px;	
+}
+.container-events-news-and-spotlight .news .hfeed {
+ padding:0 12px;
+}
+
+
+/* // Twitter \\ */
+.content-tertiary .twitter-feed h1 {
+ font-size:1.166666em; /* 14px */
+ font-weight:bold;
+//line-height:1.285714em;
+ margin:0.642857em 0;
+ text-transform:uppercase;
+}
+.content-tertiary .twitter-feed {
+ //padding:0 10px 0 0;
+}
+.twitter-feed {
+
+}
+.twitter-feed a:link,
+.twitter-feed a:visited,
+.twitter-feed a:hover,
+.twitter-feed a:active,
+.twitter-feed a:focus {
+ color:#003580;	
+ text-decoration:none;
+}
+.twitter-feed .hfeed {
+
+}
+.twitter-feed .hentry {
+ margin:0 0 1.5em;	 
+
+}
+.twitter-feed .author {
+
+}
+.twitter-feed .author figure {
+ display:none;	
+}
+.twitter-feed .screen-name {
+ color:#003580;	
+ font-weight:bold;
+}
+.twitter-feed footer {
+ color:#666;
+}
+
+/* \\ Twitter // */
+
+
+/* \\\ News /// */
+
+
+
+/* /// Spotlight \\\ */
+.spotlight {
+ overflow:hidden;	
+ width:auto; 
+}
+.spotlight article {
+ min-height:16em;
+ padding:0 260px 0 0;
+ position:relative;
+}
+
+/* Added to override 12px top and bottom margins specified in default_styles.css
+*/
+.container-events-news-and-spotlight .spotlight div.relatedPub div.moduleNav ul li {
+ margin:0;
+}
+
+.content-tertiary .spotlight article {
+ padding:0;
+}
+.content-tertiary .spotlight article {
+ padding:0 12px 0 0;
+}
+.content-tertiary .spotlight article header {
+ display:table;
+ height:10em;	
+ overflow:hidden;	/* ? */ 
+ padding:0 0 .5em 106px;
+ width:104px;
+}
+.content-tertiary .spotlight article header hgroup {
+ display:table-cell;
+ vertical-align:middle;
+}
+.content-tertiary .spotlight article h1.name,
+.content-tertiary .spotlight article h2 {	
+ font-size:1em; /* 18px */
+ line-height:1.5em;
+}
+.content-tertiary .spotlight article h1.name .fn {
+ display:block;	
+}
+
+.content-tertiary .spotlight article figure {
+ left:0;	
+ position:absolute;
+ top:0;
+ height:117px;
+ overflow:hidden;
+}
+
+
+
+.container-events-news-and-spotlight .spotlight article {
+ padding-left:12px;
+}
+.spotlight abbr {
+ border:none;
+ text-decoration:none;	
+}
+.spotlight article header {
+ color:#003580;	
+ padding:0; 
+ padding:1em 0 1.25em;
+}
+.container-events-news-and-spotlight .spotlight article header {
+ margin-top:-4px;
+ margin-bottom:13px;
+ padding:0;
+}
+.spotlight article h1.name {
+ color:#003580;		
+ font-size:1.5em; /* 18px */
+ font-weight:bold;
+ line-height:1.5em;
+ margin:0;
+ padding:0;
+}
+.container-events-news-and-spotlight .spotlight article header {
+ line-height:1.5em; /* 27 px */
+}
+.spotlight article h2 {
+ color:#003580;		
+ font-size:1.166666em; /* 14px */
+ font-style:italic;
+ font-weight:normal;
+ line-height:1.285714em; /* 18px */
+ margin:0; 
+}
+.spotlight article .profile {
+ color:#0a2244;	
+/* color:#191C45;	*/
+ margin:0 0 1.5em;	
+}
+.spotlight .profile .question {
+ display:block;
+ font-weight:bold;	
+}
+.spotlight article figure {
+ left:241px;	
+ position:absolute;
+ top:0;
+}
+.container-events-news-and-spotlight .spotlight article figure {
+ top:-1.5em;
+}
+
+
+.style-home-00 .container-events-news-and-spotlight section.spotlight {	
+ float:left;	
+ width:474px;	
+}
+
+#home .container-events-news-and-spotlight section.events nav,
+#home .container-events-news-and-spotlight section.news nav,
+#home .container-events-news-and-spotlight section.spotlight nav {
+ display:block;	
+}
+
+
+.spotlight-archive  #meat .contentPost #blog.publication .moduleNav ul.posts li.post { 
+ margin:0;	
+ padding:0;
+}
+
+.spotlight-archive #meat .contentPost #blog.publication .moduleNav ul.posts li.post h4.title {
+ font-size:1em;	
+ font-weight:normal;
+ line-height:1.5em; /* 12px * 1.5em = 18px */	 
+ margin:0;	
+}
+.spotlight-archive .content h3 {
+ margin-top:0;	
+}
+.spotlight-archive .date,
+.spotlight-archive .desc,
+.spotlight-archive .links {
+ left:-999em;
+ position:absolute;
+}
+#spotlightimage .figure {
+ margin-right:0;
+ margin-top:0;
+}
+#spotlightimage .figure img {
+ border:0;	
+ max-width:250px;
+ max-width:220px;
+ padding:60px 10px 3px 0;
+}
+#meat .contentPost #blog.publication .item #spotlightcontent .images {
+    left: 475px;
+}
+/* \\\ Spotlight /// */
+
+
+
+.contentcontainer {
+ background:#fff;	
+ border-bottom:1.5em solid #fff;
+ margin:0 0 0.75em 7px;
+ width:950px;
+}
+.text2cola .contentcontainer {
+ background:#fff url(/images/luther2010/backgrounds/rules-content-page.png) no-repeat;
+}
+
+
+
+/* / Figure Abstract \ */
+#section-sign {
+ background:#AFD0EF;	
+ border-left:7px solid #95B3CD;
+ color:#003388;	
+ display:block;
+ height:6em;	
+ margin:0 0 0 -7px; 
+ overflow:hidden;	
+ text-decoration:none; 
+ text-transform:uppercase;
+ width:234px; 
+}
+#section-sign.blue,
+#section-sign.blue h1,
+#section-sign.blue h2 {
+ background:#AFD0EF;	
+ color:#003388;		
+}
+#section-sign.green,
+#section-sign.green h1,
+#section-sign.green h2 {
+ background:#40842D;	
+ color:#fff;		
+}
+body.sports #section-sign.blue,
+body.sports #section-sign.blue h1,
+body.sports #section-sign.blue h2 {
+ background:#cccccc;	
+ color:#003388;		
+}
+#section-sign div {	
+ display:table;
+ min-height:4.5em;	 
+ padding:.75em 10px;  
+}
+#section-sign div header {
+ display:table-cell;
+ height:4.5em; 
+ vertical-align:middle;
+}
+#section-sign h1,
+#section-sign h2 {
+ font-size:1.666666em;
+ line-height:1.1em;
+ margin:0;
+ padding:0;
+ text-transform:uppercase;
+}
+
+
+
+
+/* // DIVs for Columns Created by jQuery \\ */
+#pageContent .two-column div.section ul, 
+#pageContent .two-column div.section ul li {
+ list-style:none;
+}
+#pageContent .two-column li {
+ margin:0 0 0.75em;	
+}
+.two-column div.section {
+ margin:0 0 1.5em;		
+}
+.two-column div.section a:link,
+.two-column div.section a:visited,
+.two-column div.section a:hover,
+.two-column div.section a:active,
+.two-column div.section a:focus {
+ /*color:#333;*/		
+ /*text-decoration:none;*/	
+}
+.two-column {
+ position:relative;	
+}
+.two-column .column1,
+.two-column .column2 {
+ float:left;
+ position:relative;
+ width:215px;
+}
+.two-column  .column2 {
+ float:right;
+}
+/* \ DIVs for Columns Created by jQuery / */
+/* / Sections \ */
+.two-column  .div.section {
+/* font-size:0.833333em; */   /* 10px */
+/* line-height:1.6em; */      /* 16px */
+}
+.two-column div.section h1 {
+ font-size:1.16666666666666em;	/* 12px * 1.75em = 14px  engÂ­lish or augustin */
+ font-weight:bold;
+ line-height:1.285714em;
+ margin:1.071428em 0 0.214285em;	
+ text-transform:uppercase;
+}
+
+
+
+#contact #abstract {
+ background:#808080 url(/contact/images/contact-background.jpg) no-repeat;	
+ color:#fff; 
+ margin:0 -57px; 	
+}
+#contact #abstract .wrapper {	
+ padding:0 57px 25px; 
+}
+#contact #abstract .wrapper p {
+ font-size:2.333333em; /* 12px * 2.333333em = 28px */ 
+ line-height:1.464285em; /* 28px * 1.464285em = 41px */
+ text-shadow:rgba(0, 0, 0, 0.1) 2px 2px 4px;
+ width:610px;	  
+}
+#contact #abstract a:link,
+#contact #abstract a:visited,
+#contact #abstract a:hover,
+#contact #abstract a:active,
+#contact #abstract a:focus {
+ color:#fff;
+ text-decoration:none;
+}
+/* \ Figure Abstract / */
+
+aside.quote ul {
+ color:#004788;
+ list-style-type:circle;
+ margin: 0 0 15px 15px;
+}
+.sports aside.quote {
+ color: #191C45;
+ font-size:1em;
+ font-weight:normal; /* 12px */ /* pica */
+ line-height:1.5em; /* 18px/12px */
+ overflow: hidden;
+ padding:0;
+ text-align:left;
+ width: auto;
+}
+.sports aside.quote p {
+ background-image: -moz-linear-gradient(#99B7CE, #99B7CE);
+ background-image:-webkit-gradient(linear, 0% 0%, 0% 100%, from(#99B7CE), to(#99B7CE));
+ background-position: 10.75em 50%;
+ background-repeat: no-repeat;
+ background-size: 100% 1em;
+ font-size: 1.1666667em; /* 14px / 12px */
+ margin: 0;
+ padding: 0.785714285714286em 0; /* 11px / 14px */
+}
+.sports aside.quote p strong {
+ background:#fff;
+ color:#004788;
+ font-size:1em;
+ font-weight:bold;
+ height:1em;
+ line-height:1em;
+ margin:0;
+ padding: 0 5px 0 0;
+ text-transform:uppercase;
+} 
+.sports aside.quote li {
+ font-weight:bold;
+}
+.sports aside.quote li:before {
+ content: "âœ“ ";
+}
+.sports aside.quote li a {
+ font-weight:bold;
+}
+
+/* /// Footer \\\ */
+#footer {
+ margin:.818181em 0 3.272727em; 	
+}
+footer.site-info {
+ background:#0B2147;
+ border:7px solid #8DA1B4; 
+ border-bottom:0;
+ border-top:0;
+ clear:both;
+ color:#cde; 
+ color:rgba(255,255,255,0.8);
+ font-size:0.833333em;
+ line-height:1.8em;
+ padding:0.9em 10px;
+ text-align:center;
+ text-transform:uppercase;
+ width:930px;
+}
+/* \\\ Footer /// */
+
+/* /// Images \\\ */
+/* figure includes image and caption */
+.figure {
+  color:#777777;
+  float:right;
+  font-style:italic;
+  margin:8px 28px 8px 10px;
+  text-align:center;
+}
+.figure img {
+  border:1px solid silver;
+  padding:3px;
+  margin:0;
+}
+/* highslide default overrides */
+.highslide-caption {
+  color:#555555;
+  font-family:inherit;
+  font-style:italic;
+  text-align:center;
+}
+.highslide-caption a,
+.highslide-caption a:link,
+.highslide-caption a:visited,
+.highslide-caption a:active {
+  color:#ededed;
+  float: right;
+  font-size:1.8em;
+  padding-bottom: 5px;
+  text-decoration: none;
+}
+.highslide-caption a:hover,
+.highslide-caption a:focus {
+  color:#556677;
+}
+
+/* \\\ Images /// */
+
+#av .video.fullsize iframe,
+#av .video.fullsize embed {
+  border:1px solid silver;
+  padding:3px;
+  margin:0;
+}
+.content section.events nav.button hr,
+.content-tertiary hr,
+#av hr {
+  height: 0;
+}
+
+/* /// Galleries \\\ */
+.gallery,
+#gallery {
+ overflow:auto;	
+ padding:0 0 3em;
+ position:relative;
+ width:100%;
+}
+.gallery h2,
+#gallery h2 {
+ font-size:1em;
+ line-height:1.5em;
+ margin:0;
+ position:absolute;
+ bottom:0.75em;
+}
+.gallery ul,
+#gallery ul {
+ margin:0;	
+}
+.gallery li,
+#gallery li {
+ height:72px;
+ float:left;
+ position:relative;
+ width:72px;
+}
+.gallery li a,
+#gallery li a {
+ clip: rect(4px 68px 68px 4px);	
+ left:-6px;
+ position:absolute;	
+ overflow:hidden;
+ top:-6px;
+}
+.gallery li img,
+#gallery li img {
+ border:none;	
+}
+
+.gallery-info #gallerycontainer {
+  margin:10px 0 18px -2px;
+  margin:10px 0 18px 0;  
+  overflow:hidden;
+/* width:453px; */
+}
+.content-tertiary .gallery-info #gallerycontainer {
+ margin:0;	
+/* width:100%; */
+}
+.gallery-info #gallerycontainer hr {
+  height: 0;
+  margin: 0;
+}
+body#pageLRC .gallery-info #gallerycontainer, body#primaryLRC .gallery-info #gallerycontainer {
+  width:300px;
+}
+/*
+.gallery-info #gallerycontainer ul {
+  margin:0;
+  list-style-type:none;
+}
+.gallery-info #galleryimages li {
+  float:left;
+}
+*/
+.gallery-info #galleryimages img {
+ border:2px solid #ffffff;
+ display:block;
+}
+.gallery-info #galleryimages li .file_iframe_image {
+  min-height:75px;
+  min-width:75px;
+  overflow:hidden;
+  /*line-height:430px;*/
+  position:relative;
+  z-index:1;
+  display:block;
+  float:left;
+  width:75px;
+  height:75px;
+}
+.gallery-info #galleryimages li .file_iframe_image img {
+  /*position: absolute;*/
+  float:left;
+  display:block;
+}
+.gallery.group .gallery-info #gallerycontainer {
+  margin:0 0 18px;		
+}
+.gallery.group .gallery-info #gallerycontainer h3 {
+  margin:0 0 .333333em;		
+  font-size: 1.3em;
+}
+.content.content-tertiary .gallery.group .gallery-info #gallerycontainer h3 {
+  font-size: 1.2em;
+  line-height: 1.2;
+}
+#gallery .flickr-set-container {
+  margin: 10px 0 0 0;
+}
+.flickr-set-container {
+  float:left;
+  /*height:162px;*/
+  padding: 0 14px 0 0;
+  text-align:left;
+  width:112px;
+}
+.flickr-set-container h4 {
+ margin: 0 0 0.214285em;
+}
+.flickr-set {
+  background:transparent url(/images/slideshow91x95.gif) no-repeat scroll 0 0;
+  height:95px;
+  margin-bottom:5px;
+  margin-top:5px;
+  padding:7px 0 0 7px;
+  width:91px;
+}
+.flickr-set img {
+  border:1px solid #333333;
+}
+/* \\\ Galleries /// */
+
+
+/* /// Campus Directory \\\ */
+body.directory .content-primary {
+ width:692px;
+}
+body.directory .content-primary table {
+ background:#ffffff;
+ border:none;
+}
+body.directory .content-primary th, 
+body.directory .content-primary td, 
+body.directory .content-primary caption {
+ border:none;
+ padding: 0 5px 0 0;
+}
+body.directory .content-primary td,
+body.directory .content-primary tr {
+ vertical-align: top;
+}
+body.directory .content-primary tr.ultra-light {
+ background: #eeeeee;
+
+}
+body.directory .content-primary tr.light {
+ background: #dddddd;
+}
+/* \\\ Campus Directory /// */
+
+/* /// Dada Mail \\\ */
+body.dada .content-primary {
+ width: 692px;
+}
+body.dada .content-primary fieldset {
+ border: 1px solid #aaaaaa; 
+ width: 75%; 
+ margin: 0 0 20px 0;
+ padding: 10px;
+}
+body.dada .content-primary li {
+ list-style: disc; 
+ margin: 0 0 0 25px;
+}
+body.dada .content-primary img {
+ display: inline; 
+}
+/* \\\ Dada Mail /// */
+
+/* /// Emergency message \\\ */
+.emergency {
+ background: #FFB6C1;
+ width: 100%;
+ margin: -4px 0 5px 0;
+ border-width: 1px;
+ border-color: #aa1111;
+ border-style: dashed;
+}
+.emergency p {
+ color:#000000;	
+ font-size:1em;
+ font-weight:bold;
+ padding: 5px 5px 5px 10px;
+}
+/* \\\ Emergency message /// */
+
+/* /// Feature/feature \\\ */
+.content-tertiary .featuresModule li.feature {
+ width: 222px;
+ height: 148px;
+ border-right: 7px solid #95B3CD;
+ margin: -36px 0 8px 0;
+ margin: 54px 0 8px 0;
+ margin: 8px 0 8px 0;
+}
+.content-tertiary .featuresModule li.feature img {
+ width:100%;
+ height: auto;
+}
+.content-tertiary .featuresModule .feature .featureInfo h3.featureTitle {
+ font-size: 1.0em;
+ font-weight: bold;
+ color:#eeeeee;
+ line-height:1;
+}
+.content-tertiary .featuresModule .feature .featureInfo .featureText {
+ font-size: 0.94em;
+ color:#cccccc;
+ line-height:0.8;
+}
+:root * > .content-tertiary .featuresModule .feature .featureInfo, * html .featuresModule .feature .featureInfo {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    background-image: none;
+}
+.content-tertiary .featuresModule .feature .featureTitle a.dest, .featuresModule .feature .featureTitle a.anchor, .featuresModule .feature .featureTitle span.noLink, .featuresModule .feature .featureText a.dest, .featuresModule .feature .featureText a.anchor, .featuresModule .feature .featureText span.noLink {
+    display: block;
+    padding: 3px 3px 0 !important;
+}
+.content-tertiary .featuresModule .feature .featureInfo .featureNav {
+ line-height:0.5;
+ padding: 0.15em 0.15em 0.35em 0;
+}
+.content-tertiary .featuresModule .feature .featureInfo .featureNav a {
+ font-size: 0.90em;
+ color:#aaaaaa;
+ letter-spacing: -1px;
+}
+.content-tertiary .featuresModule .feature .featureInfo .featureNav .navBlock {
+ display: none;
+}
+
+/* \\\ Feature/feature /// */
+
+/* /// Cluetip athlete tooltip \\\ */
+p.athlete_position_event,
+p.athlete_class_year, 
+p.athlete_hometown,
+p.athlete_high_school {
+ width: 265px;
+}
+p.athlete_class_year {
+ margin-bottom: 16px;
+}
+img.athlete_image {
+ float:left;
+ padding: 0 7px 0 0;
+}
+
+img.video_streaming,
+img.audio_streaming {
+ float:right;
+ width: 14px;
+ height: 14px;
+ display: inline;
+ padding: 0 1px 0 1px;
+}
+.eventDetails img.video_streaming,
+.eventDetails img.audio_streaming {
+ width: 18px;
+ height: 18px;
+}
+
+/* \\\ Cluetip athlete tooltip /// */
+
+/* darker sports site test */
+/*
+body.sports #nav-section, 
+body.sports .container {
+ background: #111111;
+}
+body.sports #nav-section li,
+body.sports #nav-section li a, 
+body.sports #nav-section .navListItem.open.current strong {
+ color: #ffffff;
+}
+body.sports .content h1,
+body.sports .content h2,
+body.sports .content h3,
+body.sports .content h4,
+body.sports .content h5,
+body.sports .content h6 {
+ color: #ffffff;
+}
+body.sports .content p {
+ color: #ffffff;
+}
+body.sports .content a,
+body.sports .content a:link,
+body.sports .content a:visited,
+body.sports .content a:hover,
+body.sports .content a:active,
+body.sports .content a:focus {
+ color:#bbccdd;
+ text-decoration:none;
+}
+body.sports .spotlight article h1.name,
+body.sports .spotlight article h2,
+body.sports .spotlight article .profile,
+body.sports .events .vevent .summary,
+body.sports .summary .location {
+ color: #ffffff;
+}
+body.sports header.blue-stripe > h1 > span, 
+body.sports header.red-stripe > h1 > span {
+ background: #111111;
+ color: #ffffff;
+}
+body.sports .style-home-01 .container {
+    background-position: 0 297px;
+    border-bottom: 1.5em solid #111111;
+}
+*/
+/* minimal darker sports site test */
+body.sports #nav-section, 
+body.sports .content-secondary {
+ background: #111111;
+ background: #445566;
+}
+body.sports #nav-section li,
+body.sports #nav-section li a,
+body.sports #nav-section .navListItem.open.current strong {
+ color: #ffffff;
+}
+body.sports .content-secondary header.blue-stripe > h1 > span {
+ background: #111111;
+ background: #445566;
+ color: #ffffff;
+}
+body.sports .events .vevent .summary a,
+body.sports .summary .location {
+ color: #ffffff;
+}

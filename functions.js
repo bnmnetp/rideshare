@@ -47,19 +47,21 @@ function initialize(mess)
             size:new google.maps.Size(22,20)});
 
         var greenIcon ={
-            icon: greenIconMarker
+            icon: greenIconMarker,
+            shadow: shadow
             };
         icons.green= greenIcon;
 
 	gmarkerOptions = { icon:greenIcon };
 
         var redIconMarker = new google.maps.MarkerImage('static/carRed.png',
+            new google.maps.Size(30,40),
             null,
-            null,
-            null);
+            new google.maps.Point(20,20));
 
         var redIcon = {
-            icon: redIconMarker
+            icon: redIconMarker,
+            shadow: shadow
             };
         icons.red = redIcon;
 
@@ -75,7 +77,8 @@ function initialize(mess)
 
 
         var myIcon ={
-            icon: myIconMarker
+            icon: myIconMarker,
+            shadow: shadow
             };
         icons.my = myIcon;
 
@@ -88,7 +91,8 @@ function initialize(mess)
             new google.maps.Size(29,16));
 
         var blueIcon ={
-            icon: blueIconMarker
+            icon: blueIconMarker,
+            shadow: blueshadow
             };
 
         icons.blue = blueIcon;
@@ -99,7 +103,8 @@ function initialize(mess)
 			new google.maps.Point(20,20));
 			
 	var conIcon = {
-			icon:conMarker
+			icon:conMarker,
+			shadow:shadow
 			};
 	icons.con =conIcon;
 

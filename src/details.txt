@@ -1,0 +1,13 @@
+All Handlers:
+-Parameters?
+-user objects
+--go through new ride handlers and give them correct information for the user choice
+----mostly id, presently the passenger name is set to the FBID
+----method of contact needs to be consistent for the user choice as well(Should be partially okay)
+
+-It would be great it we could get names from the non Facebook users. Otherwise we would probably end up having to use the email in place of the name. Most of the actual functionality revolves around using the keys that the google datastore assigns. 
+
+We would have to implement some sort of user start screen that allowed them to choose which log in they wanted to use. 
+--not sure what original authorization process was. 
+
+In theory a person could end up signing in with both types of login, but Im not sure if that would actually pop up as an issue. 
