@@ -5,6 +5,11 @@
     <link rel="stylesheet" href="static/style.css" type="text/css" media="screen" />
 </head>
 
+<<<<<<< HEAD
+html {
+}
+</style>
+=======
 <body>
     <div id="wrapper">
         <div id="header">
@@ -12,6 +17,7 @@
                 <h1><a href="/main">{{college.name}} Rideshare   </a></h1>
             </div>
         </div>
+>>>>>>> DecorahRideshare
 
         <div id="menu">
             <ul>

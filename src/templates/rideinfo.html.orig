@@ -39,8 +39,6 @@ var ride = new Ride({{ ride.max_passengers }},
         zoom: 6
         };
        map.setOptions(myOptions);
-       // map.setCenter(new google.maps.LatLng(lat,lng), 7);
-        //map.addControl(new GLargeMapControl());
         geocoder = new google.maps.Geocoder();
 
         // Create Icon for Luther
@@ -68,7 +66,10 @@ var ride = new Ride({{ ride.max_passengers }},
         var drivershadow = new google.maps.MarkerImage("http://labs.google.com/ridefinder/images/mm_20_shadow.png",{size: new google.maps.Size(22,20)});
 
         var driverIcon = {icon:driverIconMarker, shadow: drivershadow};
+<<<<<<< HEAD
 
+=======
+>>>>>>> DecorahRideshare
 
       {% ifequal ride.doOrPu 0 %} 
         var driverLat = ride.destination.latitude;
@@ -94,8 +95,11 @@ var ride = new Ride({{ ride.max_passengers }},
        var passIconMarker = new google.maps.MarkerImage('http://labs.google.com/ridefinder/images/mm_20_blue.png', new google.maps.Size(12,20), null, new google.maps.Point(6,20));
        var passShadow= new google.maps.MarkerImage('http://labs.google.com/ridefinder/images/mm_20_shadow.png',{size: new google.maps.Size(22,20)});
        var passIcon = {icon:passIconMarker,shadow:passShadow};
+<<<<<<< HEAD
         
 
+=======
+>>>>>>> DecorahRideshare
       {% for p in ride.passengerobjects %}
         var passMarker = new google.maps.Marker(new google.maps.LatLng({{ p.lat }}, {{ p.lng }}), { icon:passIcon });
         google.maps.event.addListener(passMarker, 'click', function()

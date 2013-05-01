@@ -32,12 +32,16 @@
                 <div id="page-bgbtm">    
                     <div id="content">
 
-                        
 
-                            <h1>Error</h1>
+                                <h2>Add a New Circle </h2>
 
-                            <p>{{ error_message }}</p>
 
+
+                                <form name="addCircle" action="/addCircle" method="post" >
+                                Name:<input type="text" name="name" ></br>
+                                Description:<input type="textarea" name="description"></br>
+                                <input type="submit" value="Submit">
+                                </form>
 
 
 

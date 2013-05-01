@@ -9,19 +9,3 @@ indexes:
 # manually, move them above the marker line.  The index.yaml file is
 # automatically uploaded to the admin console when you next deploy
 # your application using appcfg.py.
-
-- kind: Event
-  properties:
-  - name: circle
-  - name: ToD
-
-- kind: Ride
-  properties:
-  - name: circle
-  - name: ToD
-
-- kind: Ride
-  properties:
-  - name: circle
-  - name: event
-  - name: ToD

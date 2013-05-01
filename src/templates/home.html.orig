@@ -2,6 +2,35 @@
 <html>
 <head>
 
+<<<<<<< HEAD
+{% block bodycontent %}
+<style type="text/css">
+table.passenger {padding-left:50px;}
+h4, h3, h2 {margin-bottom: 10px;}
+h1{padding-top: 10px;}
+</style>
+
+<h1>Welcome to your personal homepage, {{ user }}!</h1><br />
+{% if driverides %}
+<h2>You are a driver for the following rides:</h2>
+{% for ride in driverides %}
+<h3>Driver</h3> 
+<table border='1'>
+<tr><th>From</th>
+    <th>To</th>
+    <th>Driver</th>
+    <th>Departing</th>
+    <th>Contact</th>
+    <th>Modify</th>
+</tr>
+<tr><td>{{ ride.start_point_title }}</td>
+    <td>{{ ride.destination_title }}</td>
+    <td>{{ user }}</td>
+    <td>{{ ride.part_of_day }}<br />{{ ride.jsmonth }}-{{ ride.jsday }}-{{ ride.jsyear }}</td>
+    <td>{{ ride.contact }}</td>
+    <td><input type="button" value="Edit" onclick="location.href='/editride?key={{ ride.key }}'" /></td>
+</tr></table>
+=======
     <link rel="stylesheet" href="static/style.css" type="text/css" media="screen" />
 </head>
 <body>
@@ -25,11 +54,12 @@
                 </li>
             </ul>
         </div>
+>>>>>>> DecorahRideshare
 
         <div id="page">
             <div id="page-bgtop">
                 <div id="page-bgbtm">    
-                    <div id="content" style="width:800px">
+                    <div id="content">
 
                         <h1>Welcome to your personal homepage, {{ user }}!</h1><br /><br />
 

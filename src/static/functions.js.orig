@@ -35,6 +35,8 @@ function initialize(mess)
 		var tod = rides[r].ToD;
 		rides[r].ToD = new Date(tod.substring(0,4),tod.substring(5,7)-1,tod.substring(8,10));
 	    }
+    }
+    console.log(rides.length);
 
     var request2 = new XMLHttpRequest();
     request2.open("GET","/getevents?circle="+getParameterByName("circle")+"&after="+today.getFullYear()+"-"+(today.getMonth()+1)+"-"+today.getDate(),false);
@@ -65,7 +67,11 @@ function initialize(mess)
             };
         icons.event= eventIcon;
 
+<<<<<<< HEAD
 	var greenIconMarker = new google.maps.MarkerImage('static/carGreen.png',
+=======
+	var greenIconMarker = new google.maps.MarkerImage("http://www.google.com/mapfiles/dd-start.png",
+>>>>>>> DecorahRideshare
             new google.maps.Size(30,40),
             null,
             new google.maps.Point(20,20));
@@ -80,7 +86,12 @@ function initialize(mess)
 
 	gmarkerOptions = { icon:greenIcon };
 
+<<<<<<< HEAD
         var redIconMarker = new google.maps.MarkerImage('static/carRed.png',
+=======
+        var redIconMarker = new google.maps.MarkerImage("http://www.google.com/mapfiles/dd-end.png",
+            new google.maps.Size(30,40),
+>>>>>>> DecorahRideshare
             null,
             null,
             null);
@@ -106,7 +117,11 @@ function initialize(mess)
             };
         icons.my = myIcon;
 
+<<<<<<< HEAD
         var blueIconMarker = new google.maps.MarkerImage('static/person.png',
+=======
+        var blueIconMarker = new google.maps.MarkerImage("http://www.google.com/intl/en_us/mapfiles/ms/micons/blue-dot.png",
+>>>>>>> DecorahRideshare
             new google.maps.Size(30,40),
             null,
             new google.maps.Point(20,20));
@@ -144,7 +159,7 @@ function initialize(mess)
 	    zoom: 6
         };
         map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
-
+		mymarker.setMap(map);
         directionsService = new google.maps.DirectionsService();
         directionsDisplay = new google.maps.DirectionsRenderer({preserveViewport:false});
         
@@ -165,19 +180,23 @@ function initialize(mess)
         {
             addRideToMap(rides[r], r);
         }
+<<<<<<< HEAD
     }
     getRidesForConnection();
     clickListener = google.maps.event.addListener(map, "click", getAddress);
 
+=======
         var e;
         for (e in events)
         {
             addEventToMap(events[e],e);
             
         }
+        clickListener = google.maps.event.addListener(map, "click", getAddress);
         
 
     
+>>>>>>> DecorahRideshare
     makeRideTable();
     
     if (mess) {
@@ -240,6 +259,10 @@ function getAddress(event)
     },0);
 }
 
+<<<<<<< HEAD
+
+=======
+>>>>>>> DecorahRideshare
 function showAddressClick(results,status)
 {
     if (!status || status != google.maps.GeocoderStatus.OK)
@@ -263,8 +286,6 @@ function showAddressClick1(results,status)
     } 
     else 
     {
-        google.maps.event.removeListener(clickListener);
-        console.log("buttz")
         var point = results[0].geometry.location;
         windowOpen(point,getEventOrRideHTML(point.lat(),point.lng(), results[0].formatted_address));
     }
@@ -274,7 +295,7 @@ function showAddressClick1(results,status)
 
 function getEventOrRideHTML(lat, lng, address){
 
-    
+    google.maps.event.removeListener(clickListener);
     var html = "<b> Are you creating a new event or an individual ride?</b></br>";
 
     html += "<input onclick=\"startRideCreationPopup("+lat+", "+lng+", '" + address +"');\" type=\"radio\" "+"/>Ride <br />";
@@ -382,7 +403,7 @@ function getNewRidePopupHTML(lat, lng, address3)
 
     full += "<form><p style=\"text-align: left;\">";
 
-    full += "<input onclick=\"newRidePopupHTMLPart2("+lat+", "+lng+", '" 
+    full += "<input onclick=\"newRidePopupHTMLPart2("+lat+", "+lng+", '"
               + address3 +"', false);\" type=\"radio\" name=\"rideType\" value=\"0\" id=\"rideType\""+"/>From "+ mycollege.name+" to <br />";
 
     full += address3 + "<br />";
@@ -917,11 +938,11 @@ function addEventToMap(event, eventnum)
     amarker.id = event.id;
     amarker.setOptions(icons.event);
     amarker.setMap(map);
-    //event.marker = amarker; 
+    event.marker = amarker;
     overlays.push(amarker);
     google.maps.event.addListener(amarker,"click",function(){
-        var s = "ss";
-        if (amarker.getPosition()){ 
+
+        if (amarker.getPosition()){
             var request = new XMLHttpRequest();
             var today = new Date();
             request.open("GET","/getrides?circle="+getParameterByName("circle")+"&event="+event.id+ "&after="+today.getFullYear()+"-"+(today.getMonth()+1)+"-"+today.getDate(),false);
@@ -958,11 +979,13 @@ function addEventToMap(event, eventnum)
                     html +=    '<td>'+ride.ToD+'</td>';
                     html +=    '<td>'+ride.contact+'</td>'
                     if (ride.drivername == null){
+
                         var funcall = 'addDriverPopupforEvent('+JSON.stringify(ride)+','+JSON.stringify(event)+')';
 
                         html += "<td><input onclick='"+ funcall + "' type='button' value='Join' \>"
                     }
                     else{
+
                         var funcall = 'joinEventRideByNumber('+JSON.stringify(ride)+','+JSON.stringify(event)+')';
 
                         html += "<td><input onclick='"+funcall+"' type='button' value='Join' \>"
@@ -988,14 +1011,10 @@ function addEventToMap(event, eventnum)
 
         }
 
-
     })
 
 
 }
-
-
-
 // Adds a popup to the GoogleMap that fits 'ride'
 function addRideToMap(ride, rideNum)
 {
@@ -1527,10 +1546,15 @@ function showAddress(address1)
 		}
 		else 
 		{
+<<<<<<< HEAD
+                    var point = results[0].geometry.location;
+                    windowOpen(new google.maps.LatLng(point.lat(),point.lng()),getNewRidePopupHTML(point.lat(), point.lng(), address1));
+=======
 		    
             var point = results[0].geometry.location;
             windowOpen(new google.maps.LatLng(point.lat(),point.lng()),getNewRidePopupHTML(point.lat(), point.lng(), address1));
 		    //map.openInfoWindowHtml(point, getNewRidePopupHTML(point.lat(), point.lng(), address1));        
+>>>>>>> DecorahRideshare
 		}
             }
         );
@@ -1662,7 +1686,7 @@ function changeDates()
             //map.addOverlay(rides[y].marker);
         }
     }
-    /*var z
+    var z
     for(z in events)
     {
         var e;
@@ -1679,7 +1703,7 @@ function changeDates()
             overlays.push(events[z].marker);                                           
             //map.addOverlay(rides[y].marker);
         }
-    }*/
+    }
 }
 
 // Adds the current logged-in person to a Ride
@@ -1750,7 +1774,6 @@ function addOption(selectbox, value, text)
 
     selectbox.options.add(optn);
 }
-
 function windowOpen(position1,content1)
 {
     var window = new google.maps.InfoWindow({position:position1, content:content1});
@@ -1775,13 +1798,27 @@ function windowOpen(position1,content1)
 
 }
 
+function checkSame(marker)
+{
+  for (r in overlays)
+            {
+		
+	       mPos = marker.getPosition();
+	       rPos = r.getPosition();
+	       if (mPos == rPos)
+		   {
+		      mc.addMarker(marker);
+	              mc.addMarker(r);
+		   }
+	     }
+}
+
 
 
 function putListener()
 {
    clickListener = google.maps.event.addListener(map, "click", getAddress);
 }
-
 
 rad = function(x) {return x*Math.PI/180;}
 
@@ -1797,13 +1834,12 @@ distHaversine = function(p1, p2) {
 
     return d.toFixed(3);
 }
-
 function getRidesForConnection(){
 	var drivernum = document.getElementById("idnum").value;
-	var driverRides = new Array(); //rides with driver
-	var ndRides= new Array(); //no Drive rides
-	var inList = new Array();  //InList keeps track of any rides we have allready found to be a possible connection. Otherwise, we end up using that ride a bunch as we iterate though the route. 
-           var connectRides = new Array(); //rides 
+	var driverRides = new Array();
+	var ndRides= new Array();
+	var inList = new Array();
+    var connectRides = new Array();
     
 
 
@@ -1811,87 +1847,87 @@ function getRidesForConnection(){
 	    if (rides[i].driver == drivernum){
 	        driverRides.push(rides[i]);
 	    }
-	    if (rides[i].driver == "needs driver"){ //get rides with no driver
+	    if (rides[i].driver == "needs driver"){
+ //get rides with no driver
 	       ndRides.push(rides[i]);
 	    }
 	}
 
+function getParameterByName(name)
+{
+  name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+  var regexS = "[\\?&]" + name + "=([^&#]*)";
+  var regex = new RegExp(regexS);
+  var results = regex.exec(window.location.search);
+  if(results == null)
+    return "";
+  else
+    return decodeURIComponent(results[1].replace(/\+/g, " "));
+}
 
-            for (var driveIndex=0;driveIndex<driverRides.length;driveIndex++) { //k = driveIndex
-                var dRide = driverRides[driveIndex];
-                var request = {  
-                    origin:new google.maps.LatLng(mycollege.lat, mycollege.lng),
-                    destination:new google.maps.LatLng(dRide.destination_lat,dRide.destination_long),
-                    travelMode: google.maps.TravelMode.DRIVING
-                };
+    for (var k=0;k<driverRides.length;k++){
+        var dRide = driverRides[k];
+        var request = {
+            origin:new google.maps.LatLng(43.313059,-91.799501),
+            destination:new google.maps.LatLng(dRide.destination_lat,dRide.destination_long),
+            travelMode: google.maps.TravelMode.DRIVING
+        };
+        directionsService.route(request, function(result, status) {
+            if (status == google.maps.DirectionsStatus.OK) {
+                var pointsArray = result.routes[0].overview_path;
+                for (var i=0;i<pointsArray.length; i++){
+                    for (var j=0;j<ndRides.length;j++){
+                        if (drivernum != ndRides[j].driver && inList.indexOf(ndRides[j].key)==-1 && ndRides[j].num_passengers<= (dRide.max_passengers-dRide.num_passengers) &&(dRide.destination_title ==ndRides[j].destination_title || dRide.start_point_title ==ndRides[j].start_point_title)){
+                            var distance = distHaversine(pointsArray[i],new google.maps.LatLng(ndRides[j].destination_lat,ndRides[j].destination_long));
+                            if (distance <20){
+								
+								
+								infowindowtext = '<p>There is a ride request with a destination very near to your projected path. Would you be willing to drop these passengers off along the way?</p>';
+								infowindowtext += '<form name="connectForm" action="/movepass" method="post">';
+								infowindowtext += '<table border="-1" id="connectTable">';
+								infowindowtext += '<tr>';
+								infowindowtext +=    '<th>Passenger Number</th>';
+								infowindowtext +=    '<th>Your Destination</th>';
+								infowindowtext +=    '<th>Their Destination</th>';
+								infowindowtext +=    '<th>Date</th>';
+								infowindowtext +=    '<th>Accept Passengers</th>';
+								infowindowtext += '<tr>';
+								infowindowtext +=    '<th>'+ndRides[j].num_passengers+'</th>';
+								infowindowtext +=    '<th>'+dRide.destination_title+'</th>';
+								infowindowtext +=    '<th>'+ndRides[j].destination_title+'</th>';
+								infowindowtext +=    '<th>'+ndRides[j].ToD+'</th>';
+								infowindowtext +=    '<th><input type="radio" name="keys" value='+ndRides[j].key+"|"+dRide.key+' /></th>';
+								infowindowtext += '</table>';
+								infowindowtext +='<input type="submit" value="Submit">';
+								infowindowtext +='</form>';
 
-                directionsService.route(request, function(result, status) {
-                    if (status == google.maps.DirectionsStatus.OK) {
-                        var pointsArray = result.routes[0].overview_path;  //get an array of points on the path form our origin to destination
-                        for (var pointsIndex=0;pointsIndex<pointsArray.length; pointsIndex++){  //iterate through the projected path to see if any applicable rides are close to our user's offered rides.
-                            for (var noDIndex=0;noDIndex<ndRides.length;noDIndex++){  
 
-                                if (ndRides[noDIndex].event== null && ndRides[noDIndex].num_passengers>0 && drivernum != ndRides[noDIndex].driver && inList.indexOf(ndRides[noDIndex].key)==-1 && ndRides[noDIndex].num_passengers<= (dRide.max_passengers-dRide.num_passengers) &&(dRide.destination_title ==ndRides[noDIndex].destination_title || dRide.start_point_title ==ndRides[noDIndex].start_point_title)){
-                                    var distance = distHaversine(pointsArray[pointsIndex],new google.maps.LatLng(ndRides[noDIndex].destination_lat,ndRides[noDIndex].destination_long));
-                                    if (distance <20){ //distance is in miles, adjust for closer connections
-        								
-        								var infowindowtext = "";
-        								infowindowtext = '<p>There is a ride request with a destination very near to your projected path. Would you be willing to drop these passengers off along the way?</p>';
-        								infowindowtext += '<form name="connectForm" action="/movepass" method="post">';
-        								infowindowtext += '<table border="-1" id="connectTable">';
-        								infowindowtext += '<tr>';
-        								infowindowtext +=    '<th>Passenger Number</th>';
-        								infowindowtext +=    '<th>Your Destination</th>';
-        								infowindowtext +=    '<th>Their Destination</th>';
-        								infowindowtext +=    '<th>Date</th>';
-        								infowindowtext +=    '<th>Accept Passengers</th>';
-        								infowindowtext += '<tr>';
-        								infowindowtext +=    '<th>'+ndRides[noDIndex].num_passengers+'</th>';
-        								infowindowtext +=    '<th>'+dRide.destination_title+'</th>';
-        								infowindowtext +=    '<th>'+ndRides[noDIndex].destination_title+'</th>';
-        								infowindowtext +=    '<th>'+ndRides[noDIndex].ToD+'</th>';
-        								infowindowtext +=    '<th><input type="radio" name="keys" value='+ndRides[noDIndex].key+"|"+dRide.key+' /></th>';
-        								infowindowtext += '</table>';
-        								infowindowtext +='<input type="submit" value="Submit">';
-        								infowindowtext +='</form>';
-
-                                                                                        //places connection marker between passenger ride and driver ride.
-                                                                                        console.log(infowindowtext)
-        								var midLat = (ndRides[noDIndex].destination_lat + dRide.destination_lat)/2
-                                                                                        var midLong = (ndRides[noDIndex].destination_long + dRide.destination_long)/2
-        								var cmarker = new google.maps.Marker({position:new google.maps.LatLng(midLat, midLong)});
-                                                                                        console.log(cmarker)
-
-        						                      cmarker.setOptions(icons.con);
-        						                      cmarker.setMap(map);
-
-        						                      var connectListener = google.maps.event.addListener(cmarker, "click", (function(midLat, midLong, infowindowtext){  //This function inside function thing for the listener is due to scope, look up google maps event closure for more. 
-
-        									   // From function() to function(latlng)
-                                                                                                      return function()
-        									   {
-        									       if (cmarker.getPosition()) {
-
-        						                                   windowOpen(new google.maps.LatLng(midLat, midLong),infowindowtext);
-
-        									       }
-        									   };})(midLat, midLong,infowindowtext))
-        						                      mc.addMarker(cmarker);
-                                                                                        inList.push(ndRides[noDIndex].key);
-                                                                                        console.log(inList)
-                                    }
-                                }
-
+								var midLat = (ndRides[j].destination_lat + dRide.destination_lat)/2
+                                var midLong = (ndRides[j].destination_long + dRide.destination_long)/2
+								var cmarker = new google.maps.Marker({position:new google.maps.LatLng(midLat, midLong)});
+						        cmarker.setOptions(icons.con);
+						        cmarker.setMap(map);
+						        google.maps.event.addListener(cmarker, "click", function()
+									   // From function() to function(latlng)
+									   {
+									       if (cmarker.getPosition()) {
+						                                   windowOpen(cmarker.getPosition(),infowindowtext);
+									       }
+									   });
+						        mc.addMarker(cmarker);
+                                inList.push(ndRides[j].key);
                             }
-
                         }
 
                     }
 
-                });
+                }
+
             }
-            console.log(connectRides)
-        }
+
+        });
+    }
+}
 function selectAddress(DooPu,rideNum,openableBoole)
 {
 
@@ -1923,14 +1959,4 @@ google.maps.event.addListener(map, 'click', function(event)
 			   }
 		       });
 }
-function getParameterByName(name)
-{
-  name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
-  var regexS = "[\\?&]" + name + "=([^&#]*)";
-  var regex = new RegExp(regexS);
-  var results = regex.exec(window.location.search);
-  if(results == null)
-    return "";
-  else
-    return decodeURIComponent(results[1].replace(/\+/g, " "));
-}
+

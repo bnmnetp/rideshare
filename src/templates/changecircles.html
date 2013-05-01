@@ -34,9 +34,22 @@
 
                         
 
-                            <h1>Error</h1>
+                            <h2>Change your circles! </h2>
 
-                            <p>{{ error_message }}</p>
+
+
+                            <form name="circleForm" action="/updateCircles" method="post" >
+                            {% for circle in circles %}
+                            {% if circle.key.id|slugify in userCircles %}
+                            <input type="checkbox" name="circle" value="{{circle.key.id}}" checked>{{circle.name}}
+                            </br>
+                            {% else %}
+                            <input type="checkbox" name="circle" value="{{circle.key.id}}" >{{circle.name}}
+                            </br>
+                            {% endif %}
+                            {% endfor %}
+                            <input type="submit" value="Submit">
+                            </form>
 
 
 

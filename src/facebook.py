@@ -37,7 +37,8 @@ import cgi
 import hashlib
 import time
 import urllib,urllib2
-
+from google.appengine.dist import use_library
+use_library('django', '1.2')
 # Find a JSON parser
 try:
     import json

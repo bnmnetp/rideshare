@@ -1,31 +1,68 @@
-{% extends "_notIndex.html" %}
 
-{% block title %}{{ user }}'s Home Page{% endblock %}
+<html>
+<head>
 
-{% block bodycontent %}
-<style type="text/css">
-table.passenger {padding-left:50px;}
-h4, h3, h2 {margin-bottom: 10px;}
+    <link rel="stylesheet" href="static/style.css" type="text/css" media="screen" />
+</head>
 
-html {
-  background: #4C75AE;
-}
-</style>
+<body>
+    <div id="wrapper">
+        <div id="header">
+            <div id="logo">
+                <h1><a href="/main">{{college.name}} Rideshare   </a></h1>
+            </div>
+        </div>
 
-{% if ratingslist %}
-<h2>{{name}} has been rated by {{numrates}} passenger(s),and has an average rating of {{rating}}/5</h2>
+        <div id="menu">
+            <ul>
+                <li>
+                    <a href="/home">Your Rides</a>
+                </li>
+                <li>
+                    <a href="/static/help.html">Help</a>
+                </li>
+                <li>
+                    <a href="{{logout}}">Sign out</a>
+                </li>
+            </ul>
+        </div>
 
- 
-<p>See what other users had to say about their experience with {{name}}:</p>
-<table border='1'>
-<tr><th>Comments</tr></th>
-{% for comment in ratingslist %}
+        <div id="page">
+            <div id="page-bgtop">
+                <div id="page-bgbtm">    
+                    <div id="content">
 
-<tr><td>{{comment}}</td>
-</tr>
-{% endfor %}
-</table>
+                        
 
-{% else %}<p> This driver has not been rated yet.</p>
-{% endif %}
-{% endblock %}
+                            {% if ratingslist %}
+                            <h2>{{name}} has been rated by {{numrates}} passenger(s),and has an average rating of {{rating}}/5</h2>
+
+                             
+                            <p>See what other users had to say about their experience with {{name}}:</p>
+                            <table border='1'>
+                            <tr><th>Comments</tr></th>
+                            {% for comment in ratingslist %}
+
+                            <tr><td>{{comment}}</td>
+                            </tr>
+                            {% endfor %}
+                            </table>
+
+                            {% else %}<p> This driver has not been rated yet.</p>
+                            {% endif %}
+
+
+
+
+                                    </div> <!--content-->
+                                </div>
+                            </div>
+                        </div>
+                        <div style="clear: both;"></div>
+
+                    <div id="footer">
+                        <p>Developed by Luther College</p>
+                    </div>
+                </body>
+                </html>
+
