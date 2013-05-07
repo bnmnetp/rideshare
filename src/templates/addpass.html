@@ -1,9 +1,55 @@
-{% extends "_notIndex.html" %}
 
-{% block title %}Added a Passenger{% endblock %}
+<html>
+<head>
 
-{% block bodycontent %}
-<h1>{{ user_name }}, you have been added to {{ driver }}'s ride.</h1>
+    <link rel="stylesheet" href="static/style.css" type="text/css" media="screen" />
+</head>
 
-<p>This ride {{ capacity_message }}</p>
-{% endblock %}
+<body>
+    <div id="wrapper">
+        <div id="header">
+            <div id="logo">
+                <h1><a href="/main">{{college.name}} Rideshare   </a></h1>
+            </div>
+        </div>
+
+        <div id="menu">
+            <ul>
+                <li>
+                    <a href="/home">Your Rides</a>
+                </li>
+                <li>
+                    <a href="/static/help.html">Help</a>
+                </li>
+                <li>
+                    <a href="{{logout}}">Sign out</a>
+                </li>
+            </ul>
+        </div>
+
+        <div id="page">
+            <div id="page-bgtop">
+                <div id="page-bgbtm">    
+                    <div id="content">
+
+                        
+
+                                <h1>{{ user_name }}, you have been added to {{ driver }}'s ride.</h1>
+
+                                <p>This ride {{ capacity_message }}</p>
+
+
+
+
+                                    </div> <!--content-->
+                                </div>
+                            </div>
+                        </div>
+                        <div style="clear: both;"></div>
+
+                    <div id="footer">
+                        <p>Developed by Luther College</p>
+                    </div>
+                </body>
+                </html>
+

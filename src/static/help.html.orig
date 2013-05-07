@@ -5,7 +5,59 @@
 </head>
 
 <body>
+<<<<<<< HEAD
+<div id="titleblock">
+<h1>Rideshare Help</h1>
+</div>
 
+<div id="help">
+<h2>Creating a Ride</h2>
+<p>To create a trip just click on the map somewhere.  A popup box will
+appear and ask you if you want to make the trip to or from your college.  It
+may be useful to use the zoom controls on the map to zoom in to your
+destination or starting point.  This will make it easier to be precise
+about where you are going to or coming from.  You may also create a
+ride to a city by simply typing in an address, or a city, state in the
+text box above the map.  This will place a pushpin on the map in the
+center of the city or at the exact address you provide.
+</p>
+
+<p>Once you have selected a starting point or destination there is
+some additional information to provide about the trip.  You need to
+provide a contact number.  Preferably a cell phone number that
+potential riders can contact you via text or voice, to get any
+detailed starting or ending time information.  You also should set how
+many riders you can take.  Finally make sure you set the date and
+approximate time of departure.  We haven't made this any more specific
+that early/late morning or early/late afternoon knowing that often
+departure times are set exactly until closer to the time of the
+trip.</p>
+
+<h2>Joining an Existing Ride</h2>
+<p>To join an exisiting ride simply click on a pushpin on the map.  A
+  popup will appear that gives you information about the date, time,
+  and driver for the trip.  Note that red pushpins indicate trips that
+  start at Luther and go to the pin, whereas green pushpins indicate a
+  trip that starts at the pushpin and goes back to Luther.
+</p>
+
+
+<h2>Finding out about my Trips</h2>
+<p>To see the complete list of trips that you have created either as
+  a driver or as a rider click on the 'Your Rides' tab on the
+homepage.  You can also delete rides and get the phone numbers for
+your riders or driver on this page.</p> 
+
+<h2>Finding out about my driver</h2>
+<p>We are working on implementing a profile page so that you can check
+out your driver and/or riders.  This is not done yet, but we'll make
+it available as soon as we can.</p>
+
+<p><a href="/">Back to main page</a></p>
+</div>
+=======
+
+>>>>>>> DecorahRideshare
 </body>
 </html>
 
@@ -28,15 +80,7 @@
 
         <div id="menu">
             <ul>
-                <li>
-                    <a href="/home">Your Rides</a>
-                </li>
-                <li class="current_page_item">
-                    <a href="/static/help.html">Help</a>
-                </li>
-                <li>
-                    <a href="{{logout}}">Sign out</a>
-                </li>
+               
             </ul>
         </div>
 
@@ -72,9 +116,6 @@
 								that early/late morning or early/late afternoon knowing that often
 								departure times are set exactly until closer to the time of the
 								trip.</p>
-
-								<p>You may notice some yellow markers on your map. These icons indicate
-								that there may be some passengers who need a ride to a location that is near the route to your destination. If you are willing to take these passengers, simply click on the icon and follow the instructions!</p>
 
 								<h2>Joining an Existing Ride</h2>
 								<p>To join an exisiting ride simply click on a pushpin on the map.  A

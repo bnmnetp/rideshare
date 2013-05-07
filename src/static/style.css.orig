@@ -1,0 +1,791 @@
+<<<<<<< HEAD
+
+
+html, body {
+  min-height:100%;
+  background:#F7FAFC url(/images/luther2010/backgrounds/html-body-gradient-background.png) repeat-x; 
+  background-image:-moz-linear-gradient(0 1000px 90deg, #F7FAFC, #CCDEEB); /* FF3.6 */
+  background-image:-webkit-gradient(linear, 0 0, 0 1000, from(#CCDEEB), to(#F7FAFC)); /* Saf4+, Chrome */	
+  font-family:Arial, Helvetica, sans-serif;
+}
+body {
+ font-size:0.75em; /* 12px */
+ line-height:1.5em; /* 12px * 1.5em = 18px */	
+ margin:auto;
+ padding:0;
+ position:relative;
+ width:964px;
+}
+/*body,
+html {
+    margin: 0;
+    padding: 0;
+    background: #e5cb8e;
+    color: #000;
+}
+
+body { 
+/*    font:small sans-serif;  
+    min-width: 800px;
+    }*/
+
+h1 { 
+    font-weight:normal; 
+    margin-bottom:.4em; 
+    
+}
+
+#titleblock {
+    margin: 0 auto;
+    width: 800px;
+    height: 110px;
+    background: #003175; 
+    color: #fff;
+    text-align: center;
+}
+
+#titleblock h1{
+	padding:5px;
+}
+
+#titleblock h3{
+	text-align:left;
+	padding:5px;
+	height:5px;
+}
+
+
+#mainfooter {
+    margin: 0 auto;
+    width: 800px;
+    height: 35px;
+    background: #003175;
+    color: #fff;
+    text-align: center;
+}
+
+titleblock#a {
+    color: #fff;
+}
+
+#map_canvas {
+    width: 800px;
+    height: 600px;
+    margin: 0 auto;
+}
+
+#instructions {
+    width: 800px;
+    height:140px;
+    margin: 0 auto;
+    padding-top: 10px;
+    padding-bottom: 15px;
+    color: #EEE;
+    background: #4C75AE;
+}
+
+#help {
+    width: 800px;
+    margin: 0 auto;
+    padding-top: 10px;
+    padding-bottom: 15px;
+    color: #EEE;
+    background: #4C75AE;
+}
+
+#ridelist {
+    width: 800px;
+    margin: 0 auto;
+    padding-bottom: 20px;
+
+}
+
+.clearfix:after {
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+}
+
+#instructions table {
+    margin: 0 auto;
+}
+
+td#filterside {
+    margin-left: 12px;
+    margin-right: 12px;
+    border-left-style: solid;
+    border-width: medium;
+}
+
+table#begend {
+    margin-top: 7px;
+    border-top-style: solid;
+    border-width: 1px;
+}
+
+
+#rtablehead {
+    margin: 0 auto;
+    max-width: 800px;
+    background: #4C75AE;
+}
+
+#rtablehead h2 {
+    text-align: center;
+    color: #eee;
+}
+
+#rtablehead p {
+    text-align: center;
+    color: #eee;
+}
+
+h1 span { 
+    font-size:60%; 
+    color:#666; 
+    font-weight:normal; }
+
+
+table { 
+    border:none; 
+    border-collapse: collapse; 
+    width:100%; 
+    }
+    
+td, th { vertical-align:top; padding:2px 3px; }
+th { text-align:left; color:#666; padding-right:.5em; }
+
+#main h2  {
+    margin-left: 3px;
+}
+
+#main p  {
+    margin-left: 10px;
+    font-size: medium;
+}
+
+#main table  {
+    margin-left: 10px;
+
+}
+
+#wrap   {
+    background: #aaf;
+    margin:0 auto;
+    width: 820px;
+}
+
+#titlebar {
+    background:#cc9;
+    height: 120px;
+}
+
+#titlebar table {
+    border:none; 
+    border-collapse: collapse; 
+    margin:0;
+}
+
+tr.odd {
+    background-color: #DDF;
+}
+
+tr.sbodd {
+    background-color: #DFD;
+}
+
+/*#titlebar h1 {
+    font: 150% "Lucida Grande", "Trebuchet MS", Verdana, sans-serif;
+}
+*/
+/*#navbar {
+    margin: 0 auto;
+    background: #003175;
+    height: 20px;
+}
+
+#navbar ul li {
+    list-style: none;
+    margin: 0;
+    display: inline;
+}
+
+#navbar ul li a {
+    padding: 0px 0.5em;
+    margin-left: 3px;
+    border: 1px solid #669;
+    border-bottom: none;
+    text-decoration: none;
+}
+
+#navbar a:link {
+    color: #fff;
+}
+
+#navbar a:visited {
+    color: #fff;
+}
+
+#navbar a:hover {
+    background: #4C75AE;
+}*/
+#navbar {
+ background:#004789 url(/images/luther2010/backgrounds/navbar-gradient-background.png) repeat-x;	
+ background-image:-moz-linear-gradient(0 45% 90deg, #004789, #2561A8); /* FF3.6 */
+ background-image:-webkit-gradient(linear,0 0,0 45%, from(#2561A8), to(#004789)); /* Saf4+, Chrome */
+ font-size:1.166666em; /* 14px */ 
+ line-height:1.285714em; /* 18px */
+ margin:0 -7px 0.642857em;
+ margin:0 0 0.642857em;
+ overflow:auto;
+ padding:0 15px;
+}
+#navbar ol,
+#navbar ul {
+ list-style:none;
+ margin:0;
+ padding:0;
+}
+#navbar li {
+ float:left;
+ font-weight:bold; 
+ padding:0.928571em 0 1em;
+ text-align:center;
+ margin-right:10px;
+}
+#navbar a,
+#navbar a:link,
+#navbar a:visited,
+#navbar a:hover,
+#navbar a:active,
+#navbar a:focus {
+ color:#fff;
+ padding:0 0.25em;
+ text-decoration:none;
+}
+
+#leftbar {
+    background: #B9D193;
+    float: left;
+    width:320px;
+}
+
+#main {
+    background: #aaf;
+    float: right;
+    width: 500px;
+}
+
+#fullwidth {
+    background: #cc9;
+
+}
+
+
+#main ul {
+    list-style: none;
+}
+
+#footer {
+    background: #cc9;
+    clear: both;
+    height: 60px;
+}
+
+input#id_dest {
+    width: 19em;
+}
+
+input#id_start_state {
+    width: 2em;
+}
+
+input#id_dest_state {
+    width: 2em;
+}
+
+#cal1Container { 
+    margin-right:10px;
+    margin-bottom:10px;
+    background: #fff;
+}
+
+.yui-skin-sam.yui-calendar.calnavleft {
+    left: -1px;
+    margin-left: 0em;
+    background-position-x: 5px;
+}
+
+table.fieldWrapper {
+    margin-left: 1em;
+    margin-bottom: 1em;
+}
+
+
+td.destination {
+    width:  15em;
+}
+
+.formerror {
+    width: 60em;
+    color: #f00;
+}
+
+tr.tripinfosection {
+    border-bottom: 1px solid #999;
+}
+
+table.titletable {
+    width: 550px;
+}
+
+table.titletable a:hover {
+    background-color: #222;
+    color: #B9D193;
+}
+
+li.optmenu {
+    font: 150% "Lucida Grande", "Trebuchet MS", Verdana, sans-serif;
+    padding-bottom: 10px;
+    padding-top: 10px;
+/*    border: 1px solid #B9D193;*/
+    text-align: left;
+/*    width: 20em; */
+    list-style-type: square;
+}
+
+li.optmenu a:hover {
+/*    cursor: crosshair;  */
+    color: #B9D193; 
+    background-color: #222; 
+    text-decoration: none;
+    padding-bottom: 10px;    
+    padding-top: 10px;
+    }
+
+img.bottombanner {
+    width: 468px;
+    margin-left: 176px;
+    margin-right: auto;
+}
+
+
+img.topleft {
+    float: left;
+}
+
+img.topright {
+    float: right;
+}
+
+
+td.driverneeded {
+    color: #F00;
+}
+
+#main p.mymessage {
+    font-size: 100%;
+}
+=======
+
+/*
+Design by Free CSS Templates
+http://www.freecsstemplates.org
+Released for free under a Creative Commons Attribution 2.5 License
+*/
+
+body {
+	margin: 0;
+	padding: 0;
+	background: #FFFFFF url(images/img01.jpg) repeat-x left top;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	color: #787878;
+}
+
+h1, h2, h3 {
+	margin: 0;
+	padding: 0;
+	font-weight: normal;
+	color: #32639A;
+}
+
+h1 {
+	font-size: 2em;
+}
+
+h2 {
+	font-size: 2.4em;
+}
+
+h3 {
+	font-size: 1.6em;
+}
+
+p, ul, ol {
+	margin-top: 0;
+	line-height: 180%;
+}
+
+ul, ol {
+}
+
+a {
+	text-decoration: none;
+	color: #4486C7;
+}
+
+a:hover {
+}
+
+#wrapper {
+	width: 960px;
+	margin: 0 auto;
+	padding: 0;
+}
+
+/* Header */
+
+#header {
+	width: 940px;
+	height: 148px;
+	margin: 0 auto;
+	background: url(images/img04.jpg) no-repeat left 20px;
+}
+
+/* Logo */
+
+#logo {
+	float: left;
+	margin: 0;
+	padding-top: 30px;
+	color: #000000;
+}
+
+#logo h1, #logo p {
+	margin: 0;
+	padding: 0;
+}
+
+#logo h1 {
+	float: left;
+	padding-left: 80px;
+	letter-spacing: -1px;
+	font-size: 3.8em;
+}
+
+#logo p {
+	float: left;
+	margin: 0;
+	padding: 26px 0 0 10px;
+	font: normal 14px Georgia, "Times New Roman", Times, serif;
+	font-style: italic;
+	color: #FFFFFF;
+} 
+
+#logo a {
+	border: none;
+	background: none;
+	text-decoration: none;
+	color: #FFFFFF;
+}
+
+/* Search */
+
+#search {
+	float: right;
+	width: 280px;
+	height: 60px;
+	padding: 20px 0px 0px 0px;
+	background: #A8CF64;
+	border-bottom: 4px solid #FFFFFF;
+}
+
+#search form {
+	height: 41px;
+	margin: 0;
+	padding: 10px 0 0 20px;
+}
+
+#search fieldset {
+	margin: 0;
+	padding: 0;
+	border: none;
+}
+
+#search-text {
+	width: 170px;
+	padding: 6px 5px 2px 5px;
+	border: none;
+	background: #FFFFFF;
+	text-transform: lowercase;
+	font: normal 11px Arial, Helvetica, sans-serif;
+	color: #5D781D;
+}
+
+#search-submit {
+	width: 50px;
+	height: 23px;
+	border: 1px solid #89B056;
+	background: none;
+	font-weight: bold;
+	font-size: 10px;
+	color: #FFFFFF;
+}
+
+/* Menu */
+
+#menu {
+	width: 940px;
+	height: 49px;
+	margin: 0 auto;
+	padding: 0;
+}
+
+#menu ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	line-height: normal;
+}
+
+#menu li {
+	float: left;
+}
+
+#menu a {
+	display: block;
+	width: 155px;
+	height: 33px;
+	padding-top: 16px;
+	text-decoration: none;
+	text-align: center;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 13px;
+	font-weight: bold;
+	color: #FFFFFF;
+	border: none;
+}
+
+#menu a:hover, #menu .current_page_item a {
+	background: #659CEF url(images/img03.jpg) repeat-x left bottom;
+	text-decoration: none;
+}
+
+#menu .current_page_item a {
+	background: #FBFBFC url(images/img02.jpg) repeat-x left bottom;
+	padding-left: 0;
+	color: #30476A;
+}
+
+/* Page */
+
+#page {
+	width: 940px;
+	margin: 0 auto;
+	padding: 0;
+}
+
+#page-bgtop {
+	padding: 20px px;
+}
+
+#page-bgbtm {
+}
+
+/* Content */
+
+#content {
+    min-height: 400px;
+	float: left;
+	width: 620px;
+	padding: 30px 0px 0px 0px;
+}
+
+.post {
+	margin-bottom: 15px;
+}
+
+.post-bgtop {
+}
+
+.post-bgbtm {
+}
+
+.post .title {
+	margin-bottom: 10px;
+	padding: 12px 0 0 0px;
+	letter-spacing: -.5px;
+	color: #000000;
+}
+
+.post .title a {
+	color: #32639A;
+	border: none;
+}
+
+.post .meta {
+	height: 30px;
+	background: #D8E7FE;
+	margin: 0px;
+	padding: 0px 0px 0px 0px;
+	text-align: left;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 13px;
+	font-weight: bold;
+}
+
+.post .meta .date {
+	float: left;
+	height: 24px;
+	padding: 3px 15px;
+	color: #4A81DE;
+}
+
+.post .meta .posted {
+	float: right;
+	height: 24px;
+	padding: 3px 15px;
+	background: #A8CF64;
+	color: #FFFFFF;
+}
+
+.post .meta a {
+	color: #FFFFFF;
+}
+
+.post .entry {
+	padding: 0px 0px 20px 0px;
+	padding-bottom: 20px;
+	text-align: justify;
+}
+
+.links {
+	padding-top: 20px;
+	font-size: 12px;
+	font-weight: bold;
+}
+
+/* Sidebar */
+
+#sidebar {
+	float: right;
+	width: 280px;
+	padding: 0px;
+	color: #787878;
+	background: #FFFFFF;
+	margin-top:30px;
+}
+
+#sidebar ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+		background: #A8CF64;
+
+}
+
+#sidebar li {
+	margin: 0;
+	padding: 0;
+	border-left: 1px solid #E2E2E2;
+
+
+}
+
+#sidebar li ul {
+	margin: 0px 0px;
+	padding-bottom: 30px;
+}
+
+#sidebar li li {
+	line-height: 35px;
+	border-bottom: 1px dashed #D1D1D1;
+	margin: 0px 30px;
+	border-left: none;
+}
+
+#sidebar li li span {
+	display: block;
+	margin-top: -20px;
+	padding: 0;
+	font-size: 11px;
+	font-style: italic;
+}
+
+#sidebar h2 {
+	height: 38px;
+	padding-left: 30px;
+	letter-spacing: -.5px;
+	font-size: 1.8em;
+}
+
+#sidebar p {
+	margin: 0 0px;
+	padding: 0px 30px 20px 30px;
+	text-align: justify;
+}
+
+#sidebar a {
+	border: none;
+}
+
+#sidebar a:hover {
+	text-decoration: underline;
+	color: #8A8A8A;
+}
+
+/* Calendar */
+
+#calendar {
+}
+
+#calendar_wrap {
+	padding: 20px;
+}
+
+#calendar table {
+	width: 100%;
+}
+
+#calendar tbody td {
+	text-align: center;
+}
+
+#calendar #next {
+	text-align: right;
+}
+
+/* Footer */
+
+#footer {
+	height: 50px;
+	margin: 0 auto;
+	padding: 0px 0 15px 0;
+	background: #D8E7FE;
+	border-top: 1px solid #D3DEF0;
+	font-family: Arial, Helvetica, sans-serif;
+    margin-top: 50px;
+}
+#map_canvas {
+    width: 600px;
+    height: 400px;
+    margin: 0 auto;
+}
+
+#footer p {
+	margin: 0;
+	padding-top: 20px;
+	line-height: normal;
+	font-size: 10px;
+	text-transform: uppercase;
+	text-align: center;
+	color: #A0A0A0;
+}
+
+#footer a {
+	color: #5389E0;
+}
+>>>>>>> DecorahRideshare

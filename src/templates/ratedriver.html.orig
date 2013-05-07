@@ -2,10 +2,15 @@
 <html>
 <head>
 
+<<<<<<< HEAD
+html {
+  background: #4C75AE;
+}
+</style>
+=======
     <link rel="stylesheet" href="static/style.css" type="text/css" media="screen" />
-
-
 </head>
+>>>>>>> DecorahRideshare
 
 <body>
     <div id="wrapper">
@@ -35,7 +40,25 @@
                     <div id="content">
 
 
-                                <h2>Thanks for rating!</h2>
+                                <h2>Rate Your Driver </h2>
+
+                                <p>Let us know what you thought of {{driver}} </p>
+
+
+                                <p>Rate Your Driver Out of 5</p>
+
+
+
+                                <form name="aform" action="/submittext" method="post" >
+                                <input type="radio" name="ooFrating" value="1"/>1<br />
+                                <input type="radio" name="ooFrating" value="2"/>2<br />
+                                <input type="radio" name="ooFrating" value="3"/>3<br />
+                                <input type="radio" name="ooFrating" value="4"/>4<br />
+                                <input type="radio" name="ooFrating" value="5"/>5<br />
+                                <textarea name="ratetext" rows="20" cols="50"></textarea>
+                                <input type="submit" value="Submit">
+                                <input type="hidden" name="driver" value="{{drivernum}}">
+                                </form>
 
 
 

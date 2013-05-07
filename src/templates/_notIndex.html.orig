@@ -4,7 +4,11 @@
 <head>
 <title>Luther Ride Share | {% block title %}Luther RideShare{% endblock %}</title>
 {% block head %}{% endblock %}
+<<<<<<< HEAD
+<link rel="stylesheet" href="static/style.css" type="text/css" media="screen" />
+=======
 
+>>>>>>> DecorahRideshare
 </head>
 
 <body {% block onLoadText %}{% endblock %}>

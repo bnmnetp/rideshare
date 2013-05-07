@@ -1,0 +1,71 @@
+<html>
+<head>
+
+    <link rel="stylesheet" href="static/style.css" type="text/css" media="screen" />
+</head>
+<body>
+    <div id="wrapper">
+        <div id="header">
+            <div id="logo">
+                <h1><a href="/main">{{college.name}} Rideshare   </a></h1>
+            </div>
+        </div>
+
+        <div id="menu">
+            <ul>
+                <li>
+                    <a href="/home">Your Rides</a>
+                </li>
+                <li>
+                    <a href="/static/help.html">Help</a>
+                </li>
+                <li>
+                    <a href="{{logout}}">Sign out</a>
+                </li>
+            </ul>
+        </div>
+
+        <div id="page">
+            <div id="page-bgtop">
+                <div id="page-bgbtm">    
+                    <div id="content">
+                        <h1>Your Circles</h1>
+                        {% for circle in circles %}
+                        <h2><a href="/map?circle={{circle.key.id}}"> {{ circle.name }}</a></h2>
+
+                        {% for item in event_list %}
+                        
+                        {% ifequal item.circle circle.key.id|slugify %}
+                        <table >
+                            <tr><th>Event Name</th>
+                                <th>Event Address</th>
+                                <th>Event Date</th>
+                                <th>Event Time</th>
+                            </tr>
+                            <tr><td>{{ item.name }}</td>
+                                <td>{{ item.address }}</td>
+                                <td>{{ item.ToD }}</td>
+                                <td>{{ item.time }}</td>
+                            </tr></table>
+                        </br>
+                        {% endifequal %}
+                        
+                        {% endfor %}
+                        <a href='/addevents?circle={{circle.key.id}}'>Add Events for this Circle</a>
+
+                        <hr>
+                        {% endfor %}
+                        
+                        <a href='/newCircle'>Add Circle</a>
+                    </div>
+                    <div style="clear: both;">&nbsp;</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="footer">
+    <p>Developed by Luther College</p>
+</div>
+</body>
+</html>

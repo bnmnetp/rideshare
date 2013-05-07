@@ -1,15 +1,61 @@
-{% extends "_notIndex.html" %}
 
-{% block title %}Success{% endblock %}
+<html>
+<head>
 
-{% block bodycontent%}
-<h1>Congratulations, you have created a new Ride</h1>
+    <link rel="stylesheet" href="static/style.css" type="text/css" media="screen" />
 
-<p>Maximum passengers: {{ maxp }}</p>
-<p>Number of passengers: {{ num_passengers }}</p>
-<p>Driver: {{ driver }}</p>
-<p>Starting Info: {{ startloc }} | {{ startlong }} | {{ startlat }}</p>
-<p>Destination Info: {{ dest }} | {{ destlong }} | {{ destlat }}</p>
-<p>Time of Departure: {{ partofday }} | {{ ToD }}</p>
-<p>Contact Number: {{ contact }}</p>
-{% endblock %}
+
+</head>
+
+<body>
+    <div id="wrapper">
+        <div id="header">
+            <div id="logo">
+                <h1><a href="/main">{{college.name}} Rideshare   </a></h1>
+            </div>
+        </div>
+
+        <div id="menu">
+            <ul>
+                <li>
+                    <a href="/home">Your Rides</a>
+                </li>
+                <li>
+                    <a href="/static/help.html">Help</a>
+                </li>
+                <li>
+                    <a href="{{logout}}">Sign out</a>
+                </li>
+            </ul>
+        </div>
+
+        <div id="page">
+            <div id="page-bgtop">
+                <div id="page-bgbtm">    
+                    <div id="content">
+
+
+                                <h1>Congratulations, you have created a new Ride</h1>
+
+                                <p>Maximum passengers: {{ maxp }}</p>
+                                <p>Number of passengers: {{ num_passengers }}</p>
+                                <p>Driver: {{ driver }}</p>
+                                <p>Starting Info: {{ startloc }} | {{ startlong }} | {{ startlat }}</p>
+                                <p>Destination Info: {{ dest }} | {{ destlong }} | {{ destlat }}</p>
+                                <p>Time of Departure: {{ partofday }} | {{ ToD }}</p>
+                                <p>Contact Number: {{ contact }}</p>
+
+
+
+                                    </div> <!--content-->
+                                </div>
+                            </div>
+                        </div>
+                        <div style="clear: both;"></div>
+
+                    <div id="footer">
+                        <p>Developed by Luther College</p>
+                    </div>
+                </body>
+                </html>
+

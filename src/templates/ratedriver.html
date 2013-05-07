@@ -1,34 +1,69 @@
-{% extends "_notIndex.html" %}
 
-{% block bodycontent %}
-<style type="text/css">
-table.passenger {padding-left:50px;}
-h4, h3, h2 {margin-bottom: 10px;}
+<html>
+<head>
 
-html {
-  background: #4C75AE;
-}
-</style>
+    <link rel="stylesheet" href="static/style.css" type="text/css" media="screen" />
+</head>
 
-<h2>Rate Your Driver </h2>
+<body>
+    <div id="wrapper">
+        <div id="header">
+            <div id="logo">
+                <h1><a href="/main">{{college.name}} Rideshare   </a></h1>
+            </div>
+        </div>
 
-<p>Let us know what you thought of {{driver}} </p>
+        <div id="menu">
+            <ul>
+                <li>
+                    <a href="/home">Your Rides</a>
+                </li>
+                <li>
+                    <a href="/static/help.html">Help</a>
+                </li>
+                <li>
+                    <a href="{{logout}}">Sign out</a>
+                </li>
+            </ul>
+        </div>
+
+        <div id="page">
+            <div id="page-bgtop">
+                <div id="page-bgbtm">    
+                    <div id="content">
 
 
-<p>Rate Your Driver Out of 5</p>
+                                <h2>Rate Your Driver </h2>
+
+                                <p>Let us know what you thought of {{driver}} </p>
 
 
-</table>
-<form name="aform" action="/submittext" method="post" >
-<input type="radio" name="ooFrating" value="1"/>1<br />
-<input type="radio" name="ooFrating" value="2"/>2<br />
-<input type="radio" name="ooFrating" value="3"/>3<br />
-<input type="radio" name="ooFrating" value="4"/>4<br />
-<input type="radio" name="ooFrating" value="5"/>5<br />
-<textarea name="ratetext" rows="20" cols="50"></textarea>
-<input type="submit" value="Submit">
-<input type="hidden" name="driver" value="{{drivernum}}">
-</form>
+                                <p>Rate Your Driver Out of 5</p>
 
 
-{% endblock %}
+
+                                <form name="aform" action="/submittext" method="post" >
+                                <input type="radio" name="ooFrating" value="1"/>1<br />
+                                <input type="radio" name="ooFrating" value="2"/>2<br />
+                                <input type="radio" name="ooFrating" value="3"/>3<br />
+                                <input type="radio" name="ooFrating" value="4"/>4<br />
+                                <input type="radio" name="ooFrating" value="5"/>5<br />
+                                <textarea name="ratetext" rows="20" cols="50"></textarea>
+                                <input type="submit" value="Submit">
+                                <input type="hidden" name="driver" value="{{drivernum}}">
+                                </form>
+
+
+
+                                    </div> <!--content-->
+                                </div>
+                            </div>
+                        </div>
+                        <div style="clear: both;"></div>
+
+                    <div id="footer">
+                        <p>Developed by Luther College</p>
+                    </div>
+                </body>
+                </html>
+
