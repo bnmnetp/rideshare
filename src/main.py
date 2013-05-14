@@ -73,7 +73,6 @@ if aquery.count()==0:
    college.put()
  
 
-
 class MainHandler(BaseHandler):
   def get(self):
 

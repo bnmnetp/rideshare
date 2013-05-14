@@ -26,17 +26,19 @@ from myutil import *
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import util
 
+FACEBOOK_APP_ID = "475321089210147" #Rideshare Alerts
 #FACEBOOK_APP_ID = "193298730706524"  # for localhost testing
 #FACEBOOK_APP_ID = "206075606121536" # for beta site
 #FACEBOOK_APP_ID = "284196238289386"  # for live site
 #FACEBOOK_APP_ID =  "177023452434948" # for Decorah site
-FACEBOOK_APP_ID =  "417443711648291" # for Decorah alerts
+#FACEBOOK_APP_ID =  "417443711648291" # for Decorah alerts
 
+FACEBOOK_APP_SECRET = "63c61ee0a877749df9927f5a9cd2bad6" #Rideshare Alerts
 #FACEBOOK_APP_SECRET = "44d7cce20524dc91bf7694376aff9e1d" # for localhost
 #FACEBOOK_APP_SECRET = "2c4151f8959ea75522b49ea6ccbb1469" # for beta
 #FACEBOOK_APP_SECRET = "07e3ea3ffda4aa08f8c597bccd218e75"  # for live site
 #FACEBOOK_APP_SECRET = "81a9f8776108bd1f216970823458533d" #for Decorah site
-FACEBOOK_APP_SECRET = "2956b8e4d631cf8590ee0959f8b98f66" #for Decorah alerts
+#FACEBOOK_APP_SECRET = "2956b8e4d631cf8590ee0959f8b98f66" #for Decorah alerts
 
 from google.appengine.dist import use_library
 use_library('django', '1.2')
@@ -74,7 +76,6 @@ class FBUser(db.Model):
     loginType= db.StringProperty()
     circles = db.ListProperty(str)
     
-
 
     def nickname(self):
        return self.name
@@ -166,7 +167,7 @@ class LoginHandler(BaseHandler):
             url = 'https://rpxnow.com/api/v2/auth_info'
             args = {
                 'format': 'json',
-                'apiKey': '0376383049ef2888862706874fd078d939cd70d1',
+                'apiKey': 'fa688d4aaac0a1077e5f70fa3b47421ae4156a12',
                 'token': token
             }
             r = urllib2.urlopen(url=url,
