@@ -8,7 +8,7 @@
     if (typeof window.janrain !== 'object') window.janrain = {};
     if (typeof window.janrain.settings !== 'object') window.janrain.settings = {};
     
-    janrain.settings.tokenUrl = 'http://localhost:8084/auth/login';
+    janrain.settings.tokenUrl = 'http://localhost:8080/auth/login';
 
     function isReady() { janrain.ready = true; };
     if (document.addEventListener) {
@@ -22,9 +22,9 @@
     e.id = 'janrainAuthWidget';
 
     if (document.location.protocol === 'https:') {
-      e.src = 'https://rpxnow.com/js/lib/lutherrideshare/engage.js';
+      e.src = 'https://rpxnow.com/js/lib/luther-rideshare/engage.js';
     } else {
-      e.src = 'http://widget-cdn.rpxnow.com/js/lib/lutherrideshare/engage.js';
+      e.src = 'http://widget-cdn.rpxnow.com/js/lib/luther-rideshare/engage.js';
     }
 
     var s = document.getElementsByTagName('script')[0];

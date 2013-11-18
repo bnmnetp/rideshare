@@ -17,9 +17,10 @@ var clusterClick = false;
 var directionsService;
 var directionsDisplay;
 
-//var mycollege = new College("Luther College","700 College Drive Decorah,IA",43.313059,-91.799501);
+var mycollege = new College("Luther College","700 College Drive Decorah,IA",43.313059,-91.799501);
 //var mycollege = new College("UW-LaCrosse","1725 State Street, La Crosse, WI",43.812834,-91.229022);
-var mycollege = new College("Decorah","Decorah, IA",43.303306,-91.785709);
+//var mycollege = new College("Decorah","Decorah, IA",43.303306,-91.785709);
+
 
 function initialize(mess) 
 {
@@ -176,13 +177,12 @@ function initialize(mess)
             
         }
         
-
-    
     makeRideTable();
     
     if (mess) {
 	alert(mess);
     }
+
 }
 
 
@@ -250,6 +250,7 @@ function showAddressClick(results,status)
     {
         var point = results[0].geometry.location;
         windowOpen(point,getNewRidePopupHTML(point.lat(),point.lng(), results[0].formatted_address));
+	
     }
 
 
@@ -266,21 +267,85 @@ function showAddressClick1(results,status)
         google.maps.event.removeListener(clickListener);
         console.log("buttz")
         var point = results[0].geometry.location;
-        windowOpen(point,getEventOrRideHTML(point.lat(),point.lng(), results[0].formatted_address));
+        windowOpen(point,getEventOrRideHTML(point.lat(),point.lng(), results[0].formatted_address,getParameterByName("circle")));
+    	//windowOpen(point, getEventOrRide());
     }
 }
 
+//////////////////////////////////////
+//////////////////////////////////////
+//////////////////////////////////////
+//////////////////////////////////////
+
+//////////////////////////////////////
+//////////////////////////////////////
+//////////////////////////////////////
+//////////////////////////////////////
 
 
-function getEventOrRideHTML(lat, lng, address){
+function getEventOrRideHTML(lat, lng, address,circle){
+
+    $('#to_loc').text("Create a ride from "+mycollege.name+" to "+address);
+    $('#from_loc').text("Create a ride to "+mycollege.name+" to "+address);
+    
+    $('#lat').val(lat);
+    $('#lng').val(lng);
+    $('#circleType').val(circle);
+    $('#address').val(address);
+    $('#collegeName').val(mycollege.name);
 
     
-    var html = "<b> Are you creating a new event or an individual ride?</b></br>";
+    //var html = "<b> Are you creating a new event or an individual ride?</b></br>";
+    var html = "<b>Are you creating a new event or an individual ride?</b></br>";
 
-    html += "<input onclick=\"startRideCreationPopup("+lat+", "+lng+", '" + address +"');\" type=\"radio\" "+"/>Ride <br />";
-    html += "<input onclick=\"startEventCreationPopup("+lat+", "+lng+", '" + address +"');\" type=\"radio\" "+"/>Event <br />";
+	// CHANGED TO BUTTONS
+	//html += "<input type=\"button\" value=\"Ride\" id=\"Ride\" /><br />";
+    html += "<input onclick=\"$('#rideWrapper').modal({escClose: false, \
+							onOpen: function(dialog) {\
+								dialog.overlay.fadeIn('medium', function() {\
+									dialog.container.show();\
+									dialog.data.show();\
+								});\
+							},\
+							onClose: function(dialog) {\
+								dialog.data.fadeOut('medium', function() {\
+									dialog.container.hide('medium', function() {\
+										$.modal.close();\
+										location.reload();\
+									});\
+								});\
+							}\
+						});\" type=\"button\" value=\"Ride\" id=\"Ride\" /><br />";
+    html += "<input onclick=\"$('#eventWrapper').modal({escClose: false, \
+							onOpen: function(dialog) {\
+								dialog.overlay.fadeIn('medium', function() {\
+									dialog.container.show();\
+									dialog.data.show();\
+								});\
+							},\
+							onClose: function(dialog) {\
+								dialog.data.fadeOut('medium', function() {\
+									dialog.container.hide('medium', function() {\
+										$.modal.close();\
+										location.reload();\
+									});\
+								});\
+							}\
+						});\" type=\"button\" value=\"Event\" id=\"Event\" /><br />";
+
+    
+	/* Try to incorporate recursive call to get dialog box back up??? getEventOrRideHTML("+lat+","+lng+","+address+") */
 
     return html;
+
+
+}
+
+
+////////////////////////////
+
+function saveARide() {
+
 
 }
 
@@ -303,7 +368,7 @@ function startRideCreationPopup(lat,lng, address, eventID){
 function startEventCreationPopup(lat,lng, address){
 
     var html = "<b>Create a New Event</b></br>"
-    html+= "Event Name: <input type=\"text\" id=\"eventname\" name=\"eventname\" size=\"50\"></br>"
+    html+= "Event Name: <input type=\"text\" id=\"eventname\" name=\"eventname\" size=\"35\"></br>"
     html+="<select name=\"month\" id='month' onChange=\"changeDays(document.getElementById('day'), this); return false;\">" + getMonthOptions() + "</select>";
     html+="<select name=\"day\" id=\"day\">";
     var today = (new Date()).getDate();
@@ -405,7 +470,6 @@ function getNewEventRidePopupHTML(lat, lng, address, eventID){
     full += "</form></p>";
     
     return full;
-
 
 }
 
@@ -888,7 +952,7 @@ function getNewRidePopupHTML3(lat, lng, from, to, maxp, number, earlylate, parto
     return full;
 }
 
-function  saveRide(vals) {
+function saveRide(vals) {
 
     var request = new XMLHttpRequest();
 
@@ -1530,7 +1594,9 @@ function showAddress(address1)
 		    
             var point = results[0].geometry.location;
             windowOpen(new google.maps.LatLng(point.lat(),point.lng()),getNewRidePopupHTML(point.lat(), point.lng(), address1));
-		    //map.openInfoWindowHtml(point, getNewRidePopupHTML(point.lat(), point.lng(), address1));        
+		    //map.openInfoWindowHtml(point, getNewRidePopupHTML(point.lat(), point.lng(), address1)); 
+		//// JUST ADDED ////
+	    	//windowOpen(new google.maps.LatLng(point.lat(),point.lng()),getEventOrRideHTML(point.lat(), point.lng(), address1));  
 		}
             }
         );
@@ -1934,3 +2000,4 @@ function getParameterByName(name)
   else
     return decodeURIComponent(results[1].replace(/\+/g, " "));
 }
+

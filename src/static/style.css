@@ -5,6 +5,28 @@ http://www.freecsstemplates.org
 Released for free under a Creative Commons Attribution 2.5 License
 */
 
+/* MODAL */
+
+#rideWrapper {display:none; color:#FFFFFF;}
+#eventWrapper {display:none; color:#FFFFFF;}
+
+/* Overlay */
+#simplemodal-overlay {background-color:#000;}
+
+/* Container */
+#simplemodal-container {height:250px; width:600px; color:#FFFFFF; background-color:#284370; border:6px solid #FFFFFF; padding:12px;}
+#simplemodal-container .simplemodal-data {padding:15px;}
+#simplemodal-container code {background:##FFFFFF; border-left:3px solid #FFCC33; color:#bbb; display:block; font-size:12px; margin-bottom:12px; padding:4px 6px 6px;}
+#simplemodal-container a {color:##FFFFFF;}
+#simplemodal-container a.modalCloseImg {background:url(/static/images/x.png) no-repeat; width:25px; height:29px; display:inline; z-index:3200; position:absolute; top:-15px; right:-16px; cursor:pointer;}
+#simplemodal-container h3 {color:#FFFFFF;}
+
+
+#hiddenDiv {
+display:none;
+}
+
+
 body {
 	margin: 0;
 	padding: 0;
@@ -111,6 +133,7 @@ a:hover {
 	background: #A8CF64;
 	border-bottom: 4px solid #FFFFFF;
 }
+
 
 #search form {
 	height: 41px;
