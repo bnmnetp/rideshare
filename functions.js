@@ -519,7 +519,7 @@ function getNewRidePopupHTML3(lat, lng, from, to, maxp, number, earlylate, parto
     return full;
 }
 
-function  saveRide(vals) {
+function saveRide(vals) {
 
     var request = new XMLHttpRequest();
 

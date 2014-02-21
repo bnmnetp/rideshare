@@ -182,7 +182,7 @@ function initialize(mess)
     if (mess) {
 	alert(mess);
     }
-
+    
 }
 
 
@@ -277,19 +277,17 @@ function showAddressClick1(results,status)
 //////////////////////////////////////
 //////////////////////////////////////
 
-//////////////////////////////////////
-//////////////////////////////////////
-//////////////////////////////////////
-//////////////////////////////////////
-
-
 function getEventOrRideHTML(lat, lng, address,circle){
 
     $('#to_loc').text("Create a ride from "+mycollege.name+" to "+address);
-    $('#from_loc').text("Create a ride to "+mycollege.name+" to "+address);
+    $('#from_loc').text("Create a ride to "+mycollege.name+" from "+address);
+    $('#dAddress').text(address);
+    $('.dCollege').text(mycollege.name);
     
     $('#lat').val(lat);
+    console.log($('#lat').val());
     $('#lng').val(lng);
+    console.log($('#lng').val());
     $('#circleType').val(circle);
     $('#address').val(address);
     $('#collegeName').val(mycollege.name);
@@ -341,8 +339,10 @@ function getEventOrRideHTML(lat, lng, address,circle){
 
 }
 
-
-////////////////////////////
+//////////////////////////////////////
+//////////////////////////////////////
+//////////////////////////////////////
+//////////////////////////////////////
 
 function saveARide() {
 

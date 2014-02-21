@@ -212,49 +212,52 @@
 	<!--<form id="rideForm" action="json.html" method="post">-->
 	<form id="rideForm" action="newride?" method="get" onsubmit="saveARide();">
 
-		<div id="hiddenDiv">
-		<input id="address"></input>
-		<input id="collegeName"></input>
-		<input id="lat" name="lat"></input>
-		<input id="lng" name="lng"></input>
-		<input id="from" name="from"></input>
-		<input id="to" name="to"></input>
-		<input id="isDriver" name="isDriver"></input>
-		<input id="toLuther" name="toLuther"></input>
-
-		<input id="circleType" name="circleType"></input>
-		</div>
-
 		<div id="fieldWrapper">
 
 		<div id="first" class="step">
-			<span class="font_normal_07em_black">Choose direction</span><br />
-			
-			<input onclick="addToFrom();" type="radio" name="direction" value="to_loc">
-			<label id="to_loc"></label><br>
-			<input onclick="addToFrom();" type="radio" name="direction"  value="from_loc">
+
+	 		<span class="font_normal_07em_black required">What direction?<br />		
+
+  			<input onclick="addToFrom();" type="radio" name="direction" value="from_loc">
 			<label id="from_loc"></label><br>
-	 						
+ 			<input onclick="addToFrom();" type="radio" name="direction" value="to_loc">
+			<label id="to_loc"></label><br><br>
+			
+			</span>
+			
+	 		<span class="font_normal_07em_black">Who is driving?</span><br />
+	 		<select class="input_field_12em link required" id="driver" name="driver">
+	 			<option value=""></option>
+				<option value="user"> I will drive </option>
+				<option value="other"> I am looking for a ride </option>
+			</select>
+			<br />
+	 								
 		</div>
-		<div id="second" class="step">
-			<span class="font_normal_07em_black">Who is driving?</span><br />					
-			<input onclick="addDriver();" id="user" type="radio" name="driver" value="user"> I will drive </input> <br/>
-			<input onclick="addDriver();" id="other" type="radio" name="driver" value="other"> I am looking for a ride </input> <br/>
-		</div>
-		<div id="third" class="step">
-			<span class="font_normal_07em_black">Date and time</span><br />
-	
+		
+		<div id="user" class="step">
+
+			<label for="maxp">Maximum number of passengers: </label>
+			<select class="input_field_12em" id="maxp" class="select" name="maxp">
+				<option value="1"> 1 </option>
+				<option value="2"> 2 </option>
+				<option value="3"> 3 </option>
+				<option value="4"> 4 </option>
+				<option value="5"> 5 </option>
+				<option value="6"> 6 </option>
+				<option value="7"> 7 </option>
+			</select><br /><br />
+			
+			<label for="earlylate"> Departure: </label>
 			<select id="earlylate" class="select" name="earlylate">
 			  <option value="0"> Early </option>
 			  <option value="1"> Late </option>
 			</select>
-
 			<select id="partofday" class="select" name="partofday">
 			  <option value="0"> Morning </option>
 			  <option value="1"> Afternoon </option>
 			  <option value="2"> Evening </option>
 			</select>
-		
 			<select id="month" class="select" name="month">
 			  <option value=1> January </option>
 			  <option value=2> February </option>
@@ -269,7 +272,6 @@
 			  <option value=11> November </option>
 			  <option value=12> December </option>
 			</select>
-
 			<select id="day" class="select" name="day">
 			  <option value=1> 1 </option>
 			  <option value=2> 2 </option>
@@ -303,33 +305,125 @@
 			  <option value=30> 30 </option>
 			  <option value=31> 31 </option>
 			</select>
-
 			<select id="year" class="select" name="year">
-			  <option value=2013> 2013 </option>
-			  <option value=2014> 2014 </option>
-	`		  <option value=2015> 2015 </option>
-			  <option value=2016> 2016 </option>
-			</select>
-
-		</div>
-		<div id="summary" class="step">
-			<span>Other details</span><br>
-			<label for="maxp">Maximum number of passengers: </label>
-			<input name="maxp" id="maxp"/><br>
-			<label for="contact">How to contact by phone? </label>
-			<input name="contact" id="contact"/><br>
+				<option value=2013> 2013 </option>
+				<option value=2014> 2014 </option>
+	`		 	<option value=2015> 2015 </option>
+				<option value=2016> 2016 </option>
+			</select><br /><br />
+			
+			<label for="contact"> Contact: </label>
+			<input id="contact" class="input_field_12em">
+			<br /><br />
+			
 			<label for="comment">Other comments: </label>
 			<input id="comment" name="comment"></input></br>
-			<input type="button" onclick="modalClose();"></input>
+			<input type="hidden" class="link" value="confirmation" />
 	
 		</div>
-		<div id="confirmation" class="step">
-			<span class="font_normal_07em_black">Is this information correct?</span><br>
-			<p id="information"></p>
+		
+		<div id="other" class="step">
+			<div class="hidden">
+			<select class="input_field_12em" id="maxp" class="select" name="maxp">
+				
+				<option value="3"> 3 </option>
+			
+			</select>
+			</div>
 
-			<div id="summaryContainer"></div>
+			<label for="earlylate"> Departure: </label>
+			<select id="earlylate" class="select" name="earlylate">
+			  <option value="0"> Early </option>
+			  <option value="1"> Late </option>
+			</select>
+			<select id="partofday" class="select" name="partofday">
+			  <option value="0"> Morning </option>
+			  <option value="1"> Afternoon </option>
+			  <option value="2"> Evening </option>
+			</select>
+			<select id="month" class="select" name="month">
+			  <option value=1> January </option>
+			  <option value=2> February </option>
+			  <option value=3> March </option>
+			  <option value=4> April </option>
+			  <option value=5> May </option>
+			  <option value=6> June </option>
+			  <option value=7> July </option>
+			  <option value=8> August </option>
+			  <option value=9> September </option>
+			  <option value=10> October </option>
+			  <option value=11> November </option>
+			  <option value=12> December </option>
+			</select>
+			<select id="day" class="select" name="day">
+			  <option value=1> 1 </option>
+			  <option value=2> 2 </option>
+			  <option value=3> 3 </option>
+			  <option value=4> 4 </option>
+			  <option value=5> 5 </option>
+			  <option value=6> 6 </option>
+			  <option value=7> 7 </option>
+			  <option value=8> 8 </option>
+			  <option value=9> 9 </option>
+			  <option value=10> 10 </option>
+			  <option value=11> 11 </option>
+			  <option value=12> 12 </option>
+			  <option value=13> 13 </option>
+			  <option value=14> 14 </option>
+			  <option value=15> 15 </option>
+			  <option value=16> 16 </option>
+			  <option value=17> 17 </option>
+			  <option value=18> 18 </option>
+			  <option value=19> 19 </option>
+			  <option value=20> 20 </option>
+			  <option value=21> 21 </option>
+			  <option value=22> 22 </option>
+			  <option value=23> 23 </option>
+			  <option value=24> 24 </option>
+			  <option value=25> 25 </option>
+			  <option value=26> 26 </option>
+			  <option value=27> 27 </option>
+			  <option value=28> 28 </option>
+			  <option value=29> 29 </option>
+			  <option value=30> 30 </option>
+			  <option value=31> 31 </option>
+			</select>
+			<select id="year" class="select" name="year">
+				<option value=2013> 2013 </option>
+				<option value=2014> 2014 </option>
+	`		 	<option value=2015> 2015 </option>
+				<option value=2016> 2016 </option>
+			</select><br /><br />
+
+			<label for="contact"> Contact: </label>
+			<input id="contactd" class="input_field_12em">
+			<br /><br />
+			
+			<label for="comment">Other comments: </label>
+			<input id="comment" name="comment"></input></br>
+			<input type="hidden" class="link" value="confirmation" />
 			
 		</div>
+
+		<div id="confirmation" class="step">
+
+			<span class="font_normal_07em_black">Is this information correct?</span><br>
+			<p id="information"></p>
+			<!-- <div id="hiddenDiv"> -->
+
+
+			<input id="address"></input>
+			<input id="collegeName"></input>
+			<input id="lat" name="lat"></input>
+			<input id="lng" name="lng"></input>
+			<input id="from" name="from"></input>
+			<input id="to" name="to"></input>
+			<input id="isDriver" name="isDriver"></input>
+			<input id="toLuther" name="toLuther"></input>
+			<input id="circleType" name="circleType"></input>
+			
+			<!-- </div> -->
+
 		</div>
 		</br>
 		<div id="demoNavigation"> 							
@@ -338,162 +432,10 @@
 		</div>
 		<br>
 
-
-
 	</form>
-	<hr />
+	<br />
 		
 </div>
-
-<script type="text/javascript">
-
-	function modalClose() {
-
-		$.modal.close();
-
-	}	
-
-	function nextClicked() {
-		
-		var step = $("#rideForm").formwizard("state").currentStep; 
-
-		var html = $("#data").html();
-
-		$("#data").html(html + "<br>" + step);
-
-		var driver = document.querySelector('input[name="driver"]:checked').value;
-		var driver2 = $("#user").html();
- 	
-		if (driver == "user") {
-
-			driver = "I am driving"		
-	
-		} else {
-
-			driver = "I need a ride"
-
-		}
-
-
-		if (step == "summary") {
-
-
-			$("#information").html("To: " + $("#to").val() + "<br>" + "From: " + $("#from").val() + 
-				"<br>" + driver2 + "<br>");		
-	
-		}
-
-
-
-	}
-
-	function backClick() {
-
-		var html = $("#data").html();
-
-		$("#data").html(html + "<br>" + "Backward!");
-
-	}
-	
-
-	function addToFrom() {
-		var selected = document.querySelector('input[name="direction"]:checked').value;
-		var html = $("#data").html();
-		if (selected == "to_loc") {
-			
-			var to = $("#address").val();
-			var from = $("#collegeName").val();		
-			
-			$("#toLuther").val("false");
-			$("#to").val(to);
-			$("#from").val(from);
-
-		}
-
-		if (selected == "from_loc") {
-
-			var to = $("#collegeName").val();
-			var from = $("#address").val();
-
-			$("#toLuther").val("true");
-			$("#to").val(to);
-			$("#from").val(from);	
-
-		}
-
-		$("#data").html(html + "<br>" + "To: " + $("#to").val() + "<br>" + " From: " + $("#from").val());
-
-	}
-
-	function addDriver() {
-
-		var selected = document.querySelector('input[name="driver"]:checked').value;
-		var html = $("#data").html();
-		if (selected == "user") {
-
-			$("#isDriver").val('true');
-		
-		} 
-
-		if (selected == "other") {
-
-			$("#isDriver").val('false');
-
-		}
-
-		$("#data").html(html + "<br>" + "Is a driver? " + $("#isDriver").val());
-	}
-
-	function saveARide() {
-
-		// populate vals object
-		var vals = {}
-		
-		vals['lat'] = $("#lat").val();
-   		vals['lng'] = $("#lng").val();
-	    	vals['from'] = $("#from").val();
-	    	vals['to'] = $("#to").val();
-	    	vals['maxp'] = $("#maxp").val();
-	    	vals['contact'] = $("#contact").val();;
-	    	vals['earlylate'] = $("#earlylate").val();
-	    	vals['partofday'] = $("#partofday").val();
-	    	vals['month'] =$("#month").val();
-	    	vals['day'] = $("#day").val();
-	    	vals['year'] = $("#year").val();
-	    	vals['isDriver'] = $("#isDriver").val();
-	    	vals['comment'] = $("#comment").val();
-	    	vals['circleType']= $("#circleType").val();
-	    	vals['toLuther'] = $("#toLuther").val();
-
-		vals = JSON.stringify(vals);
-	
-		// pass 'stringified' vals to the requeststring after adding '=' and '&'
-		
-	    	var request = new XMLHttpRequest();
-
-	    	var reqStr = '/newride?';
-
-
-	    	for (var prop in vals) {
-			reqStr += prop + "=" + vals[prop] + "&";
-	    	}
-
-	    	request.open("GET",reqStr,false);
-	    	request.send(null);
-	    	//clickListener = google.maps.event.addListener(map, "click", getAddress);
-	    	if (request.status == 200) {
-			initialize();
-	    	} else {
-			alert("An error occurred, check your responses and try again.");
-	    	}
-
-	}
-
-
-
-
-</script>
-
 
 <div id="eventWrapper">
 	<h3> Create an Event </h3>

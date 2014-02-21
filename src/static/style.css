@@ -22,9 +22,11 @@ Released for free under a Creative Commons Attribution 2.5 License
 #simplemodal-container h3 {color:#FFFFFF;}
 
 
-#hiddenDiv {
+.hidden {
 display:none;
 }
+
+
 
 
 body {
