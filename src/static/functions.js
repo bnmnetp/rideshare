@@ -24,7 +24,7 @@ var mycollege = new College("Luther College","700 College Drive Decorah,IA",43.3
 
 function initialize(mess) 
 {
-        
+    
 	var request = new XMLHttpRequest();
 	var today = new Date();
 	request.open("GET","/getrides?circle="+getParameterByName("circle")+"&after="+today.getFullYear()+"-"+(today.getMonth()+1)+"-"+today.getDate(),false);
@@ -51,7 +51,7 @@ function initialize(mess)
         }
     }
 
-
+	
 	// Begin creation of Icons for Rides
     var eventIconMarker = new google.maps.MarkerImage('static/stargate.png',
             new google.maps.Size(30,40),
@@ -182,7 +182,7 @@ function initialize(mess)
     if (mess) {
 	alert(mess);
     }
-    
+
 }
 
 
@@ -283,7 +283,7 @@ function getEventOrRideHTML(lat, lng, address,circle){
     $('#from_loc').text("Create a ride to "+mycollege.name+" from "+address);
     $('#dAddress').text(address);
     $('.dCollege').text(mycollege.name);
-    
+
     $('#lat').val(lat);
     console.log($('#lat').val());
     $('#lng').val(lng);
@@ -343,11 +343,6 @@ function getEventOrRideHTML(lat, lng, address,circle){
 //////////////////////////////////////
 //////////////////////////////////////
 //////////////////////////////////////
-
-function saveARide() {
-
-
-}
 
 function startRideCreationPopup(lat,lng, address, eventID){
     if (eventID == undefined){

@@ -26,7 +26,11 @@ Released for free under a Creative Commons Attribution 2.5 License
 display:none;
 }
 
+#map_canvas {
 
+	border: 2px solid black
+	
+	}
 
 
 body {
@@ -311,11 +315,12 @@ a:hover {
 
 #sidebar {
 	float: right;
-	width: 280px;
+	width: 300px;
 	padding: 0px;
 	color: #787878;
 	background: #FFFFFF;
 	margin-top:30px;
+	border: 2px solid black;
 }
 
 #sidebar ul {

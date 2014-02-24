@@ -14,27 +14,62 @@ $(function() {
 				console.log("RIGHT BEEFORE SUBMIT");
 				},
 			dataType: 'json',
-			resetForm: true
-			}	
-	 	);
+			resetForm: true,
+		validationOptions : {
+			rules: {
+				contact: "required"
+			}
+		}
+	});
 	 	
 	$("#rideForm").bind("step_shown", function(event, data){
-		
-		console.log(data['isLastStep']);
+
 		if (data['isLastStep'] == true) {
+			var toCollege = $("#toLuther").val();
+			var driver = $("#driver").val();
+			var maxp = $("#maxp").val();
+			var earlylate = $("#earlylate option:selected")[0]['text'];
+			var partofday = $("#partofday option:selected")[0]['text'];
+			var month = $("#month option:selected")[0]['text'];
+			var day = $("#day option:selected")[0]['text'];
+			var year = $("#year option:selected")[0]['text'];
+			var contact = $(".contact");
+			var comment = $(".comment");
+			console.log(comment);
 			addDriver();
 			addToFrom();
+			console.log();
+			console.log("This is the last step");
+			if (toCollege == false) {
+				toCollege = " from ";
+			} else {
+				toCollege = " to ";
+			}
+			
+			if (driver == "user") {
+				driver = "I will drive";
+				if (maxp > 1) {
+					maxp = "I can take "+maxp+" more passengers <br>";
+					} else {
+					maxp = "I can take "+maxp+" more passenger <br>";
+					}
+					contact = contact[0].value;
+					comment = comment[0].value;
+			
+			} else {
+				driver = "I need a ride";
+				maxp = "";
+				contact = contact[1].value;
+				comment = comment[1].value
+			}
+			
+			$("#information").html($("#collegeName").val()+toCollege+$("#address").val()+"<br>"+
+				driver+"<br>"+maxp+earlylate+" "+partofday+" "+month+" "+day+", "+year+"<br>"+contact+"<br>"+comment);    
 		}
-		//addDriver();
-		//addToFrom();
+
 		});
-		
 	 	
   	});
-
-
-/////////////////////////////////////////////////////
-
 
 $(function() {
 	$("#eventForm").formwizard({ 
@@ -66,7 +101,7 @@ function modalClose() {
 
 		//var driver = document.querySelector('input[name="driver"]:checked').value;
 		var driver = $('#driver').find(":selected")[0]['value'];
-		console.log(driver);
+
 		var driver2 = $("#user").html();
  	
 		if (driver == "user") {
@@ -102,10 +137,10 @@ function modalClose() {
 	
 
 	function addToFrom() {
-		console.log("called to from");
+
 		
 		var selected = document.querySelector('input[name="direction"]:checked').value;
-		console.log(selected)
+
 		var html = $("#data").html();
 		if (selected == "to_loc") {
 			
@@ -134,34 +169,24 @@ function modalClose() {
 	}
 
 	function addDriver() {
-		console.log("called add driver");
-		//var selected = document.querySelector('select[name="driver"]:checked').value;
+
 		var selected = $('#driver').find(":selected")[0]['value'];
-		console.log(selected);
 		var html = $("#data").html();
 		if (selected == "user") {
-
 			$("#isDriver").val('true');
-		
 		} 
-
 		if (selected == "other") {
-
 			$("#isDriver").val('false');
 			$("#maxp").val = "3";
-
 		}
 
-		$("#data").html(html + "<br>" + "Is a driver? " + $("#isDriver").val());
 	}
 
 	function saveARide() {
-		console.log("got to save a ride");
-		
+			
 		// populate vals object
 		var vals = {}
 
-		
 		vals['lat'] = $("#lat").val();
    		vals['lng'] = $("#lng").val();
 	    	vals['from'] = $("#from").val();
@@ -179,7 +204,7 @@ function modalClose() {
 	    	vals['toLuther'] = $("#toLuther").val();
 
 		vals = JSON.stringify(vals);
-		console.log(vals);
+
 		// pass 'stringified' vals to the requeststring after adding '=' and '&'
 		
 	    	var request = new XMLHttpRequest();
@@ -207,9 +232,16 @@ $(document).ready(function() {
     if($radios.is(':checked') === false) {
         $radios.filter('[value=from_loc]').prop('checked', true);
     }
+	var today = new Date();
+
+	var day = today.getDate();
+	var month = today.getMonth()+1;
+	var year = today.getFullYear();
+
+	console.log(month,day,year);
+    $(".month").val(month);
+    $(".day").val(day);
+    $(".year").val(year);
     
-    $("#maxp").val("0");
-    console.log($("#maxp").val());
-    
-    });
+});
 
