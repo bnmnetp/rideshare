@@ -91,140 +91,140 @@ function modalClose() {
 
 	}	
 
-	function nextClicked() {
-		
-		var step = $("#rideForm").formwizard("state").currentStep; 
-
-		var html = $("#data").html();
-
-		$("#data").html(html + "<br>" + step);
-
-		//var driver = document.querySelector('input[name="driver"]:checked').value;
-		var driver = $('#driver').find(":selected")[0]['value'];
-
-		var driver2 = $("#user").html();
- 	
-		if (driver == "user") {
-
-			driver = "I am driving"		
+function nextClicked() {
 	
+	var step = $("#rideForm").formwizard("state").currentStep; 
+
+	var html = $("#data").html();
+
+	$("#data").html(html + "<br>" + step);
+
+	//var driver = document.querySelector('input[name="driver"]:checked').value;
+	var driver = $('#driver').find(":selected")[0]['value'];
+
+	var driver2 = $("#user").html();
+
+	if (driver == "user") {
+
+		driver = "I am driving"		
+
+	} else {
+
+		driver = "I need a ride"
+
+	}
+
+
+	if (step == "summary") {
+
+
+		$("#information").html("To: " + $("#to").val() + "<br>" + "From: " + $("#from").val() + 
+			"<br>" + driver2 + "<br>");		
+
+	}
+
+
+
+}
+
+function backClick() {
+
+	var html = $("#data").html();
+
+	$("#data").html(html + "<br>" + "Backward!");
+
+}
+
+
+function addToFrom() {
+
+	
+	var selected = document.querySelector('input[name="direction"]:checked').value;
+
+	var html = $("#data").html();
+	if (selected == "to_loc") {
+		
+		var to = $("#address").val();
+		var from = $("#collegeName").val();		
+		
+		$("#toLuther").val("false");
+		$("#to").val(to);
+		$("#from").val(from);
+
+	}
+
+	if (selected == "from_loc") {
+
+		var to = $("#collegeName").val();
+		var from = $("#address").val();
+
+		$("#toLuther").val("true");
+		$("#to").val(to);
+		$("#from").val(from);	
+
+	}
+
+	$("#data").html(html + "<br>" + "To: " + $("#to").val() + "<br>" + " From: " + $("#from").val());
+
+}
+
+function addDriver() {
+
+	var selected = $('#driver').find(":selected")[0]['value'];
+	var html = $("#data").html();
+	if (selected == "user") {
+		$("#isDriver").val('true');
+	} 
+	if (selected == "other") {
+		$("#isDriver").val('false');
+		$("#maxp").val = "3";
+	}
+
+}
+
+function saveARide() {
+		
+	// populate vals object
+	var vals = {}
+
+	vals['lat'] = $("#lat").val();
+	vals['lng'] = $("#lng").val();
+		vals['from'] = $("#from").val();
+		vals['to'] = $("#to").val();
+		vals['maxp'] = $("#maxp").val();
+		vals['contact'] = $("#contact").val();;
+		vals['earlylate'] = $("#earlylate").val();
+		vals['partofday'] = $("#partofday").val();
+		vals['month'] =$("#month").val();
+		vals['day'] = $("#day").val();
+		vals['year'] = $("#year").val();
+		vals['isDriver'] = $("#isDriver").val();
+		vals['comment'] = $("#comment").val();
+		vals['circleType']= $("#circleType").val();
+		vals['toLuther'] = $("#toLuther").val();
+
+	vals = JSON.stringify(vals);
+
+	// pass 'stringified' vals to the requeststring after adding '=' and '&'
+	
+		var request = new XMLHttpRequest();
+
+		var reqStr = '/newride?';
+
+		for (var prop in vals) {
+		reqStr += prop + "=" + vals[prop] + "&";
+		}
+
+		request.open("GET",reqStr,false);
+		request.send(null);
+		//clickListener = google.maps.event.addListener(map, "click", getAddress);
+		if (request.status == 200) {
+		initialize();
 		} else {
-
-			driver = "I need a ride"
-
+		alert("An error occurred, check your responses and try again.");
 		}
 
-
-		if (step == "summary") {
-
-
-			$("#information").html("To: " + $("#to").val() + "<br>" + "From: " + $("#from").val() + 
-				"<br>" + driver2 + "<br>");		
-	
-		}
-
-
-
-	}
-
-	function backClick() {
-
-		var html = $("#data").html();
-
-		$("#data").html(html + "<br>" + "Backward!");
-
-	}
-	
-
-	function addToFrom() {
-
-		
-		var selected = document.querySelector('input[name="direction"]:checked').value;
-
-		var html = $("#data").html();
-		if (selected == "to_loc") {
-			
-			var to = $("#address").val();
-			var from = $("#collegeName").val();		
-			
-			$("#toLuther").val("false");
-			$("#to").val(to);
-			$("#from").val(from);
-
-		}
-
-		if (selected == "from_loc") {
-
-			var to = $("#collegeName").val();
-			var from = $("#address").val();
-
-			$("#toLuther").val("true");
-			$("#to").val(to);
-			$("#from").val(from);	
-
-		}
-
-		$("#data").html(html + "<br>" + "To: " + $("#to").val() + "<br>" + " From: " + $("#from").val());
-
-	}
-
-	function addDriver() {
-
-		var selected = $('#driver').find(":selected")[0]['value'];
-		var html = $("#data").html();
-		if (selected == "user") {
-			$("#isDriver").val('true');
-		} 
-		if (selected == "other") {
-			$("#isDriver").val('false');
-			$("#maxp").val = "3";
-		}
-
-	}
-
-	function saveARide() {
-			
-		// populate vals object
-		var vals = {}
-
-		vals['lat'] = $("#lat").val();
-   		vals['lng'] = $("#lng").val();
-	    	vals['from'] = $("#from").val();
-	    	vals['to'] = $("#to").val();
-	    	vals['maxp'] = $("#maxp").val();
-	    	vals['contact'] = $("#contact").val();;
-	    	vals['earlylate'] = $("#earlylate").val();
-	    	vals['partofday'] = $("#partofday").val();
-	    	vals['month'] =$("#month").val();
-	    	vals['day'] = $("#day").val();
-	    	vals['year'] = $("#year").val();
-	    	vals['isDriver'] = $("#isDriver").val();
-	    	vals['comment'] = $("#comment").val();
-	    	vals['circleType']= $("#circleType").val();
-	    	vals['toLuther'] = $("#toLuther").val();
-
-		vals = JSON.stringify(vals);
-
-		// pass 'stringified' vals to the requeststring after adding '=' and '&'
-		
-	    	var request = new XMLHttpRequest();
-
-	    	var reqStr = '/newride?';
-
-	    	for (var prop in vals) {
-			reqStr += prop + "=" + vals[prop] + "&";
-	    	}
-
-	    	request.open("GET",reqStr,false);
-	    	request.send(null);
-	    	//clickListener = google.maps.event.addListener(map, "click", getAddress);
-	    	if (request.status == 200) {
-			initialize();
-	    	} else {
-			alert("An error occurred, check your responses and try again.");
-	    	}
-
-	}
+}
 
 $(document).ready(function() {
 
