@@ -65,14 +65,13 @@ part_of_day_strings = { "0": "Morning", "1": "Afternoon", "2": "Evening" }
 aquery = db.Query(College)
 if aquery.count()==0:
   # development site
-   #college = College(name ="Luther College", address= "700 College Drive Decorah,IA", lat =43.313059, lng=-91.799501, appId="193298730706524",appSecret="44d7cce20524dc91bf7694376aff9e1d")
+   college = College(name ="Luther College", address= "700 College Drive Decorah,IA", lat =43.313059, lng=-91.799501, appId="193298730706524",appSecret="44d7cce20524dc91bf7694376aff9e1d")
   # live site   
    #college = College(name ="Luther College", address= "700 College Drive Decorah,IA", lat =43.313059, lng=-91.799501, appId="284196238289386",appSecret="07e3ea3ffda4aa08f8c597bccd218e75")   
    #college = College(name= "LaCrosse University", address = "1725 State Street, La Crosse, WI", lat=43.812834, lng=-91.229022,appId="193298730706524",appSecret="44d7cce20524dc91bf7694376aff9e1d")
-   college = College(name="Decorah", address="Decorah, IA", appId="177023452434948", appSecret="81a9f8776108bd1f216970823458533d", lat=43.303306, lng=-91.785709)
+   #college = College(name="Decorah", address="Decorah, IA", appId="177023452434948", appSecret="81a9f8776108bd1f216970823458533d", lat=43.303306, lng=-91.785709)
    college.put()
  
-
 
 class MainHandler(BaseHandler):
   def get(self):
@@ -1072,8 +1071,10 @@ The Rideshare Team
 	     logging.debug(graph.put_object("me", "feed", message=body))
 
 class LoginPageHandler(BaseHandler):
+
   def get(self):
     aquery = db.Query(College)
+    
     mycollege= aquery.get()
     
     user = self.current_user
