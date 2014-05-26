@@ -17,7 +17,7 @@ pageTracker._trackPageview();
 <input type="hidden"name="name" value="{{user}}" id="idnum" />
 <div class="container">
 	<div class="col-md-8">
-		
+		<div id="map_canvas"></div>
 	</div>
 	<div class="col-md-4">
 		<div>
@@ -39,11 +39,12 @@ pageTracker._trackPageview();
 {% endblock %}
 
 {% block scripts %}
-<script src="static/functions.js" type="text/javascript"></script>
+
 <script src="static/json-template.js" type="text/javascript"></script>
-<script src="static/jquery-1.8.2.js" type="text/javascript"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js" type="text/javascript"></script>
 <script src="static/jquery.dataTables.js" type="text/javascript"></script>
 <script src="static/jquery-ui-1.9.0.custom.min.js" type="text/javascript"></script>
+<script src="static/functions.js" type="text/javascript"></script>
 <script src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyB15X6ti6tDQUQKjwPCI2zi3XFfxZW3MGM&sensor=true" type="text/javascript">
 </script>
 <script src="http://google-maps-utility-library-v3.googlecode.com/svn/tags/markerclustererplus/2.0.9/src/markerclusterer.js" type="text/javascript"></script>
