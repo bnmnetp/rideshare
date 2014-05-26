@@ -1,8 +1,7 @@
 from google.appengine.ext import db
 from google.appengine.api import users
 import logging
-from google.appengine.dist import use_library
-use_library('django', '1.2')
+
 # Make this very flat to start with, then add references later...
 class Ride(db.Model):
     max_passengers = db.IntegerProperty()

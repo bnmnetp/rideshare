@@ -42,10 +42,6 @@ FACEBOOK_APP_SECRET = "794c2d8c6548e9d055c675c725fc04c5" # for localhost
 #FACEBOOK_APP_SECRET = "81a9f8776108bd1f216970823458533d" #for Decorah site
 #FACEBOOK_APP_SECRET = "2956b8e4d631cf8590ee0959f8b98f66" #for Decorah alerts
 
-from google.appengine.dist import use_library
-use_library('django', '1.2')
-
-
 userId= None
 logging.getLogger().setLevel(logging.DEBUG)
 
