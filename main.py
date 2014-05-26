@@ -388,6 +388,10 @@ class HelpHandler(BaseHandler):
     def get(self):
         doRender(self, 'help.html', {})
 
+class ReworkHandler(BaseHandler):
+    def get(self):
+        doRender(self, 'index_rework.html', {})
+
 class MovePassengerHandler(BaseHandler):
     def post(self):
         user= self.current_user
@@ -487,6 +491,7 @@ app = webapp2.WSGIApplication([
     ('/movepass', MovePassengerHandler),
     ('/connectride',ConnectPageHandler),
     ('/databasefix', DatabaseHandler),
+    ('/map_rework', ReworkHandler),
     ('/testing', create_user),
     ('/help', HelpHandler),
     ('/.*', IncorrectHandler)
