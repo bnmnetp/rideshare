@@ -22,12 +22,14 @@
 
 {% block main %}
 
-<div id="content" style="width:800px">
+<h1>Welcome to ((location)) rideshare, {{ user }}!</h1>
 
-<h1>Welcome to your personal homepage, {{ user }}!</h1><br /><br />
-
-{% if driverides %}
-    <h2>You are a driver for the following rides:</h2>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        Driver
+    </div>
+    <div class="panel-body">
+    {% if driverides %}
     {% for ride in driverides %}
         <h3>Driver</h3> - <a href='/rideinfo?key={{ ride.key }}'>See Map of Ride</a>
         <table border='1'>
@@ -79,10 +81,18 @@
             <p style='text-indent:50px'>There are no passengers registered for this ride.</p>
         {% endif %}<hr>
     {% endfor %}
+
 {% else %}
     <p>You are not a driver for any rides.</p>
 {% endif %}
+    </div>
+</div>
 
+<div class="panel panel-default">
+    <div class="panel-heading">
+        Passenger
+    </div>
+    <div class="panel-body">
 {% if passengerrides %}
     <h2>You are a passenger for the following rides:</h2>
     {% for ride in passengerrides %}
@@ -146,6 +156,14 @@
     {% else %}
         <p>You are not a passenger for any rides.</p>
     {% endif %}
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        Events
+    </div>
+    <div class="panel-body">
     {% if event_list %}
         <h3>You have created the following events:</h3>
         {% for item in event_list %}
@@ -166,5 +184,7 @@
     {% else %}
         <p>You have not created any events</p>
     {% endif %}
+    </div>
+</div>
     <a href='/changecircles'>Change Your Circles</a>
 {% endblock %}

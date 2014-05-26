@@ -2,7 +2,8 @@
 <html>
 <head>
 	<title>{% block title %}{% endblock %} - Rideshare</title>
-	<link rel="stylesheet" href="static/style.css" type="text/css" media="screen"/>
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" type="text/css" />
+	<link rel="stylesheet" type="text/css" href="/static/styles.css">
 	<meta charset="utf-8">
 	<meta content="width=device-width, initial-scale=1.0, user-scalable=no" name="viewport">
 	{% block head %}{% endblock %}
@@ -10,30 +11,36 @@
 <body>
 	<div id="wrapper">
 
-		<div id="header">
-			<div id="logo">
-				<h1 style="color:white">Luther Rideshare</h1>
+		<nav class="navbar navbar-default navbar-fixed-top">
+			<div class="container">
+				<a class="navbar-brand" href="/home">Luther Rideshare</a>
+				<ul class="nav navbar-nav">
+					<li>
+				        <a href="/home">Your Rides</a>
+				    </li>
+				    <li>
+        				<a href="/main">Your Circles</a>
+    				</li>
+				    <li>
+				        <a href="/help">Help</a>
+				    </li>
+				    <li>
+				        <a href="{{logout}}">Sign out</a>
+				    </li>
+				</ul>
 			</div>
-		</div>
+		</nav>
 
-		<div id="menu">
-			{% block menu %}{% endblock %}
-		</div>
-
-		<div id="page">
-			<div id="page-bgtop">
-				<div id="page-bgbtm">
-					<div id="content">
-						{% block main %}{% endblock %}
-					</div>
-				</div>
-			</div>
+		<div class="container">
+			{% block main %}{% endblock %}
 		</div>
 
 	</div>
-	<div style="clear: both;"></div>
+
 	<div id="footer">
-		<p>Developed by Luther College</p>
+		<div class="container">
+			Developed by Luther College
+		</div>
 	</div>
 </body>
 </html>
