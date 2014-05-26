@@ -1,3 +1,9 @@
+from app.common.toolbox import doRender
+from app.nateusers import BaseHandler, FBUser
+from app.model import *
+from django.utils import simplejson
+from google.appengine.ext import db
+
 class RideQueryHandler(BaseHandler):
     """
     Parse and process requests for rides
@@ -532,35 +538,34 @@ class DeleteRideHandler(BaseHandler): #NEEDS WORK
             'nick' : user.nickname()        
             }))
 
-    def sendRiderEmail(self, ride, to,loginType):
+    def sendRiderEmail(self, ride, to, loginType):
         
         if loginType == "facebook":
-          to = FBUser.get_by_key_name(to)
-          logging.debug(to)
+            to = FBUser.get_by_key_name(to)
+            logging.debug(to)
         sender = FROM_EMAIL_ADDR
         subject = "Change in your ride"
         
         body = """
-Dear %s,
+        Dear %s,
 
-We wanted to let you know that there has been a change in status of your ride
-from %s to %s on %s.  Unfortunately the driver is unable to drive anymore.
-The ride will remain, but it will appear as a ride
-that is in need of a driver.  When a new driver is found you will be notified
-by email.
+        We wanted to let you know that there has been a change in status of your ride
+        from %s to %s on %s.  Unfortunately the driver is unable to drive anymore.
+        The ride will remain, but it will appear as a ride
+        that is in need of a driver.  When a new driver is found you will be notified
+        by email.
 
 
-Sincerely,
+        Sincerely,
 
-The Rideshare Team
-""" % (to.nickname(),  ride.start_point_title, ride.destination_title, ride.ToD)
+        The Rideshare Team
+        """ % (to.nickname(),  ride.start_point_title, ride.destination_title, ride.ToD)
         if loginType == "google":
-          mail.send_mail(sender,to,subject,body)
+            mail.send_mail(sender,to,subject,body)
         else:
-    try:
-             
-             graph = facebook.GraphAPI(to.access_token)
-             graph.put_object("me", "feed", message=body)
+            try:
+                graph = facebook.GraphAPI(to.access_token)
+                graph.put_object("me", "feed", message=body)
 
-    except:
-       logging.debug(graph.put_object("me", "feed", message=body))
+            except:
+               logging.debug(graph.put_object("me", "feed", message=body))

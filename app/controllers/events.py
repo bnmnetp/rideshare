@@ -1,7 +1,14 @@
+from app.common.toolbox import doRender
+from app.nateusers import BaseHandler, FBUser
+from google.appengine.ext import db
+from django.utils import simplejson
+from app.model import *
+from google.appengine.api import mail
+
 class NewEventHandler(BaseHandler):
     def get(self):
         aquery = db.Query(College)
-        mycollege= aquery.get()
+        mycollege = aquery.get()
         user = self.current_user
         newEvent = Event()
         newEvent.name = self.request.get("name")
@@ -25,11 +32,11 @@ class NewEventHandler(BaseHandler):
         message = 'Your ride has been created!'
         path = os.path.join(os.path.dirname(__file__), 'templates/map.html')
         self.response.out.write(str(template.render(path, {
-              'ride_list': ride_list, 
-              'greeting': greeting,
-              'message': message,
-              'mapkey' : MAP_APIKEY,
-              })))
+            'ride_list': ride_list, 
+            'greeting': greeting,
+            'message': message,
+            'mapkey' : MAP_APIKEY,
+            })))
 
 class EventQueryHandler(BaseHandler):
     """
@@ -102,19 +109,19 @@ class NewEventRideHandler(BaseHandler):
         lng = float(self.request.get("lng")) * (random.random() * (1.000001-.999999) + 1.000001)
         checked = self.request.get("toLuther")
         if checked == 'true':
-          newRide.start_point_title = self.request.get("from")
-          newRide.start_point_lat = lat
-          newRide.start_point_long = lng
-          newRide.destination_title = mycollege.name
-          newRide.destination_lat = mycollege.lat
-          newRide.destination_long = mycollege.lng
+            newRide.start_point_title = self.request.get("from")
+            newRide.start_point_lat = lat
+            newRide.start_point_long = lng
+            newRide.destination_title = mycollege.name
+            newRide.destination_lat = mycollege.lat
+            newRide.destination_long = mycollege.lng
         elif checked == 'false':
-          newRide.start_point_title = mycollege.name
-          newRide.start_point_lat = mycollege.lat
-          newRide.start_point_long = mycollege.lng
-          newRide.destination_title = self.request.get("to")
-          newRide.destination_lat = lat
-          newRide.destination_long = lng             
+            newRide.start_point_title = mycollege.name
+            newRide.start_point_lat = mycollege.lat
+            newRide.start_point_long = mycollege.lng
+            newRide.destination_title = self.request.get("to")
+            newRide.destination_lat = lat
+            newRide.destination_long = lng             
         y = int(self.request.get("year"))
         m = int(self.request.get("month"))
         d = int(self.request.get("day"))
@@ -132,7 +139,6 @@ class NewEventRideHandler(BaseHandler):
         newRide.max_passengers = int(maxp)
         newRide.num_passengers = 0
         newRide.passengers = []
-
 
         if isDriver:
             newRide.driver = user.id

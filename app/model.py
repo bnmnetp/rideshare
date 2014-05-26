@@ -58,8 +58,8 @@ class College(db.Model):
     address = db.StringProperty()
     lat = db.FloatProperty()
     lng = db.FloatProperty()
-    appId= db.StringProperty()
-    appSecret= db.StringProperty()
+    appId = db.StringProperty()
+    appSecret = db.StringProperty()
 
 class Circle(db.Model):
     name = db.StringProperty()
