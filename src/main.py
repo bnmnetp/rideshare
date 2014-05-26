@@ -19,6 +19,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+import webapp2
+
 from google.appengine.dist import use_library
 use_library('django', '1.2')
 
@@ -62,15 +65,25 @@ rideshareWebsite = "http://www.decorahrideshare.com"
 early_late_strings = { "0": "Early", "1": "Late" }
 part_of_day_strings = { "0": "Morning", "1": "Afternoon", "2": "Evening" }
 
+mycollege = College(name = "Luther College",
+    address = "700 College Drive Decorah,IA",
+    lat = 43.313059, lng = -91.799501,
+    appId = "193298730706524",
+    appSecret = "44d7cce20524dc91bf7694376aff9e1d")
+
 aquery = db.Query(College)
-if aquery.count()==0:
-  # development site
-   college = College(name ="Luther College", address= "700 College Drive Decorah,IA", lat =43.313059, lng=-91.799501, appId="193298730706524",appSecret="44d7cce20524dc91bf7694376aff9e1d")
-  # live site   
-   #college = College(name ="Luther College", address= "700 College Drive Decorah,IA", lat =43.313059, lng=-91.799501, appId="284196238289386",appSecret="07e3ea3ffda4aa08f8c597bccd218e75")   
-   #college = College(name= "LaCrosse University", address = "1725 State Street, La Crosse, WI", lat=43.812834, lng=-91.229022,appId="193298730706524",appSecret="44d7cce20524dc91bf7694376aff9e1d")
-   #college = College(name="Decorah", address="Decorah, IA", appId="177023452434948", appSecret="81a9f8776108bd1f216970823458533d", lat=43.303306, lng=-91.785709)
-   college.put()
+#if aquery.count()==0:
+    # development site
+    # mycollege = College(name = "Luther College",
+    #     address = "700 College Drive Decorah,IA",
+    #     lat = 43.313059, lng = -91.799501,
+    #     appId = "193298730706524",
+    #     appSecret = "44d7cce20524dc91bf7694376aff9e1d")
+    # live site   
+    # college = College(name ="Luther College", address= "700 College Drive Decorah,IA", lat =43.313059, lng=-91.799501, appId="284196238289386",appSecret="07e3ea3ffda4aa08f8c597bccd218e75")   
+    # college = College(name= "LaCrosse University", address = "1725 State Street, La Crosse, WI", lat=43.812834, lng=-91.229022,appId="193298730706524",appSecret="44d7cce20524dc91bf7694376aff9e1d")
+    # college = College(name="Decorah", address="Decorah, IA", appId="177023452434948", appSecret="81a9f8776108bd1f216970823458533d", lat=43.303306, lng=-91.785709)
+    #mycollege.put()
  
 
 class MainHandler(BaseHandler):
@@ -79,6 +92,7 @@ class MainHandler(BaseHandler):
     user = FBUser.get_by_key_name(self.current_user.id)
     aquery = db.Query(College)
     mycollege= aquery.get()
+
     eventsList = []
     circles = []
     for item in user.circles:
@@ -892,21 +906,21 @@ class AddMultipleEventsHandler(BaseHandler):
 
 class SubmitRatingHandler(BaseHandler):
     def post(self):
-      aquery = db.Query(College)
-      mycollege= aquery.get()  
-      drivernum = self.request.get("driver")
-      text = self.request.get("ratetext")
-      ooFrating = self.request.get("ooFrating") # Out Of Five
-      user= FBUser.get_by_key_name(drivernum)
-      user.drivercomments.append(text)
-      user.numrates = user.numrates + 1
-      if user.rating== None:
-         user.rating= float(ooFrating)
-      else:
-         user.rating= user.rating + float(ooFrating)
-      user.put()
-      doRender(self, "submit.html",{"college",mycollege})
-      self.redirect("/home")
+        aquery = db.Query(College)
+        mycollege= aquery.get()  
+        drivernum = self.request.get("driver")
+        text = self.request.get("ratetext")
+        ooFrating = self.request.get("ooFrating") # Out Of Five
+        user= FBUser.get_by_key_name(drivernum)
+        user.drivercomments.append(text)
+        user.numrates = user.numrates + 1
+    if user.rating== None:
+        user.rating= float(ooFrating)
+    else:
+        user.rating= user.rating + float(ooFrating)
+    user.put()
+    doRender(self, "submit.html",{"college",mycollege})
+    self.redirect("/home")
 
 class HomeHandler(BaseHandler):
     """
@@ -1074,7 +1088,7 @@ class LoginPageHandler(BaseHandler):
 
   def get(self):
     aquery = db.Query(College)
-    
+    #global mycollege
     mycollege= aquery.get()
     
     user = self.current_user
@@ -1303,56 +1317,99 @@ def geocode(address):
   #coorText = '%s,%s' % (coordinates[3],coordinates[2])
   return (float(coordinates[3]),float(coordinates[2]))
 
+class MainPage(webapp2.RequestHandler):
+    def get(self):
+        self.response.headers['Content-Type'] = 'text/plain'
+        self.response.out.write('Hello, WebApp World!')
 
-def main():
-    global MAP_APIKEY, FROM_EMAIL_ADDR, NOTIFY_EMAIL_ADDR
 
-    logging.getLogger().setLevel(logging.DEBUG)
-    # prepopulate the database
-    query = db.Query(Ride)
+app = webapp2.WSGIApplication([
+                              ('/', LoginPageHandler),
+                              ('/map', MapHandler),
+                              ('/main',MainHandler),
+                              ('/getrides', RideQueryHandler ),
+                              ("/newride.*", NewRideHandler),
+                              ("/addpass", AddPassengerHandler),
+                              ("/adddriver",AddDriverHandler),                                          
+                              ('/home', HomeHandler),
+                              ('/rideinfo', RideInfoHandler),
+                              ('/deleteride', DeleteRideHandler),
+                              ('/editride', EditRideHandler),
+                              ('/applyedits', ChangeRideHandler),
+                              ('/removepassenger', RemovePassengerHandler),
+                              ('/auth/login', LoginHandler),
+                              ('/auth/logout',LogoutHandler),
+                                      ('/signout', SignOutHandler),                
+                                      ('/ratedriver', RateHandler),
+                                      ('/submittext', SubmitRatingHandler),
+                              ('/driverrating',DriverRatingHandler),
+                                      ('/school',SchoolErrorHandler),
+                              ('/ridesuccess',RideSuccessHandler),
+                              ('/updateCircles',UpdateCirclesHandler),
+                              ('/changecircles',ChangeCirclesHandler),
+                              ('/addCircle', AddCircleHandler),
+                              ('/newCircle',NewCircleHandler),
+                              ('/newevent',NewEventHandler),
+                              ('/getevents',EventQueryHandler),
+                              ('/neweventride', NewEventRideHandler),
+                              ('/addevents',AddEventsHandler),
+                              ('/addmultipleevents',AddMultipleEventsHandler),
+                              ('/movepass', MovePassengerHandler),
+                              ('/connectride',ConnectPageHandler),
+                              ('/databasefix', DatabaseHandler),
+                              ('/.*', IncorrectHandler),
+                              ],
+                              debug=True)
+
+# def main():
+#     global MAP_APIKEY, FROM_EMAIL_ADDR, NOTIFY_EMAIL_ADDR
+
+#     logging.getLogger().setLevel(logging.DEBUG)
+#     # prepopulate the database
+#     query = db.Query(Ride)
     
-    application = webapp.WSGIApplication([
-                                  ('/', LoginPageHandler),
-                                  ('/map', MapHandler),
-                                  ('/main',MainHandler),
-                                  ('/getrides', RideQueryHandler ),
-                                  ("/newride.*", NewRideHandler),
-                                  ("/addpass", AddPassengerHandler),
-                                  ("/adddriver",AddDriverHandler),                                          
-                                  ('/home', HomeHandler),
-                                  ('/rideinfo', RideInfoHandler),
-                                  ('/deleteride', DeleteRideHandler),
-                                  ('/editride', EditRideHandler),
-                                  ('/applyedits', ChangeRideHandler),
-                                  ('/removepassenger', RemovePassengerHandler),
-                                  ('/auth/login', LoginHandler),
-                                  ('/auth/logout',LogoutHandler),
-				                          ('/signout', SignOutHandler),                
-				                          ('/ratedriver', RateHandler),
-				                          ('/submittext', SubmitRatingHandler),
-                                  ('/driverrating',DriverRatingHandler),
-				                          ('/school',SchoolErrorHandler),
-                                  ('/ridesuccess',RideSuccessHandler),
-                                  ('/updateCircles',UpdateCirclesHandler),
-                                  ('/changecircles',ChangeCirclesHandler),
-                                  ('/addCircle', AddCircleHandler),
-                                  ('/newCircle',NewCircleHandler),
-                                  ('/newevent',NewEventHandler),
-                                  ('/getevents',EventQueryHandler),
-                                  ('/neweventride', NewEventRideHandler),
-                                  ('/addevents',AddEventsHandler),
-                                  ('/addmultipleevents',AddMultipleEventsHandler),
-                                  ('/movepass', MovePassengerHandler),
-                                  ('/connectride',ConnectPageHandler),
-                                  ('/databasefix', DatabaseHandler),
-                                  ('/.*', IncorrectHandler),
-                                  ],
-                                  debug=True)
-    wsgiref.handlers.CGIHandler().run(application)
+    # application = webapp.WSGIApplication([
+    #                               ('/', LoginPageHandler),
+    #                               ('/map', MapHandler),
+    #                               ('/main',MainHandler),
+    #                               ('/getrides', RideQueryHandler ),
+    #                               ("/newride.*", NewRideHandler),
+    #                               ("/addpass", AddPassengerHandler),
+    #                               ("/adddriver",AddDriverHandler),                                          
+    #                               ('/home', HomeHandler),
+    #                               ('/rideinfo', RideInfoHandler),
+    #                               ('/deleteride', DeleteRideHandler),
+    #                               ('/editride', EditRideHandler),
+    #                               ('/applyedits', ChangeRideHandler),
+    #                               ('/removepassenger', RemovePassengerHandler),
+    #                               ('/auth/login', LoginHandler),
+    #                               ('/auth/logout',LogoutHandler),
+				#                           ('/signout', SignOutHandler),                
+				#                           ('/ratedriver', RateHandler),
+				#                           ('/submittext', SubmitRatingHandler),
+    #                               ('/driverrating',DriverRatingHandler),
+				#                           ('/school',SchoolErrorHandler),
+    #                               ('/ridesuccess',RideSuccessHandler),
+    #                               ('/updateCircles',UpdateCirclesHandler),
+    #                               ('/changecircles',ChangeCirclesHandler),
+    #                               ('/addCircle', AddCircleHandler),
+    #                               ('/newCircle',NewCircleHandler),
+    #                               ('/newevent',NewEventHandler),
+    #                               ('/getevents',EventQueryHandler),
+    #                               ('/neweventride', NewEventRideHandler),
+    #                               ('/addevents',AddEventsHandler),
+    #                               ('/addmultipleevents',AddMultipleEventsHandler),
+    #                               ('/movepass', MovePassengerHandler),
+    #                               ('/connectride',ConnectPageHandler),
+    #                               ('/databasefix', DatabaseHandler),
+    #                               ('/.*', IncorrectHandler),
+    #                               ],
+    #                               debug=True)
+#     wsgiref.handlers.CGIHandler().run(application)
 
 
-if __name__ == '__main__':
-  main()
+# if __name__ == '__main__':
+#   main()
 
 # This is actually the development one.
 # lutherrideshare.appspot key: ABQIAAAAg9WbCE_zwMIRW7jDFE_3ixS0LiYWImofzW4gd3oCqtkHKt0IaBT-STdq-gdH-mW2_ejMPXqxnfJjgw
