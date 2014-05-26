@@ -27,16 +27,16 @@ from google.appengine.ext import webapp
 from google.appengine.ext.webapp import util
 
 #FACEBOOK_APP_ID = "475321089210147" # Rideshare Alerts 
-FACEBOOK_APP_ID = "193298730706524"  # for localhost 
-#FACEBOOK_APP_ID = "219687224866916"  # for new localhost 
+#FACEBOOK_APP_ID = "193298730706524"  # for localhost 
+FACEBOOK_APP_ID = "219687224866916"  # for new localhost 
 #FACEBOOK_APP_ID = "206075606121536" # for beta site 
 #FACEBOOK_APP_ID = "284196238289386"  # for live site 
 #FACEBOOK_APP_ID =  "177023452434948" # for Decorah site 
 #FACEBOOK_APP_ID =  "417443711648291" # for Decorah alerts 
 
 #FACEBOOK_APP_SECRET = "63c61ee0a877749df9927f5a9cd2bad6" # Rideshare Alerts
-FACEBOOK_APP_SECRET = "794c2d8c6548e9d055c675c725fc04c5" # for localhost
-#FACEBOOK_APP_SECRET = "7e3eac2b4ae4ae25020306fad7931e27" # for new localhost
+#FACEBOOK_APP_SECRET = "794c2d8c6548e9d055c675c725fc04c5" # for localhost
+FACEBOOK_APP_SECRET = "7e3eac2b4ae4ae25020306fad7931e27" # for new localhost
 #FACEBOOK_APP_SECRET = "2c4151f8959ea75522b49ea6ccbb1469" # for beta
 #FACEBOOK_APP_SECRET = "07e3ea3ffda4aa08f8c597bccd218e75"  # for live site
 #FACEBOOK_APP_SECRET = "81a9f8776108bd1f216970823458533d" #for Decorah site
@@ -85,11 +85,16 @@ class BaseHandler(webapp.RequestHandler):
     @property
     def current_user(self):
         """Returns the logged in Facebook user, or None if unconnected."""
-        if not hasattr(self, "_current_user"):
-            self._current_user = None
-            user_id = parse_cookie(self.request.cookies.get("fb_user"))
-            if user_id:
-                self._current_user = FBUser.get_by_key_name(user_id)
+        print self.request.host_url
+        if self.request.host_url == 'http://localhost:8080':
+            print "test"
+            self._current_user = FBUser.get_by_key_name('123')
+        else:    
+            if not hasattr(self, "_current_user"):
+                self._current_user = None
+                user_id = parse_cookie(self.request.cookies.get("fb_user"))
+                if user_id:
+                    self._current_user = FBUser.get_by_key_name(user_id)
         return self._current_user
 
     def create_context(self):

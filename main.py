@@ -3,7 +3,7 @@
 
 # This has the app id of ridesharebeta   and is also on ridesharebeta.appspot.com
 # rideshare.luther.edu key:  ABQIAAAAg9WbCE_zwMIRW7jDFE_3ixQ2JlMNfqnGb2qqWZtmZLchh1TSjRS0zuchuhlR8g4tlMGrjg34sNmyjQ
-#!/usr/bin/env python2.5
+#!/usr/bin/env python2.7
 #
 # Copyright 2007 Google Inc.
 #
@@ -20,9 +20,10 @@
 # limitations under the License.
 #
 
-
-
 import webapp2
+
+# testing
+from app.controllers.test_account import create_user
 
 choice = "facebook"
 
@@ -36,6 +37,7 @@ from google.appengine.api import mail
 
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
+import jinja2
 import app.facebook
 
 #from appengine_django.models import BaseModel
@@ -59,6 +61,8 @@ from app.controllers.account_flow import *
 from app.controllers.circles import *
 from app.controllers.events import *
 from app.controllers.rides import *
+
+from app.common.toolbox import doRender
 
 MAP_APIKEY=""
 FROM_EMAIL_ADDR="ridesharedecorah@gmail.com"
@@ -91,8 +95,8 @@ if aquery.count() == 0:
 
 class MainHandler(BaseHandler):
   def get(self):
-
-    user = FBUser.get_by_key_name(self.current_user.id)
+    self.current_user_id = "123";
+    user = FBUser.get_by_key_name(self.current_user_id)
     aquery = db.Query(College)
     mycollege= aquery.get()
 
@@ -107,15 +111,13 @@ class MainHandler(BaseHandler):
         for event in event_list:
           eventsList.append(event.to_dict())
         circles.append(Circle.get_by_id(int(item)))
-    path = os.path.join(os.path.dirname(__file__), 'templates/main.html')
-    self.response.out.write(str(template.render(path, {
+    doRender(self, 'main.html', {
             'event_list': eventsList,
             'circles' : circles,
             'college':mycollege,
             'logout':'/auth/logout',
             'nick':self.current_user.nickname()
-            })))
-
+            })
     
 class MapHandler(BaseHandler):
 
@@ -142,8 +144,7 @@ class MapHandler(BaseHandler):
         #    return
         
         logging.debug(mycollege.address)
-        path = os.path.join(os.path.dirname(__file__), 'templates/map.html')
-        self.response.out.write(str(template.render(path, {
+        doRender(self, 'map.html', {
             'ride_list': ride_list, 
             'greeting' : greeting,
             'college': mycollege,
@@ -152,7 +153,7 @@ class MapHandler(BaseHandler):
             'user':user.id,
             'logout':'/auth/logout',
             'mapkey':MAP_APIKEY,
-            })))
+            })
 
 class SubmitRatingHandler(BaseHandler):
     def post(self):
@@ -169,7 +170,7 @@ class SubmitRatingHandler(BaseHandler):
         else:
             user.rating = user.rating + float(ooFrating)
         user.put()
-        doRender(self, "submit.html",{"college",mycollege})
+        doRender(self, "submit.html", {"college", mycollege})
         self.redirect("/home")
 
 class HomeHandler(BaseHandler):
@@ -272,8 +273,7 @@ class RemovePassengerHandler(BaseHandler):
             greeting = ("Welcome, %s! (<a href=\"%s\">sign out</a>) Go to your <a href='/home'>Home Page</a>" %
                   (user.nickname(), users.create_logout_url("/")))
         message = '%s has been removed from %s\'s ride.' % (name, ride.driver)
-        path = os.path.join(os.path.dirname(__file__), 'templates/map.html')
-        self.response.out.write(str(template.render(path, {
+        doRender(self, 'map.html', {
             'ride_list': ride_list, 
             'greeting' : greeting,
             'college': mycollege,
@@ -281,36 +281,34 @@ class RemovePassengerHandler(BaseHandler):
             'nick' : user.nickname(),
             'logout':'/auth/logout',
             'mapkey':MAP_APIKEY,
-            })))
+        })
 
 class DriverRatingHandler(BaseHandler):
 
     def get(self):
-      drivernum = self.request.get('drivernum')
-      user = FBUser.get_by_key_name(drivernum)
-      ratingslist= user.drivercomments
-      name = user.nickname()
-      if user.rating != None:
-          rating = user.rating/user.numrates
-      else:
-          rating= 0.00
-      numrates = user.numrates
+        drivernum = self.request.get('drivernum')
+        user = FBUser.get_by_key_name(drivernum)
+        ratingslist= user.drivercomments
+        name = user.nickname()
+        if user.rating != None:
+            rating = user.rating / user.numrates
+        else:
+            rating= 0.00
+        numrates = user.numrates
       
-      doRender(self, 'driverrating.html', {
-          'ratingslist': ratingslist,
-          'name': name,
-          'rating':str(rating)[0:3],
-          'numrates':numrates })
-
-
-
+        doRender(self, 'driverrating.html', {
+            'ratingslist': ratingslist,
+            'name': name,
+            'rating':str(rating)[0:3],
+            'numrates':numrates
+        })
 
 class SchoolErrorHandler(BaseHandler):
     
     def get(self):
       aquery = db.Query(College)
       mycollege= aquery.get() 
-      doRender(self, 'schoolerror.html',{"college":mycollege})
+      doRender(self, 'schoolerror.html', {"college": mycollege})
 
 class RideSuccessHandler(BaseHandler):
     
@@ -332,11 +330,12 @@ class RideSuccessHandler(BaseHandler):
                else:
                    noPass += 1
        doRender(self, 'ridesuccess.html', {
-                'noDriver': noDriver,
-                'noPass': noPass,
-                'goodRide': goodRide,
-                'totalRides':len(rides),
-                'college':mycollege})   
+            'noDriver': noDriver,
+            'noPass': noPass,
+            'goodRide': goodRide,
+            'totalRides': len(rides),
+            'college': mycollege
+        })   
 
 class ConnectPageHandler(BaseHandler):
 
@@ -344,7 +343,8 @@ class ConnectPageHandler(BaseHandler):
         user = self.current_user
         userID = user.id
         doRender(self, 'connectride.html',{
-            'drivernum': userID})
+            'drivernum': userID
+        })
 
 class DatabaseHandler(BaseHandler):
     def get(self):
@@ -369,12 +369,11 @@ class DatabaseHandler(BaseHandler):
         if not isinstance(current_ride.driver,str):
            current_ride.put()
 
-        context = {
+        doRender(self, 'update.html', {
             'current_name': ID,
             'next_name': next_ride,
             'next_url': next_url,
-        }
-        self.response.out.write(template.render('update.html', context))
+        })
 
 
 class IncorrectHandler(webapp.RequestHandler):
@@ -384,6 +383,10 @@ class IncorrectHandler(webapp.RequestHandler):
     def get(self):
       doRender(self, 'error.html', {
                             'error_message': "Page does not exist."})
+
+class HelpHandler(BaseHandler):
+    def get(self):
+        doRender(self, 'help.html', {})
 
 class MovePassengerHandler(BaseHandler):
     def post(self):
@@ -407,12 +410,12 @@ class MovePassengerHandler(BaseHandler):
             greeting = ("Welcome, %s! (<a href=\"%s\">sign out</a>) Go to your <a href='/home'>Home Page</a>" %
                         (user.nickname(), users.create_logout_url("/")))
         message = 'You have added passengers to your ride.'
-        path = os.path.join(os.path.dirname(__file__), 'templates/index.html')
-        self.response.out.write(template.render(path, {
+
+        doRender(self, 'index.html', {
             'greeting' : greeting,
             'message' : message,
             'mapkey':MAP_APIKEY,
-            }))
+        })
 
 def geocode(address):
  # This function queries the Google Maps API geocoder with an
@@ -484,7 +487,9 @@ app = webapp2.WSGIApplication([
     ('/movepass', MovePassengerHandler),
     ('/connectride',ConnectPageHandler),
     ('/databasefix', DatabaseHandler),
-    ('/.*', IncorrectHandler),
+    ('/testing', create_user),
+    ('/help', HelpHandler),
+    ('/.*', IncorrectHandler)
     ],
     debug=True)
 

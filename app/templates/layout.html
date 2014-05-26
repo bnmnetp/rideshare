@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>{% block title %}{% endblock %} - Rideshare</title>
+	<link rel="stylesheet" href="static/style.css" type="text/css" media="screen"/>
+	<meta charset="utf-8">
+	<meta content="width=device-width, initial-scale=1.0, user-scalable=no" name="viewport">
+	{% block head %}{% endblock %}
+</head>
+<body>
+	<div id="wrapper">
+
+		<div id="header">
+			<div id="logo">
+				<h1 style="color:white">Luther Rideshare</h1>
+			</div>
+		</div>
+
+		<div id="menu">
+			{% block menu %}{% endblock %}
+		</div>
+
+		<div id="page">
+			<div id="page-bgtop">
+				<div id="page-bgbtm">
+					<div id="content">
+						{% block main %}{% endblock %}
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+	<div style="clear: both;"></div>
+	<div id="footer">
+		<p>Developed by Luther College</p>
+	</div>
+</body>
+</html>

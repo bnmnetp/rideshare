@@ -1,7 +1,12 @@
 import os.path
-from google.appengine.ext.webapp import template
+import jinja2
 
-def doRender(handler, name='map.html', value={}):
-    temp = os.path.join(os.path.dirname(__file__), '../templates/' + name)
-    outstr = template.render(temp, value)
-    handler.response.out.write(str(outstr))
+JINJA_ENVIRONMENT = jinja2.Environment(
+    loader=jinja2.PackageLoader('app', 'templates'),
+    extensions=['jinja2.ext.autoescape'],
+    autoescape=True
+)
+
+def doRender(handler, name = 'map.html', value = {}):
+	template = JINJA_ENVIRONMENT.get_template(name)
+	handler.response.write(template.render(value))
