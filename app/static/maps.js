@@ -124,19 +124,13 @@ var Map = augment(Object, function () {
 			size: new google.maps.Size(30, 40)
 		};
 
-		var init = function () {
-			this.map = new google.maps.Map({
-				mapDiv: document.querySelector('#map_canvas'),
-				opts: {
-					draggableCursor: 'crosshair',
-					center: google.maps.LatLng(this.location.lat, this.location.lng),
-					mapTypeId: google.maps.MapTypeId.ROADMAP,
-					zoom: 6
-				}
-			})
-		}
+	    this.map = new google.maps.Map(document.querySelector('#map_canvas'), {
+	        draggableCursor: 'crosshair',
+	        center: new google.maps.LatLng(this.location.lat, this.location.lng),
+	        mapTypeId: google.maps.MapTypeId.ROADMAP,
+	        zoom: 6
+	    })
 
-		google.maps.event.addDomListener(window, 'load', init);
 
 		this.marker = new google.maps.Marker({
 			position: this.location,
@@ -149,7 +143,7 @@ var Map = augment(Object, function () {
 		this.cluster.setGridSize(30);
 		google.maps.event.addListener(this.cluster, "clusterclick", function (cluster) {
 			this.cluster_click = true;
-		}.bind(this));
+		});
 
 		this.geocoder = new google.maps.Geocoder();
 		//google.maps.event.addListener()
@@ -225,8 +219,6 @@ var Map = augment(Object, function () {
 		});
 	}
 });
-
-
 
 var Location = augment(Object, function () {
 	this.constructor = function (title, lat, long) {

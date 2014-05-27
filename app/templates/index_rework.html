@@ -11,6 +11,10 @@ pageTracker._trackPageview();
 } catch(err) {
 }
 </script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB15X6ti6tDQUQKjwPCI2zi3XFfxZW3MGM&sensor=false" type="text/javascript"></script>
+<script type="text/javascript">
+
+</script>
 {% endblock %}
 
 {% block main %}
@@ -92,11 +96,13 @@ pageTracker._trackPageview();
 <script src="static/jquery.dataTables.js" type="text/javascript"></script>
 <script src="static/jquery-ui-1.9.0.custom.min.js" type="text/javascript"></script>
 <!-- <script src="static/functions.js" type="text/javascript"></script> -->
-<script src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyB15X6ti6tDQUQKjwPCI2zi3XFfxZW3MGM&sensor=true" type="text/javascript">
-</script>
+<!--  <script src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyB15X6ti6tDQUQKjwPCI2zi3XFfxZW3MGM&sensor=true" type="text/javascript">
+</script> -->
 <script src="http://google-maps-utility-library-v3.googlecode.com/svn/tags/markerclustererplus/2.0.9/src/markerclusterer.js" type="text/javascript"></script>
 <script src="static/maps.js" type="text/javascript"></script>
-<script>
+
+
+<script type="text/javascript">
 // if(window.attachEvent) {
 //     window.attachEvent('onload', yourFunctionName);
 // } else {
@@ -113,7 +119,7 @@ pageTracker._trackPageview();
 // }
 function detectBrowser() {
   var useragent = navigator.userAgent;
-  var mapdiv = document.getElementById("map-canvas");
+  var mapdiv = document.getElementById("map_canvas");
 
   if (useragent.indexOf('iPhone') != -1 || useragent.indexOf('Android') != -1 ) {
     mapdiv.style.width = '100%';
@@ -124,5 +130,6 @@ function detectBrowser() {
   }
 }
 var map = new Map();
+
 </script>
 {% endblock %}

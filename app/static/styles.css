@@ -1,9 +1,11 @@
 html {
 	position: relative;
+	height: 100%;
 	min-height: 100%;
 }
 
 body {
+	height: 100%;
 	padding-top: 70px;
 	margin-bottom: 60px;
 }
@@ -23,7 +25,8 @@ template {
 }
 
 #map_canvas {
-    width: 600px;
     height: 400px;
-    margin: 0 auto;
+    width: 100%;
+    margin: 0px;
+    padding: 0px;
 }
