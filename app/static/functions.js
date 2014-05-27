@@ -17,7 +17,7 @@ var clusterClick = false;
 var directionsService;
 var directionsDisplay;
 
-var mycollege = new College("Luther College","700 College Drive Decorah,IA",43.313059,-91.799501);
+var mycollege = new College("Luther College", "700 College Drive Decorah,IA", 43.313059, -91.799501);
 //var mycollege = new College("UW-LaCrosse","1725 State Street, La Crosse, WI",43.812834,-91.229022);
 //var mycollege = new College("Decorah","Decorah, IA",43.303306,-91.785709);
 
@@ -150,6 +150,7 @@ function initialize(mess)
         directionsDisplay = new google.maps.DirectionsRenderer({preserveViewport:false});
         
 
+    // TODO
 	mc = new MarkerClusterer(map);
 	mc.setGridSize(30);
     google.maps.event.addListener(mc, "clusterclick", function(cluster){
