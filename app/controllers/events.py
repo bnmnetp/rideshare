@@ -4,6 +4,8 @@ from google.appengine.ext import db
 from django.utils import simplejson
 from app.model import *
 from google.appengine.api import mail
+import datetime
+from datetime import date
 
 class NewEventHandler(BaseHandler):
     def get(self):

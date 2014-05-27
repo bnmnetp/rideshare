@@ -29,9 +29,11 @@ pageTracker._trackPageview();
         </div>
         <div>
 			<form action="#" onsubmit="showAddress(this.address.value); return false">
-				Enter an address or city, state to create a ride:
-				<input type="text" size="60" id="address" name="address" />
-				<input type="submit" value="Go!" />
+                <div class="form-group">
+                    <label>Enter an address or city, state to create a ride:</label>
+                    <input type="text" class="form-control" name="address">
+                </div>
+                <button type="submit" class="btn btn-primary">Search</button>
 			</form>
         </div>
 	</div>
@@ -39,30 +41,76 @@ pageTracker._trackPageview();
 {% endblock %}
 
 {% block scripts %}
+{% raw %}
+<template id="ride-template" type="text/x-handlebars-template">
+    {{#if rides}}
+    <table>
+        <tr>
+            <th>Driver</th>
+            <th>Spots available</th>
+            <th>Date</th>
+            <th>Phone #</th>
+            <th></th>
+        </tr>
+        {{#each rides}}
+        {{with this}}
+            <tr>
+                <td>
+                    {{#if drivername}}
+                        {{drivername}}
+                    {{else}}
+                        No driver
+                    {{/if}}
+                </td>
+                <td>
+                    {{spots_available}}
+                </td>
+                <td>
+                    {{ToD}}
+                </td>
+                <td>
+                    {{contact}}
+                </td>
+                <td>
+                    <button data-join-ride="{{id}}">Join</button>
+                </td>
+            </tr>
+            td
+        {{/with}}
+        {{/each}}
+    </table>
+    {{else}}
+    <p>There are currently no rides avaiable.</p>
+    {{/if}}
+    <button data-create-ride="{{event.id}}">Create Ride</button>
+</template>
+{% endraw %}
 
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0-alpha.4/handlebars.min.js"></script>
 <script src="static/json-template.js" type="text/javascript"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js" type="text/javascript"></script>
 <script src="static/jquery.dataTables.js" type="text/javascript"></script>
 <script src="static/jquery-ui-1.9.0.custom.min.js" type="text/javascript"></script>
-<script src="static/functions.js" type="text/javascript"></script>
+<!-- <script src="static/functions.js" type="text/javascript"></script> -->
 <script src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyB15X6ti6tDQUQKjwPCI2zi3XFfxZW3MGM&sensor=true" type="text/javascript">
 </script>
 <script src="http://google-maps-utility-library-v3.googlecode.com/svn/tags/markerclustererplus/2.0.9/src/markerclusterer.js" type="text/javascript"></script>
+<script src="static/maps.js" type="text/javascript"></script>
 <script>
-if(window.attachEvent) {
-    window.attachEvent('onload', yourFunctionName);
-} else {
-    if(window.onload) {
-        var curronload = window.onload;
-        var newonload = function() {
-            curronload();
-            initialize('{{message}}')
-        };
-        window.onload = newonload;
-    } else {
-        window.onload = initialize('{{message}}');
-    }
-}
+// if(window.attachEvent) {
+//     window.attachEvent('onload', yourFunctionName);
+// } else {
+//     if(window.onload) {
+//         var curronload = window.onload;
+//         var newonload = function() {
+//             curronload();
+//             initialize('{{message}}')
+//         };
+//         window.onload = newonload;
+//     } else {
+//         window.onload = initialize('{{message}}');
+//     }
+// }
 function detectBrowser() {
   var useragent = navigator.userAgent;
   var mapdiv = document.getElementById("map-canvas");
@@ -75,5 +123,6 @@ function detectBrowser() {
     mapdiv.style.height = '800px';
   }
 }
+var map = new Map();
 </script>
 {% endblock %}

@@ -3,6 +3,8 @@ from app.nateusers import BaseHandler, FBUser
 from app.model import *
 from django.utils import simplejson
 from google.appengine.ext import db
+import datetime
+from datetime import date
 
 class RideQueryHandler(BaseHandler):
     """

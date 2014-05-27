@@ -2,6 +2,8 @@ from app.common.toolbox import doRender
 from app.nateusers import BaseHandler, FBUser
 from google.appengine.ext import db
 from app.model import *
+import datetime
+from datetime import date
 
 class ChangeCirclesHandler(BaseHandler): #actual page for changing circles
     def get(self):

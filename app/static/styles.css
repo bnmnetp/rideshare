@@ -18,4 +18,12 @@ body {
 	line-height: 60px;
 }
 
+template {
+	display: none;
+}
 
+#map_canvas {
+    width: 600px;
+    height: 400px;
+    margin: 0 auto;
+}

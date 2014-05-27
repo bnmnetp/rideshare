@@ -150,17 +150,16 @@ function initialize(mess)
         directionsDisplay = new google.maps.DirectionsRenderer({preserveViewport:false});
         
 
-    // TODO
 	mc = new MarkerClusterer(map);
 	mc.setGridSize(30);
     google.maps.event.addListener(mc, "clusterclick", function(cluster){
 	    clusterClick = true;
 	});
-
+    // TODO START
         geocoder = new google.maps.Geocoder();
         google.maps.event.addListener(mymarker, "click", function()
 			   { windowOpen(centerLL,"Luther College<br />Decorah, Iowa"); });
-
+    // TODO END
 
         var r;
         for(r in rides)
@@ -543,24 +542,25 @@ function addEventToMap(event, eventnum)
 }
 
 // Adds a popup to the GoogleMap that fits 'ride'
+// Reference model.py for stucture of object
 function addRideToMap(ride, rideNum)
 {
     if (ride.driver == "needs driver") {
-	var tooltext = 'needs driver';
-	reqMarkerOptions['title'] = tooltext;
-	if (ride.destination_title == mycollege.name) {
-            var amarker = new google.maps.Marker({position:new google.maps.LatLng(ride.start_point_lat, ride.start_point_long)});
-            amarker.setOptions(icons.blue);
-	} else {
-            var amarker = new google.maps.Marker({position:new google.maps.LatLng(ride.destination_lat, ride.destination_long)});
-            amarker.setOptions(icons.blue);
-	}
+    	var tooltext = 'needs driver';
+    	reqMarkerOptions['title'] = tooltext;
+    	if (ride.destination_title == mycollege.name) {
+                var amarker = new google.maps.Marker({position:new google.maps.LatLng(ride.start_point_lat, ride.start_point_long)});
+                amarker.setOptions(icons.blue);
+    	} else {
+                var amarker = new google.maps.Marker({position:new google.maps.LatLng(ride.destination_lat, ride.destination_long)});
+                amarker.setOptions(icons.blue);
+    	}
         google.maps.event.addListener(amarker, "click", function()
-			   {
-			       if (amarker.getPosition()) {
-                                   windowOpen(amarker.getPosition(),addDriverPopup(ride, rideNum, amarker.getPosition().lat(), amarker.getPosition().lng()));
-			       }
-			   });
+    			   {
+    			       if (amarker.getPosition()) {
+                                       windowOpen(amarker.getPosition(),addDriverPopup(ride, rideNum, amarker.getPosition().lat(), amarker.getPosition().lng()));
+    			       }
+    			   });
         ride.marker = amarker;
         amarker.setMap(map);
         overlays.push(amarker);
