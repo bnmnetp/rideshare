@@ -1,25 +1,4 @@
-// augment js
-// https://github.com/javascript/augment
-(function (global, factory) {
-    if (typeof define === "function" && define.amd) define(factory);
-    else if (typeof module === "object") module.exports = factory();
-    else global.augment = factory();
-}(this, function () {
-    "use strict";
 
-    var Factory = function () {};
-    var slice = Array.prototype.slice;
-
-    return function (base, body) {
-        var uber = Factory.prototype = typeof base === "function" ? base.prototype : base;
-        var prototype = new Factory;
-        body.apply(prototype, slice.call(arguments, 2).concat(uber));
-        if (!prototype.hasOwnProperty("constructor")) return prototype;
-        var constructor = prototype.constructor;
-        constructor.prototype = prototype;
-        return constructor;
-    }
-}));
 
 var College = augment(Object, function () {
 	this.constructor = function (name, address, lat, long) {
@@ -87,6 +66,11 @@ var Map = augment(Object, function () {
 
 		this.create_markers();
 	}
+
+	this.set_flow = function (flow) {
+		this.flow = flow;
+	}
+
 	// Creates map markers and stores them in this.icons
 	this.create_markers = function () {
 		this.icons.event = {
@@ -131,6 +115,7 @@ var Map = augment(Object, function () {
 	        zoom: 6
 	    })
 
+	    google.maps.event.addListener(this.map, 'click', this.get_address.bind(this))
 
 		this.marker = new google.maps.Marker({
 			position: this.location,
@@ -217,6 +202,57 @@ var Map = augment(Object, function () {
 
 			}
 		});
+
+
+	}
+
+	this.get_address = function (e) {
+		if (e != null) {
+			this.latLng = e.latLng;
+			this.geocoder.geocode({
+				latLng: this.latLng
+			}, this.disp_address.bind(this));
+		}
+	}
+
+	this.disp_address = function (location) {
+		var source = document.querySelector('#location-template').innerHTML;
+		var template = Handlebars.compile(source);
+		var html = template({
+			location: 'Test Location'
+		});
+		console.log(location)
+		var point = location[0].geometry.location;
+		this.set_window(
+			point,
+			html
+		)
+		flow.change_slide(2, 'general');
+	}
+
+	this.set_window = function (location, content) {
+		var LatLng = new google.maps.LatLng(location.k, location.A);
+		var dialog = new google.maps.InfoWindow({
+			position: LatLng,
+			content: content
+		});
+		var marker = new google.maps.Marker({
+			position: LatLng,
+			map: this.map,
+		})
+		console.log(dialog);
+		google.maps.event.addListener(
+			dialog,
+			'closeclick',
+			function () {
+				this.click_listener = google.maps.event.addListener(
+					map,
+					'click',
+					this.get_address
+				)
+			}.bind(this)
+		);
+		google.maps.event.removeListener(this.click_listener);
 	}
 });
 

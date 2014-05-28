@@ -18,29 +18,124 @@ pageTracker._trackPageview();
 {% endblock %}
 
 {% block main %}
-<input type="hidden"name="name" value="{{user}}" id="idnum" />
+<div class="guide">
+    <ul>
+        <li data-header='1' class="active">
+            <span>Location</span>
+            <i class="glyphicon glyphicon-chevron-right"></i>
+        </li>
+        <li data-header='2'>
+            <span>Type</span>
+            <i class="glyphicon glyphicon-chevron-right"></i>
+        </li>
+        <li data-header='3'>
+            <span>Details</span>
+            <i class="glyphicon glyphicon-chevron-right"></i>
+        </li>
+        <li data-header='4'>
+            <span>Finished</span>
+        </li>
+    </ul>
+</div>
 <div class="container">
-	<div class="col-md-8">
-		<div id="map_canvas"></div>
-	</div>
-	<div class="col-md-4">
-		<div>
-			<p>Click anywhere on the map to create a destination or starting point. You may want to zoom in first. You can add yourself to a ride by clicking on one of the red or green pushpins on the map.
-			<br><br>
-			Enter an address or filter the pushpins by date using the controls on the right.
-			<br>
-	       </p>
+
+    <div>
+        <div class="col-md-8 map_con" id='col_map'>
+            <div id="map_canvas"></div>
         </div>
-        <div>
-			<form action="#" onsubmit="showAddress(this.address.value); return false">
+        <div class="col-md-4 map_con" id='col_dialog' data-slide="1" data-option="general">
+            <div>
+                <p>Click anywhere on the map to create a destination or starting point. You may want to zoom in first. You can add yourself to a ride by clicking on one of the red or green pushpins on the map.
+                <br><br>
+                Enter an address or filter the pushpins by date using the controls on the right.
+                <br>
+               </p>
+            </div>
+            <div>
+                <form action="#" onsubmit="showAddress(this.address.value); return false">
+                    <div class="form-group">
+                        <label>Enter an address or city, state to create a ride:</label>
+                        <input type="text" class="form-control" name="address">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </form>
+            </div>
+        </div>
+        <div class="col-md-4 map_con" data-slide="2" data-option="general">
+            <p>Are you creating a new event or an indivudal ride?</p>
+            <button class="btn btn-primary" data-next="1:event">
+                New Event
+            </button>
+            <button class="btn btn-primary" data-next="1:ride">
+                Individual Ride
+            </button>
+        </div>
+        <div class="col-md-6" data-slide="1" data-option="event">
+            <form>
                 <div class="form-group">
-                    <label>Enter an address or city, state to create a ride:</label>
-                    <input type="text" class="form-control" name="address">
+                    <label>Event Name event</label>
+                    <input class="form-control" type="text" placeholder="Name">
                 </div>
-                <button type="submit" class="btn btn-primary">Search</button>
-			</form>
+                <div class="form-group">
+                    <label>Date</label>
+                    <input class="form-control" type="text" placeholder="Date" id="event-date">
+                </div>
+                <div class="form-group">
+                    <label>Time</label>
+                    <input class="form-control" type="text" placeholder="Time">
+                </div>
+                <div class="form-group">
+                    <label>Circle</label>
+                    <select class="form-control">
+                        <option>All</option>
+                    </select>
+                </div>
+            </form>
         </div>
-	</div>
+        <div class="col-md-6" data-slide="1" data-option="ride">
+            <form>
+
+                <div class="form-group">
+                    <label>Event Name ride</label>
+                    <input class="form-control" type="text" placeholder="Name">
+                </div>
+                <div class="form-group">
+                    <label>Date</label>
+                    <input class="form-control" type="text" placeholder="Date" id="event-date">
+                </div>
+            </form>
+        </div>
+        <div class="col-md-6" data-slide="2" data-option="ride">
+            <p>Do you need a ride or can you drive?</p>
+            <button class="btn btn-primary" data-next="3:ride">
+                Need a Ride
+            </button>
+            <button class="btn btn-primary" data-next="4:ride">
+                Driving
+            </button>
+        </div>
+        <div class="col-md-6" data-slide="3" data-option="ride">
+            <div class="form-group">
+                <label>Date</label>
+                <input class="form-control date-select" type="text" placeholder="Date">
+            </div>
+            <div class="form-group">
+                <label>Time</label>
+                <input class="form-control" type="text" placeholder="Time">
+            </div>
+        </div>
+        <div class="col-md-6" data-slide="4" data-option="ride">
+
+        </div>
+    </div>
+
+
+    <div data-loading>
+        <div class="col-md-12">
+            <h1>Loading</h1>
+        </div>
+    </div>
+
 </div>
 {% endblock %}
 
@@ -88,18 +183,27 @@ pageTracker._trackPageview();
     {{/if}}
     <button data-create-ride="{{event.id}}">Create Ride</button>
 </template>
+<template id="location-template" type="text/x-handlebars-template">
+    <p>{{location}}</p>
+</template>
+<template id="event-template" type="text/x-handlebars-template">
+
+</template>
 {% endraw %}
 
+<script src="static/augment.js" type="text/javascript"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0-alpha.4/handlebars.min.js"></script>
 <script src="static/json-template.js" type="text/javascript"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js" type="text/javascript"></script>
 <script src="static/jquery.dataTables.js" type="text/javascript"></script>
-<script src="static/jquery-ui-1.9.0.custom.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+<!-- <script src="static/jquery-ui-1.9.0.custom.min.js" type="text/javascript"></script> -->
 <!-- <script src="static/functions.js" type="text/javascript"></script> -->
 <!--  <script src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyB15X6ti6tDQUQKjwPCI2zi3XFfxZW3MGM&sensor=true" type="text/javascript">
 </script> -->
 <script src="http://google-maps-utility-library-v3.googlecode.com/svn/tags/markerclustererplus/2.0.9/src/markerclusterer.js" type="text/javascript"></script>
 <script src="static/maps.js" type="text/javascript"></script>
+<script src="static/flow.js" type="text/javascript"></script>
 
 
 <script type="text/javascript">
@@ -130,6 +234,9 @@ function detectBrowser() {
   }
 }
 var map = new Map();
-
+var flow = new Flow();
+map.set_flow(flow);
+$('#event-date').datepicker();
+$('.date-select').datepicker();
 </script>
 {% endblock %}

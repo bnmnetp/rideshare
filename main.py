@@ -449,7 +449,7 @@ class MainPage(webapp2.RequestHandler):
 app = webapp2.WSGIApplication([
     ('/', LoginPageHandler),
     ('/map', MapHandler),
-    ('/main',MainHandler),
+    ('/main', MainHandler),
 
     # controllers/rides.py
     ('/getrides', RideQueryHandler ),

@@ -30,3 +30,45 @@ template {
     margin: 0px;
     padding: 0px;
 }
+
+.guide {
+	height: 60px;
+	background-color: #F8F8F8;
+	width: 100%;
+	padding: 0px 10px 0px 10px;
+	margin: 0px 0px 10px 0px;
+}
+
+.guide ul {
+	list-style-type: none;
+	padding: 0px;
+	margin: 0px;
+}
+
+.guide li {
+	display: inline-block;
+	cursor: pointer;
+	padding-left: 10px;
+	color: #5E5E5E;
+}
+
+.guide .active {
+	/*//padding-bottom: 12px;*/
+	border-bottom: 2px solid #DD4B39;
+	color: #333;
+}
+
+.guide span {
+	line-height: 60px;
+	font-size: 24px;
+}
+
+.guide i {
+	line-height: 60px;
+	font-size: 20px;
+}
+
+.map_con {
+	-webkit-transition: width 2s; /* For Safari 3.1 to 6.0 */
+	transition: width 2s;
+}
