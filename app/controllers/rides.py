@@ -57,9 +57,6 @@ class RideQueryHandler(BaseHandler):
 
     
 class NewRideHandler(BaseHandler):
-    """
-    For new Rides
-    """
     def post(self):
         ride = Ride()
         

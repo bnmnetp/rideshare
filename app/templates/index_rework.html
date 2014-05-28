@@ -61,7 +61,7 @@ pageTracker._trackPageview();
                 </form>
             </div>
         </div>
-        <div class="col-md-4 map_con" data-slide="2" data-option="general">
+        <div class="col-md-4 map_con" data-slide="2" data-option="general" data-route='specify_type'>
             <p>Are you creating a new event or an indivudal ride?</p>
             <button class="btn btn-primary" data-next="1:event">
                 New Event
@@ -124,9 +124,9 @@ pageTracker._trackPageview();
                 <p class="lead">Is this the starting or ending point?</p>
                 <div class="form-group" >
                     <label>Location #1:
-                        <span data-location="1"></span>
+                        <span data-ride="loc_1"></span>
                     </label>
-                    <select class='form-control' name='location_type' id='location_type_form'>
+                    <select class='form-control' data-ride="loc_1_type" name="location">
                         <option value="finish">Destination</option>
                         <option value="start">Starting Point</option>
                     </select>
@@ -140,15 +140,15 @@ pageTracker._trackPageview();
             <form>
                 <p class="lead">
                     Select the 
-                    <span id="location_type_disp"></span>
+                    <span data-ride="loc_2_type"></span>
                 </p>
                 <div class="form-group" >
                     <label>Location #2:
-                        <span id="location_2"></span>
+                        <span data-ride="loc_2"></span>
                     </label>
 
                 </div>
-                <button class="btn btn-primary" data-next="5:ride" type='button' disabled='disabled' id="location_btn">
+                <button class="btn btn-primary" data-next="5:ride" type='button' disabled='disabled' data-ride="loc_btn">
                     Next
                 </button>
             </form>

@@ -250,8 +250,8 @@ var Map = augment(Object, function () {
 			flow.change_slide(2, 'general');
 		}
 		if (this.state.slide == 4 && this.state.option == 'ride') {
-			var location_2 = document.querySelector('#location_2');
-			var location_btn = document.querySelector('#location_btn');
+			var location_2 = document.querySelector('[data-ride="loc_2"]');
+			var location_btn = document.querySelector('[data-ride="loc_btn"]');
 			location_2.textContent = this.marker_current.address;
 			location_btn.removeAttribute('disabled');
 		}
@@ -291,13 +291,13 @@ var Map = augment(Object, function () {
 		// Set location #1 for data-slide=3, data-option=ride
 		if (id == 3 && option == 'ride') {
 			this.current_ride.driver = true;
-			var location = document.querySelector('[data-location="1"]');
+			var location = document.querySelector('[data-ride="loc_1"]');
 			location.textContent = this.marker_current.address;
 		}
 		// Set location_type when selecting location #2
 		if (id == 4 && option == 'ride') {
-			var location_type_form = document.querySelector('#location_type_form');
-			var location_type_disp = document.querySelector('#location_type_disp');
+			var location_type_form = document.querySelector('[data-ride="loc_1_type"]');
+			var location_type_disp = document.querySelector('[data-ride="loc_2"]');
 			var text;
 			this.marker_current.location_type = location_type_form.value;
 			if (location_type_form.value != 'finish') {
