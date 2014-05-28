@@ -13,14 +13,17 @@ var Flow = augment(Object, function () {
 
 		this.id_last = 1;
 		this.option = '';
+		this.map;
 
 		console.log(this.loading)
 
 		for (var i = 0; i < this.views.length; i++) {
 			var view = this.views[i];
-
-			if (view.dataset.slide != 1) {
-				view.classList.toggle('hidden');
+			
+			if (view.dataset.slide == 1 && view.dataset.option == 'general') {
+				view.classList.remove('hidden')
+			} else {
+				view.classList.add('hidden');
 			}
 		}
 
@@ -36,6 +39,10 @@ var Flow = augment(Object, function () {
 			var current = this.specify[i];
 			current.addEventListener('click', this.specify_event.bind(this));
 		}
+	}
+
+	this.set_map = function (map) {
+		this.map = map;
 	}
 
 	this.next_event = function (e) {
@@ -60,36 +67,45 @@ var Flow = augment(Object, function () {
 		this.change_slide(3);
 	}
 
-	this.change_slide = function (id, option) {
-		// if (id == 2) {
+	this.special_action = function (id, option) {
+		this.map.special_action(id, option);
+	}
 
-		// }
+	this.change_slide = function (id, option) {
+		this.special_action(id, option);
 		this.id_last = id;
+
 		for (var i = 0; i < this.views.length; i++) {
 			var view = this.views[i];
 			if (!view.classList.contains('hidden')) {
 				view.classList.add('hidden');
 			}
-			if (view.dataset.slide == id && view.dataset.option == option) {
-				view.classList.remove('hidden');
-			}
-			if (view.dataset.slide == 2 && id == 2) {
-				this.col_map.classList.remove('col-md-8');
-				this.col_map.classList.add('col-md-6');
-				// view.classList.remove('col-md-4');
-				// view.classList.add('col-md-6');
-			}
+			// if (view.dataset.slide == id && view.dataset.option == option) {
+			// 	view.classList.remove('hidden');
+			// }
+			// if (view.dataset.slide == 2 && id == 2) {
+			// 	this.col_map.classList.remove('col-md-8');
+			// 	this.col_map.classList.add('col-md-6');
+			// 	// view.classList.remove('col-md-4');
+			// 	// view.classList.add('col-md-6');
+			// }
 		}
-		// this.loading.classList.remove('hidden');
-		// window.setTimeout(function () {
-		// 	this.loading.classList.add('hidden');
-		// 	for (var i = 0; i < this.views.length; i++) {
-		// 		var view = this.views[i];
-				// if (view.dataset.slide == id) {
-				// 	view.classList.remove('hidden');
-				// }
-		// 	}
-		// }.bind(this), 1000);
+		this.loading.classList.remove('hidden');
+		window.setTimeout(function () {
+			this.loading.classList.add('hidden');
+			for (var i = 0; i < this.views.length; i++) {
+				var view = this.views[i];
+				if (view.dataset.slide == id && view.dataset.option == option) {
+					view.classList.remove('hidden');
+				}
+				if (view.dataset.slide == 2 && id == 2) {
+					this.col_map.classList.remove('col-md-8');
+					this.col_map.classList.add('col-md-6');
+					this.loading.classList.remove('col-md-4');
+					this.loading.classList.add('col-md-6');
+				}
+			}
+		}.bind(this), 500);
 		// for (var i = 0; i < this.headers.length; i++) {
 		// 	var header = this.headers[i];
 		// 	if (header.classList.contains('active')) {
