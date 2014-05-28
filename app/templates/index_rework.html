@@ -18,7 +18,7 @@ pageTracker._trackPageview();
 {% endblock %}
 
 {% block main %}
-<div class="guide">
+<!-- <div class="guide">
     <ul>
         <li data-header='1' class="active">
             <span>Location</span>
@@ -36,7 +36,7 @@ pageTracker._trackPageview();
             <span>Finished</span>
         </li>
     </ul>
-</div>
+</div> -->
 <div class="container">
 
     <div>
@@ -126,9 +126,9 @@ pageTracker._trackPageview();
                     <label>Location #1:
                         <span data-location="1"></span>
                     </label>
-                    <select class='form-control'>
-                        <option>Destination</option>
-                        <option>Starting Point</option>
+                    <select class='form-control' name='location_type' id='location_type_form'>
+                        <option value="finish">Destination</option>
+                        <option value="start">Starting Point</option>
                     </select>
                 </div>
                 <button class="btn btn-primary" data-next="4:ride" type='button'>
@@ -138,27 +138,27 @@ pageTracker._trackPageview();
         </div>
         <div class="col-md-6" data-slide="4" data-option="ride">
             <form>
-                <p class="lead">Select the second location</p>
+                <p class="lead">
+                    Select the 
+                    <span id="location_type_disp"></span>
+                </p>
                 <div class="form-group" >
                     <label>Location #2:
-                        <span data-location="2"></span>
+                        <span id="location_2"></span>
                     </label>
-                    <select class='form-control' name='location_type'>
-                        <option value="finish">Destination</option>
-                        <option value="start">Starting Point</option>
-                    </select>
+
                 </div>
-                <button class="btn btn-primary" data-next="5:ride" type='button'>
+                <button class="btn btn-primary" data-next="5:ride" type='button' disabled='disabled' id="location_btn">
                     Next
                 </button>
             </form>
         </div>
-        <div class="col-md-6" data-slide="5" data-option="ride">
-            <form>
+        <div class="col-md-6" data-slide="5" data-option="ride" >
+            <form id='ride_form'>
                 <p class="lead">Give us additional details</p>
                 <div class="form-group">
                     <label>Max Passengers</label>
-                    <select class="form-control">
+                    <select class="form-control" name='max_passengers'>
                         <option>1</option>
                         <option>2</option>
                         <option>3</option>
@@ -171,17 +171,17 @@ pageTracker._trackPageview();
                 </div>
                 <div class="form-group">
                     <label>Date</label>
-                    <input class="form-control date-select" type="text" placeholder="Date">
+                    <input class="form-control date-select" type="text" placeholder="Date" name='date'>
                 </div>
                 <div class="form-group">
                     <label>Time</label>
-                    <input class="form-control" type="text" placeholder="Time">
+                    <input class="form-control" type="text" placeholder="Time" name='time'>
                 </div>
                 <div class="form-group">
                     <label>Additional Details</label>
-                    <input class="form-control" type="text" placeholder="Details">
+                    <input class="form-control" type="text" placeholder="Details" name='details'>
                 </div>
-                <button class="btn btn-primary" data-next="6:ride" type='button'>
+                <button class="btn btn-primary" data-send="ride" type='button'>
                     Create Ride
                 </button>
             </form>

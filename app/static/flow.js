@@ -73,6 +73,8 @@ var Flow = augment(Object, function () {
 
 	this.change_slide = function (id, option) {
 		this.special_action(id, option);
+		map.state.slide = id;
+		map.state.option = option;
 		this.id_last = id;
 
 		for (var i = 0; i < this.views.length; i++) {

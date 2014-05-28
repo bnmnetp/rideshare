@@ -4,44 +4,30 @@ import logging
 
 # Make this very flat to start with, then add references later...
 class Ride(db.Model):
-    max_passengers = db.IntegerProperty()
-    num_passengers = db.IntegerProperty()
-    driver = db.StringProperty()
-    drivername = db.StringProperty()
-    start_point_title = db.StringProperty()
-    start_point_lat = db.FloatProperty()
-    start_point_long = db.FloatProperty()
-    destination_title = db.StringProperty()
-    destination_lat = db.FloatProperty()
-    destination_long = db.FloatProperty()
-    ToD = db.DateProperty()
-    part_of_day = db.StringProperty()
+    passengers_max = db.IntegerProperty()
+    passengers_total = db.IntegerProperty()
+    driver = db.BooleanProperty()
+    driver_name = db.StringProperty()
+    origin_add = db.StringProperty()
+    origin_lat = db.FloatProperty()
+    origin_lng = db.FloatProperty()
+    dest_add = db.StringProperty()
+    dest_lat = db.FloatProperty()
+    dest_lng = db.FloatProperty()
+    date = db.DateProperty()
     time = db.StringProperty()
     passengers = db.ListProperty(db.Key)
     contact = db.StringProperty()
-    comment = db.StringProperty()
+    details = db.StringProperty()
     circle = db.StringProperty()
     event = db.StringProperty()
 
-    def to_dict(self):
-        res = {}
-        for k in Ride._properties:   ## special case ToD
-            if k != 'ToD' and k != 'driver' and k != 'passengers':
-                res[k] = getattr(self,k) #eval('self.'+k)
-        res['ToD'] = str(self.ToD)
-        if self.driver:
-            res['driver'] = self.driver
-        else:
-            res['driver'] = "needs driver"
-        res['key'] = unicode(self.key())
-        res['passengers'] = [str(p) for p in self.passengers]
-        return res
 
 class Passenger(db.Model):
     name = db.StringProperty()
-    fullname = db.StringProperty()
+    # fullname = db.StringProperty()
     contact = db.StringProperty()
-    location = db.StringProperty()
+    add = db.StringProperty()
     lat = db.FloatProperty()
     lng = db.FloatProperty()
     ride = db.ReferenceProperty()

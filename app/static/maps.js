@@ -32,6 +32,13 @@ var Map = augment(Object, function () {
 		this.direction_service;
 		this.direction_display;
 
+		this.state = {
+			slide: '1',
+			option: 'general'
+		};
+		this.current_ride = {};
+		this.current_event = {};
+
 		this.marker_current = {};
 
 		this.create_new_marker = true;
@@ -69,6 +76,9 @@ var Map = augment(Object, function () {
 		});
 
 		this.create_markers();
+
+		var ride_send_btn = document.querySelector('[data-send="ride"]');
+		ride_send_btn.addEventListener('click', this.send_ride.bind(this));
 	}
 
 	this.set_flow = function (flow) {
@@ -235,7 +245,16 @@ var Map = augment(Object, function () {
 			point,
 			html
 		)
-		flow.change_slide(2, 'general');
+
+		if (this.state.slide == 1 && this.state.option == 'general') {
+			flow.change_slide(2, 'general');
+		}
+		if (this.state.slide == 4 && this.state.option == 'ride') {
+			var location_2 = document.querySelector('#location_2');
+			var location_btn = document.querySelector('#location_btn');
+			location_2.textContent = this.marker_current.address;
+			location_btn.removeAttribute('disabled');
+		}
 	}
 
 	this.set_window = function (location, content) {
@@ -270,15 +289,61 @@ var Map = augment(Object, function () {
 
 	this.special_action = function (id, option) {
 		// Set location #1 for data-slide=3, data-option=ride
-		console.log('Test')
 		if (id == 3 && option == 'ride') {
-			console.log('Test')
+			this.current_ride.driver = true;
 			var location = document.querySelector('[data-location="1"]');
 			location.textContent = this.marker_current.address;
 		}
-		if (id = 4 && option == 'ride') {
-			var previous = document.querySelector('[data-location="3"], [data-option="ride"]');
+		// Set location_type when selecting location #2
+		if (id == 4 && option == 'ride') {
+			var location_type_form = document.querySelector('#location_type_form');
+			var location_type_disp = document.querySelector('#location_type_disp');
+			var text;
+			this.marker_current.location_type = location_type_form.value;
+			if (location_type_form.value != 'finish') {
+				this.current_ride.destination = this.marker_current;
+				text = 'destination';
+			} else {
+				this.current_ride.origin = this.marker_current;
+				text = 'starting point';
+			}
+			location_type_disp.textContent = text;
+			this.create_new_marker = true;
+
 		}
+		if (id == 5 && option == 'ride') {
+			if (this.marker_current.location_type != 'finish') {
+				this.current_ride.origin = this.marker_current;
+				
+			} else {
+				this.current_ride.destination = this.marker_current;
+			}
+		}
+	}
+
+	this.send_ride = function () {
+		var form = document.querySelector('#ride_form');
+		this.current_ride.max_passengers = form.max_passengers.value;
+		this.current_ride.date = form.date.value;
+		this.current_ride.time = form.time.value;
+		this.current_ride.details = form.details.value;
+		var req_rides = $.ajax({
+			type: 'POST',
+			url: '/newride',
+			dataType: 'json',
+			contentType: 'application/json; charset=UTF-8',
+			data: JSON.stringify(this.current_ride)
+		});
+		req_rides.done(function (message) {
+			console.log('Success')
+		});
+		req_rides.fail(function (message, status) {
+			console.log('Failure')
+		});
+	}
+
+	this.send_event = function () {
+
 	}
 });
 
