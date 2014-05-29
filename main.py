@@ -18,14 +18,26 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
 
 import webapp2
+from simpleauth import SimpleAuthHandler
+
 
 # testing
 from app.controllers.test_account import create_user
+# end testing
 
-choice = "facebook"
+from app.secrets import SESSION_KEY
+
+app_config = {
+    'webapp2_extras.sessions': {
+        'cookie_name': '_simpleauth_sess',
+        'secret_key': SESSION_KEY
+    },
+    'webapp2_extras.auth': {
+        'user_attributes': []
+    }
+}
 
 import wsgiref.handlers
 import datetime
@@ -42,11 +54,11 @@ import app.facebook
 
 #from appengine_django.models import BaseModel
 from google.appengine.ext import db
-if choice != "facebook":
-   from google.appengine.api import users
-else:
-   import app.nateusers as users
-   from app.nateusers import LoginHandler, LogoutHandler, BaseHandler, FBUser
+# if choice != "facebook":
+#    from google.appengine.api import users
+# else:
+import app.nateusers as users
+from app.nateusers import LoginHandler, LogoutHandler, BaseHandler, FBUser
 
 from app.pygeocoder import Geocoder
 
@@ -72,25 +84,18 @@ rideshareWebsite = "http://www.decorahrideshare.com"
 early_late_strings = { "0": "Early", "1": "Late" }
 part_of_day_strings = { "0": "Morning", "1": "Afternoon", "2": "Evening" }
 
-mycollege = College(name = "Luther College",
-    address = "700 College Drive Decorah,IA",
-    lat = 43.313059, lng = -91.799501,
-    appId = "193298730706524",
-    appSecret = "44d7cce20524dc91bf7694376aff9e1d")
-
-aquery = db.Query(College)
+## Testing Code
+aquery = db.Query(Community)
 if aquery.count() == 0:
     #development site
-    mycollege = College(name = "Luther College",
+    community = Community(
+        name = "Luther College",
         address = "700 College Drive Decorah,IA",
-        lat = 43.313059, lng = -91.799501,
-        appId = "193298730706524",
-        appSecret = "44d7cce20524dc91bf7694376aff9e1d")
-    #live site   
-    #college = College(name ="Luther College", address= "700 College Drive Decorah,IA", lat =43.313059, lng=-91.799501, appId="284196238289386",appSecret="07e3ea3ffda4aa08f8c597bccd218e75")   
-    #college = College(name= "LaCrosse University", address = "1725 State Street, La Crosse, WI", lat=43.812834, lng=-91.229022,appId="193298730706524",appSecret="44d7cce20524dc91bf7694376aff9e1d")
-    #college = College(name="Decorah", address="Decorah, IA", appId="177023452434948", appSecret="81a9f8776108bd1f216970823458533d", lat=43.303306, lng=-91.785709)
-    mycollege.put()
+        lat = 43.313059,
+        lng = -91.799501,
+    )
+    community.put()
+## Testing Code End
  
 
 class MainHandler(BaseHandler):
@@ -456,6 +461,24 @@ app = webapp2.WSGIApplication([
     ('/addmultipleevents',AddMultipleEventsHandler),
     # end events
 
+    # auth routes
+    webapp2.Route(
+        '/auth/<provider>',
+        handler='app.auth_handler.AuthHandler:_simple_auth',
+        name='auth_login'
+    ),
+    webapp2.Route(
+        '/auth/<provider>/callback', 
+        handler='app.auth_handler.AuthHandler:_auth_callback',
+        name='auth_callback'
+    ),
+    webapp2.Route(
+        '/logout',
+        handler='app.auth_handler.AuthHandler:logout',
+        name='logout'
+    ),
+    # end auth routes
+
     ('/movepass', MovePassengerHandler),
     ('/connectride',ConnectPageHandler),
     ('/databasefix', DatabaseHandler),
@@ -464,6 +487,7 @@ app = webapp2.WSGIApplication([
     ('/help', HelpHandler),
     ('/.*', IncorrectHandler)
     ],
+    config = app_config,
     debug=True)
 
 # This is actually the development one.

@@ -7,13 +7,15 @@ import os.path
 
 class LoginPageHandler(BaseHandler):
     def get(self):
-        aquery = db.Query(College)
-        mycollege = aquery.get()
+        aquery = db.Query(Community)
+        community = aquery.get()
         user = self.current_user
         if user:
             self.redirect("/main")
         else:
-            doRender(self, 'loginPage.html', {"name": mycollege.name, "college": mycollege})
+            doRender(self, 'loginPage.html', {
+              'community': community
+            })
 
 class SignOutHandler(BaseHandler):
     def get(self):

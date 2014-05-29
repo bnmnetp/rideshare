@@ -39,13 +39,13 @@ class Passenger(db.Model):
     Change method of display in entire project regarding passengers
     """
 
-class College(db.Model):
+class Community(db.Model):
     name = db.StringProperty()
     address = db.StringProperty()
     lat = db.FloatProperty()
     lng = db.FloatProperty()
-    appId = db.StringProperty()
-    appSecret = db.StringProperty()
+    # appId = db.StringProperty()
+    # appSecret = db.StringProperty()
 
 class Circle(db.Model):
     name = db.StringProperty()
@@ -77,5 +77,23 @@ class Event(db.Model):
 class ApplicationParameters(db.Model):
     apikey = db.StringProperty()
     notifyEmailAddr = db.StringProperty()
-    fromEmailAddr = db.StringProperty()    
-    
+    fromEmailAddr = db.StringProperty()
+
+
+class User(db.Model):
+    id = db.StringProperty(required=True)
+    auth_id = db.StringProperty(required=True)
+    created = db.DateTimeProperty(auto_now_add=True)
+    updated = db.DateTimeProperty(auto_now=True)
+    name = db.StringProperty(required=True)
+    email = db.EmailProperty()
+    circles = db.ListProperty(str)
+
+    def get_auth_id(id):
+        u = User.gql(
+            'WHERE auth_id = :auth_id',
+            auth_id = id
+        ).get()
+        return u
+
+
