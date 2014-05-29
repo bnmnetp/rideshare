@@ -55,10 +55,10 @@ class Event(db.Model):
     name = db.StringProperty()
     circle = db.StringProperty()
     lat = db.FloatProperty()
-    lng= db.FloatProperty()
-    ToD =db.DateProperty()
+    lng = db.FloatProperty()
+    date = db.DateProperty()
     address = db.StringProperty()
-    time= db.StringProperty()
+    time = db.StringProperty()
     creator = db.StringProperty()
 
     def to_dict(self):

@@ -32,10 +32,7 @@ var Map = augment(Object, function () {
 		this.direction_service;
 		this.direction_display;
 
-		this.state = {
-			slide: '1',
-			option: 'general'
-		};
+		this.state = 'select_location';
 		this.current_ride = {};
 		this.current_event = {};
 
@@ -79,6 +76,20 @@ var Map = augment(Object, function () {
 
 		var ride_send_btn = document.querySelector('[data-send="ride"]');
 		ride_send_btn.addEventListener('click', this.send_ride.bind(this));
+
+		var passenger_send_form = document.querySelector('[data-send="passenger"]');
+		passenger_send_form.addEventListener('submit', this.send_passenger.bind(this));
+
+		this.search_form = document.querySelector('#search_form');
+		console.log(this.search_form)
+		this.search_form.addEventListener('submit', function (e) {
+			console.log('Test #1')
+			e.preventDefault();
+			var address = this.search_form.address.value;
+			this.geocoder.geocode({
+				address: address
+			}, this.disp_address.bind(this));
+		}.bind(this));
 	}
 
 	this.set_flow = function (flow) {
@@ -246,10 +257,10 @@ var Map = augment(Object, function () {
 			html
 		)
 
-		if (this.state.slide == 1 && this.state.option == 'general') {
-			flow.change_slide(2, 'general');
+		if (this.state == 'select_location') {
+			flow.change_slide('trip_type');
 		}
-		if (this.state.slide == 4 && this.state.option == 'ride') {
+		if (this.state == 'location_2') {
 			var location_2 = document.querySelector('[data-ride="loc_2"]');
 			var location_btn = document.querySelector('[data-ride="loc_btn"]');
 			location_2.textContent = this.marker_current.address;
@@ -287,17 +298,22 @@ var Map = augment(Object, function () {
 		}
 	}
 
-	this.special_action = function (id, option) {
+	this.special_action = function (route, btn) {
 		// Set location #1 for data-slide=3, data-option=ride
-		if (id == 3 && option == 'ride') {
-			this.current_ride.driver = true;
+		if (route == 'location_1') {
+			if (btn.dataset.ride == 'driver') {
+				this.current_ride.driver = true;
+			} else if (btn.dataset.ride == 'passenger') {
+				this.current_ride.driver = false;
+			}
+			
 			var location = document.querySelector('[data-ride="loc_1"]');
 			location.textContent = this.marker_current.address;
-		}
-		// Set location_type when selecting location #2
-		if (id == 4 && option == 'ride') {
+			flow.change_slide(route);
+		} else if (route == 'location_2') {
+			// Set location_type when selecting location #2
 			var location_type_form = document.querySelector('[data-ride="loc_1_type"]');
-			var location_type_disp = document.querySelector('[data-ride="loc_2"]');
+			var location_type_disp = document.querySelector('[data-ride="loc_2_type"]');
 			var text;
 			this.marker_current.location_type = location_type_form.value;
 			if (location_type_form.value != 'finish') {
@@ -309,15 +325,21 @@ var Map = augment(Object, function () {
 			}
 			location_type_disp.textContent = text;
 			this.create_new_marker = true;
-
-		}
-		if (id == 5 && option == 'ride') {
+			flow.change_slide(route);
+		} else if (route == 'details') {
 			if (this.marker_current.location_type != 'finish') {
 				this.current_ride.origin = this.marker_current;
 				
 			} else {
 				this.current_ride.destination = this.marker_current;
 			}
+			if (this.current_ride.driver == true) {
+				flow.change_slide('driver_details')
+			} else {
+				flow.change_slide('passenger_details')
+			}
+		} else {
+			flow.change_slide(route);
 		}
 	}
 
@@ -335,11 +357,52 @@ var Map = augment(Object, function () {
 			data: JSON.stringify(this.current_ride)
 		});
 		req_rides.done(function (message) {
-			console.log('Success')
-		});
+			this.flow.change_slide('select_location');
+			this.flow.alert({
+				type: 'success',
+				strong: 'You created a new ride!',
+				message: 'We sent you a confirmation email.'
+			});
+		}.bind(this));
 		req_rides.fail(function (message, status) {
-			console.log('Failure')
+			this.flow.change_slide('select_location');
+			this.flow.alert({
+				type: 'danger',
+				strong: 'Sorry!',
+				message: 'The ride was not created. Please try again.'
+			});
+		}.bind(this));
+	}
+
+	this.send_passenger = function (e) {
+		e.preventDefault();
+		var form = document.querySelector('[data-send="passenger"]')
+		this.current_ride.date = form.date.value;
+		this.current_ride.time = form.time.value;
+		this.current_ride.details = form.details.value;
+		var req_rides = $.ajax({
+			type: 'POST',
+			url: '/newride',
+			dataType: 'json',
+			contentType: 'application/json; charset=UTF-8',
+			data: JSON.stringify(this.current_ride)
 		});
+		req_rides.done(function (message) {
+			this.flow.change_slide('select_location');
+			this.flow.alert({
+				type: 'success',
+				strong: 'You asked for a ride!',
+				message: 'We sent you a confirmation email.'
+			});
+		}.bind(this));
+		req_rides.fail(function (message, status) {
+			this.flow.change_slide('select_location');
+			this.flow.alert({
+				type: 'danger',
+				strong: 'Sorry!',
+				message: 'The ride was not created. Please try again.'
+			});
+		}.bind(this));
 	}
 
 	this.send_event = function () {

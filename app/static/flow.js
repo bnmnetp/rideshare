@@ -1,7 +1,7 @@
 var Flow = augment(Object, function () {
 	this.constructor = function () {
 		this.next = document.querySelectorAll('[data-next]');
-		this.views = document.querySelectorAll('[data-slide]');
+		this.views = document.querySelectorAll('[data-route]');
 		this.loading = document.querySelector('[data-loading]');
 		this.headers = document.querySelectorAll('[data-header]');
 		this.loading.classList.add('hidden');
@@ -9,7 +9,8 @@ var Flow = augment(Object, function () {
 		this.col_map = document.querySelector('#col_map');
 		this.col_dialog = document.querySelector('#col_dialog');
 
-		this.specify = document.querySelectorAll('[data-specify]');
+		this.alert_template = document.querySelector('#alert_template');
+		this.alert_container = document.querySelector('#alert_container');
 
 		this.id_last = 1;
 		this.option = '';
@@ -20,7 +21,7 @@ var Flow = augment(Object, function () {
 		for (var i = 0; i < this.views.length; i++) {
 			var view = this.views[i];
 			
-			if (view.dataset.slide == 1 && view.dataset.option == 'general') {
+			if (view.dataset.route == 'select_location') {
 				view.classList.remove('hidden')
 			} else {
 				view.classList.add('hidden');
@@ -35,10 +36,7 @@ var Flow = augment(Object, function () {
 			var current = this.headers[i];
 			current.addEventListener('click', this.header_event.bind(this));
 		}
-		for (var i = 0; i < this.specify.length; i++) {
-			var current = this.specify[i];
-			current.addEventListener('click', this.specify_event.bind(this));
-		}
+
 	}
 
 	this.set_map = function (map) {
@@ -47,8 +45,8 @@ var Flow = augment(Object, function () {
 
 	this.next_event = function (e) {
 		var btn = e.target;
-		var opts = btn.dataset.next.split(':');
-		this.change_slide(opts[0], opts[1]);
+		this.special_action(btn.dataset.next, btn);
+		//this.change_slide(btn.dataset.next);
 	}
 
 	this.header_event = function (e) {
@@ -61,61 +59,35 @@ var Flow = augment(Object, function () {
 		}
 	}
 
-	this.specify_event = function (e) {
-		var target = e.target;
-		this.option = target.dataset.specify;
-		this.change_slide(3);
+	this.special_action = function (route, btn) {
+		this.map.special_action(route, btn);
 	}
 
-	this.special_action = function (id, option) {
-		this.map.special_action(id, option);
-	}
-
-	this.change_slide = function (id, option) {
-		this.special_action(id, option);
-		map.state.slide = id;
-		map.state.option = option;
-		this.id_last = id;
-
+	this.change_slide = function (route) {
+		this.id_last = route;
+		this.map.state = route;
 		for (var i = 0; i < this.views.length; i++) {
 			var view = this.views[i];
 			if (!view.classList.contains('hidden')) {
 				view.classList.add('hidden');
 			}
-			// if (view.dataset.slide == id && view.dataset.option == option) {
-			// 	view.classList.remove('hidden');
-			// }
-			// if (view.dataset.slide == 2 && id == 2) {
-			// 	this.col_map.classList.remove('col-md-8');
-			// 	this.col_map.classList.add('col-md-6');
-			// 	// view.classList.remove('col-md-4');
-			// 	// view.classList.add('col-md-6');
-			// }
 		}
 		this.loading.classList.remove('hidden');
 		window.setTimeout(function () {
 			this.loading.classList.add('hidden');
 			for (var i = 0; i < this.views.length; i++) {
 				var view = this.views[i];
-				if (view.dataset.slide == id && view.dataset.option == option) {
+				if (view.dataset.route == route) {
 					view.classList.remove('hidden');
-				}
-				if (view.dataset.slide == 2 && id == 2) {
-					this.col_map.classList.remove('col-md-8');
-					this.col_map.classList.add('col-md-6');
-					this.loading.classList.remove('col-md-4');
-					this.loading.classList.add('col-md-6');
 				}
 			}
 		}.bind(this), 500);
-		// for (var i = 0; i < this.headers.length; i++) {
-		// 	var header = this.headers[i];
-		// 	if (header.classList.contains('active')) {
-		// 		header.classList.remove('active');
-		// 	}
-		// 	if (header.dataset.header == id) {
-		// 		header.classList.add('active');
-		// 	}
-		// }
+	}
+
+	this.alert = function (opts) {
+		var source = this.alert_template.innerHTML;
+		var template = Handlebars.compile(source);
+		var html = template(opts);
+		this.alert_container.insertAdjacentHTML('beforeend', html);
 	}
 });
