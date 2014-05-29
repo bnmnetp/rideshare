@@ -362,6 +362,7 @@ class SimpleAuthHandler(object):
     Google API endpoint:
     https://www.googleapis.com/oauth2/v3/userinfo
     """
+    print auth_info
     resp = self._oauth2_request(
       'https://www.googleapis.com/oauth2/v3/userinfo?{0}',
       auth_info['access_token']

@@ -81,19 +81,10 @@ class ApplicationParameters(db.Model):
 
 
 class User(db.Model):
-    id = db.StringProperty(required=True)
-    auth_id = db.StringProperty(required=True)
+    id = db.StringProperty()
+    auth_id = db.StringProperty()
     created = db.DateTimeProperty(auto_now_add=True)
     updated = db.DateTimeProperty(auto_now=True)
-    name = db.StringProperty(required=True)
+    name = db.StringProperty()
     email = db.EmailProperty()
     circles = db.ListProperty(str)
-
-    def get_auth_id(id):
-        u = User.gql(
-            'WHERE auth_id = :auth_id',
-            auth_id = id
-        ).get()
-        return u
-
-

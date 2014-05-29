@@ -1,5 +1,4 @@
 from app.common.toolbox import doRender
-from app.nateusers import BaseHandler, FBUser
 from google.appengine.ext import db
 from django.utils import simplejson
 from app.model import *
@@ -7,6 +6,7 @@ from google.appengine.api import mail
 import datetime
 from datetime import date
 import json
+from app.base_handler import BaseHandler
 
 class NewEventHandler(BaseHandler):
     def post(self):

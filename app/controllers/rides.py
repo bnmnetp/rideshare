@@ -1,11 +1,11 @@
 from app.common.toolbox import doRender
-from app.nateusers import BaseHandler, FBUser
 from app.model import *
 from django.utils import simplejson
 from google.appengine.ext import db
 import datetime
 from datetime import date
 import json
+from app.base_handler import BaseHandler
 
 class RideQueryHandler(BaseHandler):
     """

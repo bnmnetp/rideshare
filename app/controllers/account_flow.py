@@ -1,9 +1,9 @@
 from app.common.toolbox import doRender
-from app.nateusers import BaseHandler
 from django.utils import simplejson
 from google.appengine.ext import db
 from app.model import *
 import os.path
+from app.base_handler import BaseHandler
 
 class LoginPageHandler(BaseHandler):
     def get(self):

@@ -1,22 +1,26 @@
 import webapp2
 from simpleauth import SimpleAuthHandler
 from app import secrets
+from app.model import *
 
-class AuthHandler(webapp2.RequestHandler, SimpleAuthHandler):
+from app.base_handler import BaseHandler
+
+class AuthHandler(BaseHandler, SimpleAuthHandler):
     def _on_signin(self,  data, auth_info, provider):
         auth_id = '%s:%s' % (provider, data['id'])
-        user = User.get_auth_id(
-            'auth_id',
-        )
+        user_D = User.gql('WHERE auth_id = :id', id = auth_id).get()
 
-        if user:
-            self.auth.set_session(user.id)
+        if user_D:
+            self.session['user'] = user_D.ID
         else:
             user = User()
             user.auth_id = auth_id
+            user.name = 'Replace'
+            user.id = '123'
             user.put()
+        self.redirect('/map')
     def logout(self):
-        self.auth.unset_session()
+        self.session['user'] = ''
         self.redirect('/')
     def _callback_uri_for(self, provider):
         return self.uri_for('auth_callback', provider = provider, _full = True)

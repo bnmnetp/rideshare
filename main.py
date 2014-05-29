@@ -21,7 +21,7 @@
 
 import webapp2
 from simpleauth import SimpleAuthHandler
-
+from app.base_handler import BaseHandler
 
 # testing
 from app.controllers.test_account import create_user
@@ -58,7 +58,7 @@ from google.appengine.ext import db
 #    from google.appengine.api import users
 # else:
 import app.nateusers as users
-from app.nateusers import LoginHandler, LogoutHandler, BaseHandler, FBUser
+from app.nateusers import LoginHandler, LogoutHandler
 
 from app.pygeocoder import Geocoder
 
