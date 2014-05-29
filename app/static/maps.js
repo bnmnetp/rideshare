@@ -80,6 +80,9 @@ var Map = augment(Object, function () {
 		var passenger_send_form = document.querySelector('[data-send="passenger"]');
 		passenger_send_form.addEventListener('submit', this.send_passenger.bind(this));
 
+		var event_form = document.querySelector('[data-send="event"]');
+		event_form.addEventListener('submit', this.send_event.bind(this));
+
 		this.search_form = document.querySelector('#search_form');
 		console.log(this.search_form)
 		this.search_form.addEventListener('submit', function (e) {
@@ -343,7 +346,8 @@ var Map = augment(Object, function () {
 		}
 	}
 
-	this.send_ride = function () {
+	this.send_ride = function (e) {
+		e.preventDefault();
 		var form = document.querySelector('#ride_form');
 		this.current_ride.max_passengers = form.max_passengers.value;
 		this.current_ride.date = form.date.value;
@@ -405,8 +409,40 @@ var Map = augment(Object, function () {
 		}.bind(this));
 	}
 
-	this.send_event = function () {
-
+	this.send_event = function (e) {
+		e.preventDefault();
+		var form = document.querySelector('[data-send="event"]')
+		var event = {};
+		event.name = form.name.value;
+		event.address = this.marker_current.address;
+		event.lat = this.marker_current.lat;
+		event.lng = this.marker_current.lng;
+		event.date = form.date.value;
+		event.time = form.time.value;
+		event.details = form.details.value;
+		var req_event = $.ajax({
+			type: 'POST',
+			url: '/newevent',
+			dataType: 'json',
+			contentType: 'application/json; charset=UTF-8',
+			data: JSON.stringify(event)
+		});
+		req_event.done(function (message) {
+			this.flow.change_slide('select_location');
+			this.flow.alert({
+				type: 'success',
+				strong: 'Event created!',
+				message: 'We sent you a confirmation email.'
+			});
+		}.bind(this));
+		req_event.fail(function (message, status) {
+			this.flow.change_slide('select_location');
+			this.flow.alert({
+				type: 'danger',
+				strong: 'Sorry!',
+				message: 'The event was not created. Please try again.'
+			});
+		}.bind(this));
 	}
 });
 

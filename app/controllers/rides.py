@@ -52,10 +52,6 @@ class RideQueryHandler(BaseHandler):
         self.response.out.write(json)
         logging.debug('end get')
     
-
-
-
-    
 class NewRideHandler(BaseHandler):
     def post(self):
         ride = Ride()

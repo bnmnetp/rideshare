@@ -61,18 +61,18 @@ class Event(db.Model):
     time = db.StringProperty()
     creator = db.StringProperty()
 
-    def to_dict(self):
-        res = {}
-        res['ToD'] = str(self.ToD)
-        res['name'] = str(self.name)
-        res['lat'] = self.lat
-        res['lng'] = self.lng
-        res['id'] = str(self.key().id())
-        res['address'] = str(self.address)
-        res['circle']= self.circle
-        res["time"] = self.time
-        logging.debug(str(self.key().id()))
-        return res
+    # def to_dict(self):
+    #     res = {}
+    #     res['ToD'] = str(self.ToD)
+    #     res['name'] = str(self.name)
+    #     res['lat'] = self.lat
+    #     res['lng'] = self.lng
+    #     res['id'] = str(self.key().id())
+    #     res['address'] = str(self.address)
+    #     res['circle']= self.circle
+    #     res["time"] = self.time
+    #     logging.debug(str(self.key().id()))
+    #     return res
         
 class ApplicationParameters(db.Model):
     apikey = db.StringProperty()

@@ -1,3 +1,15 @@
 SOCIAL_AUTH_AUTHENTICATION_BACKENDS = (
-
+	'social.backends.google.GoogleOAuth2',
+	'social.backends.twitter.TwitterOAuth',
+	'social.backends.facebook.FacebookOAuth2'
 )
+
+SOCIAL_AUTH_FACEBOOK_KEY = '320961788060528'
+SOCIAL_AUTH_FACEBOOK_SECRET = '79cdd29de58d62388712429e4466a906'
+SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
+
+SOCIAL_AUTH_TWITTER_KEY = 'nB9fkeo8HVd5iAAJpu1ffPHtb'
+SOCIAL_AUTH_TWITTER_SECRET = '4vXyF42HCpyLE5RTUMwwML9bB8rpQaAOkMZ8sugxHfL6wjoMua'
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '15796694514-ebss75hnifu0qgcmd9m8r478sp7e7fds.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '3lflJmio1mB69mgzbBNlyTwg'

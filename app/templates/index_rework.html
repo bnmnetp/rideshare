@@ -73,25 +73,30 @@ pageTracker._trackPageview();
             <button class="btn btn-default">Back</button>
         </div>
         <div class="col-md-4" data-route='event_details'>
-            <form>
+            <form data-send="event">
                 <div class="form-group">
                     <label>Event Name</label>
-                    <input class="form-control" type="text" placeholder="Name">
+                    <input class="form-control" type="text" placeholder="Name" name='name'>
                 </div>
                 <div class="form-group">
                     <label>Date</label>
-                    <input class="form-control date-select" type="text" placeholder="Date">
+                    <input class="form-control date-select" type="text" placeholder="Date" name='date'>
                 </div>
                 <div class="form-group">
                     <label>Time</label>
-                    <input class="form-control" type="text" placeholder="Time">
+                    <input class="form-control" type="text" placeholder="Time" name='time'>
                 </div>
                 <div class="form-group">
+                    <label>Details</label>
+                    <input class="form-control" type="text" placeholder="Details" name='details'>
+                </div>
+                <!-- <div class="form-group">
                     <label>Circle</label>
-                    <select class="form-control">
+                    <select class="form-control" >
                         <option>All</option>
                     </select>
-                </div>
+                </div> -->
+                <button type='submit' class='btn btn-primary'>Create Event</button>
             </form>
         </div>
         <div class="col-md-4" data-route='passenger_type'>

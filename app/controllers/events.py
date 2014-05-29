@@ -6,39 +6,35 @@ from app.model import *
 from google.appengine.api import mail
 import datetime
 from datetime import date
+import json
 
 class NewEventHandler(BaseHandler):
-    def get(self):
-        aquery = db.Query(College)
-        mycollege = aquery.get()
-        user = self.current_user
-        newEvent = Event()
-        newEvent.name = self.request.get("name")
-        newEvent.lat = float(self.request.get("lat"))
-        newEvent.lng = float(self.request.get("lng"))
-        newEvent.address = self.request.get("address")
-        newEvent.circle = self.request.get("circle")
-        newEvent.time = self.request.get("time")
-        newEvent.creator = self.current_user.id
-        newEvent.ToD = datetime.date(int(self.request.get("year")),int(self.request.get("month")),int(self.request.get("day")))
-        newEvent.put()
+    def post(self):
+        event = Event()
 
-        query = db.Query(Ride)
-        query.filter("ToD > ", datetime.date.today())
-        query.filter("circle = ",self.request.get("circle"))
-        ride_list = query.fetch(limit=100)
-        greeting = ''
-        if user:
-              greeting = ("Welcome, %s! (<a href=\"%s\">sign out</a>) Go to your <a href='/home'>Home Page</a>" %
-                    (user.nickname(), users.create_logout_url("/")))
-        message = 'Your ride has been created!'
-        path = os.path.join(os.path.dirname(__file__), 'templates/map.html')
-        self.response.out.write(str(template.render(path, {
-            'ride_list': ride_list, 
-            'greeting': greeting,
-            'message': message,
-            'mapkey' : MAP_APIKEY,
-            })))
+        json_str = self.request.body
+        data = json.loads(json_str)
+
+        # Creates date object from Month/Day/Year format
+        d_arr = data['date'].split('/')
+        d_obj = datetime.date(int(d_arr[2]), int(d_arr[1]), int(d_arr[0]))
+
+        # Refer to model.py for structure of data
+        # class Event
+        event.name = data['name']
+        event.circle = 'Replace'
+        event.lat = data['lat']
+        event.lng = data['lng']
+        event.address = data['address']
+        event.data = d_obj
+        event.time = data['time']
+        event.creator = 'Replace'
+
+        response = {
+            'message': 'Event added!'
+        }
+        self.response.write(json.dumps(response))
+
 
 class EventQueryHandler(BaseHandler):
     """
