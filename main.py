@@ -50,15 +50,12 @@ from google.appengine.api import mail
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
 import jinja2
-import app.facebook
 
 #from appengine_django.models import BaseModel
 from google.appengine.ext import db
 # if choice != "facebook":
 #    from google.appengine.api import users
 # else:
-import app.nateusers as users
-from app.nateusers import LoginHandler, LogoutHandler
 
 from app.pygeocoder import Geocoder
 
@@ -101,10 +98,9 @@ if aquery.count() == 0:
 class MainHandler(BaseHandler):
 
   def get(self):
-    self.current_user_id = "123";
-    user = FBUser.get_by_key_name(self.current_user_id)
-    aquery = db.Query(College)
-    mycollege= aquery.get()
+    user = self.current_user
+    aquery = db.Query(Community)
+    community = aquery.get()
 
     eventsList = []
     circles = []
@@ -120,9 +116,8 @@ class MainHandler(BaseHandler):
     doRender(self, 'main.html', {
             'event_list': eventsList,
             'circles' : circles,
-            'college':mycollege,
-            'logout':'/auth/logout',
-            'nick':self.current_user.nickname()
+            'community': community,
+            'user': user
             })
     
 class MapHandler(BaseHandler):
@@ -152,8 +147,8 @@ class HomeHandler(BaseHandler):
     Displays personal homepage
     """
     def get(self):
-      aquery = db.Query(College)
-      mycollege= aquery.get()
+      aquery = db.Query(Community)
+      community = aquery.get()
       user = self.current_user
       username = user.id
       events = db.Query(Event)
@@ -191,8 +186,8 @@ class HomeHandler(BaseHandler):
         for p in ride.passengers:
           ride.passengerobjects.append(db.get(p))
       doRender(self, 'home.html', { 
-                          'college':mycollege,  
-                          'user': user.nickname(),
+                          'community': community,
+                          'user': user,
                           'driverides': driverides, 
                           'logout':'/auth/logout',
                           'passengerrides': passengerrides,
@@ -437,8 +432,6 @@ app = webapp2.WSGIApplication([
 
     ('/applyedits', ChangeRideHandler),
     ('/removepassenger', RemovePassengerHandler),
-    ('/auth/login', LoginHandler),
-    ('/auth/logout',LogoutHandler),
           ('/signout', SignOutHandler),
           ('/ratedriver', RateHandler),
           ('/submittext', SubmitRatingHandler),

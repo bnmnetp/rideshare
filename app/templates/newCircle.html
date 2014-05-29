@@ -6,28 +6,18 @@
 
 {% endblock %}
 
-{% block menu %}
-<ul>
-    <li>
-        <a href="/home">Your Rides</a>
-    </li>
-    <li>
-        <a href="/static/help.html">Help</a>
-    </li>
-    <li>
-        <a href="{{logout}}">Sign out</a>
-    </li>
-</ul>
-{% endblock %}
-
 {% block main %}
 
 <h2>Add a New Circle </h2>
-
-<form name="addCircle" action="/addCircle" method="post" >
-    Name:<input type="text" name="name" ></br>
-    Description:<input type="textarea" name="description"></br>
-    <input type="submit" value="Submit">
+<form>
+    <div class='form-group'>
+        <label>Name</label>
+        <input type='text' name='name' placeholder='Name' class='form-control'>
+    </div>
+    <div class='form-group'>
+        <label>Description</label>
+        <input type='text' name='description' placeholder='Description' class='form-control'>
+    </div>
+    <button type='submit' class='btn btn-primary'>Create Circle</button>
 </form>
-
 {% endblock %}

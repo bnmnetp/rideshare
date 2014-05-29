@@ -8,7 +8,7 @@ class BaseHandler(webapp2.RequestHandler):
         """Returns the logged in Facebook user, or None if unconnected."""
         id = self.session.get('user')
         if id:
-            user = User.gql('WHERE ID = :id', id = id).get()
+            user = User.gql('WHERE id = :id', id = id).get()
             return user
         else:
             return None

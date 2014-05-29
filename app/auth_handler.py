@@ -11,7 +11,7 @@ class AuthHandler(BaseHandler, SimpleAuthHandler):
         user_D = User.gql('WHERE auth_id = :id', id = auth_id).get()
 
         if user_D:
-            self.session['user'] = user_D.ID
+            self.session['user'] = user_D.id
         else:
             user = User()
             user.auth_id = auth_id

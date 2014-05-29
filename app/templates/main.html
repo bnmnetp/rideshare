@@ -27,6 +27,11 @@
 
 <h1>Your Circles</h1>
 
+<a href='/newCircle' class='btn btn-success'>
+    Add a Circle
+    <i class='fa fa-plus-circle'></i>
+</a>
+
 {% for circle in circles %}
     <h2>
         <a href="/map?circle={{circle.key.id}}">{{ circle.name }}</a>
@@ -58,5 +63,4 @@
     <hr>
 {% endfor %}
 
-<a href='/newCircle'>Add Circle</a>
 {% endblock %}

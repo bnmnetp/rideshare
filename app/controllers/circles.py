@@ -15,9 +15,9 @@ class ChangeCirclesHandler(BaseHandler): #actual page for changing circles
 
 class NewCircleHandler(BaseHandler): # actual page
     def get(self):
-        aquery = db.Query(College)
-        mycollege = aquery.get()  
-        doRender(self, "newCircle.html", {"college": mycollege})
+        aquery = db.Query(Community)
+        community = aquery.get()  
+        doRender(self, "newCircle.html", {"community": community})
 
 
 class AddCircleHandler(BaseHandler): #add Circle Processing
