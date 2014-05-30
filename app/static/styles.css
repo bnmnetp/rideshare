@@ -73,6 +73,37 @@ template {
 	transition: width 2s;
 }
 
+.circles {
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    border-color: #4E5665;
+    border-width: 1px;
+    border-style: solid;
+}
+
+.circle {
+    display: block;
+    margin: 5px 10px 5px 10px;
+    border-bottom: 1px solid #4E5665;
+    height: 64px;
+}
+
+.circle:last-child {
+    border: none;
+}
+
+.circle .switch {
+    display: inline-block;
+    float: right;
+    top: 50%;
+    transform: translateY(-50%);
+}
+.circle h2, .circle p {
+    display: inline-block;
+    padding-left: 10px;
+}
+
 /* Join / Leave for Circles */
 
 .switch {
@@ -92,6 +123,7 @@ template {
 .switch .true_padding,
 .switch .false,
 .switch .false_padding {
+    cursor: pointer;
     line-height: 30px;
     color: #FFFFFF;
     width: 40px;

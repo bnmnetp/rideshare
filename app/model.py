@@ -87,4 +87,4 @@ class User(db.Model):
     updated = db.DateTimeProperty(auto_now=True)
     name = db.StringProperty()
     email = db.EmailProperty()
-    circles = db.ListProperty(str)
+    circles = db.ListProperty(int)

@@ -5,7 +5,6 @@ from app.model import *
 class BaseHandler(webapp2.RequestHandler):
     @property
     def current_user(self):
-        """Returns the logged in Facebook user, or None if unconnected."""
         id = self.session.get('user')
         if id:
             user = User.gql('WHERE id = :id', id = id).get()

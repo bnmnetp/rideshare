@@ -73,13 +73,6 @@ from app.controllers.rides import *
 
 from app.common.toolbox import doRender
 
-MAP_APIKEY=""
-FROM_EMAIL_ADDR="ridesharedecorah@gmail.com"
-NOTIFY_EMAIL_ADDR="ridesharedecorah@gmail.com"
-rideshareWebsite = "http://www.decorahrideshare.com"
-
-early_late_strings = { "0": "Early", "1": "Late" }
-part_of_day_strings = { "0": "Morning", "1": "Afternoon", "2": "Evening" }
 
 ## Testing Code
 aquery = db.Query(Community)
@@ -445,6 +438,7 @@ app = webapp2.WSGIApplication([
     ('/addCircle', AddCircleHandler),
     ('/newCircle',NewCircleHandler),
     ('/circles', CircleHandler),
+    ('/join_circle', JoinCircle),
     # end circles
 
     # controllers/events.py
