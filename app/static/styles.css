@@ -10,6 +10,10 @@ body {
 	margin-bottom: 60px;
 }
 
+.navbar-brand img {
+    height: 18px;
+}
+
 #footer {
 	position: absolute;
 	bottom: 0;

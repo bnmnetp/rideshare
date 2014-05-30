@@ -230,10 +230,12 @@ The Rideshare Team
 
 class AddEventsHandler(BaseHandler):
     def get(self):
-        aquery = db.Query(College)
-        mycollege= aquery.get()
+        community = db.Query(Community).get()
         circle = self.request.get("circle")
-        doRender(self,"addevents.html",{"circle":circle,"college":mycollege})
+        doRender(self, "addevents.html", {
+            "circle": circle,
+            "community": community
+        })
 
 class AddMultipleEventsHandler(BaseHandler):
     def post(self):

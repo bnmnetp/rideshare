@@ -19,27 +19,14 @@
 {% endblock %}
 
 {% block main %}
-<!-- <div class="guide">
-    <ul>
-        <li data-header='1' class="active">
-            <span>Location</span>
-            <i class="glyphicon glyphicon-chevron-right"></i>
-        </li>
-        <li data-header='2'>
-            <span>Type</span>
-            <i class="glyphicon glyphicon-chevron-right"></i>
-        </li>
-        <li data-header='3'>
-            <span>Details</span>
-            <i class="glyphicon glyphicon-chevron-right"></i>
-        </li>
-        <li data-header='4'>
-            <span>Finished</span>
-        </li>
-    </ul>
-</div> -->
+
 <div id="alert_container"></div>
 <div>
+    <div class="alert alert-success">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        <strong>Instructions</strong>
+        <p>You can create an event or ride by clicking on the map or typing an address in.</p>
+    </div>
     <div class="col-md-8 map_con" id='col_map'>
         <div id="map_canvas"></div>
     </div>

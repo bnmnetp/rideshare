@@ -22,7 +22,7 @@
 
 {% block main %}
 
-<h1>Welcome to ((location)) rideshare, {{ user }}!</h1>
+<h1>Welcome to {{ community.name }} rideshare, {{ user.name }}!</h1>
 
 <div class="panel panel-default">
     <div class="panel-heading">
@@ -32,7 +32,7 @@
     {% if driverides %}
     {% for ride in driverides %}
         <h3>Driver</h3> - <a href='/rideinfo?key={{ ride.key }}'>See Map of Ride</a>
-        <table border='1'>
+        <table>
             <tr>
                 <th>From</th>
                 <th>To</th>
@@ -161,7 +161,7 @@
 
 <div class="panel panel-default">
     <div class="panel-heading">
-        Events
+        Events in Circles
     </div>
     <div class="panel-body">
     {% if event_list %}

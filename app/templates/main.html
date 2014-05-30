@@ -36,7 +36,7 @@
     </div>
     <div class="btn-group">
         <a href='/circles' class='btn btn-success btn-large'>
-            Join a  Circle
+            Join/Leave a  Circle
             <i class='fa fa-dot-circle-o'></i>
         </a>
     </div>
@@ -68,8 +68,10 @@
         {% endif %}
 
     {% endfor %}
-    <a href='/addevents?circle={{circle.key.id}}'>Add Events for this Circle</a>
-
+    <a href='/map?circle={{circle.key().id()}}' class='btn btn-success btn-large'>
+        Add events for this circle
+        <i class='fa fa-plus'></i>
+    </a>
     <hr>
 {% endfor %}
 

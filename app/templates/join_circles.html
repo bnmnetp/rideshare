@@ -15,10 +15,10 @@
 		<h2>{{ circle.name }}</h2>
 		<p>{{ circle.description }}</p>
 		<div class='switch' data-id='{{ circle.key().id() }}'
-			{% if circle.user == True %}
-			data-switch='true'
+			{% if circle.key().id() in user.circles %}
+				data-switch='true'
 			{% else %}
-			data-switch='false'
+				data-switch='false'
 			{% endif %}
 		>
 			<div class="true_padding"></div>
@@ -62,14 +62,6 @@
             dataType: 'json',
             contentType: 'application/json; charset=UTF-8',
             data: JSON.stringify(data)
-        });
-        req.done(function (message) {
-            console.log("Success")
-
-        });
-        req.fail(function (message, status) {
-            console.log("Failure")
-
         });
 	}
 

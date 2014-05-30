@@ -45,17 +45,10 @@ from datetime import date
 from django.utils import simplejson
 from google.appengine.api import mail
 
-##from django.core import serializers
 
-from google.appengine.ext import webapp
-from google.appengine.ext.webapp import template
 import jinja2
 
-#from appengine_django.models import BaseModel
 from google.appengine.ext import db
-# if choice != "facebook":
-#    from google.appengine.api import users
-# else:
 
 from app.pygeocoder import Geocoder
 
@@ -337,7 +330,7 @@ class DatabaseHandler(BaseHandler):
         })
 
 
-class IncorrectHandler(webapp.RequestHandler):
+class IncorrectHandler(webapp2.RequestHandler):
     """
     Returns an error for URLs not defined
     """
@@ -433,8 +426,6 @@ app = webapp2.WSGIApplication([
     ('/ridesuccess',RideSuccessHandler),
 
     # controllers/circles.py
-    ('/updateCircles',UpdateCirclesHandler),
-    ('/changecircles',ChangeCirclesHandler),
     ('/addCircle', AddCircleHandler),
     ('/newCircle',NewCircleHandler),
     ('/circles', CircleHandler),

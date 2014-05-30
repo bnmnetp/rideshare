@@ -50,6 +50,12 @@ class Community(db.Model):
 class Circle(db.Model):
     name = db.StringProperty()
     description = db.StringProperty()
+    def to_dict(self):
+        d = {}
+        d['id'] = Circle.key().id()
+        d['name'] = Circle.name
+        d['description'] = Circle.description
+        return d
 
 class Event(db.Model):
     name = db.StringProperty()

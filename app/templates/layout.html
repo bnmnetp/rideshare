@@ -7,6 +7,9 @@
 	<link rel="stylesheet" type="text/css" href="/static/styles.css">
 	<meta charset="utf-8">
 	<meta content="width=device-width, initial-scale=1.0, user-scalable=no" name="viewport">
+	<link rel="shortcut icon" sizes="1024x1024" href="/static/marker.png">
+	<link rel="shortcut icon" sizes="128x128" href="/static/marker.png">
+	<link rel="apple-touch-icon" sizes="1024x1024" href="/static/marker.png"><link rel="apple-touch-icon-precomposed" sizes="1024x1024" href="/static/marker.png">
 	{% block head %}{% endblock %}
 
 </head>
@@ -15,7 +18,10 @@
 
 		<nav class="navbar navbar-default navbar-fixed-top">
 			<div class="container">
-				<a class="navbar-brand" href="/home">Luther Rideshare</a>
+				<a class="navbar-brand" href="/home">
+					<img src="/static/marker.svg">
+					Luther Rideshare
+				</a>
 				<ul class="nav navbar-nav">
 					<li>
 				        <a href="/home">Your Rides</a>
