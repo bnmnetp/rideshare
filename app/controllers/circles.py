@@ -5,6 +5,15 @@ import datetime
 from datetime import date
 from app.base_handler import BaseHandler
 
+class CircleHandler(BaseHandler):
+    def get(self):
+        community = db.Query(Community).get()
+        circles = Circle.all()
+        doRender(self, 'join_circles.html', {
+            'community': community,
+            'circles': circles
+        })
+
 class ChangeCirclesHandler(BaseHandler): #actual page for changing circles
     def get(self):
         aquery = db.Query(College)

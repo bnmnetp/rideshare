@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+
+{% block title %}Add Circle{% endblock %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block main %}
+<h1>Join a Circle</h1>
+
+{% for circle in circles %}
+	<div class="panel panel-defaul">
+		<div class="panel-body">
+			<h2>{{ circle.name }}</h2>
+			<p>{{ circle.description }}</p>
+			<div class="pull-right">
+				<div class='switch' data-switch='true'>
+					<div class="true_padding"></div>
+					<div class="true">In</div>
+					<div class="false_padding"></div>
+					<div class="false">Out</div>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endfor %}
+
+
+<script type="text/javascript">
+	var switcher = function (e) {
+		var target = e.target;
+		if (!target.hasAttribute('data-switch')) {
+			target = target.parentNode;
+		}
+		if (target.dataset.switch == 'true') {
+			target.dataset.switch = 'false';
+		} else {
+			target.dataset.switch = 'true';
+		}
+	}
+
+	var switchs = document.querySelectorAll('.switch');
+
+	for (var i = 0; i < switchs.length; i++) {
+		var current = switchs[i];
+		current.addEventListener('click', switcher);
+	}
+
+</script>
+{% endblock %}

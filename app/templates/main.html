@@ -27,10 +27,20 @@
 
 <h1>Your Circles</h1>
 
-<a href='/newCircle' class='btn btn-success'>
-    Add a Circle
-    <i class='fa fa-plus-circle'></i>
-</a>
+<div class="btn-group">
+    <div class="btn-group">
+        <a href='/newCircle' class='btn btn-success btn-large'>
+            Create a  Circle
+            <i class='fa fa-plus-circle'></i>
+        </a>
+    </div>
+    <div class="btn-group">
+        <a href='/circles' class='btn btn-success btn-large'>
+            Join a  Circle
+            <i class='fa fa-dot-circle-o'></i>
+        </a>
+    </div>
+</div>
 
 {% for circle in circles %}
     <h2>

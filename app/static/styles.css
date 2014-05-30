@@ -73,6 +73,74 @@ template {
 	transition: width 2s;
 }
 
+/* Join / Leave for Circles */
+
+.switch {
+    width: 80px;
+    height: 30px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    border-color: #4E5665;
+    border-width: 1px;
+    border-style: solid;
+    position: relative;
+    overflow: hidden;
+}
+
+.switch .true,
+.switch .true_padding,
+.switch .false,
+.switch .false_padding {
+    line-height: 30px;
+    color: #FFFFFF;
+    width: 40px;
+    position: absolute;
+    transition-property: left;
+    transition-duration: 1s;
+    transition-delay: .1s;
+}
+
+.switch .true, .switch .false {
+    font-size: 10px;
+    text-align: center;
+    background: rgba(43,108,179,1);
+    background: -moz-linear-gradient(top, rgba(43,108,179,1) 0%, rgba(4,75,143,1) 100%);
+    background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(43,108,179,1)), color-stop(100%, rgba(4,75,143,1)));
+    background: -webkit-linear-gradient(top, rgba(43,108,179,1) 0%, rgba(4,75,143,1) 100%);
+    background: -o-linear-gradient(top, rgba(43,108,179,1) 0%, rgba(4,75,143,1) 100%);
+    background: -ms-linear-gradient(top, rgba(43,108,179,1) 0%, rgba(4,75,143,1) 100%);
+    background: linear-gradient(to bottom, rgba(43,108,179,1) 0%, rgba(4,75,143,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2b6cb3', endColorstr='#044b8f', GradientType=0 );
+}
+
+.switch[data-switch='true'] .true,
+.switch[data-switch='false'] .false {
+    left: 40px;
+}
+
+.switch[data-switch='true'] .true_padding,
+.switch[data-switch='false'] .false {
+    left: 0px;
+}
+
+.switch[data-switch='true'] .false {
+    left: -80px;
+}
+
+.switch[data-switch='true'] .false {
+    left: -40px;
+}
+
+.switch[data-switch='false'] .true {
+    left: 120px;
+}
+
+.switch[data-switch='false'] .true_padding {
+    left: 80px;
+
+
+
 /* Spin Kit */
 .spinner {
 	width: 40px;

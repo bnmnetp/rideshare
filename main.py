@@ -444,6 +444,7 @@ app = webapp2.WSGIApplication([
     ('/changecircles',ChangeCirclesHandler),
     ('/addCircle', AddCircleHandler),
     ('/newCircle',NewCircleHandler),
+    ('/circles', CircleHandler),
     # end circles
 
     # controllers/events.py
