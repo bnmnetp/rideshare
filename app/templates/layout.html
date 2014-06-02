@@ -18,24 +18,33 @@
 
 		<nav class="navbar navbar-default navbar-fixed-top">
 			<div class="container">
-				<a class="navbar-brand" href="/home">
-					<img src="/static/marker.svg">
-					Luther Rideshare
-				</a>
-				<ul class="nav navbar-nav">
-					<li>
-				        <a href="/home">Your Rides</a>
-				    </li>
-				    <li>
-        				<a href="/main">Your Circles</a>
-    				</li>
-				    <li>
-				        <a href="/help">Help</a>
-				    </li>
-				    <li>
-				        <a href="{{logout}}">Sign out</a>
-				    </li>
-				</ul>
+				<div class="navbar-header">
+					<button type='button' class='navbar-toggle' data-toggle='collapse' data-target='.navbar-collapse'>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="/home">
+						<img src="/static/marker.svg">
+						Luther Rideshare
+					</a>
+				</div>
+				<div class="collapse navbar-collapse">
+					<ul class="nav navbar-nav">
+						<li>
+					        <a href="/home">Your Rides</a>
+					    </li>
+					    <li>
+	        				<a href="/main">Your Circles</a>
+	    				</li>
+					    <li>
+					        <a href="/help">Help</a>
+					    </li>
+					    <li>
+					        <a href="{{logout}}">Sign out</a>
+					    </li>
+					</ul>
+				</div>
 			</div>
 		</nav>
 
