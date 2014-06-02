@@ -11,7 +11,7 @@ class AuthHandler(BaseHandler, SimpleAuthHandler):
         user_D = User.gql('WHERE auth_id = :id', id = auth_id).get()
 
         if user_D:
-            self.session['user'] = user_D.id
+            self.session['user'] = user_D.key().id()
         else:
             user = User()
             user.auth_id = auth_id
@@ -20,7 +20,7 @@ class AuthHandler(BaseHandler, SimpleAuthHandler):
             user.put()
         self.redirect('/map')
     def logout(self):
-        self.session['user'] = ''
+        self.session['user'] = None
         self.redirect('/')
     def _callback_uri_for(self, provider):
         return self.uri_for('auth_callback', provider = provider, _full = True)

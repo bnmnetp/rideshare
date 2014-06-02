@@ -1,5 +1,3 @@
-
-
 var College = augment(Object, function () {
 	this.constructor = function (name, address, lat, long) {
 		this.name = name;
@@ -43,30 +41,41 @@ var Map = augment(Object, function () {
 		var d = new Date();
 
 		var req_events = $.ajax({
-			type: 'GET',
-			url: '/getevents',
-			data: {
-				circle: getParameterByName('circle'),
-				after: d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate()
-			}
+			type: 'POST',
+			url: '/events',
+			dataType: 'json',
+			contentType: 'application/json; charset=UTF-8',
+			data: JSON.stringify({
+				circle: getParameterByName('circle')
+			})
 		});
-		req_events.done(function (message) {
-
+		req_events.done(function (data) {
 		});
 		req_events.fail(function (message, status) {
 
 		});
 
 		var req_rides = $.ajax({
-			type: 'GET',
-			url: '/getrides',
-			data: {
-				circle: getParameterByName('circle'),
-				after: d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate()
-			}
+			type: 'POST',
+			url: '/rides',
+			dataType: 'json',
+			contentType: 'application/json; charset=UTF-8',
+			data: JSON.stringify({
+				circle: getParameterByName('circle')
+			})
 		});
-		req_rides.done(function (message) {
-
+		req_rides.done(function (data) {
+			var ride_layout = document.querySelector('#ride_template')
+			var template = Handlebars.compile(ride_layout.innerHTML)
+			var html = template({
+				rides: data
+			})
+			console.log(ride_layout.innerHTML)
+			console.log(data)
+			document.querySelector('#table').insertAdjacentHTML(
+				'beforeend',
+				html
+			)
 		});
 		req_rides.fail(function (message, status) {
 

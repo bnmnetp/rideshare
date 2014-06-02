@@ -7,6 +7,19 @@ from datetime import date
 import json
 from app.base_handler import BaseHandler
 
+class RideHandler(BaseHandler):
+    def post(self):
+        json_str = self.request.body
+        data = json.loads(json_str)
+
+        rides = Ride.all()
+
+        if data['circle']:
+            rides.filter('circle = ', data['circle'])
+
+        results = json.dumps([r.to_dict() for r in rides])
+        self.response.write(results)
+
 class RideQueryHandler(BaseHandler):
     """
     Parse and process requests for rides

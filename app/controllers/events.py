@@ -8,33 +8,19 @@ from datetime import date
 import json
 from app.base_handler import BaseHandler
 
-class NewEventHandler(BaseHandler):
+class EventHandler(BaseHandler):
     def post(self):
-        event = Event()
-
         json_str = self.request.body
         data = json.loads(json_str)
 
-        # Creates date object from Month/Day/Year format
-        d_arr = data['date'].split('/')
-        d_obj = datetime.date(int(d_arr[2]), int(d_arr[1]), int(d_arr[0]))
+        events = Event.all()
 
-        # Refer to model.py for structure of data
-        # class Event
-        event.name = data['name']
-        event.circle = 'Replace'
-        event.lat = data['lat']
-        event.lng = data['lng']
-        event.address = data['address']
-        event.data = d_obj
-        event.time = data['time']
-        event.creator = 'Replace'
+        if data['circle']:
+            events.filter('circle = ',  data['circle'])
 
-        response = {
-            'message': 'Event added!'
-        }
-        self.response.write(json.dumps(response))
-
+        results = json.dumps([e.to_dict() for e in events])
+        print results
+        self.response.write(results)
 
 class EventQueryHandler(BaseHandler):
     """
@@ -75,6 +61,37 @@ class EventQueryHandler(BaseHandler):
         self.response.headers.add_header('content-type','application/json')
         self.response.out.write(json)
         logging.debug('end get')
+
+
+class NewEventHandler(BaseHandler):
+    def post(self):
+        event = Event()
+
+        json_str = self.request.body
+        data = json.loads(json_str)
+
+        # Creates date object from Month/Day/Year format
+        d_arr = data['date'].split('/')
+        d_obj = datetime.date(int(d_arr[2]), int(d_arr[1]), int(d_arr[0]))
+
+        # Refer to model.py for structure of data
+        # class Event
+        event.name = data['name']
+        event.circle = 'Replace'
+        event.lat = data['lat']
+        event.lng = data['lng']
+        event.address = data['address']
+        event.data = d_obj
+        event.time = data['time']
+        event.creator = 'Replace'
+
+        response = {
+            'message': 'Event added!'
+        }
+        self.response.write(json.dumps(response))
+
+
+
 
 class NewEventRideHandler(BaseHandler):
     """

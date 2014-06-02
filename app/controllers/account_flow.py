@@ -1,5 +1,4 @@
 from app.common.toolbox import doRender
-from django.utils import simplejson
 from google.appengine.ext import db
 from app.model import *
 import os.path
@@ -12,7 +11,7 @@ class LoginPageHandler(BaseHandler):
         aquery = db.Query(Community)
         community = aquery.get()
         user = self.current_user
-        if user:
+        if user == None:
             self.redirect("/main")
         else:
             doRender(self, 'loginPage.html', {

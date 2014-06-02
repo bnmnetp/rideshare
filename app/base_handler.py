@@ -3,12 +3,14 @@ from webapp2_extras import sessions
 from app.model import *
 
 class BaseHandler(webapp2.RequestHandler):
-    @property
+    def auth(self):
+        id = self.session.get('user')
+        if not id:
+            return webapp2.redirect('/', False, True)
     def current_user(self):
         id = self.session.get('user')
         if id:
-            user = User.gql('WHERE id = :id', id = id).get()
-            return user
+            return User.get_by_id(id)
         else:
             return None
 

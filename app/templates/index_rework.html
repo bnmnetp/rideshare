@@ -19,14 +19,14 @@
 {% endblock %}
 
 {% block main %}
-
 <div id="alert_container"></div>
 <div>
-    <div class="alert alert-success">
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-        <strong>Instructions</strong>
-        <p>You can create an event or ride by clicking on the map or typing an address in.</p>
-    </div>
+<div class="alert alert-success">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+    <strong>Instructions</strong>
+    <p>You can create an event or ride by clicking on the map or typing an address in.</p>
+</div>
+<div class="row">
     <div class="col-md-8 map_con" id='col_map'>
         <div id="map_canvas"></div>
     </div>
@@ -187,71 +187,63 @@
             <div class="double-bounce2"></div>
         </div>
     </div>
+
+</div>
+</div>
+<div class="row table-responsive">
+    <div id='table'>
+        
+    </div>
 </div>
 {% endblock %}
 
 {% block scripts %}
 {% raw %}
-<template id="ride-template" type="text/x-handlebars-template">
-    {{#if rides}}
-    <table>
+<script id="ride_template" type="text/x-handlebars-template">
+    <table class='table'>
         <tr>
             <th>Driver</th>
             <th>Spots available</th>
             <th>Date</th>
             <th>Phone #</th>
-            <th></th>
+            <th>Options</th>
         </tr>
         {{#each rides}}
-        {{with this}}
             <tr>
                 <td>
-                    {{#if drivername}}
-                        {{drivername}}
-                    {{else}}
-                        No driver
-                    {{/if}}
+                    {{driver_name}}
                 </td>
                 <td>
-                    {{spots_available}}
+                    {{passengers_max}}
                 </td>
                 <td>
-                    {{ToD}}
+                    {{date}}
                 </td>
                 <td>
                     {{contact}}
                 </td>
                 <td>
-                    <button data-join-ride="{{id}}">Join</button>
+                    <button data-join-ride="" class='btn btn-primary'>Join</button>
                 </td>
             </tr>
-            td
-        {{/with}}
         {{/each}}
     </table>
-    {{else}}
-    <p>There are currently no rides avaiable.</p>
-    {{/if}}
-    <button data-create-ride="{{event.id}}">Create Ride</button>
-</template>
-<template id="location-template" type="text/x-handlebars-template">
+</script>
+<script id="location-template" type="text/x-handlebars-template">
     <p>{{location}}</p>
-</template>
-<template id="event-template" type="text/x-handlebars-template">
+</script>
+<script id="event-template" type="text/x-handlebars-template">
 
-</template>
-<template id='alert_template' type='text/x-handlebars-template'>
+</script>
+<script id='alert_template' type='text/x-handlebars-template'>
     <div class="alert alert-{{type}} alert-dismissable">
         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
         <strong>{{strong}}</strong> {{message}}
     </div>
-</template>
-
-</template>
+</script>
 {% endraw %}
 
 <script src="static/augment.js" type="text/javascript"></script>
-<script src="static/jquery.dataTables.js" type="text/javascript"></script>
 <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
 <script src="http://google-maps-utility-library-v3.googlecode.com/svn/tags/markerclustererplus/2.0.9/src/markerclusterer.js" type="text/javascript"></script>
 <script src="static/maps.js" type="text/javascript"></script>

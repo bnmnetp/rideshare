@@ -9,9 +9,10 @@ import json
 
 class CircleHandler(BaseHandler):
     def get(self):
+        self.auth()
         community = db.Query(Community).get()
         circles = Circle.all()
-        user = self.current_user
+        user = self.current_user()
 
         doRender(self, 'join_circles.html', {
             'community': community,

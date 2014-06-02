@@ -84,10 +84,11 @@ if aquery.count() == 0:
 class MainHandler(BaseHandler):
 
   def get(self):
-    user = self.current_user
+    self.auth()
+    user = self.current_user()
     aquery = db.Query(Community)
     community = aquery.get()
-
+    print user
     eventsList = []
     circles = []
     for item in user.circles:
@@ -133,15 +134,15 @@ class HomeHandler(BaseHandler):
     Displays personal homepage
     """
     def get(self):
+      self.auth
       aquery = db.Query(Community)
       community = aquery.get()
-      user = self.current_user
-      username = user.id
+      user = self.current_user()
       events = db.Query(Event)
-      events.filter('creator =',self.current_user.id)
+      events.filter('creator =', user.key().id())
       event_list = events.fetch(limit=100)
       drive = db.Query(Ride)
-      drive.filter('driver =', username)
+      drive.filter('driver =', user.name)
       driverides = drive.fetch(limit=100)
       for ride in driverides:
         ride.passengerobjects = []
@@ -155,13 +156,13 @@ class HomeHandler(BaseHandler):
         for p in ride.passengers:
           ride.passengerobjects.append(db.get(p))
       passengers = db.Query(Passenger)
-      passengers.filter('name =', username)
+      passengers.filter('name =', user.name)
       passengerList = passengers.fetch(limit=100) # All passenger objects with 'my' name
       passengerrides = [] # Will contain all Rides the user is a passenger for
       for p in passengerList:
         passengerrides.append(p.ride)
       for ride in passengerrides:
-        if ride.start_point_title == mycollege.name:
+        if ride.start_point_title == community.name:
           ride.doOrPu = 0
         else:
           ride.doOrPu = 1
@@ -406,7 +407,8 @@ app = webapp2.WSGIApplication([
     ('/main', MainHandler),
 
     # controllers/rides.py
-    ('/getrides', RideQueryHandler ),
+    ('/rides', RideHandler),
+    ('/getrides', RideQueryHandler),
     ("/newride.*", NewRideHandler),
     ("/addpass", AddPassengerHandler),
     ("/adddriver",AddDriverHandler),
@@ -433,6 +435,7 @@ app = webapp2.WSGIApplication([
     # end circles
 
     # controllers/events.py
+    ('/events', EventHandler),
     ('/newevent',NewEventHandler),
     ('/getevents',EventQueryHandler),
     ('/neweventride', NewEventRideHandler),

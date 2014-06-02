@@ -22,6 +22,12 @@ class Ride(db.Model):
     circle = db.StringProperty()
     event = db.StringProperty()
 
+    def to_dict(self):
+        resp = {}
+        for p in Ride._properties:
+            resp[p] = str(getattr(self, p))
+        return resp
+
 
 class Passenger(db.Model):
     name = db.StringProperty()
