@@ -17,16 +17,13 @@ var Map = augment(Object, function () {
 			lng: -91.799501
 		};
 		this.rides = {};
-		this.overlays = [];
 		this.windows = [];
 		this.events = {};
 		this.icons = {};
-		this.cluster_click = false;
 		this.map;
 		this.geocoder;
 		this.address;
 		this.click_listener;
-		this.cluster;
 		this.direction_service;
 		this.direction_display;
 
@@ -76,7 +73,6 @@ var Map = augment(Object, function () {
 				html
 			)
 			this.rides = data;
-			console.log(this.rides)
 			for (var i = 0; i < this.rides.length; i++) {
 				this.add_ride(i);
 			}
@@ -165,25 +161,47 @@ var Map = augment(Object, function () {
 		this.direction_service = new google.maps.DirectionsService();
 		this.direction_display = new google.maps.DirectionsRenderer({preserveViewport:false});
 
-		this.cluster = new MarkerClusterer(this.map);
-		this.cluster.setGridSize(30);
-		google.maps.event.addListener(this.cluster, "clusterclick", function (cluster) {
-			this.cluster_click = true;
-		});
-
 		this.geocoder = new google.maps.Geocoder();
 		//google.maps.event.addListener()
 	}
 
 	this.add_ride = function (idx) {
+		/* Get ride */
 		var ride = this.rides[idx];
+		/* Set template and compile */
+		var location_template = document.querySelector('#location_template').innerHTML;
+		var source = Handlebars.compile(location_template)
+
+		/* Create origin marker & info window */
+		var origin_html = source({
+			type: 'Origin',
+			location: ride.origin_add,
+			id: ride.id
+		})
+		
 		origin_pos = new google.maps.LatLng(
 			ride.origin_lat,
 			ride.origin_lng
-		)
+		);
 		ride.origin_marker = new google.maps.Marker({
 			position: origin_pos,
 			icon: this.icons.car_success
+		});
+		ride.origin_info = new google.maps.InfoWindow({
+			position: origin_pos,
+			content: origin_html
+		});
+
+		google.maps.event.addListener(ride.origin_marker, 'click', function () {
+			ride.origin_info.open(this.map, ride.origin_marker)
+		}.bind(this));
+		ride.origin_marker.setMap(this.map);
+
+		/* Create dest marker & info window */
+		var dest_html = source({
+			type: 'Destination',
+			location: ride.dest_add,
+			id: ride.id
 		})
 		dest_pos = new google.maps.LatLng(
 			ride.dest_lat,
@@ -193,30 +211,49 @@ var Map = augment(Object, function () {
 			position: dest_pos,
 			icon: this.icons.car_error
 		})
+		ride.dest_info = new google.maps.InfoWindow({
+			position: dest_pos,
+			content: origin_html
+		});
 
-		google.maps.event.addListener(ride.origin_marker, 'click', function () {
-			console.log('orig')
-		}.bind(this));
-		ride.origin_marker.setMap(this.map);
-
-		google.maps.event.addListener(ride.dest_marker, 'flick', function () {
-			console.log('dest')
+		google.maps.event.addListener(ride.dest_marker, 'click', function () {
+			ride.dest_info.open(this.map, ride.dest_marker);
 		}.bind(this));
 		ride.dest_marker.setMap(this.map);
+	}
 
-		// overlays.push(marker);
-		// this.cluster.addMarker(marker);
-		return ride.marker;
-	} 
+
+	this.set_window = function (location, content) {
+		if (this.create_new_marker) {
+			var LatLng = new google.maps.LatLng(location.k, location.A);
+			var dialog = new google.maps.InfoWindow({
+				position: LatLng,
+				content: content
+			});
+			var marker = new google.maps.Marker({
+				position: LatLng,
+				map: this.map,
+			})
+			google.maps.event.addListener(marker, 'click', function () {
+				dialog.open(this.map, marker)
+			})
+			google.maps.event.addListener(
+				dialog,
+				'closeclick'
+			);
+			this.create_new_marker = false;
+		} else {
+			console.log('Cannot create new marker right now');
+		}
+	}
 
 	this.add_event = function (event) {
 		var marker = this.events[event.id].marker;
 		marker = new google.maps.Marker({
-			position: new google.maps.LatLng(event.lat,event.lng),
+			position: new google.maps.LatLng(event.lat, event.lng),
 			icon: this.icons.event
 		})
 		marker.setMap(this.map);
-		overlays.push(marker);
 		google.maps.event.addListener(marker, 'click', function () {
 			if (marker.getPosition()) {
 				var d = new Date();
@@ -258,13 +295,14 @@ var Map = augment(Object, function () {
 	}
 
 	this.disp_address = function (location) {
-		var source = document.querySelector('#location-template').innerHTML;
-		var template = Handlebars.compile(source);
-		var html = template({
-			location: 'Test Location'
-		});
+		// var source = document.querySelector('#location-template').innerHTML;
+		// var template = Handlebars.compile(source);
+		// var html = template({
+		// 	location: 'Test Location'
+		// });
 
 		var point = location[0].geometry.location;
+		this.set_window(point, 'New Marker');
 
 		if (this.state == 'select_location') {
 			this.marker_1.lat = point.k;
@@ -285,35 +323,11 @@ var Map = augment(Object, function () {
 		}
 	}
 
-	this.set_window = function (location, content) {
-		if (this.create_new_marker) {
-			var LatLng = new google.maps.LatLng(location.k, location.A);
-			var dialog = new google.maps.InfoWindow({
-				position: LatLng,
-				content: content
-			});
-			var marker = new google.maps.Marker({
-				position: LatLng,
-				map: this.map,
-			})
-			console.log(dialog);
-			google.maps.event.addListener(
-				dialog,
-				'closeclick',
-				function () {
-					this.click_listener = google.maps.event.addListener(
-						map,
-						'click',
-						this.get_address
-					)
-				}.bind(this)
-			);
-			google.maps.event.removeListener(this.click_listener);
-			this.create_new_marker = false;
-		} else {
-			console.log('Cannot create new marker right now');
-		}
+	this.existing_marker = function () {
+
 	}
+
+
 
 	this.special_action = function (route, btn) {
 		// Set location #1

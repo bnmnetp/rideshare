@@ -249,8 +249,10 @@
     <p>There are no rides currently</p>
 {{/if}}
 </script>
-<script id="location-template" type="text/x-handlebars-template">
-    <p>{{location}}</p>
+<script id="location_template" type="text/x-handlebars-template">
+    <p><strong>{{type}}</strong></p>
+    <p><strong>Location:</strong> {{location}}</p>
+    <button class='btn btn-primary' data-join='{{id}}'>Join this ride</button>
 </script>
 <script id="event-template" type="text/x-handlebars-template">
 
@@ -265,7 +267,6 @@
 
 <script src="static/augment.js" type="text/javascript"></script>
 <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
-<script src="http://google-maps-utility-library-v3.googlecode.com/svn/tags/markerclustererplus/2.0.9/src/markerclusterer.js" type="text/javascript"></script>
 <script src="static/maps.js" type="text/javascript"></script>
 <script src="static/flow.js" type="text/javascript"></script>
 
