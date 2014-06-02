@@ -34,7 +34,8 @@ var Map = augment(Object, function () {
 		this.current_ride = {};
 		this.current_event = {};
 
-		this.marker_current = {};
+		this.marker_1 = {};
+		this.marker_2 = {};
 
 		this.create_new_marker = true;
 
@@ -70,13 +71,16 @@ var Map = augment(Object, function () {
 			var html = template({
 				rides: data
 			})
-			console.log(ride_layout.innerHTML)
-			console.log(data)
 			document.querySelector('#table').insertAdjacentHTML(
 				'beforeend',
 				html
 			)
-		});
+			this.rides = data;
+			console.log(this.rides)
+			for (var i = 0; i < this.rides.length; i++) {
+				this.add_ride(i);
+			}
+		}.bind(this));
 		req_rides.fail(function (message, status) {
 
 		});
@@ -171,34 +175,37 @@ var Map = augment(Object, function () {
 		//google.maps.event.addListener()
 	}
 
-	this.add_ride = function (ride) {
-		var marker_position;
-		var marker = this.rides[ride.id].marker;
-		if (ride.destination_title == community.name) {
-			marker_position = new google.maps.LatLng(ride.destination_lat, ride.destination_long)
-		} else {
-			marker_position = new google.maps.LatLng(ride.destination_lat, ride.destination_long)
-		}
-		marker = new google.maps.Marker({
-			position: new google.maps.LatLng(ride.start_point_lat, ride.start_point_long),
-			icon: this.icons.person
-		});
-		google.maps.event.addListener(marker, 'click', function () {
-			if (marker.getPosition()) {
-				windowOpen(
-					marker.getPosition(),
-					addDriverPopup(
-						ride,
-						marker.getPosition().lat(),
-						marker.getPosition().lng()
-					)
-				)
-			}
-		});
-		ride.marker = marker;
-		marker.setMap(this.map);
-		overlays.push(marker);
-		this.cluster.addMarker(marker);
+	this.add_ride = function (idx) {
+		var ride = this.rides[idx];
+		origin_pos = new google.maps.LatLng(
+			ride.origin_lat,
+			ride.origin_lng
+		)
+		ride.origin_marker = new google.maps.Marker({
+			position: origin_pos,
+			icon: this.icons.car_success
+		})
+		dest_pos = new google.maps.LatLng(
+			ride.dest_lat,
+			ride.dest_lng
+		)
+		ride.dest_marker = new google.maps.Marker({
+			position: dest_pos,
+			icon: this.icons.car_error
+		})
+
+		google.maps.event.addListener(ride.origin_marker, 'click', function () {
+			console.log('orig')
+		}.bind(this));
+		ride.origin_marker.setMap(this.map);
+
+		google.maps.event.addListener(ride.dest_marker, 'flick', function () {
+			console.log('dest')
+		}.bind(this));
+		ride.dest_marker.setMap(this.map);
+
+		// overlays.push(marker);
+		// this.cluster.addMarker(marker);
 		return ride.marker;
 	} 
 
@@ -244,12 +251,10 @@ var Map = augment(Object, function () {
 	}
 
 	this.get_address = function (e) {
-		if (e != null) {
-			this.latLng = e.latLng;
-			this.geocoder.geocode({
-				latLng: this.latLng
-			}, this.disp_address.bind(this));
-		}
+		this.latLng = e.latLng;
+		this.geocoder.geocode({
+			latLng: this.latLng
+		}, this.disp_address.bind(this));
 	}
 
 	this.disp_address = function (location) {
@@ -258,24 +263,24 @@ var Map = augment(Object, function () {
 		var html = template({
 			location: 'Test Location'
 		});
-		console.log(location)
 
 		var point = location[0].geometry.location;
-		this.marker_current.lat = point.k;
-		this.marker_current.lng = point.A;
-		this.marker_current.address = location[0].formatted_address;
-		this.set_window(
-			point,
-			html
-		)
 
 		if (this.state == 'select_location') {
+			this.marker_1.lat = point.k;
+			this.marker_1.lng = point.A;
+			this.marker_1.address = location[0].formatted_address;
 			flow.change_slide('trip_type');
 		}
 		if (this.state == 'location_2') {
+			this.marker_2.lat = point.k;
+			this.marker_2.lng = point.A;
+			this.marker_2.address = location[0].formatted_address;
+
 			var location_2 = document.querySelector('[data-ride="loc_2"]');
 			var location_btn = document.querySelector('[data-ride="loc_btn"]');
-			location_2.textContent = this.marker_current.address;
+
+			location_2.textContent = this.marker_2.address;
 			location_btn.removeAttribute('disabled');
 		}
 	}
@@ -311,7 +316,7 @@ var Map = augment(Object, function () {
 	}
 
 	this.special_action = function (route, btn) {
-		// Set location #1 for data-slide=3, data-option=ride
+		// Set location #1
 		if (route == 'location_1') {
 			if (btn.dataset.ride == 'driver') {
 				this.current_ride.driver = true;
@@ -320,31 +325,29 @@ var Map = augment(Object, function () {
 			}
 			
 			var location = document.querySelector('[data-ride="loc_1"]');
-			location.textContent = this.marker_current.address;
+			location.textContent = this.marker_1.address;
 			flow.change_slide(route);
 		} else if (route == 'location_2') {
 			// Set location_type when selecting location #2
 			var location_type_form = document.querySelector('[data-ride="loc_1_type"]');
 			var location_type_disp = document.querySelector('[data-ride="loc_2_type"]');
 			var text;
-			this.marker_current.location_type = location_type_form.value;
-			if (location_type_form.value != 'finish') {
-				this.current_ride.destination = this.marker_current;
+			this.marker_1.location_type = location_type_form.value;
+			console.log(location_type_form.value)
+			if (this.marker_1.location_type == 'destination') {
+				this.current_ride.destination = this.marker_1;
+				this.marker_2.location_type = 'origin';
 				text = 'destination';
-			} else {
-				this.current_ride.origin = this.marker_current;
+			} else if (this.marker_1.location_type == 'origin') {
+				this.current_ride.origin = this.marker_1;
+				this.marker_2.location_type = 'destination';
 				text = 'starting point';
 			}
 			location_type_disp.textContent = text;
 			this.create_new_marker = true;
 			flow.change_slide(route);
 		} else if (route == 'details') {
-			if (this.marker_current.location_type != 'finish') {
-				this.current_ride.origin = this.marker_current;
-				
-			} else {
-				this.current_ride.destination = this.marker_current;
-			}
+			this.current_ride[this.marker_2.location_type] = this.marker_2;
 			if (this.current_ride.driver == true) {
 				flow.change_slide('driver_details')
 			} else {
@@ -423,9 +426,9 @@ var Map = augment(Object, function () {
 		var form = document.querySelector('[data-send="event"]')
 		var event = {};
 		event.name = form.name.value;
-		event.address = this.marker_current.address;
-		event.lat = this.marker_current.lat;
-		event.lng = this.marker_current.lng;
+		event.address = this.marker_1.address;
+		event.lat = this.marker_1.lat;
+		event.lng = this.marker_1.lng;
 		event.date = form.date.value;
 		event.time = form.time.value;
 		event.details = form.details.value;

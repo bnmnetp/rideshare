@@ -26,6 +26,7 @@ class Ride(db.Model):
         resp = {}
         for p in Ride._properties:
             resp[p] = str(getattr(self, p))
+        resp['id'] = self.key().id()
         return resp
 
 

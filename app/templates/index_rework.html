@@ -25,6 +25,8 @@
     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
     <strong>Instructions</strong>
     <p>You can create an event or ride by clicking on the map or typing an address in.</p>
+    <hr>
+    <p>Check out the existing ride table below to join a ride.</p>
 </div>
 <div class="row">
     <div class="col-md-8 map_con" id='col_map'>
@@ -122,8 +124,8 @@
                     <span data-ride="loc_1"></span>
                 </label>
                 <select class='form-control' data-ride="loc_1_type" name="location">
-                    <option value="finish">Destination</option>
-                    <option value="start">Starting Point</option>
+                    <option value="destination">Destination</option>
+                    <option value="origin">Starting Point</option>
                 </select>
             </div>
             <button class="btn btn-primary" data-next="location_2" type='button'>
@@ -200,9 +202,14 @@
 {% block scripts %}
 {% raw %}
 <script id="ride_template" type="text/x-handlebars-template">
+<hr>
+<h1>Existing Rides</h1>
+{{#if rides}}
     <table class='table'>
         <tr>
             <th>Driver</th>
+            <th>Origin</th>
+            <th>Destination</th>
             <th>Spots available</th>
             <th>Date</th>
             <th>Phone #</th>
@@ -211,7 +218,17 @@
         {{#each rides}}
             <tr>
                 <td>
-                    {{driver_name}}
+                    {{#if driver}}
+                        {{driver_name}}
+                    {{else}}
+                        No Driver
+                    {{/if}}
+                </td>
+                <td>
+                    {{origin_add}}
+                </td>
+                <td>
+                    {{dest_add}}
                 </td>
                 <td>
                     {{passengers_max}}
@@ -223,11 +240,14 @@
                     {{contact}}
                 </td>
                 <td>
-                    <button data-join-ride="" class='btn btn-primary'>Join</button>
+                    <button data-join-ride="" class='btn btn-primary'>Show ride on map</button>
                 </td>
             </tr>
         {{/each}}
     </table>
+{{else}}
+    <p>There are no rides currently</p>
+{{/if}}
 </script>
 <script id="location-template" type="text/x-handlebars-template">
     <p>{{location}}</p>
