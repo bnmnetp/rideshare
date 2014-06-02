@@ -28,10 +28,18 @@ var Flow = augment(Object, function () {
 			}
 		}
 
-		for (var i = 0; i < this.next.length; i++) {
-			var current = this.next[i];
-			current.addEventListener('click', this.next_event.bind(this));
-		}
+		// for (var i = 0; i < this.next.length; i++) {
+		// 	var current = this.next[i];
+		// 	current.addEventListener('click', this.next_event.bind(this));
+		// }
+
+		document.body.addEventListener('click', function (e) {
+			var target = e.target;
+			if (target.dataset.next) {
+				this.next_event.apply(this, [e]);
+			}
+		}.bind(this));
+
 		for (var i = 0; i < this.headers.length; i++) {
 			var current = this.headers[i];
 			current.addEventListener('click', this.header_event.bind(this));
@@ -44,9 +52,9 @@ var Flow = augment(Object, function () {
 	}
 
 	this.next_event = function (e) {
+		console.log(e)
 		var btn = e.target;
-		this.special_action(btn.dataset.next, btn);
-		//this.change_slide(btn.dataset.next);
+		this.map.special_action(btn.dataset.next, btn);
 	}
 
 	this.header_event = function (e) {
@@ -57,10 +65,6 @@ var Flow = augment(Object, function () {
 		if (target.dataset.header < this.id_last) {
 			this.change_slide(target.dataset.header);
 		}
-	}
-
-	this.special_action = function (route, btn) {
-		this.map.special_action(route, btn);
 	}
 
 	this.change_slide = function (route) {

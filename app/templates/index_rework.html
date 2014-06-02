@@ -183,6 +183,9 @@
             </button>
         </form>
     </div>
+    <div class="col-md-4" data-route="join_ride">
+        
+    </div>
     <div data-loading class='col-md-4 hidden'>
         <div class="spinner">
             <div class="double-bounce1"></div>
@@ -201,6 +204,27 @@
 
 {% block scripts %}
 {% raw %}
+<script data-template='join_ride' type="text/x-handlebars-template">
+    <h1>Join a ride</h1>
+    <div class="entry">
+        <strong>Origin:</strong>: {{origin}}
+    </div>
+    <div class="entry">
+        <strong>Destination:</strong> {{dest}}
+    </div>
+    <div class="entry">
+        <strong>Date:</strong> {{date}}
+    </div>
+    <div class="entry">
+        <strong>Time:</strong> {{time}}
+    </div>
+    <div class="entry">
+        <strong>Driver:</strong> {{driver}}
+    </div>
+    <div class="entry">
+        <strong>Driver contact:</strong> {{contact}}
+    </div>
+</script>
 <script id="ride_template" type="text/x-handlebars-template">
 <hr>
 <h1>Existing Rides</h1>
@@ -252,7 +276,7 @@
 <script id="location_template" type="text/x-handlebars-template">
     <p><strong>{{type}}</strong></p>
     <p><strong>Location:</strong> {{location}}</p>
-    <button class='btn btn-primary' data-join='{{id}}'>Join this ride</button>
+    <button class='btn btn-primary' data-next='join_ride' data-id='{{id}}'>Join this ride</button>
 </script>
 <script id="event-template" type="text/x-handlebars-template">
 

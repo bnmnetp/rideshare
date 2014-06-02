@@ -323,12 +323,6 @@ var Map = augment(Object, function () {
 		}
 	}
 
-	this.existing_marker = function () {
-
-	}
-
-
-
 	this.special_action = function (route, btn) {
 		// Set location #1
 		if (route == 'location_1') {
@@ -367,6 +361,28 @@ var Map = augment(Object, function () {
 			} else {
 				flow.change_slide('passenger_details')
 			}
+		} else if (route == 'join_ride') {
+			var id = btn.dataset.id;
+			var container = document.querySelector('[data-route="join_ride"]');
+			var source = document.querySelector('[data-template="join_ride"]').innerHTML;
+			var template = Handlebars.compile(source);
+			var ride;
+			// Find specific ride by ID
+			for (var i = 0; i < this.rides.length; i++) {
+				if (this.rides[i].id = id) {
+					ride = this.rides[i];
+				}
+			}
+			var html = template({
+				origin: ride.origin_add,
+				dest: ride.dest_add,
+				date: ride.date,
+				time: ride.time,
+				driver: ride.driver_name,
+				contact: ride.contact
+			});
+			container.insertAdjacentHTML('beforeend', html);
+			flow.change_slide('join_ride');
 		} else {
 			flow.change_slide(route);
 		}
