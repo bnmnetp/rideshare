@@ -20,6 +20,54 @@ class RideHandler(BaseHandler):
         results = json.dumps([r.to_dict() for r in rides])
         self.response.write(results)
 
+class RideJoinHandler(BaseHandler):
+    def post(self):
+        json_str = self.request.body
+        data = json.loads(json_str)
+
+        user = self.current_user()
+
+        ride = Ride.get_by_id(int(data['id']))
+
+        if ride:
+            # Possible input for data['type']: ['passenger', 'driver']
+            if data['type'] == 'passenger':
+                passenger = Passenger()
+                passenger.name = "Replace"
+                passenger.contact = "Replace"
+                passenger.add = ride.origin_add
+                passenger.lat = ride.origin_lat
+                passenger.lng = ride.origin_lng
+                pass_key = passenger.put()
+                ride.passengers.append(pass_key)
+            elif data['type'] == 'driver':
+                ride.passengers_max = 1
+                ride.passengers_total = 0
+                ride.driver = True
+                # Replace
+                ride.driver_name = "Replace"
+                ride.contact = "Replace"
+
+            ride.put()
+
+            if ride.driver != True:
+                passenger.ride = ride_key
+                passenger.put()
+
+            response = {
+                'message': 'Ride added'
+            }
+            self.response.write(json.dumps(response))
+
+        else:
+            self.response.status_int(500)
+            response = {
+                'message': 'Ride not found!',
+                'error': True
+            }
+            self.response.write(json.dumps(response))
+
+
 class RideQueryHandler(BaseHandler):
     """
     Parse and process requests for rides

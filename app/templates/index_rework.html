@@ -224,9 +224,9 @@
     <div class="entry">
         <strong>Driver contact:</strong> {{contact}}
     </div>
-    <button class="btn btn-primary btn-large" data-join-pass='{{id}}'>Join as Passenger</button>
+    <button class="btn btn-primary btn-large" data-join='passenger:{{id}}'>Join as Passenger</button>
     {{#unless driver}}
-    <button class='btn btn-primary btn-large' data-join-driver='{{id}}'>Join as Driver</button>
+    <button class='btn btn-primary btn-large' data-join='driver:{{id}}'>Join as Driver</button>
     {{/unless}}
 </template>
 <script id="ride_template" type="text/x-handlebars-template">
