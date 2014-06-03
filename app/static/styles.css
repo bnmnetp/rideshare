@@ -9,8 +9,25 @@ body {
     color: #333339;
 }
 
-.navbar-brand img {
-    height: 18px;
+.icon {
+    margin: 7px 0px 3px 0px;
+    height: 35px;
+    display: inline-block;
+    float: left;
+}
+
+.navbar-brand {
+    display: inline-block;
+    line-height: 30px;
+    padding: 10px;
+    padding-left: 20px;
+}
+
+.marker {
+    height: 35px;
+    color: white;
+    fill: white;
+    stroke: white;
 }
 
 .block {
