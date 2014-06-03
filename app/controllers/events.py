@@ -89,9 +89,6 @@ class NewEventHandler(BaseHandler):
         }
         self.response.write(json.dumps(response))
 
-
-
-
 class NewEventRideHandler(BaseHandler):
     """
     For new Event Rides

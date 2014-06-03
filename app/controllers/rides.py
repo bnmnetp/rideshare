@@ -9,8 +9,30 @@ from app.base_handler import BaseHandler
 class RideHandler(BaseHandler):
     def get(self):
         self.auth()
+        user = self.current_user()
 
-        doRender(self, 'rides.html', {})
+        rides_user = Ride.all().filter('passengers =', user.key())
+
+        rides_all = Ride.all()
+
+        print rides_user
+
+        rides_user_dict = [r.to_dict() for r in rides_user]
+        rides_all_dict = [r.to_dict() for r in rides_all]
+
+        # Grabs the city and state from the addresses
+        # Comes in format: Address, City, State Zip
+        for ride in rides_all_dict:
+            data = ride['dest_add'].split(',')
+            ride['dest_cs'] = data[1][1:] + ', ' + data[2][1:3]
+            data = ride['origin_add'].split(',')
+            ride['orig_cs'] = data[1][1:] + ', ' + data[2][1:3]
+
+        doRender(self, 'rides.html', {
+            'rides_user': rides_user_dict,
+            'rides_all': rides_all_dict
+        })
+
     def post(self):
         json_str = self.request.body
         data = json.loads(json_str)
@@ -35,14 +57,7 @@ class RideJoinHandler(BaseHandler):
         if ride:
             # Possible input for data['type']: ['passenger', 'driver']
             if data['type'] == 'passenger':
-                passenger = Passenger()
-                passenger.name = "Replace"
-                passenger.contact = "Replace"
-                passenger.add = ride.origin_add
-                passenger.lat = ride.origin_lat
-                passenger.lng = ride.origin_lng
-                pass_key = passenger.put()
-                ride.passengers.append(pass_key)
+                ride.passengers.append(user.key())
             elif data['type'] == 'driver':
                 ride.passengers_max = 1
                 ride.passengers_total = 0
@@ -52,10 +67,6 @@ class RideJoinHandler(BaseHandler):
                 ride.contact = "Replace"
 
             ride.put()
-
-            if ride.driver != True:
-                passenger.ride = ride_key
-                passenger.put()
 
             response = {
                 'message': 'Ride added'
@@ -127,6 +138,8 @@ class NewRideHandler(BaseHandler):
         d_arr = data['date'].split('/')
         d_obj = datetime.date(int(d_arr[2]), int(d_arr[1]), int(d_arr[0]))
 
+        user = self.current_user()
+
         # Refer to model.py for structure of data
         # class Ride
         ride.origin_add = data['origin']['address']
@@ -146,22 +159,12 @@ class NewRideHandler(BaseHandler):
             ride.driver_name = "Replace"
             ride.contact = "Replace"
         else:
-            passenger = Passenger()
-            passenger.name = "Replace"
-            passenger.contact = "Replace"
-            passenger.add = data['origin']['address']
-            passenger.lat = data['origin']['lat']
-            passenger.lng = data['origin']['lng']
-            pass_key = passenger.put()
-            ride.passengers.append(pass_key)
+            ride.passengers.append(user.key())
 
         ride.circle = ""
         ride.event = ""
 
         ride_key = ride.put()
-        if data['driver'] != True:
-            passenger.ride = ride_key
-            passenger.put()
 
         # self.send_email()
         response = {

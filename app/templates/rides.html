@@ -16,6 +16,31 @@
     </div>
 </div>
 <div class="row">
+{% for ride in rides_all %}
+    <div class="block">
+        <div class="left">
+            <h1>{{ride.orig_cs}} to {{ride.dest_cs}}</h1>
+            <div class="line">
+                <b>Starting point:</b> {{ride.origin_add}}
+            </div>
+            <div class="line">
+                <b>Destination:</b> {{ride.dest_add}}
+            </div>
+            <div class="line">
+                <b>Date:</b> {{ride.date}}
+            </div>
+            <div class="line">
+                <b>Time:</b> {{ride.time}}
+            </div>
+        </div>
+        <div class="right">
+            <button class='btn btn-primary'>Be the Driver</button>
+            <button class='btn btn-success'>Be a Passenger</button>
+        </div>
+    </div>
+{% endfor %}
+</div>
+<div class="row hidden">
     
 </div>
 <div class="table-responsive" data-container='tables'>
@@ -59,8 +84,6 @@
 </script>
 
 <script data-template='rides' type="text/x-handlebars-template">
-<hr>
-<h1>Existing Rides</h1>
 {{#if rides}}
     <table class='table'>
         <tr>
@@ -122,43 +145,6 @@
 
 
 <script type="text/javascript">
-function getParameterByName(name) {
-
-    name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
-    var regexS = "[\\?&]" + name + "=([^&#]*)";
-    var regex = new RegExp(regexS);
-    var results = regex.exec(window.location.search);
-    if(results == null)
-        return "";
-    else
-        return decodeURIComponent(results[1].replace(/\+/g, " "));
-        
-}
-var table_container = document.querySelector('[data-container="tables"]');
-var req_rides = $.ajax({
-    type: 'POST',
-    url: '/rides',
-    dataType: 'json',
-    contentType: 'application/json; charset=UTF-8',
-    data: JSON.stringify({
-        circle: getParameterByName('circle')
-    })
-});
-req_rides.done(function (data) {
-    var ride_layout = document.querySelector('[data-template="rides"]')
-    var template = Handlebars.compile(ride_layout.innerHTML)
-    var html = template({
-        rides: data
-    })
-    table_container.insertAdjacentHTML(
-        'beforeend',
-        html
-    )
-}.bind(this));
-req_rides.fail(function (message, status) {
-
-}.bind(this));
-
 var flow = new Flow();
 </script>
 

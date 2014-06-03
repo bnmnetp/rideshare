@@ -29,23 +29,6 @@ class Ride(db.Model):
         resp['id'] = self.key().id()
         return resp
 
-
-class Passenger(db.Model):
-    name = db.StringProperty()
-    # fullname = db.StringProperty()
-    contact = db.StringProperty()
-    add = db.StringProperty()
-    lat = db.FloatProperty()
-    lng = db.FloatProperty()
-    ride = db.ReferenceProperty()
-    
-    """
-    Check home page functionality regarding the search for passenger rides
-    & list of passengers for driver rides
-    
-    Change method of display in entire project regarding passengers
-    """
-
 class Community(db.Model):
     name = db.StringProperty()
     address = db.StringProperty()

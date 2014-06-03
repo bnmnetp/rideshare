@@ -209,55 +209,6 @@
     {{/unless}}
 </script>
 
-<script data-template='rides' type="text/x-handlebars-template">
-<hr>
-<h1>Existing Rides</h1>
-{{#if rides}}
-    <table class='table'>
-        <tr>
-            <th>Driver</th>
-            <th>Origin</th>
-            <th>Destination</th>
-            <th>Spots available</th>
-            <th>Date</th>
-            <th>Phone #</th>
-            <th>Options</th>
-        </tr>
-        {{#each rides}}
-            <tr>
-                <td>
-                    {{#if driver}}
-                        {{driver_name}}
-                    {{else}}
-                        No Driver
-                    {{/if}}
-                </td>
-                <td>
-                    {{origin_add}}
-                </td>
-                <td>
-                    {{dest_add}}
-                </td>
-                <td>
-                    {{passengers_max}}
-                </td>
-                <td>
-                    {{date}}
-                </td>
-                <td>
-                    {{contact}}
-                </td>
-                <td>
-                    <button data-join="passenger:{{id}}" class='btn btn-primary'>Join as passenger</button>
-                </td>
-            </tr>
-        {{/each}}
-    </table>
-{{else}}
-    <p>There are no rides currently</p>
-{{/if}}
-</script>
-
 <script data-template='event' type="text/x-handlebars-template">
 <hr>
 <h1>Events</h1>
