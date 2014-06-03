@@ -32,6 +32,8 @@ var Map = augment(Object, function () {
 
 		this.create_new_marker = true;
 
+		this.table_container = document.querySelector('[data-container="tables"]');
+
 		var d = new Date();
 
 		var req_events = $.ajax({
@@ -49,10 +51,18 @@ var Map = augment(Object, function () {
 			var html = template({
 				events: data
 			})
-		});
+			this.table_container.insertAdjacentHTML(
+				'beforeend',
+				html
+			)
+			this.events = data;
+			for (var i = 0; i < this.events.length; i++) {
+				this.add_event(i);
+			}
+		}.bind(this));
 		req_events.fail(function (message, status) {
 
-		});
+		}.bind(this));
 
 		var req_rides = $.ajax({
 			type: 'POST',
@@ -64,15 +74,6 @@ var Map = augment(Object, function () {
 			})
 		});
 		req_rides.done(function (data) {
-			var ride_layout = document.querySelector('#ride_template')
-			var template = Handlebars.compile(ride_layout.innerHTML)
-			var html = template({
-				rides: data
-			})
-			document.querySelector('#table').insertAdjacentHTML(
-				'beforeend',
-				html
-			)
 			this.rides = data;
 			for (var i = 0; i < this.rides.length; i++) {
 				this.add_ride(i);
@@ -80,7 +81,7 @@ var Map = augment(Object, function () {
 		}.bind(this));
 		req_rides.fail(function (message, status) {
 
-		});
+		}.bind(this));
 
 		this.create_markers();
 
@@ -177,13 +178,15 @@ var Map = augment(Object, function () {
 		/* Get ride */
 		var ride = this.rides[idx];
 		/* Set template and compile */
-		var location_template = document.querySelector('#location_template').innerHTML;
-		var source = Handlebars.compile(location_template)
+		var layout = document.querySelector('[data-template="popup"]');
+		var source = Handlebars.compile(layout.innerHTML)
 
 		/* Create origin marker & info window */
 		var origin_html = source({
-			type: 'Origin',
-			location: ride.origin_add,
+			primary: 'Starting',
+			primary_add: ride.origin_add,
+			secondary: 'Ending',
+			secondary_add: ride.dest_add,
 			id: ride.id
 		})
 		
@@ -207,8 +210,10 @@ var Map = augment(Object, function () {
 
 		/* Create dest marker & info window */
 		var dest_html = source({
-			type: 'Destination',
-			location: ride.dest_add,
+			secondary: 'Starting',
+			secondary_add: ride.origin_add,
+			primary: 'Ending',
+			primary_add: ride.dest_add,
 			id: ride.id
 		})
 		dest_pos = new google.maps.LatLng(
@@ -291,8 +296,6 @@ var Map = augment(Object, function () {
 
 			}
 		});
-
-
 	}
 
 	this.get_address = function (e) {
@@ -417,7 +420,7 @@ var Map = augment(Object, function () {
 		});
 		req_rides.done(function (message) {
 			this.flow.change_slide('select_location');
-			this.flow.alert({
+			notify({
 				type: 'success',
 				strong: 'You created a new ride!',
 				message: 'We sent you a confirmation email.'
@@ -425,7 +428,7 @@ var Map = augment(Object, function () {
 		}.bind(this));
 		req_rides.fail(function (message, status) {
 			this.flow.change_slide('select_location');
-			this.flow.alert({
+			notify({
 				type: 'danger',
 				strong: 'Sorry!',
 				message: 'The ride was not created. Please try again.'
@@ -448,7 +451,7 @@ var Map = augment(Object, function () {
 		});
 		req_rides.done(function (message) {
 			this.flow.change_slide('select_location');
-			this.flow.alert({
+			notify({
 				type: 'success',
 				strong: 'You asked for a ride!',
 				message: 'We sent you a confirmation email.'
@@ -456,7 +459,7 @@ var Map = augment(Object, function () {
 		}.bind(this));
 		req_rides.fail(function (message, status) {
 			this.flow.change_slide('select_location');
-			this.flow.alert({
+			notify({
 				type: 'danger',
 				strong: 'Sorry!',
 				message: 'The ride was not created. Please try again.'
@@ -480,7 +483,7 @@ var Map = augment(Object, function () {
 		});
 		req_rides.done(function (data) {
 			this.flow.change_slide('select_location');
-			this.flow.alert({
+			notify({
 				type: 'success',
 				strong: 'You joined the ride!',
 				message: 'We sent you a confirmation email.'
@@ -488,7 +491,7 @@ var Map = augment(Object, function () {
 		}.bind(this));
 		req_rides.fail(function (data, status) {
 			this.flow.change_slide('select_location');
-			this.flow.alert({
+			notify({
 				type: 'danger',
 				strong: 'Sorry!',
 				message: 'You did not join the ride. Please try again.'
@@ -516,7 +519,7 @@ var Map = augment(Object, function () {
 		});
 		req_event.done(function (message) {
 			this.flow.change_slide('select_location');
-			this.flow.alert({
+			notify({
 				type: 'success',
 				strong: 'Event created!',
 				message: 'We sent you a confirmation email.'
@@ -524,7 +527,7 @@ var Map = augment(Object, function () {
 		}.bind(this));
 		req_event.fail(function (message, status) {
 			this.flow.change_slide('select_location');
-			this.flow.alert({
+			notify({
 				type: 'danger',
 				strong: 'Sorry!',
 				message: 'The event was not created. Please try again.'
@@ -532,16 +535,6 @@ var Map = augment(Object, function () {
 		}.bind(this));
 	}
 });
-
-var Ride = augment(Object, function () {
-	this.constructor = function (obj) {
-
-	}
-
-	this.send = function () {
-
-	}
-})
 
 var Location = augment(Object, function () {
 	this.constructor = function (title, lat, long) {
@@ -563,13 +556,3 @@ function getParameterByName(name) {
 		return decodeURIComponent(results[1].replace(/\+/g, " "));
 		
 }
-
-var DriverController = augment(Object, function () {
-	this.constructor = function () {
-
-	}
-
-	this.set_location = function (id) {
-
-	}
-})

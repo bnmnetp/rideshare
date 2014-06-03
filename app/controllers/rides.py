@@ -7,6 +7,10 @@ import json
 from app.base_handler import BaseHandler
 
 class RideHandler(BaseHandler):
+    def get(self):
+        self.auth()
+
+        doRender(self, 'rides.html', {})
     def post(self):
         json_str = self.request.body
         data = json.loads(json_str)

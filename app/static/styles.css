@@ -35,9 +35,9 @@ template {
 
 .entry {
     overflow: auto;
-    line-height: 24px;
-    font-size: 18px;
-    padding: 3px 0px 3px 0px;
+    line-height: 22px;
+    font-size: 16px;
+    padding: 5px 0px 5px 0px;
 }
 
 .guide {

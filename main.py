@@ -93,6 +93,7 @@ class MainHandler(BaseHandler):
     
 class MapHandler(BaseHandler):
     def get(self):
+        self.auth()
         doRender(self, 'index_rework.html', {})
 
 class SubmitRatingHandler(BaseHandler):
@@ -114,11 +115,8 @@ class SubmitRatingHandler(BaseHandler):
         self.redirect("/home")
 
 class HomeHandler(BaseHandler):
-    """
-    Displays personal homepage
-    """
     def get(self):
-      self.auth
+      self.auth()
       aquery = db.Query(Community)
       community = aquery.get()
       user = self.current_user()
@@ -130,13 +128,6 @@ class HomeHandler(BaseHandler):
       driverides = drive.fetch(limit=100)
       for ride in driverides:
         ride.passengerobjects = []
-        ride.jsmonth = ride.ToD.month
-        ride.jsyear = ride.ToD.year
-        ride.jsday = ride.ToD.day 
-        if ride.start_point_title == mycollege.name:
-          ride.doOrPu = 0
-        else:
-          ride.doOrPu = 1
         for p in ride.passengers:
           ride.passengerobjects.append(db.get(p))
       passengers = db.Query(Passenger)
@@ -151,9 +142,6 @@ class HomeHandler(BaseHandler):
         else:
           ride.doOrPu = 1
         ride.passengerobjects = [] # Will contain all Passenger objects for each Ride
-        ride.jsmonth = ride.ToD.month
-        ride.jsyear = ride.ToD.year
-        ride.jsday = ride.ToD.day 
         for p in ride.passengers:
           ride.passengerobjects.append(db.get(p))
       doRender(self, 'home.html', { 
@@ -163,8 +151,6 @@ class HomeHandler(BaseHandler):
                           'logout':'/auth/logout',
                           'passengerrides': passengerrides,
                           'event_list':event_list })
-
-
 
 class RateHandler(BaseHandler):
     
@@ -179,7 +165,6 @@ class RateHandler(BaseHandler):
             'college':mycollege
             })
       
-
 class RemovePassengerHandler(BaseHandler):
     """
     Removes a passenger using a key and the current user
@@ -314,21 +299,22 @@ class DatabaseHandler(BaseHandler):
             'next_url': next_url,
         })
 
-
 class IncorrectHandler(webapp2.RequestHandler):
     """
     Returns an error for URLs not defined
     """
     def get(self):
-      doRender(self, 'error.html', {
-                            'error_message': "Page does not exist."})
+        doRender(self, 'error.html', {
+            'error_message': "Page does not exist."
+        })
 
 class HelpHandler(BaseHandler):
     def get(self):
         doRender(self, 'help.html', {})
 
-class ReworkHandler(BaseHandler):
+class AllHandler(BaseHandler):
     def get(self):
+        self.auth()
         doRender(self, 'index_rework.html', {})
 
 class MovePassengerHandler(BaseHandler):
@@ -359,31 +345,6 @@ class MovePassengerHandler(BaseHandler):
             'message' : message,
             'mapkey':MAP_APIKEY,
         })
-
-def geocode(address):
- # This function queries the Google Maps API geocoder with an
- # address. It gets back a csv file, which it then parses and
- # returns a string with the longitude and latitude of the address.
-
- # This isn't an actual maps key, you'll have to get one yourself.
- # Sign up for one here: http://code.google.com/apis/maps/signup.html
-#  mapsKey = 'ABQIAAAAn9H2MPjtzJCGP4OYVLJuOxQbtjENHIgppMgd3dAaKy16g5o_8xTNamzlZZNZ42SPIkttrL_Smwh7RQ'
-
-  mapsUrl = 'http://maps.google.com/maps/geo?q='
-     
- # This joins the parts of the URL together into one string.
-  url = ''.join([mapsUrl,urllib.quote(address),'&output=csv&key=',MAP_APIKEY])
-    
- # This retrieves the URL from Google, parses out the longitude and latitude,
- # and then returns them as a string.
-  coordinates = urllib.urlopen(url).read().split(',')
-  #coorText = '%s,%s' % (coordinates[3],coordinates[2])
-  return (float(coordinates[3]),float(coordinates[2]))
-
-class MainPage(webapp2.RequestHandler):
-    def get(self):
-        self.response.headers['Content-Type'] = 'text/plain'
-        self.response.out.write('Hello, WebApp World!')
 
 app = webapp2.WSGIApplication([
     ('/', LoginPageHandler),
@@ -449,7 +410,6 @@ app = webapp2.WSGIApplication([
     ('/movepass', MovePassengerHandler),
     ('/connectride',ConnectPageHandler),
     ('/databasefix', DatabaseHandler),
-    ('/map_rework', ReworkHandler),
     ('/testing', create_user),
     ('/help', HelpHandler),
     ('/.*', IncorrectHandler)

@@ -7,26 +7,18 @@
 {% endblock %}
 
 {% block main %}
-<div id="alert_container"></div>
-<div>
-<div class="alert alert-success">
-    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-    <strong>Instructions</strong>
-    <p>You can create an event or ride by clicking on the map or typing an address in.</p>
-    <hr>
-    <p>Check out the existing ride table below to join a ride.</p>
-</div>
+<div data-notify="container"></div>
 <div class="row">
     <div class="col-md-8 map_con" id='col_map'>
         <div id="map_canvas"></div>
     </div>
     <div class="col-md-4 map_con" id='col_dialog' data-route='select_location'>
-        <div>
-            <p>Click anywhere on the map to create a destination or starting point. You may want to zoom in first. You can add yourself to a ride by clicking on one of the red or green pushpins on the map.
-            <br><br>
-            Enter an address or filter the pushpins by date using the controls on the right.
-            <br>
-           </p>
+        <div class="alert alert-success">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <strong>Instructions</strong>
+            <p>You can create an event or ride by clicking on the map or typing an address in. You can add yourself to a ride by clicking on one of the red or green pushpins on the map.</p>
+            <hr>
+            <p>Check out the existing ride table below to join a ride.</p>
         </div>
         <div>
             <form id='search_form'>
@@ -182,11 +174,8 @@
     </div>
 
 </div>
-</div>
-<div class="row table-responsive">
-    <div id='table'>
-        
-    </div>
+<div class="table-responsive" data-container='tables'>
+
 </div>
 {% endblock %}
 
@@ -220,7 +209,7 @@
     {{/unless}}
 </script>
 
-<script id="ride_template" type="text/x-handlebars-template">
+<script data-template='rides' type="text/x-handlebars-template">
 <hr>
 <h1>Existing Rides</h1>
 {{#if rides}}
@@ -269,7 +258,7 @@
 {{/if}}
 </script>
 
-<template data-template='event' type="text/x-handlebars-template">
+<script data-template='event' type="text/x-handlebars-template">
 <hr>
 <h1>Events</h1>
 <table class='table'>
@@ -292,17 +281,22 @@
     </tr>
     {{/each}}
 </table>
-</template>
+</script>
 
-<script id="location_template" type="text/x-handlebars-template">
-    <p><strong>{{type}}</strong></p>
-    <p><strong>Location:</strong> {{location}}</p>
+<script data-template='popup' type="text/x-handlebars-template">
+    <div class="entry">
+        This is the: <strong>{{primary}}</strong> point.
+    </div>
+    <div class="entry">
+        <strong>{{primary}} Location:</strong> {{primary_add}}
+    </div>
+    <div class="entry">
+        <strong>{{secondary}} Location:</strong> {{secondary_add}}
+    </div>
     <button class='btn btn-primary' data-next='join_ride' data-id='{{id}}'>Join this ride</button>
 </script>
 
-
-
-<script id='alert_template' type='text/x-handlebars-template'>
+<script data-notify="template" type='text/x-handlebars-template'>
     <div class="alert alert-{{type}} alert-dismissable">
         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
         <strong>{{strong}}</strong> {{message}}
@@ -319,9 +313,9 @@
 
 <script type="text/javascript">
 var map = new Map();
-var flow = new Flow();
+var flow = new Flow('select_location');
 map.set_flow(flow);
-flow.set_map(map);
+flow.set_handler(map);
 
 $('#event-date').datepicker();
 $('.date-select').datepicker();
