@@ -92,6 +92,13 @@ var Map = augment(Object, function () {
 		var event_form = document.querySelector('[data-send="event"]');
 		event_form.addEventListener('submit', this.send_event.bind(this));
 
+		document.body.addEventListener('click', function (e) {
+			var target = e.target;
+			if (target.dataset.joinPass || target.dataset.joinDriver) {
+				this.join_ride.apply(this, [e]);
+			}
+		}.bind(this));
+
 		this.search_form = document.querySelector('#search_form');
 		console.log(this.search_form)
 		this.search_form.addEventListener('submit', function (e) {
@@ -378,8 +385,10 @@ var Map = augment(Object, function () {
 				dest: ride.dest_add,
 				date: ride.date,
 				time: ride.time,
-				driver: ride.driver_name,
-				contact: ride.contact
+				driver: ride.driver,
+				driver_name: ride.driver_name,
+				contact: ride.contact,
+				id: ride.id
 			});
 			container.insertAdjacentHTML('beforeend', html);
 			flow.change_slide('join_ride');
@@ -438,6 +447,33 @@ var Map = augment(Object, function () {
 			this.flow.alert({
 				type: 'success',
 				strong: 'You asked for a ride!',
+				message: 'We sent you a confirmation email.'
+			});
+		}.bind(this));
+		req_rides.fail(function (message, status) {
+			this.flow.change_slide('select_location');
+			this.flow.alert({
+				type: 'danger',
+				strong: 'Sorry!',
+				message: 'The ride was not created. Please try again.'
+			});
+		}.bind(this));
+	}
+
+	// Sends request for person to join ride as passenger
+	this.join_ride = function (e) {
+		var req_rides = $.ajax({
+			type: 'POST',
+			url: '/newride',
+			dataType: 'json',
+			contentType: 'application/json; charset=UTF-8',
+			data: JSON.stringify(this.current_ride)
+		});
+		req_rides.done(function (message) {
+			this.flow.change_slide('select_location');
+			this.flow.alert({
+				type: 'success',
+				strong: 'You created a new ride!',
 				message: 'We sent you a confirmation email.'
 			});
 		}.bind(this));

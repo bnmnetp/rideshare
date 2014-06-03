@@ -33,6 +33,13 @@ template {
 	padding: 0px;
 }
 
+.entry {
+    overflow: auto;
+    line-height: 24px;
+    font-size: 18px;
+    padding: 3px 0px 3px 0px;
+}
+
 .guide {
 	height: 60px;
 	background-color: #F8F8F8;

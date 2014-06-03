@@ -204,10 +204,10 @@
 
 {% block scripts %}
 {% raw %}
-<script data-template='join_ride' type="text/x-handlebars-template">
+<template data-template='join_ride' type="text/x-handlebars-template">
     <h1>Join a ride</h1>
     <div class="entry">
-        <strong>Origin:</strong>: {{origin}}
+        <strong>Origin:</strong> {{origin}}
     </div>
     <div class="entry">
         <strong>Destination:</strong> {{dest}}
@@ -219,12 +219,16 @@
         <strong>Time:</strong> {{time}}
     </div>
     <div class="entry">
-        <strong>Driver:</strong> {{driver}}
+        <strong>Driver:</strong> {{driver_name}}
     </div>
     <div class="entry">
         <strong>Driver contact:</strong> {{contact}}
     </div>
-</script>
+    <button class="btn btn-primary btn-large" data-join-pass='{{id}}'>Join as Passenger</button>
+    {{#unless driver}}
+    <button class='btn btn-primary btn-large' data-join-driver='{{id}}'>Join as Driver</button>
+    {{/unless}}
+</template>
 <script id="ride_template" type="text/x-handlebars-template">
 <hr>
 <h1>Existing Rides</h1>
