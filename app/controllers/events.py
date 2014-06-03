@@ -1,6 +1,5 @@
 from app.common.toolbox import doRender
 from google.appengine.ext import db
-from django.utils import simplejson
 from app.model import *
 from google.appengine.api import mail
 import datetime
