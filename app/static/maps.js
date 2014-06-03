@@ -22,10 +22,6 @@ var Map = augment(Object, function () {
 		this.icons = {};
 		this.map;
 		this.geocoder;
-		this.address;
-		this.click_listener;
-		this.direction_service;
-		this.direction_display;
 
 		this.state = 'select_location';
 		this.current_ride = {};
@@ -48,6 +44,11 @@ var Map = augment(Object, function () {
 			})
 		});
 		req_events.done(function (data) {
+			var layout = document.querySelector('[data-template="event"]');
+			var template = Handlebars.compile(layout.innerHTML);
+			var html = template({
+				events: data
+			})
 		});
 		req_events.fail(function (message, status) {
 
