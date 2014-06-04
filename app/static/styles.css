@@ -11,6 +11,7 @@ body {
 
 .icon {
     margin: 7px 0px 3px 0px;
+    padding-left: 15px;
     height: 35px;
     display: inline-block;
     float: left;
@@ -31,7 +32,6 @@ body {
 }
 
 .block {
-    overflow: auto;
     height: auto;
     width: 100%;
     display: inline-block;
@@ -53,17 +53,23 @@ body {
     font-weight: 700;
 }
 
+.block button {
+    float: right;
+}
+
 .block .left {
     display: inline-block;
     float: left;
+    width: 50%;
 }
 
 .block .right {
     display: inline-block;
     float: right;
+    width: 50%;
     position: relative;
-    height: 40px;
     transform: translateY(100%);
+    overflow: auto;
 }
 
 #footer {

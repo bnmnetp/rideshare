@@ -49,13 +49,13 @@ class Circle(db.Model):
 
 class Event(db.Model):
     name = db.StringProperty()
-    circle = db.StringProperty()
+    circle = db.Key
     lat = db.FloatProperty()
     lng = db.FloatProperty()
     date = db.DateProperty()
     address = db.StringProperty()
     time = db.StringProperty()
-    creator = db.StringProperty()
+    user = db.Key
 
     def to_dict(self):
         resp = {}
@@ -77,4 +77,4 @@ class User(db.Model):
     updated = db.DateTimeProperty(auto_now=True)
     name = db.StringProperty()
     email = db.EmailProperty()
-    circles = db.ListProperty(int)
+    circles = db.ListProperty(db.Key)

@@ -34,9 +34,12 @@ var Flow = augment(Object, function () {
 	}
 
 	this.next_event = function (e) {
-		console.log(e)
 		var btn = e.target;
-		this.handler.special_action(btn.dataset.next, btn);
+		if (this.handler) {
+			this.handler.special_action(btn.dataset.next, btn);
+		} else {
+			this.change_slide(btn.dataset.next);
+		}	
 	}
 
 	this.change_slide = function (route) {
@@ -44,19 +47,14 @@ var Flow = augment(Object, function () {
 		this.handler.state = route;
 		for (var i = 0; i < this.views.length; i++) {
 			var view = this.views[i];
-			if (!view.classList.contains('hidden')) {
-				view.classList.add('hidden');
-			}
-		}
-		this.loading.classList.remove('hidden');
-		window.setTimeout(function () {
-			this.loading.classList.add('hidden');
-			for (var i = 0; i < this.views.length; i++) {
-				var view = this.views[i];
-				if (view.dataset.route == route) {
-					view.classList.remove('hidden');
+			if (view.dataset.route == route) {
+				view.classList.remove('hidden');
+			} else {
+				if (!view.classList.contains('hidden')) {
+					view.classList.add('hidden');
 				}
 			}
-		}.bind(this), 500);
+
+		}
 	}
 });

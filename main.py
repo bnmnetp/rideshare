@@ -72,24 +72,14 @@ class MainHandler(BaseHandler):
     user = self.current_user()
     aquery = db.Query(Community)
     community = aquery.get()
-    print user
-    eventsList = []
-    circles = []
-    for item in user.circles:
-        query = db.Query(Event)
-        query.filter("ToD > ", datetime.date.today())
-        query.filter("circle =",str(item))
-        event_list = query.fetch(limit=100)
-        logging.debug(event_list)
-        for event in event_list:
-          eventsList.append(event.to_dict())
-        circles.append(Circle.get_by_id(int(item)))
+
+    circles_user = Circle.all().filter('__key__ IN', user.circles)
+
     doRender(self, 'main.html', {
-            'event_list': eventsList,
-            'circles' : circles,
-            'community': community,
-            'user': user
-            })
+        'circles' : circles_user,
+        'community': community,
+        'user': user
+    })
     
 class MapHandler(BaseHandler):
     def get(self):
@@ -116,41 +106,15 @@ class SubmitRatingHandler(BaseHandler):
 
 class HomeHandler(BaseHandler):
     def get(self):
-      self.auth()
-      aquery = db.Query(Community)
-      community = aquery.get()
-      user = self.current_user()
-      events = db.Query(Event)
-      events.filter('creator =', user.key().id())
-      event_list = events.fetch(limit=100)
-      drive = db.Query(Ride)
-      drive.filter('driver =', user.name)
-      driverides = drive.fetch(limit=100)
-      for ride in driverides:
-        ride.passengerobjects = []
-        for p in ride.passengers:
-          ride.passengerobjects.append(db.get(p))
-      passengers = db.Query(Passenger)
-      passengers.filter('name =', user.name)
-      passengerList = passengers.fetch(limit=100) # All passenger objects with 'my' name
-      passengerrides = [] # Will contain all Rides the user is a passenger for
-      for p in passengerList:
-        passengerrides.append(p.ride)
-      for ride in passengerrides:
-        if ride.start_point_title == community.name:
-          ride.doOrPu = 0
-        else:
-          ride.doOrPu = 1
-        ride.passengerobjects = [] # Will contain all Passenger objects for each Ride
-        for p in ride.passengers:
-          ride.passengerobjects.append(db.get(p))
-      doRender(self, 'home.html', { 
-                          'community': community,
-                          'user': user,
-                          'driverides': driverides, 
-                          'logout':'/auth/logout',
-                          'passengerrides': passengerrides,
-                          'event_list':event_list })
+        self.auth()
+        aquery = db.Query(Community)
+        community = aquery.get()
+        user = self.current_user()
+
+        doRender(self, 'home.html', { 
+            'community': community,
+            'user': user
+        })
 
 class RateHandler(BaseHandler):
     

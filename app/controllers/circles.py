@@ -59,13 +59,13 @@ class JoinCircle(BaseHandler):
 
         if user:
             circle_id = int(data['circle'])
+            circle_key = Circle.get_by_id(circle_id).key()
             if data['action'] == 'add':
-                
-                if circle_id not in user.circles:
-                    user.circles.append(circle_id)
+                if circle_key not in user.circles:
+                    user.circles.append(circle_key)
             elif data['action'] == 'remove':
-                if circle_id in user.circles:
-                    user.circles.remove(circle_id)
+                if circle_key in user.circles:
+                    user.circles.remove(circle_key)
 
             user.put()
         else:

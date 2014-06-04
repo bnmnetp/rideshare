@@ -15,7 +15,7 @@
 		<h2>{{ circle.name }}</h2>
 		<p>{{ circle.description }}</p>
 		<div class='switch' data-id='{{ circle.key().id() }}'
-			{% if circle.key().id() in user.circles %}
+			{% if circle.key() in user.circles %}
 				data-switch='true'
 			{% else %}
 				data-switch='false'

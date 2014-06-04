@@ -8,6 +8,24 @@ import json
 from app.base_handler import BaseHandler
 
 class EventHandler(BaseHandler):
+    def get(self):
+        self.auth()
+
+        user = self.current_user()
+
+        # create a list of strings of circle ids
+        key_list = [str(e) for e in user.circles]
+        print key_list
+        events_user = Event.all().filter('circle IN', key_list)
+
+        print json.dumps([e.to_dict() for e in events_user])
+
+        events_user = Event.all()
+
+        doRender(self, 'events.html', {
+
+        })
+
     def post(self):
         json_str = self.request.body
         data = json.loads(json_str)
@@ -69,6 +87,8 @@ class NewEventHandler(BaseHandler):
         json_str = self.request.body
         data = json.loads(json_str)
 
+        user = self.current_user()
+
         # Creates date object from Month/Day/Year format
         d_arr = data['date'].split('/')
         d_obj = datetime.date(int(d_arr[2]), int(d_arr[1]), int(d_arr[0]))
@@ -82,8 +102,14 @@ class NewEventHandler(BaseHandler):
         event.address = data['address']
         event.data = d_obj
         event.time = data['time']
-        event.creator = 'Replace'
+        event.user = user.key()
 
+        if data['circle']:
+            circle = Circle.get_by_id(data['circle'])
+            if circle:
+                event.circle = circle.key()
+        else:
+            event.circle = None
         response = {
             'message': 'Event added!'
         }
