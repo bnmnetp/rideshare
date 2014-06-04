@@ -1,0 +1,55 @@
+{% extends "layout.html" %}
+
+{% block title %}Ride{% endblock %}
+
+{% block head %}
+{% endblock %}
+
+{% block main %}
+<ul class='information'>
+    <li>
+        <b>Destination:</b> {{ride.dest_add}}
+    </li>
+    <li>
+        <b>Starting point: </b> {{ride.origin_add}}
+    </li>
+    <li>
+        <b>Date:</b> {{ride.date}}
+    </li>
+    <li>
+        <b>Time:</b> {{ride.time}}
+    </li>
+    {% if ride.driver %}
+    <li>
+        <b>Availble seats:</b>
+    </li>
+    <li>
+        <b>Driver:</b> <a href="/user/{{driver.id}}">{{driver.name}}</a>
+    </li>
+    <li>
+        <b>Driver contact:</b> {{driver.contact}}
+    </li>
+    {% endif %}
+    <li>
+        <b>Other passengers:</b> list
+    </li>
+    {% if ride.circle %}
+    <li>
+        <b>Circle:</b>
+    </li>
+    {% endif %}
+    {% if ride.event %}
+    <li>
+        <b>Event:</b>
+    </li>
+    {% endif %}
+</ul>
+
+<div class='comments'>
+    <h1>Comments</h1>
+</div>
+{% endblock %}
+
+{% block scripts %}
+
+{% endblock %}

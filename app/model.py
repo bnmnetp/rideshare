@@ -7,7 +7,7 @@ class Ride(db.Model):
     passengers_max = db.IntegerProperty()
     passengers_total = db.IntegerProperty()
     driver = db.BooleanProperty()
-    driver_name = db.StringProperty()
+    driver_key = db.Key
     origin_add = db.StringProperty()
     origin_lat = db.FloatProperty()
     origin_lng = db.FloatProperty()
@@ -28,6 +28,14 @@ class Ride(db.Model):
             resp[p] = str(getattr(self, p))
         resp['id'] = self.key().id()
         return resp
+
+class Comment(db.Model):
+    user = db.Key
+    date = db.DateProperty()
+    text = db.TextProperty()
+    event = db.Key
+    ride = db.Key
+    circle = db.Key
 
 class Community(db.Model):
     name = db.StringProperty()

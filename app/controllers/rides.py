@@ -45,12 +45,20 @@ class RideHandler(BaseHandler):
         results = json.dumps([r.to_dict() for r in rides])
         self.response.write(results)
 
-def GetRideHandler(BaseHandler):
+class GetRideHandler(BaseHandler):
     def get(self, ride_id):
-        ride = Ride.get_by_id(ride_id)
+        ride = Ride.get_by_id(int(ride_id))
+
+        if ride.driver:
+            driver = Driver.get_by_key_name(ride.driver)
+        else:
+            driver = {}
 
         if ride:
-            doRender(self, 'view_ride.html', {})
+            doRender(self, 'view_ride.html', {
+                'ride': ride,
+                'driver': driver
+            })
         else:
             self.response.write('No ride found.')
 
@@ -72,9 +80,10 @@ class RideJoinHandler(BaseHandler):
                 ride.passengers_max = 1
                 ride.passengers_total = 0
                 ride.driver = True
+                ride.driver_key = user.key()
                 # Replace
-                ride.driver_name = "Replace"
-                ride.contact = "Replace"
+                ride.driver_name = user.name
+                ride.contact = user.email
 
             ride.put()
 
