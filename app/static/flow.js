@@ -2,8 +2,6 @@ var Flow = augment(Object, function () {
 	this.constructor = function (default_route) {
 		this.next = document.querySelectorAll('[data-next]');
 		this.views = document.querySelectorAll('[data-route]');
-		this.loading = document.querySelector('[data-loading]');
-		this.loading.classList.add('hidden');
 
 		this.id_last = 1;
 		this.option = '';

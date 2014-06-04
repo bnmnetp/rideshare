@@ -16,49 +16,61 @@
     </div>
 </div>
 <div data-route='my_rides'>
-{% for ride in rides_all %}
+{% if rides_user %}
+{% for ride in rides_user %}
     <div class="block">
-        <div class="left">
-            <h1>{{ride.orig_cs}} to {{ride.dest_cs}}</h1>
-            <div class="line">
-                <b>Starting point:</b> {{ride.origin_add}}
+        <div class="upper">
+            <div class="left">
+                <span class="text">{{ride.orig_cs}} to {{ride.dest_cs}}</span>
+
             </div>
-            <div class="line">
-                <b>Destination:</b> {{ride.dest_add}}
-            </div>
-            <div class="line">
-                <b>Date:</b> {{ride.date}}
-            </div>
-            <div class="line">
-                <b>Time:</b> {{ride.time}}
+            <div class="right">
+                <a class="btn btn-primary details" href='/ride/{{ride.id}}'>View Details</a>
             </div>
         </div>
-        <div class="right">
-            <!-- Link these -->
-            <button class='btn btn-primary'>Be the Driver</button>
-            <button class='btn btn-success'>Be a Passenger</button>
+        <div class="lower">
+            <span class="label label-success">Driver</span>
+            <span class="label label-success">Passenger</span>
+            <span class="label label-success">Success</span>
         </div>
+
     </div>
 {% endfor %}
+{% else %}
+<h2>You are not signed up for any rides currently.</h2>
+{% endif %}
 </div>
 
 <div data-route='all_rides'>
-    <h1>Test</h1>
-</div>
-<div class="table-responsive" data-container='tables'>
-    <div data-loading class='hidden'>
-        <div class="spinner">
-            <div class="double-bounce1"></div>
-            <div class="double-bounce2"></div>
+{% if rides_all %}
+{% for ride in rides_all %}
+    <div class="block">
+        <div class="upper">
+            <div class="left">
+                <span class="text">{{ride.orig_cs}} to {{ride.dest_cs}}</span>
+
+            </div>
+            <div class="right">
+                <a class="btn btn-primary details" href='/ride/{{ride.id}}'>View Details</a>
+            </div>
         </div>
+        <div class="lower">
+            <span class="label label-success">Driver</span>
+            <span class="label label-success">Passenger</span>
+            <span class="label label-success">Success</span>
+        </div>
+
     </div>
+{% endfor %}
+{% else %}
+<h2>You are not signed up for any rides.</h2>
+{% endif %}
 </div>
 {% endblock %}
 
 {% block scripts %}
 
 {% raw %}
-
 <script data-template='join_ride' type="text/x-handlebars-template">
     <h1>Join a ride</h1>
     <div class="entry">

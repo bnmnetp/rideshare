@@ -46,15 +46,6 @@ var Map = augment(Object, function () {
 			})
 		});
 		req_events.done(function (data) {
-			var layout = document.querySelector('[data-template="event"]');
-			var template = Handlebars.compile(layout.innerHTML);
-			var html = template({
-				events: data
-			})
-			this.table_container.insertAdjacentHTML(
-				'beforeend',
-				html
-			)
 			this.events = data;
 			for (var i = 0; i < this.events.length; i++) {
 				this.add_event(i);
@@ -102,9 +93,7 @@ var Map = augment(Object, function () {
 		}.bind(this));
 
 		this.search_form = document.querySelector('#search_form');
-		console.log(this.search_form)
 		this.search_form.addEventListener('submit', function (e) {
-			console.log('Test #1')
 			e.preventDefault();
 			var address = this.search_form.address.value;
 			this.geocoder.geocode({
@@ -352,7 +341,6 @@ var Map = augment(Object, function () {
 			var location_type_disp = document.querySelector('[data-ride="loc_2_type"]');
 			var text;
 			this.marker_1.location_type = location_type_form.value;
-			console.log(location_type_form.value)
 			if (this.marker_1.location_type == 'destination') {
 				this.current_ride.destination = this.marker_1;
 				this.marker_2.location_type = 'origin';

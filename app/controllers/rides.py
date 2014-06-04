@@ -45,6 +45,16 @@ class RideHandler(BaseHandler):
         results = json.dumps([r.to_dict() for r in rides])
         self.response.write(results)
 
+def GetRideHandler(BaseHandler):
+    def get(self, ride_id):
+        ride = Ride.get_by_id(ride_id)
+
+        if ride:
+            doRender(self, 'view_ride.html', {})
+        else:
+            self.response.write('No ride found.')
+
+
 class RideJoinHandler(BaseHandler):
     def post(self):
         json_str = self.request.body

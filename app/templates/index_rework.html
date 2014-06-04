@@ -166,13 +166,6 @@
     <div class="col-md-4" data-route="join_ride">
         
     </div>
-    <div data-loading class='col-md-4 hidden'>
-        <div class="spinner">
-            <div class="double-bounce1"></div>
-            <div class="double-bounce2"></div>
-        </div>
-    </div>
-
 </div>
 <div class="table-responsive" data-container='tables'>
 
@@ -207,31 +200,6 @@
     {{#unless driver}}
     <button class='btn btn-primary btn-large' data-join='driver:{{id}}'>Join as Driver</button>
     {{/unless}}
-</script>
-
-<script data-template='event' type="text/x-handlebars-template">
-<hr>
-<h1>Events</h1>
-<table class='table'>
-    <tr>
-        <th>Name</th>
-        <th>Address</th>
-        <th>Date</th>
-        <th>Time</th>
-        <th>Options</th>
-    </tr>
-    {{#each events}}
-    <tr>
-        <td>{{name}}</td>
-        <td>{{address}}</td>
-        <td>{{date}}</td>
-        <td>{{time}}</td>
-        <td>
-            <button data-join='event:{{id}}' class='btn btn-primary'>Join Event</button>
-        </td>
-    </tr>
-    {{/each}}
-</table>
 </script>
 
 <script data-template='popup' type="text/x-handlebars-template">

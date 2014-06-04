@@ -317,6 +317,7 @@ app = webapp2.WSGIApplication([
 
     # controllers/rides.py
     ('/rides', RideHandler),
+    ('/ride/(\d+)', GetRideHandler),
     ('/join_ride', RideJoinHandler),
     ('/getrides', RideQueryHandler),
     ("/newride.*", NewRideHandler),

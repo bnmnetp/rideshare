@@ -32,44 +32,47 @@ body {
 }
 
 .block {
-    height: auto;
     width: 100%;
+    display: block;
+    border-bottom: 1px solid #E4E4E4;
+}
+
+.block .upper {
+    height: 40px;
+}
+.block .lower {
+    padding-bottom: 10px;
+}
+
+.block span {
     display: inline-block;
-    border-bottom: 1px solid #5E5E5E;
-    padding: 0px 0px 15px 0px;
 }
 
-.block h1 {
-    font-size: 24px;
-    margin: 10px 0px 10px 0px;
+.block .text {
+    font-size: 20px;
+    line-height: 40px;
+    font-weight: 100;
 }
 
-.block .line {
+.block .btn {
+    border-radius: 0px;
+    line-height: 38px;
     font-size: 14px;
-    line-height: 26px;
+    padding: 0px 12px 0px 12px;
 }
 
 .block b {
     font-weight: 700;
 }
 
-.block button {
-    float: right;
-}
-
 .block .left {
     display: inline-block;
     float: left;
-    width: 50%;
 }
 
 .block .right {
     display: inline-block;
     float: right;
-    width: 50%;
-    position: relative;
-    transform: translateY(100%);
-    overflow: auto;
 }
 
 #footer {
