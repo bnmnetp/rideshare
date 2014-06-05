@@ -50,19 +50,20 @@
                 </li>
             {% endif %}
         </ul>
+        <hr>
         {% if ride.driver_key == user.key %}
-            <button>Leave ride</button>
             <p class="help-block">You are currently the driver.</p>
+            <button class='btn btn-danger'>Leave ride</button>
         {% elif ride.driver %}
 
         {% else %}
-            <button>Be the driver</button>
+            <button class='btn btn-success'>Be the driver</button>
         {% endif %}
         {% if user.key in ride.passengers %}
-            <button>Leave ride</button>
             <p class="help-block">You are currently a passenger.</p>
+            <button class='btn btn-danger'>Leave ride</button>
         {% else %}
-            <button>Join as Passenger</button>
+            <button class='btn btn-success'>Join as Passenger</button>
         {% endif %}
     </div>
 </div>
@@ -95,10 +96,10 @@
                 <span class="label label-success">Posted on 7/8/12</span>
             </div>
             <hr>
-            <form>
+            <form id='form'>
                 <div class="form-group">
                     <label>Comment</label>
-                    <textarea class='form-control' rows='3'></textarea>
+                    <textarea class='form-control' rows='3' name='comment'></textarea>
                 </div>
                 <button class='btn btn-primary'>Post Comment</button>
             </form>
@@ -108,5 +109,29 @@
 {% endblock %}
 
 {% block scripts %}
+<script type="text/javascript">
+    var form = document.querySelector('#form');
 
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        var req = $.ajax({
+            type: 'POST',
+            url: '/comment',
+            dataType: 'json',
+            contentType: 'application/json; charset=UTF-8',
+            data: JSON.stringify({
+                comment: this.comment.value,
+                type: 'ride',
+                id: {{ride.id}}
+            })
+        });
+        req.done(function (data) {
+            console.log('Success')
+        };
+        req.fail(function (data, status) {
+            console.log('Err')
+        };
+    })
+</script>
 {% endblock %}

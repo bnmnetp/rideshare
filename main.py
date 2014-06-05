@@ -47,6 +47,7 @@ from app.controllers.account_flow import *
 from app.controllers.circles import *
 from app.controllers.events import *
 from app.controllers.rides import *
+from app.controllers.comments import *
 
 from app.common.toolbox import doRender
 
@@ -337,6 +338,8 @@ app = webapp2.WSGIApplication([
     ('/driverrating',DriverRatingHandler),
           ('/school',SchoolErrorHandler),
     ('/ridesuccess',RideSuccessHandler),
+
+    ('/comments', CommentHandler),
 
     # controllers/circles.py
     ('/addCircle', AddCircleHandler),
