@@ -58,24 +58,24 @@ class GetRideHandler(BaseHandler):
         user = self.current_user()
 
         if ride.driver:
-            driver = User.get(ride.driver_key)
+            driver = db.get(ride.driver_key.key())
             availible_seats = ride.passengers_max - ride.passengers_total;
         else:
             driver = {}
 
         passengers = []
         for key in ride.passengers:
-            passengers.append(User.get_by_key_name(key))
+            passengers.append(db.get(key))
 
         circle = []
         if ride.circle:
-            circle = Circle.get_by_key_name(str(ride.circle))
+            circle = db.get(ride.circle)
 
         event = []
         if ride.event:
-            event = Event.get_by_key_name(str(ride.event))
+            event = Event.get(ride.event)
 
-        comments = Comment.all().filter('ride = ', str(ride.key())).order('-date')
+        comments = Comment.all().filter('ride = ', ride.key()).order('-date')
 
         if ride:
             doRender(self, 'view_ride.html', {
@@ -203,6 +203,7 @@ class NewRideHandler(BaseHandler):
         if data['driver'] == True:
             ride.passengers_max = int(data['max_passengers'])
             ride.passengers_total = 0
+            ride.driver_key = user.key()
             ride.driver = data['driver']
             ride.driver_name = "Replace"
             ride.contact = "Replace"

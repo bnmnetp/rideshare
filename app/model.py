@@ -2,7 +2,22 @@ from google.appengine.ext import db
 from google.appengine.api import users
 import logging
 
-# Make this very flat to start with, then add references later...
+class User(db.Model):
+    id = db.StringProperty()
+    auth_id = db.StringProperty()
+    created = db.DateTimeProperty(auto_now_add=True)
+    updated = db.DateTimeProperty(auto_now=True)
+    name = db.StringProperty()
+    email = db.EmailProperty()
+    circles = db.ListProperty(db.Key)
+
+    def to_dict(self):
+        resp = {}
+        for u in User._properties:
+            resp[u] = str(getattr(self, u))
+        resp['key'] = self.key()
+        return resp
+
 class Ride(db.Model):
     passengers_max = db.IntegerProperty()
     passengers_total = db.IntegerProperty()
@@ -28,22 +43,6 @@ class Ride(db.Model):
             resp[p] = str(getattr(self, p))
         resp['id'] = self.key().id()
         return resp
-
-class Comment(db.Model):
-    user = db.ReferenceProperty(User)
-    date = db.DateProperty()
-    text = db.TextProperty()
-    event = db.ReferenceProperty(Event)
-    ride = db.ReferenceProperty(Ride)
-    circle = db.ReferenceProperty(Circle)
-
-class Community(db.Model):
-    name = db.StringProperty()
-    address = db.StringProperty()
-    lat = db.FloatProperty()
-    lng = db.FloatProperty()
-    # appId = db.StringProperty()
-    # appSecret = db.StringProperty()
 
 class Circle(db.Model):
     name = db.StringProperty()
@@ -71,25 +70,24 @@ class Event(db.Model):
             resp[p] = str(getattr(self, p))
         resp['id'] = self.key().id()
         return resp
+
+class Comment(db.Model):
+    user = db.ReferenceProperty(User)
+    date = db.DateProperty()
+    text = db.TextProperty()
+    event = db.ReferenceProperty(Event)
+    ride = db.ReferenceProperty(Ride)
+    circle = db.ReferenceProperty(Circle)
+
+class Community(db.Model):
+    name = db.StringProperty()
+    address = db.StringProperty()
+    lat = db.FloatProperty()
+    lng = db.FloatProperty()
+    # appId = db.StringProperty()
+    # appSecret = db.StringProperty()
         
 class ApplicationParameters(db.Model):
     apikey = db.StringProperty()
     notifyEmailAddr = db.StringProperty()
     fromEmailAddr = db.StringProperty()
-
-
-class User(db.Model):
-    id = db.StringProperty()
-    auth_id = db.StringProperty()
-    created = db.DateTimeProperty(auto_now_add=True)
-    updated = db.DateTimeProperty(auto_now=True)
-    name = db.StringProperty()
-    email = db.EmailProperty()
-    circles = db.ListProperty(db.Key)
-
-    def to_dict(self):
-        resp = {}
-        for u in User._properties:
-            resp[u] = str(getattr(self, u))
-        resp['key'] = self.key()
-        return resp
