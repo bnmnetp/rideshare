@@ -71,7 +71,7 @@
 <div class='comments'>
     <div class="panel panel-main">
         <div class="panel-heading">Comments</div>
-        <div class="panel-body" id='comments'>
+        <div class="panel-body" data-comment='container'>
             {% for comment in comments %}
             <div class="media">
                 <a class="pull-left" href="#">
@@ -85,7 +85,7 @@
             </div>
             <hr>
             {% endfor %}
-            <form id='form'>
+            <form data-comment='form'>
                 <div class="form-group">
                     <label>Comment</label>
                     <textarea class='form-control' rows='3' name='comment'></textarea>
@@ -98,8 +98,10 @@
 {% endblock %}
 
 {% block scripts %}
+<script src="/static/augment.js" type="text/javascript"></script>
+<script type="text/javascript" src='/static/comment.js'></script>
 {% raw %}
-<script data-template='comment' type='text/x-handlebars-template'>
+<script data-comment='template' type='text/x-handlebars-template'>
     <div class="media">
         <a class="pull-left" href="#">
         <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjZWVlIi8+PHRleHQgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iMzIiIHk9IjMyIiBzdHlsZT0iZmlsbDojYWFhO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1zaXplOjEycHg7Zm9udC1mYW1pbHk6QXJpYWwsSGVsdmV0aWNhLHNhbnMtc2VyaWY7ZG9taW5hbnQtYmFzZWxpbmU6Y2VudHJhbCI+NjR4NjQ8L3RleHQ+PC9zdmc+" style="width: 64px; height: 64px;" class="media-object" data-src="holder.js/64x64" alt="64x64">
@@ -113,39 +115,10 @@
 </script>
 {% endraw %}
 <script type="text/javascript">
-    var form = document.querySelector('#form');
-
-    form.addEventListener('submit', function (e) {
-        e.preventDefault();
-
-        var req = $.ajax({
-            type: 'POST',
-            url: '/comment',
-            dataType: 'json',
-            contentType: 'application/json; charset=UTF-8',
-            data: JSON.stringify({
-                comment: this.comment.value,
-                type: 'ride',
-                id: {{ride.key().id()}}
-            })
-        });
-        req.done(function (data) {
-            // Refer to comments.CommentHandler for expected response
-            var source = document.querySelector('[data-template="comment"]').innerHTML;
-            var comment_container = document.querySelector('#comments');
-            var template = Handlebars.compile(source);
-            console.log(data)
-            var html = template({
-                name: data.name,
-                date: data.date,
-                comment: data.comment
-            })
-            comment_container.insertAdjacentHTML('afterbegin', html);
-            console.log('Success')
-        });
-        req.fail(function (data, status) {
-            console.log('Err')
-        });
-    })
+var comment = new Comment({
+    type: 'ride',
+    id: {{ride.key().id()}},
+    container: '[data-comment="container"]'
+})
 </script>
 {% endblock %}
