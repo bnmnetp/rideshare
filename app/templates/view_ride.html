@@ -6,47 +6,104 @@
 {% endblock %}
 
 {% block main %}
-<ul class='information'>
-    <li>
-        <b>Destination:</b> {{ride.dest_add}}
-    </li>
-    <li>
-        <b>Starting point: </b> {{ride.origin_add}}
-    </li>
-    <li>
-        <b>Date:</b> {{ride.date}}
-    </li>
-    <li>
-        <b>Time:</b> {{ride.time}}
-    </li>
-    {% if ride.driver %}
-    <li>
-        <b>Availble seats:</b>
-    </li>
-    <li>
-        <b>Driver:</b> <a href="/user/{{driver.id}}">{{driver.name}}</a>
-    </li>
-    <li>
-        <b>Driver contact:</b> {{driver.contact}}
-    </li>
-    {% endif %}
-    <li>
-        <b>Other passengers:</b> list
-    </li>
-    {% if ride.circle %}
-    <li>
-        <b>Circle:</b>
-    </li>
-    {% endif %}
-    {% if ride.event %}
-    <li>
-        <b>Event:</b>
-    </li>
-    {% endif %}
-</ul>
+<div class="panel panel-main">
+    <div class="panel-heading">Ride details</div>
+    <div class="panel-body">
+        <ul class='information'>
+            <li>
+                <b>Starting point: </b> {{ride.origin_add}}
+            </li>
+            <li>
+                <b>Destination:</b> {{ride.dest_add}}
+            </li>
+            <li>
+                <b>Date:</b> {{ride.date}}
+            </li>
+            <li>
+                <b>Time:</b> {{ride.time}}
+            </li>
+            {% if ride.driver %}
+                <li>
+                    <b>Availible seats:</b> {{seats}}
+                </li>
+                <li>
+                    <b>Driver:</b> <a href="/user/{{driver.id}}">{{driver.name}}</a>
+                </li>
+                <li>
+                    <b>Driver contact:</b> {{driver.email}}
+                </li>
+            {% endif %}
+                <li>
+                    <b>Other passengers:</b>
+                    {% for p in passengers %}
+                        {{p.name}}
+                    {% endfor %}
+                </li>
+            {% if ride.circle %}
+                <li>
+                    <b>Circle:</b>
+                </li>
+            {% endif %}
+            {% if ride.event %}
+                <li>
+                    <b>Event:</b>
+                </li>
+            {% endif %}
+        </ul>
+        {% if ride.driver_key == user.key %}
+            <button>Leave ride</button>
+            <p class="help-block">You are currently the driver.</p>
+        {% elif ride.driver %}
+
+        {% else %}
+            <button>Be the driver</button>
+        {% endif %}
+        {% if user.key in ride.passengers %}
+            <button>Leave ride</button>
+            <p class="help-block">You are currently a passenger.</p>
+        {% else %}
+            <button>Join as Passenger</button>
+        {% endif %}
+    </div>
+</div>
 
 <div class='comments'>
-    <h1>Comments</h1>
+    <div class="panel panel-main">
+        <div class="panel-heading">Comments</div>
+        <div class="panel-body">
+            <div class="media">
+                <a class="pull-left" href="#">
+                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjZWVlIi8+PHRleHQgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iMzIiIHk9IjMyIiBzdHlsZT0iZmlsbDojYWFhO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1zaXplOjEycHg7Zm9udC1mYW1pbHk6QXJpYWwsSGVsdmV0aWNhLHNhbnMtc2VyaWY7ZG9taW5hbnQtYmFzZWxpbmU6Y2VudHJhbCI+NjR4NjQ8L3RleHQ+PC9zdmc+" style="width: 64px; height: 64px;" class="media-object" data-src="holder.js/64x64" alt="64x64">
+                </a>
+                <div class="media-body">
+                    <h4 class="media-heading">Gus Nelson</h4>
+                    Can we move the depart time up 10 minutes?
+
+                </div>
+                <span class="label label-success">Posted on 7/8/12</span>
+            </div>
+            <hr>
+            <div class="media">
+                <a class="pull-left" href="#">
+                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjZWVlIi8+PHRleHQgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iMzIiIHk9IjMyIiBzdHlsZT0iZmlsbDojYWFhO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1zaXplOjEycHg7Zm9udC1mYW1pbHk6QXJpYWwsSGVsdmV0aWNhLHNhbnMtc2VyaWY7ZG9taW5hbnQtYmFzZWxpbmU6Y2VudHJhbCI+NjR4NjQ8L3RleHQ+PC9zdmc+" style="width: 64px; height: 64px;" class="media-object" data-src="holder.js/64x64" alt="64x64">
+                </a>
+                <div class="media-body">
+                    <h4 class="media-heading">Gus Nelson</h4>
+                    Can we move the depart time up 12 minutes?
+
+                </div>
+                <span class="label label-success">Posted on 7/8/12</span>
+            </div>
+            <hr>
+            <form>
+                <div class="form-group">
+                    <label>Comment</label>
+                    <textarea class='form-control' rows='3'></textarea>
+                </div>
+                <button class='btn btn-primary'>Post Comment</button>
+            </form>
+        </div>
+    </div>
 </div>
 {% endblock %}
 

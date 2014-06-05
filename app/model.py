@@ -86,3 +86,10 @@ class User(db.Model):
     name = db.StringProperty()
     email = db.EmailProperty()
     circles = db.ListProperty(db.Key)
+
+    def to_dict(self):
+        resp = {}
+        for u in User._properties:
+            resp[u] = str(getattr(self, u))
+        resp['key'] = self.key()
+        return resp

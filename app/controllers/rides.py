@@ -28,6 +28,12 @@ class RideHandler(BaseHandler):
             data = ride['origin_add'].split(',')
             ride['orig_cs'] = data[1][1:] + ', ' + data[2][1:3]
 
+        for ride in rides_user_dict:
+            data = ride['dest_add'].split(',')
+            ride['dest_cs'] = data[1][1:] + ', ' + data[2][1:3]
+            data = ride['origin_add'].split(',')
+            ride['orig_cs'] = data[1][1:] + ', ' + data[2][1:3]
+
         doRender(self, 'rides.html', {
             'rides_user': rides_user_dict,
             'rides_all': rides_all_dict
@@ -49,15 +55,35 @@ class GetRideHandler(BaseHandler):
     def get(self, ride_id):
         ride = Ride.get_by_id(int(ride_id))
 
+        user = self.current_user()
+
         if ride.driver:
-            driver = Driver.get_by_key_name(ride.driver)
+            driver = User.get_by_key_name(str(ride.driver_key))
+            availible_seats = ride.passengers_max - ride.passengers_total;
         else:
             driver = {}
+
+        passengers = []
+        for key in ride.passengers:
+            passengers.append(User.get_by_key_name(str(key)))
+
+        circle = []
+        if ride.circle:
+            circle = Circle.get_by_key_name(str(ride.circle))
+
+        event = []
+        if ride.event:
+            event = Event.get_by_key_name(str(ride.event))
 
         if ride:
             doRender(self, 'view_ride.html', {
                 'ride': ride,
-                'driver': driver
+                'driver': driver,
+                'passengers': passengers,
+                'seats': availible_seats,
+                'circle': circle,
+                'event': event,
+                'user': user.to_dict()
             })
         else:
             self.response.write('No ride found.')

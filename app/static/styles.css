@@ -9,10 +9,31 @@ body {
     color: #333339;
 }
 
+.panel-main {
+    border-color: #534A9A;
+}
+
+.panel-main .panel-heading {
+    background-color: #534A9A;
+    border-color: #534A9A;
+    color: #FFFFFF;
+}
+
 .information {
     list-style: none;
     padding: 0px;
     margin: 0px;
+}
+
+.information li {
+    margin: 0px 0px 5px 0px;
+    font-size: 18px;
+    line-height: 24px;
+}
+
+.information b {
+    font-weight: 600;
+    color: #14171A;
 }
 
 .icon {
