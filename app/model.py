@@ -7,7 +7,7 @@ class Ride(db.Model):
     passengers_max = db.IntegerProperty()
     passengers_total = db.IntegerProperty()
     driver = db.BooleanProperty()
-    driver_key = db.Key
+    driver_key = db.ReferenceProperty(User)
     origin_add = db.StringProperty()
     origin_lat = db.FloatProperty()
     origin_lng = db.FloatProperty()
@@ -30,12 +30,12 @@ class Ride(db.Model):
         return resp
 
 class Comment(db.Model):
-    user = db.Key
+    user = db.ReferenceProperty(User)
     date = db.DateProperty()
     text = db.TextProperty()
-    event = db.Key
-    ride = db.Key
-    circle = db.Key
+    event = db.ReferenceProperty(Event)
+    ride = db.ReferenceProperty(Ride)
+    circle = db.ReferenceProperty(Circle)
 
 class Community(db.Model):
     name = db.StringProperty()
@@ -57,13 +57,13 @@ class Circle(db.Model):
 
 class Event(db.Model):
     name = db.StringProperty()
-    circle = db.Key
+    circle = db.ReferenceProperty(Circle)
     lat = db.FloatProperty()
     lng = db.FloatProperty()
     date = db.DateProperty()
     address = db.StringProperty()
     time = db.StringProperty()
-    user = db.Key
+    user = db.ReferenceProperty(User)
 
     def to_dict(self):
         resp = {}

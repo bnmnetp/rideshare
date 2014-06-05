@@ -339,7 +339,7 @@ app = webapp2.WSGIApplication([
           ('/school',SchoolErrorHandler),
     ('/ridesuccess',RideSuccessHandler),
 
-    ('/comments', CommentHandler),
+    ('/comment', CommentHandler),
 
     # controllers/circles.py
     ('/addCircle', AddCircleHandler),
@@ -350,10 +350,10 @@ app = webapp2.WSGIApplication([
 
     # controllers/events.py
     ('/events', EventHandler),
-    ('/newevent',NewEventHandler),
-    ('/getevents',EventQueryHandler),
+    ('/newevent', NewEventHandler),
+    ('/getevents', EventQueryHandler),
     ('/neweventride', NewEventRideHandler),
-    ('/addevents',AddEventsHandler),
+    ('/addevents', AddEventsHandler),
     ('/addmultipleevents',AddMultipleEventsHandler),
     # end events
 

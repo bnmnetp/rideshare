@@ -58,14 +58,14 @@ class GetRideHandler(BaseHandler):
         user = self.current_user()
 
         if ride.driver:
-            driver = User.get_by_key_name(str(ride.driver_key))
+            driver = User.get(ride.driver_key)
             availible_seats = ride.passengers_max - ride.passengers_total;
         else:
             driver = {}
 
         passengers = []
         for key in ride.passengers:
-            passengers.append(User.get_by_key_name(str(key)))
+            passengers.append(User.get_by_key_name(key))
 
         circle = []
         if ride.circle:
@@ -75,6 +75,8 @@ class GetRideHandler(BaseHandler):
         if ride.event:
             event = Event.get_by_key_name(str(ride.event))
 
+        comments = Comment.all().filter('ride = ', str(ride.key())).order('-date')
+
         if ride:
             doRender(self, 'view_ride.html', {
                 'ride': ride,
@@ -83,7 +85,8 @@ class GetRideHandler(BaseHandler):
                 'seats': availible_seats,
                 'circle': circle,
                 'event': event,
-                'user': user.to_dict()
+                'user': user.to_dict(),
+                'comments': comments
             })
         else:
             self.response.write('No ride found.')

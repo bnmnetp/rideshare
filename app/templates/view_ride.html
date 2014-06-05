@@ -71,37 +71,26 @@
 <div class='comments'>
     <div class="panel panel-main">
         <div class="panel-heading">Comments</div>
-        <div class="panel-body">
+        <div class="panel-body" id='comments'>
+            {% for comment in comments %}
             <div class="media">
                 <a class="pull-left" href="#">
                 <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjZWVlIi8+PHRleHQgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iMzIiIHk9IjMyIiBzdHlsZT0iZmlsbDojYWFhO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1zaXplOjEycHg7Zm9udC1mYW1pbHk6QXJpYWwsSGVsdmV0aWNhLHNhbnMtc2VyaWY7ZG9taW5hbnQtYmFzZWxpbmU6Y2VudHJhbCI+NjR4NjQ8L3RleHQ+PC9zdmc+" style="width: 64px; height: 64px;" class="media-object" data-src="holder.js/64x64" alt="64x64">
                 </a>
                 <div class="media-body">
-                    <h4 class="media-heading">Gus Nelson</h4>
-                    Can we move the depart time up 10 minutes?
-
+                    <h4 class="media-heading">{{comment.name}}</h4>
+                    {{comment.text}}
                 </div>
-                <span class="label label-success">Posted on 7/8/12</span>
+                <span class="label label-success">Posted on {{comment.date}}</span>
             </div>
             <hr>
-            <div class="media">
-                <a class="pull-left" href="#">
-                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjZWVlIi8+PHRleHQgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iMzIiIHk9IjMyIiBzdHlsZT0iZmlsbDojYWFhO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1zaXplOjEycHg7Zm9udC1mYW1pbHk6QXJpYWwsSGVsdmV0aWNhLHNhbnMtc2VyaWY7ZG9taW5hbnQtYmFzZWxpbmU6Y2VudHJhbCI+NjR4NjQ8L3RleHQ+PC9zdmc+" style="width: 64px; height: 64px;" class="media-object" data-src="holder.js/64x64" alt="64x64">
-                </a>
-                <div class="media-body">
-                    <h4 class="media-heading">Gus Nelson</h4>
-                    Can we move the depart time up 12 minutes?
-
-                </div>
-                <span class="label label-success">Posted on 7/8/12</span>
-            </div>
-            <hr>
+            {% endfor %}
             <form id='form'>
                 <div class="form-group">
                     <label>Comment</label>
                     <textarea class='form-control' rows='3' name='comment'></textarea>
                 </div>
-                <button class='btn btn-primary'>Post Comment</button>
+                <button type='submit' class='btn btn-primary'>Post Comment</button>
             </form>
         </div>
     </div>
@@ -109,6 +98,20 @@
 {% endblock %}
 
 {% block scripts %}
+{% raw %}
+<script data-template='comment' type='text/x-handlebars-template'>
+    <div class="media">
+        <a class="pull-left" href="#">
+        <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjZWVlIi8+PHRleHQgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iMzIiIHk9IjMyIiBzdHlsZT0iZmlsbDojYWFhO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1zaXplOjEycHg7Zm9udC1mYW1pbHk6QXJpYWwsSGVsdmV0aWNhLHNhbnMtc2VyaWY7ZG9taW5hbnQtYmFzZWxpbmU6Y2VudHJhbCI+NjR4NjQ8L3RleHQ+PC9zdmc+" style="width: 64px; height: 64px;" class="media-object" data-src="holder.js/64x64" alt="64x64">
+        </a>
+        <div class="media-body">
+            <h4 class="media-heading">{{name}}</h4>
+            {{comment}}
+        </div>
+        <span class="label label-success">Posted on {{date}}</span>
+    </div>
+</script>
+{% endraw %}
 <script type="text/javascript">
     var form = document.querySelector('#form');
 
@@ -123,15 +126,26 @@
             data: JSON.stringify({
                 comment: this.comment.value,
                 type: 'ride',
-                id: {{ride.id}}
+                id: {{ride.key().id()}}
             })
         });
         req.done(function (data) {
+            // Refer to comments.CommentHandler for expected response
+            var source = document.querySelector('[data-template="comment"]').innerHTML;
+            var comment_container = document.querySelector('#comments');
+            var template = Handlebars.compile(source);
+            console.log(data)
+            var html = template({
+                name: data.name,
+                date: data.date,
+                comment: data.comment
+            })
+            comment_container.insertAdjacentHTML('afterbegin', html);
             console.log('Success')
-        };
+        });
         req.fail(function (data, status) {
             console.log('Err')
-        };
+        });
     })
 </script>
 {% endblock %}

@@ -2,6 +2,7 @@ import json
 from google.appengine.ext import db
 from app.model import *
 import datetime
+from app.base_handler import BaseHandler
 
 class CommentHandler(BaseHandler):
 	def post(self):
@@ -12,9 +13,11 @@ class CommentHandler(BaseHandler):
 		json_str = self.request.body
 		data = json.loads(json_str)
 
+		d = datetime.date.today()
+
 		comment = Comment()
 		comment.user = user.key()
-		comment.date = datetime.date()
+		comment.date = d
 		comment.text = data['comment']
 		if data['type'] == 'ride':
 			ride = Ride.get_by_id(data['id'])
@@ -26,6 +29,11 @@ class CommentHandler(BaseHandler):
 			circle = Circle.get_by_id(data['id'])
 			comment.circle = circle.key()
 
-		self.response.write(json.dump({
-			'message': 'Success'
+		comment.put()
+
+		self.response.write(json.dumps({
+			'message': 'Success',
+			'name': user.name,
+			'date': str(d),
+			'comment': comment.text
 		}))
