@@ -52,10 +52,12 @@ class CircleHandler(BaseHandler):
 
 class JoinCircle(BaseHandler):
     def post(self):
+        self.auth()
+
+        user = self.current_user()
+
         json_str = self.request.body
         data = json.loads(json_str)
-
-        user = User.get_by_id(data['user'])
 
         if user:
             circle_id = int(data['circle'])

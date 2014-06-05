@@ -3,7 +3,6 @@ from google.appengine.api import users
 import logging
 
 class User(db.Model):
-    id = db.StringProperty()
     auth_id = db.StringProperty()
     created = db.DateTimeProperty(auto_now_add=True)
     updated = db.DateTimeProperty(auto_now=True)

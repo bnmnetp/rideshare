@@ -14,11 +14,11 @@ class RideHandler(BaseHandler):
         rides_user = Ride.all().filter('passengers =', user.key())
 
         rides_all = Ride.all()
-
-        print rides_user
-
+        
         rides_user_dict = [r.to_dict() for r in rides_user]
         rides_all_dict = [r.to_dict() for r in rides_all]
+
+        print rides_all_dict
 
         # Grabs the city and state from the addresses
         # Comes in format: Address, City, State Zip
@@ -27,6 +27,7 @@ class RideHandler(BaseHandler):
             ride['dest_cs'] = data[1][1:] + ', ' + data[2][1:3]
             data = ride['origin_add'].split(',')
             ride['orig_cs'] = data[1][1:] + ', ' + data[2][1:3]
+            # ride['is_driver'] = True if ride['driver_key'] == 
 
         for ride in rides_user_dict:
             data = ride['dest_add'].split(',')
@@ -85,7 +86,7 @@ class GetRideHandler(BaseHandler):
                 'seats': availible_seats,
                 'circle': circle,
                 'event': event,
-                'user': user.to_dict(),
+                'user': user,
                 'comments': comments
             })
         else:

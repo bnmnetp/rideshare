@@ -27,7 +27,7 @@
                     <b>Availible seats:</b> {{seats}}
                 </li>
                 <li>
-                    <b>Driver:</b> <a href="/user/{{driver.id}}">{{driver.name}}</a>
+                    <b>Driver:</b> <a href="/user/{{driver.key().id()}}">{{driver.name}}</a>
                 </li>
                 <li>
                     <b>Driver contact:</b> {{driver.email}}
@@ -51,20 +51,21 @@
             {% endif %}
         </ul>
         <hr>
-        {% if ride.driver_key == user.key %}
+        <div class="options">
+        {% if ride.driver_key.key().id() == user.key().id() %}
             <p class="help-block">You are currently the driver.</p>
-            <button class='btn btn-danger'>Leave ride</button>
-        {% elif ride.driver %}
-
-        {% else %}
-            <button class='btn btn-success'>Be the driver</button>
+            <button class='btn btn-danger' data-driver='leave'>Leave ride</button>
+        {% elif not ride.driver %}
+             <button class='btn btn-success' data-driver='join'>Be the driver</button> 
         {% endif %}
+
         {% if user.key in ride.passengers %}
             <p class="help-block">You are currently a passenger.</p>
-            <button class='btn btn-danger'>Leave ride</button>
-        {% else %}
-            <button class='btn btn-success'>Join as Passenger</button>
+            <button class='btn btn-danger' data-passenger='leave'>Leave ride</button>
+        {% elif not ride.driver_key.key().id() == user.key().id() %}
+            <button class='btn btn-success' data-passenger='join'>Join as Passenger</button>
         {% endif %}
+        </div>
     </div>
 </div>
 
@@ -78,14 +79,14 @@
                 <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjZWVlIi8+PHRleHQgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iMzIiIHk9IjMyIiBzdHlsZT0iZmlsbDojYWFhO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1zaXplOjEycHg7Zm9udC1mYW1pbHk6QXJpYWwsSGVsdmV0aWNhLHNhbnMtc2VyaWY7ZG9taW5hbnQtYmFzZWxpbmU6Y2VudHJhbCI+NjR4NjQ8L3RleHQ+PC9zdmc+" style="width: 64px; height: 64px;" class="media-object" data-src="holder.js/64x64" alt="64x64">
                 </a>
                 <div class="media-body">
-                    <h4 class="media-heading">{{comment.name}}</h4>
+                    <h4 class="media-heading">{{comment.user.name}}</h4>
                     {{comment.text}}
                 </div>
                 <span class="label label-success">Posted on {{comment.date}}</span>
             </div>
             <hr>
             {% endfor %}
-            <form data-comment='form'>
+            <form data-comment='form' autocomplete='off'>
                 <div class="form-group">
                     <label>Comment</label>
                     <textarea class='form-control' rows='3' name='comment'></textarea>

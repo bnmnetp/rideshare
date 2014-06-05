@@ -74,10 +74,12 @@ class MainHandler(BaseHandler):
     aquery = db.Query(Community)
     community = aquery.get()
 
+    circles_all = Circle.all()
     circles_user = Circle.all().filter('__key__ IN', user.circles)
 
     doRender(self, 'main.html', {
-        'circles' : circles_user,
+        'circles_user': circles_user,
+        'circles_all': circles_all,
         'community': community,
         'user': user
     })

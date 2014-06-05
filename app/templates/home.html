@@ -6,23 +6,11 @@
 
 {% endblock %}
 
-{% block menu %}
-<ul>
-    <li>
-        <a href="/home">Your Rides</a>
-    </li>
-    <li>
-        <a href="/help">Help</a>
-    </li>
-    <li>
-        <a href="{{logout}}">Sign out</a>
-    </li>
-</ul>
-{% endblock %}
-
 {% block main %}
 
-<a href="/circles" class="btn btn-success">
+<h1>Welcome to Rideshare!</h1>
+
+<a href="/main" class="btn btn-success">
     Join / Leave Circles
     <i class='fa fa-dot-circle-o'></i>
 </a>
