@@ -7,7 +7,7 @@
 
 {% block main %}
 <div data-notify="container"></div>
-<div class="btn-group btn-group-justified">
+<div class="btn-group btn-group-justified nav-sub">
     <div class="btn-group">
         <button type='button' class='btn btn-default' data-next="my_rides">My Rides</button>
     </div>
@@ -16,47 +16,65 @@
     </div>
 </div>
 <div data-route='my_rides'>
-{% if rides_user %}
-{% for ride in rides_user %}
-    <div class="block">
-        <div class="upper">
-            <a href='/ride/{{ride.key().id()}}'>{{ride.orig}} to {{ride.dest}}</a>
-        </div>
-        <div class="lower">
-            {% if ride.driver %}
-            <span class="label label-success">Driver</span>
-            {% endif %}
-            {% if ride.passenger %}
-            <span class="label label-success">Passenger</span>
-            {% endif %}
+    <div class="panel panel-main">
+        <div class="panel-heading">My Rides</div>
+        <div class="panel-body panel-no">
+        {% if rides_user %}
+        {% for ride in rides_user %}
+            <div class="block">
+                <div class="title">
+                    <a href='/ride/{{ride.key().id()}}'>{{ride.orig}} to {{ride.dest}}</a>
+                </div>
+                <div class="details">
+                    {% if ride.driver %}
+                    <div class="deta">
+                        <span class="label label-success">Driver</span>
+                    </div>
+                    {% endif %}
+                    {% if ride.passenger %}
+                    <div class="deta">
+                        <span class="label label-success">Passenger</span>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+        {% else %}
+        <h2>You are not signed up for any rides currently.</h2>
+        {% endif %}
         </div>
     </div>
-{% endfor %}
-{% else %}
-<h2>You are not signed up for any rides currently.</h2>
-{% endif %}
 </div>
 
 <div data-route='all_rides'>
-{% if rides_all %}
-{% for ride in rides_all %}
-    <div class="block">
-        <div class="upper">
-            <a href='/ride/{{ride.key().id()}}'>{{ride.orig}} to {{ride.dest}}</a>
-        </div>
-        <div class="lower">
-            {% if ride.driver %}
-            <span class="label label-success">Driver</span>
-            {% endif %}
-            {% if ride.passenger %}
-            <span class="label label-success">Passenger</span>
-            {% endif %}
+    <div class="panel panel-main">
+        <div class="panel-heading">All Rides</div>
+        <div class="panel-body panel-no">
+        {% if rides_all %}
+        {% for ride in rides_all %}
+            <div class="block">
+                <div class="title">
+                    <a href='/ride/{{ride.key().id()}}'>{{ride.orig}} to {{ride.dest}}</a>
+                </div>
+                <div class="details">
+                    {% if ride.driver %}
+                    <div class="deta">
+                        <span class="label label-success">Driver</span>
+                    </div>
+                    {% endif %}
+                    {% if ride.passenger %}
+                    <div class="deta">
+                        <span class="label label-success">Passenger</span>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+        {% else %}
+        <h2>You are not signed up for any rides.</h2>
+        {% endif %}
         </div>
     </div>
-{% endfor %}
-{% else %}
-<h2>You are not signed up for any rides.</h2>
-{% endif %}
 </div>
 {% endblock %}
 
