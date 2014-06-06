@@ -1,0 +1,100 @@
+{% extends "layout.html" %}
+
+{% block title %}Circle{% endblock %}
+
+{% block head %}
+{% endblock %}
+
+{% block main %}
+<div class="panel panel-main">
+    <div class="panel-heading">Circle details</div>
+    <div class="panel-body">
+        <ul class='information'>
+            <li>
+                <b>Name: </b> {{circle.name}}
+            </li>
+            <li>
+                <b>Description:</b> {{circle.description}}
+            </li>
+        </ul>
+        <hr>
+        <div class="options">
+        {% if ride.driver_key.key().id() == user.key().id() %}
+            <p class="help-block">You are currently the driver.</p>
+            <button class='btn btn-danger' data-driver='leave'>Leave ride</button>
+        {% elif not ride.driver %}
+             <button class='btn btn-success' data-driver='join'>Be the driver</button> 
+        {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class='comments'>
+            <div class="panel panel-main">
+                <div class="panel-heading">Comments</div>
+                <div class="panel-body" data-comment='container'>
+                    {% for comment in comments %}
+                    <div class="media">
+                        <a class="pull-left" href="#">
+                        <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjZWVlIi8+PHRleHQgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iMzIiIHk9IjMyIiBzdHlsZT0iZmlsbDojYWFhO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1zaXplOjEycHg7Zm9udC1mYW1pbHk6QXJpYWwsSGVsdmV0aWNhLHNhbnMtc2VyaWY7ZG9taW5hbnQtYmFzZWxpbmU6Y2VudHJhbCI+NjR4NjQ8L3RleHQ+PC9zdmc+" style="width: 64px; height: 64px;" class="media-object" data-src="holder.js/64x64" alt="64x64">
+                        </a>
+                        <div class="media-body">
+                            <h4 class="media-heading">{{comment.user.name}}</h4>
+                            {{comment.text}}
+                        </div>
+                        <span class="label label-success">Posted on {{comment.date}}</span>
+                    </div>
+                    <hr>
+                    {% endfor %}
+                    <form data-comment='form' autocomplete='off'>
+                        <div class="form-group">
+                            <label>Comment</label>
+                            <textarea class='form-control' rows='3' name='comment'></textarea>
+                        </div>
+                        <button type='submit' class='btn btn-primary'>
+                            Post Comment
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="panel panel-main">
+            <div class="panel-heading">Members of Circle</div>
+            <div class="panel-body">
+                <h1>Test</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/augment.js" type="text/javascript"></script>
+<script type="text/javascript" src='/static/comment.js'></script>
+{% raw %}
+<script data-comment='template' type='text/x-handlebars-template'>
+    <div class="media">
+        <a class="pull-left" href="#">
+        <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjZWVlIi8+PHRleHQgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iMzIiIHk9IjMyIiBzdHlsZT0iZmlsbDojYWFhO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1zaXplOjEycHg7Zm9udC1mYW1pbHk6QXJpYWwsSGVsdmV0aWNhLHNhbnMtc2VyaWY7ZG9taW5hbnQtYmFzZWxpbmU6Y2VudHJhbCI+NjR4NjQ8L3RleHQ+PC9zdmc+" style="width: 64px; height: 64px;" class="media-object" data-src="holder.js/64x64" alt="64x64">
+        </a>
+        <div class="media-body">
+            <h4 class="media-heading">{{name}}</h4>
+            {{comment}}
+        </div>
+        <span class="label label-success">Posted on {{date}}</span>
+    </div>
+</script>
+{% endraw %}
+<script type="text/javascript">
+var comment = new Comment({
+    type: 'circle',
+    id: {{circle.key().id()}},
+    container: '[data-comment="container"]'
+})
+</script>
+{% endblock %}

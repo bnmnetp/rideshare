@@ -21,7 +21,7 @@
     <div class="block">
         <div class="upper">
             <div class="left">
-                <span class="text">{{ride.orig_cs}} to {{ride.dest_cs}}</span>
+                <span class="text">{{ride.orig}} to {{ride.dest}}</span>
 
             </div>
             <div class="right">
@@ -29,9 +29,12 @@
             </div>
         </div>
         <div class="lower">
+            {% if ride.driver %}
             <span class="label label-success">Driver</span>
+            {% endif %}
+            {% if ride.passenger %}
             <span class="label label-success">Passenger</span>
-            <span class="label label-success">Success</span>
+            {% endif %}
         </div>
 
     </div>
@@ -47,19 +50,21 @@
     <div class="block">
         <div class="upper">
             <div class="left">
-                <span class="text">{{ride.orig_cs}} to {{ride.dest_cs}}</span>
+                <span class="text">{{ride.orig}} to {{ride.dest}}</span>
 
             </div>
             <div class="right">
-                <a class="btn btn-primary details" href='/ride/{{ride.id}}'>View Details</a>
+                <a class="btn btn-primary details" href='/ride/{{ride.key().id()}}'>View Details</a>
             </div>
         </div>
         <div class="lower">
+            {% if ride.driver %}
             <span class="label label-success">Driver</span>
+            {% endif %}
+            {% if ride.passenger %}
             <span class="label label-success">Passenger</span>
-            <span class="label label-success">Success</span>
+            {% endif %}
         </div>
-
     </div>
 {% endfor %}
 {% else %}

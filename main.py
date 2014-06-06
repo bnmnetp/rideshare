@@ -344,6 +344,7 @@ app = webapp2.WSGIApplication([
     ('/comment', CommentHandler),
 
     # controllers/circles.py
+    ('/circle/(\d+)', GetCircleHandler),
     ('/addCircle', AddCircleHandler),
     ('/newCircle',NewCircleHandler),
     ('/circles', CircleHandler),

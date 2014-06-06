@@ -8,36 +8,50 @@ from app.base_handler import BaseHandler
 
 class RideHandler(BaseHandler):
     def get(self):
+        # if driver.key().id() == user.key().id()
+        # if user.key().id() in ride.passengers
         self.auth()
         user = self.current_user()
 
-        rides_user = Ride.all().filter('passengers =', user.key())
+        rides_user = Ride.all().filter('passengers =', user.key()).fetch(100)
 
-        rides_all = Ride.all()
-        
-        rides_user_dict = [r.to_dict() for r in rides_user]
-        rides_all_dict = [r.to_dict() for r in rides_all]
-
-        print rides_all_dict
+        rides_all = Ride.all().fetch(100)
 
         # Grabs the city and state from the addresses
         # Comes in format: Address, City, State Zip
-        for ride in rides_all_dict:
-            data = ride['dest_add'].split(',')
-            ride['dest_cs'] = data[1][1:] + ', ' + data[2][1:3]
-            data = ride['origin_add'].split(',')
-            ride['orig_cs'] = data[1][1:] + ', ' + data[2][1:3]
-            # ride['is_driver'] = True if ride['driver_key'] == 
+        for ride in rides_all:
+            data = ride.dest_add.split(',')
+            ride.dest = data[1][1:] + ', ' + data[2][1:3]
+            data = ride.origin_add.split(',')
+            ride.orig = data[1][1:] + ', ' + data[2][1:3]
+            if ride.driver_key:
+                if ride.driver_key.key().id() == user.key().id():
+                    ride.is_driver = True
+                else:
+                    ride.is_driver = False
+            if user.key() in ride.passengers:
+                ride.is_passenger = True
+            else:
+                ride.is_passenger = False
 
-        for ride in rides_user_dict:
-            data = ride['dest_add'].split(',')
-            ride['dest_cs'] = data[1][1:] + ', ' + data[2][1:3]
-            data = ride['origin_add'].split(',')
-            ride['orig_cs'] = data[1][1:] + ', ' + data[2][1:3]
+        for ride in rides_user:
+            data = ride.dest_add.split(',')
+            ride.dest = data[1][1:] + ', ' + data[2][1:3]
+            data = ride.origin_add.split(',')
+            ride.orig = data[1][1:] + ', ' + data[2][1:3]
+            if ride.driver_key:
+                if ride.driver_key.key().id() == user.key().id():
+                    ride.is_driver = True
+                else:
+                    ride.is_driver = False
+            if user.key() in ride.passengers:
+                ride.is_passenger = True
+            else:
+                ride.is_passenger = False
 
         doRender(self, 'rides.html', {
-            'rides_user': rides_user_dict,
-            'rides_all': rides_all_dict
+            'rides_user': rides_user,
+            'rides_all': rides_all
         })
 
     def post(self):

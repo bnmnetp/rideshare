@@ -7,6 +7,21 @@ from app.base_handler import BaseHandler
 from app.common.voluptuous import *
 import json
 
+def GetCircleHandler(BaseHandler):
+    def get(self, circle_id):
+        circle = Circle.get_by_id(int(circle_id))
+
+        user = self.current_user()
+
+        comments = Comment.all().filter('coment = ', circle.key()).order('-date').fetch(100)
+
+        doRender(self, 'view_circle.html', {
+            'circle': circle,
+            'comments': comments,
+            'user': user
+        })
+
+
 class CircleHandler(BaseHandler):
     def get(self):
         self.auth()

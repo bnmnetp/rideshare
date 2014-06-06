@@ -25,7 +25,7 @@
 <div data-route='my_circles'>
 {% for circle in circles_user %}
     <h2>
-        <a href="/map?circle={{circle.key.id}}">{{ circle.name }}</a>
+        <a href="/circle/{{circle.key().id()}}">{{ circle.name }}</a>
     </h2>
 
     {% for item in event_list %}

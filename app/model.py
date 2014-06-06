@@ -15,6 +15,7 @@ class User(db.Model):
         for u in User._properties:
             resp[u] = str(getattr(self, u))
         resp['key'] = self.key()
+        resp['id'] = self.key().id()
         return resp
 
 class Ride(db.Model):
