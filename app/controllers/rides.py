@@ -199,7 +199,7 @@ class NewRideHandler(BaseHandler):
 
         # Creates date object from Month/Day/Year format
         d_arr = data['date'].split('/')
-        d_obj = datetime.date(int(d_arr[2]), int(d_arr[1]), int(d_arr[0]))
+        d_obj = datetime.date(int(d_arr[2]), int(d_arr[0]), int(d_arr[1]))
 
         user = self.current_user()
 
