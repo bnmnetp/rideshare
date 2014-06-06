@@ -17,15 +17,6 @@
                 <b>Description:</b> {{circle.description}}
             </li>
         </ul>
-        <hr>
-        <div class="options">
-        {% if ride.driver_key.key().id() == user.key().id() %}
-            <p class="help-block">You are currently the driver.</p>
-            <button class='btn btn-danger' data-driver='leave'>Leave ride</button>
-        {% elif not ride.driver %}
-             <button class='btn btn-success' data-driver='join'>Be the driver</button> 
-        {% endif %}
-        </div>
     </div>
 </div>
 
@@ -65,7 +56,9 @@
         <div class="panel panel-main">
             <div class="panel-heading">Members of Circle</div>
             <div class="panel-body">
-                <h1>Test</h1>
+                {% for member in members %}
+                    <p>{{member.name}}</p>
+                {% endfor %}
             </div>
         </div>
     </div>

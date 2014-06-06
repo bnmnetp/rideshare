@@ -26,14 +26,14 @@ body {
 }
 
 .information li {
-    margin: 0px 0px 5px 0px;
+    margin: 0px 0px 15px 0px;
     font-size: 18px;
-    line-height: 24px;
+    line-height: 30px;
 }
 
 .information b {
-    font-weight: 600;
-    color: #14171A;
+    font-weight: bold;
+    color: #252525;
 }
 
 .icon {
@@ -61,45 +61,32 @@ body {
 .block {
     width: 100%;
     display: block;
-    border-bottom: 1px solid #E4E4E4;
+    overflow: auto;
+    border-bottom: 1px solid #534A9A;
 }
 
-.block .upper {
-    height: 40px;
-}
-.block .lower {
-    padding-bottom: 10px;
+.block .title {
+    display: block;
+    padding: 20px 0px 10px 0px;
 }
 
-.block span {
+.block:first-child .title {
+    padding: 0px 0px 10px 0px;
+}
+
+.block .title a {
+    color: black;
+    font-size: 28px;
+    font-style: underline;
+}
+
+.block .details {
+    display: block;
+}
+
+.block .deta {
     display: inline-block;
-}
-
-.block .text {
-    font-size: 20px;
-    line-height: 40px;
-    font-weight: 100;
-}
-
-.block .btn {
-    border-radius: 0px;
-    line-height: 38px;
     font-size: 14px;
-    padding: 0px 12px 0px 12px;
-}
-
-.block b {
-    font-weight: 700;
-}
-
-.block .left {
-    display: inline-block;
-    float: left;
-}
-
-.block .right {
-    display: inline-block;
-    float: right;
 }
 
 #footer {

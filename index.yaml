@@ -12,6 +12,18 @@ indexes:
 
 - kind: Comment
   properties:
+  - name: circle
+  - name: date
+    direction: desc
+
+- kind: Comment
+  properties:
+  - name: coment
+  - name: date
+    direction: desc
+
+- kind: Comment
+  properties:
   - name: ride
   - name: date
     direction: desc

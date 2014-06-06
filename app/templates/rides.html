@@ -20,13 +20,7 @@
 {% for ride in rides_user %}
     <div class="block">
         <div class="upper">
-            <div class="left">
-                <span class="text">{{ride.orig}} to {{ride.dest}}</span>
-
-            </div>
-            <div class="right">
-                <a class="btn btn-primary details" href='/ride/{{ride.id}}'>View Details</a>
-            </div>
+            <a href='/ride/{{ride.key().id()}}'>{{ride.orig}} to {{ride.dest}}</a>
         </div>
         <div class="lower">
             {% if ride.driver %}
@@ -36,7 +30,6 @@
             <span class="label label-success">Passenger</span>
             {% endif %}
         </div>
-
     </div>
 {% endfor %}
 {% else %}
@@ -49,13 +42,7 @@
 {% for ride in rides_all %}
     <div class="block">
         <div class="upper">
-            <div class="left">
-                <span class="text">{{ride.orig}} to {{ride.dest}}</span>
-
-            </div>
-            <div class="right">
-                <a class="btn btn-primary details" href='/ride/{{ride.key().id()}}'>View Details</a>
-            </div>
+            <a href='/ride/{{ride.key().id()}}'>{{ride.orig}} to {{ride.dest}}</a>
         </div>
         <div class="lower">
             {% if ride.driver %}
