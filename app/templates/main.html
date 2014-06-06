@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block main %}
-<div class="btn-group btn-group-justified">
+<div class="btn-group btn-group-justified nav-sub">
     <div class="btn-group">
         <button type='button' class='btn btn-default' data-next="my_circles">My Circles</button>
     </div>
@@ -23,63 +23,59 @@
 </div>
 
 <div data-route='my_circles'>
-{% for circle in circles_user %}
-    <h2>
-        <a href="/circle/{{circle.key().id()}}">{{ circle.name }}</a>
-    </h2>
-
-    {% for item in event_list %}
-
-        {% if item.circle == circle.key.id %}
-            <table >
-                <tr>
-                    <th>Event Name</th>
-                    <th>Event Address</th>
-                    <th>Event Date</th>
-                    <th>Event Time</th>
-                </tr>
-                <tr>
-                    <td>{{ item.name }}</td>
-                    <td>{{ item.address }}</td>
-                    <td>{{ item.ToD }}</td>
-                    <td>{{ item.time }}</td>
-                </tr>
-            </table>
-            </br>
-        {% endif %}
-
-    {% endfor %}
-    <a href='/map?circle={{circle.key().id()}}' class='btn btn-success btn-large'>
-        Add events for this circle
-        <i class='fa fa-plus'></i>
-    </a>
-    <hr>
-{% endfor %}
-</div>
-
-<div data-route='all_circles'>
-    <div class="circles">
-    {% for circle in circles_all %}
-        <div class="circle">
-            <h2>{{ circle.name }}</h2>
-            <p>{{ circle.description }}</p>
-            <div class='switch' data-id='{{ circle.key().id() }}'
-                {% if circle.key() in user.circles %}
-                    data-switch='true'
-                {% else %}
-                    data-switch='false'
-                {% endif %}
-            >
-                <div class="true_padding"></div>
-                <div class="true">In</div>
-                <div class="false_padding"></div>
-                <div class="false">Out</div>
-            </div>
+    <div class="panel panel-main">
+        <div class="panel-heading">My Circles</div>
+        <div class='panel-body panel-no'>
+            {% for circle in circles_user %}
+                <div class="block">
+                    <div class="title">
+                        <a href="/circle/{{circle.key().id()}}">{{circle.name}}</a>
+                    </div>
+                    <div class="details">
+                        <div class="deta">
+                            <a href='/map?circle={{circle.key().id()}}' class='btn btn-success btn-large'>
+                                Add events for this circle
+                                <i class='fa fa-plus'></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
         </div>
-    {% endfor %}
     </div>
 </div>
 
+<div data-route='all_circles'>
+    <div class="panel panel-main">
+        <div class="panel-heading">All Circles</div>
+        <div class="panel-body panel-no">
+            {% for circle in circles_all %}
+                <div class="block">
+                    <div class="title">
+                        <a href="/circle/{{circle.key().id()}}">{{circle.name}}</a>
+                        <div class='switch' data-id='{{ circle.key().id() }}'
+                            {% if circle.key() in user.circles %}
+                                data-switch='true'
+                            {% else %}
+                                data-switch='false'
+                            {% endif %}
+                        >
+                            <div class="true_padding"></div>
+                            <div class="true">In</div>
+                            <div class="false_padding"></div>
+                            <div class="false">Out</div>
+                        </div>
+                    </div>
+                    <div class="details">
+                        <div class="deta">
+                            <i class="fa fa-square-o"></i>
+                            {{circle.description}}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+</div>
 
 {% endblock %}
 

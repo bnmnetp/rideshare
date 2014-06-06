@@ -5,7 +5,8 @@ from app.model import *
 class BaseHandler(webapp2.RequestHandler):
     def auth(self):
         id = self.session.get('user')
-        if not id:
+        user = User.get_by_id(id)
+        if not user:
             return webapp2.redirect('/', False, True)
     def current_user(self):
         id = self.session.get('user')

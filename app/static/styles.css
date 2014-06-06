@@ -9,6 +9,14 @@ body {
     color: #333339;
 }
 
+.nav-sub {
+    margin-bottom: 15px;
+}
+
+.panel-no {
+    padding: 0px;
+}
+
 .panel-main {
     border-color: #534A9A;
 }
@@ -63,15 +71,15 @@ body {
     display: block;
     overflow: auto;
     border-bottom: 1px solid #534A9A;
+    padding: 15px;
+}
+
+.block:last-child {
+    border-bottom: none;
 }
 
 .block .title {
     display: block;
-    padding: 20px 0px 10px 0px;
-}
-
-.block:first-child .title {
-    padding: 0px 0px 10px 0px;
 }
 
 .block .title a {
@@ -151,35 +159,10 @@ template {
 	transition: width 2s;
 }
 
-.circles {
-    -webkit-border-radius: 3px;
-    -moz-border-radius: 3px;
-    border-radius: 3px;
-    border-color: #4E5665;
-    border-width: 1px;
-    border-style: solid;
-}
-
-.circle {
-    display: block;
-    margin: 5px 10px 5px 10px;
-    border-bottom: 1px solid #4E5665;
-    height: 64px;
-}
-
-.circle:last-child {
-    border: none;
-}
-
-.circle .switch {
+.switch {
     display: inline-block;
     float: right;
-    top: 50%;
-    transform: translateY(-50%);
-}
-.circle h2, .circle p {
-    display: inline-block;
-    padding-left: 10px;
+    transform: translateY(50%);
 }
 
 /* Join / Leave for Circles */

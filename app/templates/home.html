@@ -7,30 +7,33 @@
 {% endblock %}
 
 {% block main %}
-<div class="panel panel-main">
-    <div class="panel-heading">Quick options</div>
-    <div class="panel-body">
-        <div class="block">
-            <div class="title">
-                <a href="/map">Create Ride</a>  
-            </div>
-        </div>
-        <div class="block">
-            <div class="title">
-                <a href="/map">Create Event</a>  
-            </div>
-        </div>
-        <div class="block">
-            <div class="title">
-                <a href="/map">Join a Circle</a>  
+<div class="row">
+    <div class="col-md-6">
+        <h1>Replace</h1>
+    </div>
+    <div class="col-md-6">
+        <div class="panel panel-main">
+            <div class="panel-heading">Quick options</div>
+            <div class="panel-body panel-no">
+                <div class="block">
+                    <div class="title">
+                        <a href="/map">Create Rides and Events</a>  
+                    </div>
+                </div>
+                <div class="block">
+                    <div class="title">
+                        <a href="/map">Join a Circle</a>  
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
+
 <div class="panel panel-main">
     <div class="panel-heading">Upcoming Events</div>
-    <div class="panel-body">
+    <div class="panel-body panel-no">
         <div class="block">
             <div class="title">
                 <a href="/map">Location x to Location y</a>  
@@ -39,18 +42,12 @@
                 <div class="deta">
                     <i class="fa fa-calendar"></i> 12/3/15
                 </div>
+                |
+                <div class="deta">
+                    <i class="fa fa-automobile"></i> You are Driving
+                </div>
             </div>
         </div>
     </div>
 </div>
-<h1>Welcome to Rideshare!</h1>
-
-<a href="/main" class="btn btn-success">
-    Join / Leave Circles
-    <i class='fa fa-dot-circle-o'></i>
-</a>
-<a href="/map" class="btn btn-success">
-    Create a Ride
-    <i class='fa fa-dot-circle-o'></i>
-</a>
 {% endblock %}
