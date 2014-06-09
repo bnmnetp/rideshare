@@ -352,6 +352,7 @@ app = webapp2.WSGIApplication([
     # end circles
 
     # controllers/events.py
+    ('/event/(\d+)', GetEventHandler),
     ('/events', EventHandler),
     ('/newevent', NewEventHandler),
     ('/getevents', EventQueryHandler),

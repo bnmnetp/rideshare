@@ -7,6 +7,16 @@ from datetime import date
 import json
 from app.base_handler import BaseHandler
 
+class GetEventHandler(BaseHandler):
+    def get(self, id):
+        self.auth()
+
+        user = self.current_user()
+
+        doRender(self, 'view_event.html', {
+            'event': {}
+        })
+
 class EventHandler(BaseHandler):
     def get(self):
         self.auth()
@@ -32,7 +42,7 @@ class EventHandler(BaseHandler):
 
         if data['circle'] != '':
             events.filter('circle = ',  data['circle'])
-            
+
         self.response.write(json.dumps([e.to_dict() for e in events]));
 
 class EventQueryHandler(BaseHandler):

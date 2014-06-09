@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+
+{% block title %}Event{% endblock %}
+
+{% block head %}
+{% endblock %}
+
+{% block main %}
+<div class="panel panel-main">
+	<div class="panel-heading">Event details</div>
+	<div class="panel-body">
+		<ul class="information">
+			<li>
+				<b>Event name:</b> {{event.name}}
+			</li>
+			<li>
+				<b>Description:</b> {{event.description}}
+			</li>
+			<li>
+				<b>Date: </b> {{event.date}}
+			</li>
+		</ul>
+	</div>
+</div>
+<div class="panel panel-main">
+	<div class="panel-heading">Rides going to Event</div>
+	<div class="panel-body">
+		
+	</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+
+{% endblock %}
