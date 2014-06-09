@@ -5,12 +5,16 @@ from app.model import *
 class BaseHandler(webapp2.RequestHandler):
     def auth(self):
         id = self.session.get('user')
-        user = User.get_by_id(id)
-        if not user:
+        if id and id != None:
+            user = User.get_by_id(id)
+            if not user:
+                return webapp2.redirect('/', False, True)
+        else:
             return webapp2.redirect('/', False, True)
     def current_user(self):
         id = self.session.get('user')
-        if id:
+        print id
+        if id and id != None:
             return User.get_by_id(id)
         else:
             return None
