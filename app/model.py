@@ -66,7 +66,7 @@ class Event(db.Model):
 
     def to_dict(self):
         resp = {}
-        for p in Ride._properties:
+        for p in Event._properties:
             resp[p] = str(getattr(self, p))
         resp['id'] = self.key().id()
         return resp

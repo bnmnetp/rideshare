@@ -18,8 +18,6 @@ class EventHandler(BaseHandler):
         print key_list
         events_user = Event.all().filter('circle IN', key_list)
 
-        print json.dumps([e.to_dict() for e in events_user])
-
         events_user = Event.all()
 
         doRender(self, 'events.html', {
@@ -32,12 +30,10 @@ class EventHandler(BaseHandler):
 
         events = Event.all()
 
-        if data['circle']:
+        if data['circle'] != '':
             events.filter('circle = ',  data['circle'])
-
-        results = json.dumps([e.to_dict() for e in events])
-        print results
-        self.response.write(results)
+            
+        self.response.write(json.dumps([e.to_dict() for e in events]));
 
 class EventQueryHandler(BaseHandler):
     """
@@ -109,6 +105,8 @@ class NewEventHandler(BaseHandler):
                 event.circle = circle.key()
         else:
             event.circle = None
+
+        event.put()
         response = {
             'message': 'Event added!'
         }
