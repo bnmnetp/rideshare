@@ -109,7 +109,7 @@ var Map = augment(Object, function () {
 	// Creates map markers and stores them in this.icons
 	this.create_markers = function () {
 		this.icons.event = {
-			url: 'static/stargate.png',
+			url: '/static/stargate.png',
 			anchor: new google.maps.Point(20, 20),
 			size: new google.maps.Size(30, 40)
 		};
@@ -118,27 +118,27 @@ var Map = augment(Object, function () {
 			size: new google.maps.Size(22, 20)
 		};
 		this.icons.car_success = {
-			url: 'static/carGreen.png',
+			url: '/static/carGreen.png',
 			anchor: new google.maps.Point(20, 20),
 			size: new google.maps.Size(30, 40)
 		};
 		this.icons.car_error = {
-			url: 'static/carRed.png',
+			url: '/static/carRed.png',
 			anchor: new google.maps.Point(20, 20),
 			size: new google.maps.Size(30, 40)
 		};
 		this.icons.person = {
-			url: 'static/person.png',
+			url: '/static/person.png',
 			anchor: new google.maps.Point(20, 20),
 			size: new google.maps.Size(30, 40)
 		};
 		this.icons.person_shadow = {
-			url: 'static/person.png',
+			url: '/static/person.png',
 			anchor: new google.maps.Point(20, 20),
 			size: new google.maps.Size(30, 40)
 		};
 		this.icons.plus = {
-			url: 'static/cross.png',
+			url: '/static/cross.png',
 			anchor: new google.maps.Point(20, 20),
 			size: new google.maps.Size(30, 40)
 		};
@@ -160,7 +160,42 @@ var Map = augment(Object, function () {
 		this.direction_display = new google.maps.DirectionsRenderer({preserveViewport:false});
 
 		this.geocoder = new google.maps.Geocoder();
-		//google.maps.event.addListener()
+	}
+
+	this.add_event = function (idx) {
+		console.log('test')
+		/* Get Event */
+		var event = this.events[idx];
+		/* Get template for popup on click */
+		var layout = document.querySelector('[data-template="popup-event"]');
+		var source = Handlebars.compile(layout.innerHTML);
+		/* Generate HTML */
+		var html = source({
+			add: event.address,
+			date: event.date,
+			id: event.id
+		});
+
+		event_pos = new google.maps.LatLng(
+			event.lat,
+			event.lng
+		)
+
+		event.marker = new google.maps.Marker({
+			position: event_pos,
+			icon: this.icons.person
+		})
+
+		event.marker_info = new google.maps.InfoWindow({
+			position: event_pos,
+			content: html
+		});
+
+		google.maps.event.addListener(event.marker, 'click', function () {
+			event.marker_info.open(this.map, event.marker)
+		}.bind(this));
+
+		event.marker.setMap(this.map);
 	}
 
 	this.add_ride = function (idx) {
@@ -249,43 +284,7 @@ var Map = augment(Object, function () {
 		}
 	}
 
-	this.add_event = function (event) {
-		var marker = this.events[event.id].marker;
-		marker = new google.maps.Marker({
-			position: new google.maps.LatLng(event.lat, event.lng),
-			icon: this.icons.event
-		})
-		marker.setMap(this.map);
-		google.maps.event.addListener(marker, 'click', function () {
-			if (marker.getPosition()) {
-				var d = new Date();
-				var rides = {};
-				var req_rides = $.ajax({
-					type: 'GET',
-					url: '/getrides',
-					data: {
-						circle: getParameterByName('circle'),
-						event: event.id,
-						after: d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate()
-					}
-				});
-				req_rides.done(function (res) {
-					rides = JSON.parse(res);
-					for (var i = 0; i < rides.length; i++) {
-						ride = rides[i];
-						ride.spots_available = ride.max_passengers - ride.num_passengers;
-					}
-					var source = document.querySelector('#ride-template').innerHTML;
-					var template = Handlebars.compile(source);
-					var html = template(rides);
-				});
-				req_rides.fail(function (res, status) {
 
-				});
-
-			}
-		});
-	}
 
 	this.get_address = function (e) {
 		this.latLng = e.latLng;

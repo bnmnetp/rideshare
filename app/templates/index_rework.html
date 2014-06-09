@@ -215,6 +215,21 @@
     <button class='btn btn-primary' data-next='join_ride' data-id='{{id}}'>Join this ride</button>
 </script>
 
+<template data-template='popup-event' type="text/x-handlebars-template">
+    <div class="entry">
+        This is an <strong>event</strong>.
+    </div>
+    <div class="entry">
+        <strong>Location:</strong> {{add}}
+    </div>
+    <div class="entry">
+        <strong>Date:</strong> {{date}}
+    </div>
+    <a class='btn btn-primary' href='/event/{{id}}'>
+        Join this event
+    </a>
+</template>
+
 <script data-notify="template" type='text/x-handlebars-template'>
     <div class="alert alert-{{type}} alert-dismissable">
         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>

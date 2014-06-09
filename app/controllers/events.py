@@ -91,12 +91,11 @@ class NewEventHandler(BaseHandler):
 
         # Creates date object from Month/Day/Year format
         d_arr = data['date'].split('/')
-        d_obj = datetime.date(int(d_arr[2]), int(d_arr[1]), int(d_arr[0]))
+        d_obj = datetime.date(int(d_arr[2]), int(d_arr[0]), int(d_arr[1]))
 
         # Refer to model.py for structure of data
         # class Event
         event.name = data['name']
-        event.circle = 'Replace'
         event.lat = data['lat']
         event.lng = data['lng']
         event.address = data['address']
@@ -104,7 +103,7 @@ class NewEventHandler(BaseHandler):
         event.time = data['time']
         event.user = user.key()
 
-        if data['circle']:
+        if 'circle' in data:
             circle = Circle.get_by_id(data['circle'])
             if circle:
                 event.circle = circle.key()
