@@ -10,7 +10,7 @@ class AuthHandler(BaseHandler, SimpleAuthHandler):
         auth_id = '%s:%s' % (provider, data['id'])
         user_D = User.gql('WHERE auth_id = :id', id = auth_id).get()
 
-        if user_D:
+        if user_D != None:
             self.session['user'] = user_D.key().id()
         else:
             user = User()
