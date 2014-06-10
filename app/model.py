@@ -18,32 +18,6 @@ class User(db.Model):
         resp['id'] = self.key().id()
         return resp
 
-class Ride(db.Model):
-    passengers_max = db.IntegerProperty()
-    passengers_total = db.IntegerProperty()
-    driver = db.BooleanProperty()
-    driver_key = db.ReferenceProperty(User)
-    origin_add = db.StringProperty()
-    origin_lat = db.FloatProperty()
-    origin_lng = db.FloatProperty()
-    dest_add = db.StringProperty()
-    dest_lat = db.FloatProperty()
-    dest_lng = db.FloatProperty()
-    date = db.DateProperty()
-    time = db.StringProperty()
-    passengers = db.ListProperty(db.Key)
-    contact = db.StringProperty()
-    details = db.StringProperty()
-    circle = db.StringProperty()
-    event = db.StringProperty()
-
-    def to_dict(self):
-        resp = {}
-        for p in Ride._properties:
-            resp[p] = str(getattr(self, p))
-        resp['id'] = self.key().id()
-        return resp
-
 class Circle(db.Model):
     name = db.StringProperty()
     description = db.StringProperty()
@@ -67,6 +41,32 @@ class Event(db.Model):
     def to_dict(self):
         resp = {}
         for p in Event._properties:
+            resp[p] = str(getattr(self, p))
+        resp['id'] = self.key().id()
+        return resp
+
+class Ride(db.Model):
+    passengers_max = db.IntegerProperty()
+    passengers_total = db.IntegerProperty()
+    driver = db.BooleanProperty()
+    driver_key = db.ReferenceProperty(User)
+    origin_add = db.StringProperty()
+    origin_lat = db.FloatProperty()
+    origin_lng = db.FloatProperty()
+    dest_add = db.StringProperty()
+    dest_lat = db.FloatProperty()
+    dest_lng = db.FloatProperty()
+    date = db.DateProperty()
+    time = db.StringProperty()
+    passengers = db.ListProperty(db.Key)
+    contact = db.StringProperty()
+    details = db.StringProperty()
+    circle = db.StringProperty()
+    event = db.ReferenceProperty(Event)
+
+    def to_dict(self):
+        resp = {}
+        for p in Ride._properties:
             resp[p] = str(getattr(self, p))
         resp['id'] = self.key().id()
         return resp

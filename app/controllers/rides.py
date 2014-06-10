@@ -205,12 +205,21 @@ class NewRideHandler(BaseHandler):
 
         # Refer to model.py for structure of data
         # class Ride
+        if 'event' in data:
+            event = Event.get_by_id(int(data['event']))
+            ride.dest_add = event.address
+            ride.dest_lat = event.lat
+            ride.dest_lng = event.lng
+            ride.event = event.key()
+        else:
+            ride.dest_add = data['destination']['address']
+            ride.dest_lat = data['destination']['lat']
+            ride.dest_lng = data['destination']['lng']
+
         ride.origin_add = data['origin']['address']
         ride.origin_lat = data['origin']['lat']
         ride.origin_lng = data['origin']['lng']
-        ride.dest_add = data['destination']['address']
-        ride.dest_lat = data['destination']['lat']
-        ride.dest_lng = data['destination']['lng']
+
         ride.date = d_obj
         ride.time = data['time']
         ride.passengers = []

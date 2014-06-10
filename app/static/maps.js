@@ -369,15 +369,16 @@ var Map = augment(Object, function () {
 		this.geocoder;
 
 		this.state = 'select_location';
+		this.indicator = '';
 		this.current_ride = {};
 		this.current_event = {};
+
+		this.markers = [];
 
 		this.marker_1 = {};
 		this.marker_2 = {};
 
 		this.create_new_marker = true;
-
-		this.table_container = document.querySelector('[data-container="tables"]');
 
 		this.create_markers();
 
@@ -389,6 +390,27 @@ var Map = augment(Object, function () {
 				address: address
 			}, this.disp_address.bind(this));
 		}.bind(this));
+		this.reset();
+
+		this.reset_btn = document.querySelector('[data-reset]');
+		this.reset_btn.addEventListener('click', function (e) {
+			this.reset();
+		}.bind(this));
+	}
+
+	this.reset = function () {
+		if (typeof flow != 'undefined') {
+			flow.change_slide('select_location');
+		}
+
+		this.create_new_marker = true;
+		
+		this.indicator = '';
+
+		for (var i = 0; i < this.markers.length; i++) {
+			this.markers[i].setMap(null);
+		}
+		this.markers = [];
 	}
 
 	this.create_markers = function () {
@@ -422,6 +444,7 @@ var Map = augment(Object, function () {
 				position: LatLng,
 				map: this.map,
 			})
+			this.markers.push(marker);
 			google.maps.event.addListener(marker, 'click', function () {
 				dialog.open(this.map, marker)
 			})
@@ -464,11 +487,12 @@ var Map = augment(Object, function () {
 			location_btn.removeAttribute('disabled');
 		}
 		if (this.state == 'event_ride_location') {
-			this.event_loc = {};
-			this.event_loc.lat = point.k;
-			this.event_loc.lng = point.A;
-			this.event_loc.address = location[0].formatted_address;
-			flow.change_slide('event_ride_details');
+			this.current_ride.origin = {};
+			this.current_ride.origin.lat = point.k;
+			this.current_ride.origin.lng = point.A;
+			this.current_ride.origin.address = location[0].formatted_address;
+			this.indicator = this.state;
+			flow.change_slide('select_type');
 		}
 	}
 
@@ -480,10 +504,18 @@ var Map = augment(Object, function () {
 			} else if (btn.dataset.ride == 'passenger') {
 				this.current_ride.driver = false;
 			}
-			
-			var location = document.querySelector('[data-ride="loc_1"]');
-			location.textContent = this.marker_1.address;
-			flow.change_slide(route);
+			if (this.indicator == 'event_ride_location') {
+				if (this.current_ride.driver == true) {
+					flow.change_slide('driver_details');
+				} else if (this.current_ride.driver == false) {
+					flow.change_slide('passenger_details');
+				}
+			} else {
+				console.log(route)
+				var location = document.querySelector('[data-ride="loc_1"]');
+				location.textContent = this.marker_1.address;
+				flow.change_slide(route);
+			}
 		} else if (route == 'location_2') {
 			// Set location_type when selecting location #2
 			var location_type_form = document.querySelector('[data-ride="loc_1_type"]');
@@ -536,6 +568,9 @@ var Map = augment(Object, function () {
 			}
 			container.insertAdjacentHTML('beforeend', html);
 			flow.change_slide('join_ride');
+		} else if (route == 'event_ride_location') {
+			this.current_ride.event = btn.dataset.id;
+			flow.change_slide(route);
 		} else {
 			flow.change_slide(route);
 		}
