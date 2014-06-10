@@ -250,7 +250,7 @@ var Map = augment(Object, function () {
 		})
 		ride.dest_info = new google.maps.InfoWindow({
 			position: dest_pos,
-			content: origin_html
+			content: dest_html
 		});
 
 		google.maps.event.addListener(ride.dest_marker, 'click', function () {
