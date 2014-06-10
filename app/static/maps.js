@@ -1,3 +1,16 @@
+function getParameterByName(name) {
+	name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+	var regexS = "[\\?&]" + name + "=([^&#]*)";
+	var regex = new RegExp(regexS);
+	var results = regex.exec(window.location.search);
+	if (results == null) {
+		return "";
+	}
+	else {
+		return decodeURIComponent(results[1].replace(/\+/g, " "));
+	}		
+}
+
 var College = augment(Object, function () {
 	this.constructor = function (name, address, lat, long) {
 		this.name = name;
@@ -39,6 +52,148 @@ var icons = {
 	}
 }
 
+var Markers = augment(Object, function () {
+	this.constructor = function () {
+		this.req_events = $.ajax({
+			type: 'POST',
+			url: '/events',
+			dataType: 'json',
+			contentType: 'application/json; charset=UTF-8',
+			data: JSON.stringify({
+				circle: getParameterByName('circle')
+			})
+		});
+
+		this.req_events.done(function (data) {
+			map.events = data;
+			for (var i = 0; i < map.events.length; i++) {
+				this.add_event(i);
+			}
+		}.bind(this));
+
+		this.req_events.fail(function (message, status) {
+
+		}.bind(this));
+
+		this.req_rides = $.ajax({
+			type: 'POST',
+			url: '/rides',
+			dataType: 'json',
+			contentType: 'application/json; charset=UTF-8',
+			data: JSON.stringify({
+				circle: getParameterByName('circle')
+			})
+		});
+
+		this.req_rides.done(function (data) {
+			map.rides = data;
+			for (var i = 0; i < map.rides.length; i++) {
+				this.add_ride(i);
+			}
+		}.bind(this));
+
+		this.req_rides.fail(function (message, status) {
+
+		}.bind(this));
+	}
+
+	this.add_event = function (idx) {
+		/* Get Event */
+		var event = map.events[idx];
+		/* Get template for popup on click */
+		var layout = document.querySelector('[data-template="popup-event"]');
+		var source = Handlebars.compile(layout.innerHTML);
+		/* Generate HTML */
+		var html = source({
+			add: event.address,
+			date: event.date,
+			id: event.id
+		});
+
+		event_pos = new google.maps.LatLng(
+			event.lat,
+			event.lng
+		)
+
+		event.marker = new google.maps.Marker({
+			position: event_pos,
+			icon: icons.person
+		})
+
+		event.marker_info = new google.maps.InfoWindow({
+			position: event_pos,
+			content: html
+		});
+
+		google.maps.event.addListener(event.marker, 'click', function () {
+			event.marker_info.open(map.map, event.marker)
+		}.bind(this));
+
+		event.marker.setMap(map.map);
+	}
+
+	this.add_ride = function (idx) {
+		/* Get ride */
+		var ride = map.rides[idx];
+		/* Set template and compile */
+		var layout = document.querySelector('[data-template="popup"]');
+		var source = Handlebars.compile(layout.innerHTML)
+
+		/* Create origin marker & info window */
+		var origin_html = source({
+			primary: 'Starting',
+			primary_add: ride.origin_add,
+			secondary: 'Ending',
+			secondary_add: ride.dest_add,
+			id: ride.id
+		})
+		
+		origin_pos = new google.maps.LatLng(
+			ride.origin_lat,
+			ride.origin_lng
+		);
+		ride.origin_marker = new google.maps.Marker({
+			position: origin_pos,
+			icon: icons.success
+		});
+		ride.origin_info = new google.maps.InfoWindow({
+			position: origin_pos,
+			content: origin_html
+		});
+
+		google.maps.event.addListener(ride.origin_marker, 'click', function () {
+			ride.origin_info.open(map.map, ride.origin_marker)
+		}.bind(this));
+		ride.origin_marker.setMap(map.map);
+
+		/* Create dest marker & info window */
+		var dest_html = source({
+			secondary: 'Starting',
+			secondary_add: ride.origin_add,
+			primary: 'Ending',
+			primary_add: ride.dest_add,
+			id: ride.id
+		})
+		dest_pos = new google.maps.LatLng(
+			ride.dest_lat,
+			ride.dest_lng
+		)
+		ride.dest_marker = new google.maps.Marker({
+			position: dest_pos,
+			icon: icons.error
+		})
+		ride.dest_info = new google.maps.InfoWindow({
+			position: dest_pos,
+			content: dest_html
+		});
+
+		google.maps.event.addListener(ride.dest_marker, 'click', function () {
+			ride.dest_info.open(map.map, ride.dest_marker);
+		}.bind(this));
+		ride.dest_marker.setMap(map.map);
+	}
+});
+
 var community = new College(
 	"Luther College",
 	"700 College Drive Decorah,IA",
@@ -69,44 +224,6 @@ var Map = augment(Object, function () {
 		this.create_new_marker = true;
 
 		this.table_container = document.querySelector('[data-container="tables"]');
-
-		var req_events = $.ajax({
-			type: 'POST',
-			url: '/events',
-			dataType: 'json',
-			contentType: 'application/json; charset=UTF-8',
-			data: JSON.stringify({
-				circle: getParameterByName('circle')
-			})
-		});
-		req_events.done(function (data) {
-			this.events = data;
-			for (var i = 0; i < this.events.length; i++) {
-				this.add_event(i);
-			}
-		}.bind(this));
-		req_events.fail(function (message, status) {
-
-		}.bind(this));
-
-		var req_rides = $.ajax({
-			type: 'POST',
-			url: '/rides',
-			dataType: 'json',
-			contentType: 'application/json; charset=UTF-8',
-			data: JSON.stringify({
-				circle: getParameterByName('circle')
-			})
-		});
-		req_rides.done(function (data) {
-			this.rides = data;
-			for (var i = 0; i < this.rides.length; i++) {
-				this.add_ride(i);
-			}
-		}.bind(this));
-		req_rides.fail(function (message, status) {
-
-		}.bind(this));
 
 		this.create_markers();
 
@@ -156,101 +273,9 @@ var Map = augment(Object, function () {
 		this.geocoder = new google.maps.Geocoder();
 	}
 
-	this.add_event = function (idx) {
-		/* Get Event */
-		var event = this.events[idx];
-		/* Get template for popup on click */
-		var layout = document.querySelector('[data-template="popup-event"]');
-		var source = Handlebars.compile(layout.innerHTML);
-		/* Generate HTML */
-		var html = source({
-			add: event.address,
-			date: event.date,
-			id: event.id
-		});
 
-		event_pos = new google.maps.LatLng(
-			event.lat,
-			event.lng
-		)
 
-		event.marker = new google.maps.Marker({
-			position: event_pos,
-			icon: icons.person
-		})
 
-		event.marker_info = new google.maps.InfoWindow({
-			position: event_pos,
-			content: html
-		});
-
-		google.maps.event.addListener(event.marker, 'click', function () {
-			event.marker_info.open(this.map, event.marker)
-		}.bind(this));
-
-		event.marker.setMap(this.map);
-	}
-
-	this.add_ride = function (idx) {
-		/* Get ride */
-		var ride = this.rides[idx];
-		/* Set template and compile */
-		var layout = document.querySelector('[data-template="popup"]');
-		var source = Handlebars.compile(layout.innerHTML)
-
-		/* Create origin marker & info window */
-		var origin_html = source({
-			primary: 'Starting',
-			primary_add: ride.origin_add,
-			secondary: 'Ending',
-			secondary_add: ride.dest_add,
-			id: ride.id
-		})
-		
-		origin_pos = new google.maps.LatLng(
-			ride.origin_lat,
-			ride.origin_lng
-		);
-		ride.origin_marker = new google.maps.Marker({
-			position: origin_pos,
-			icon: icons.success
-		});
-		ride.origin_info = new google.maps.InfoWindow({
-			position: origin_pos,
-			content: origin_html
-		});
-
-		google.maps.event.addListener(ride.origin_marker, 'click', function () {
-			ride.origin_info.open(this.map, ride.origin_marker)
-		}.bind(this));
-		ride.origin_marker.setMap(this.map);
-
-		/* Create dest marker & info window */
-		var dest_html = source({
-			secondary: 'Starting',
-			secondary_add: ride.origin_add,
-			primary: 'Ending',
-			primary_add: ride.dest_add,
-			id: ride.id
-		})
-		dest_pos = new google.maps.LatLng(
-			ride.dest_lat,
-			ride.dest_lng
-		)
-		ride.dest_marker = new google.maps.Marker({
-			position: dest_pos,
-			icon: icons.error
-		})
-		ride.dest_info = new google.maps.InfoWindow({
-			position: dest_pos,
-			content: dest_html
-		});
-
-		google.maps.event.addListener(ride.dest_marker, 'click', function () {
-			ride.dest_info.open(this.map, ride.dest_marker);
-		}.bind(this));
-		ride.dest_marker.setMap(this.map);
-	}
 
 
 	this.set_window = function (location, content) {
@@ -515,15 +540,5 @@ var Map = augment(Object, function () {
 	}
 });
 
-function getParameterByName(name) {
-
-	name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
-	var regexS = "[\\?&]" + name + "=([^&#]*)";
-	var regex = new RegExp(regexS);
-	var results = regex.exec(window.location.search);
-	if(results == null)
-		return "";
-	else
-		return decodeURIComponent(results[1].replace(/\+/g, " "));
-		
-}
+var map = new Map();
+var markers = new Markers();
