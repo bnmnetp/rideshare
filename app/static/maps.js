@@ -52,6 +52,135 @@ var icons = {
 	}
 }
 
+var Forms = augment(Object, function () {
+	this.constructor = function () {
+		this.send_ride = document.querySelector('[data-send="ride"]');
+		this.send_ride.addEventListener('submit', this.controller_ride.bind(this));
+
+		this.send_pass = document.querySelector('[data-send="passenger"]');
+		this.send_pass.addEventListener('submit', this.controller_pass.bind(this));
+
+		this.send_event = document.querySelector('[data-send="event"]');
+		this.send_event.addEventListener('submit', this.controller_event.bind(this));
+	}
+
+	this.controller_ride = function (e) {
+		e.preventDefault();
+		console.log(e);
+
+		var form  = e.target;
+		var m = map.current_ride;
+
+		m.max_passengers = form.max_passengers.value;
+		m.date = form.date.value;
+		m.time = form.time.value;
+		m.details = form.details.value;
+
+		var push = $.ajax({
+			type: 'POST',
+			url: '/newride',
+			dataType: 'json',
+			contentType: 'application/json; charset=UTF-8',
+			data: JSON.stringify(m)
+		});
+
+		push.done(function (data) {
+			flow.change_slide('select_location');
+			notify({
+				type: 'success',
+				strong: 'You created a new ride!',
+				message: 'We sent you a confirmation email.'
+			});
+		});
+
+		push.fail(function (message, status) {
+			notify({
+				type: 'danger',
+				strong: 'Sorry!',
+				message: 'The ride was not created. Please try again.'
+			});
+		});
+	}
+
+	this.controller_pass = function (e) {
+		e.preventDefault();
+		console.log(e);
+
+		var form  = e.target;
+		var m = map.current_ride;
+
+		m.date = form.date.value;
+		m.time = form.time.value;
+		m.details = form.details.value;
+
+		var push = $.ajax({
+			type: 'POST',
+			url: '/newride',
+			dataType: 'json',
+			contentType: 'application/json; charset=UTF-8',
+			data: JSON.stringify(m)
+		});
+
+		push.done(function (data) {
+			flow.change_slide('select_location');
+			notify({
+				type: 'success',
+				strong: 'You asked for a ride!',
+				message: 'We sent you a confirmation email.'
+			});
+		});
+
+		push.fail(function (message, status) {
+			notify({
+				type: 'danger',
+				strong: 'Sorry!',
+				message: 'The ride was not created. Please try again.'
+			});
+		});
+	}
+
+	this.controller_event = function (e) {
+		e.preventDefault();
+		console.log(e);
+
+		var form  = e.target;
+
+		var m = {};
+		m.name = form.name.value;
+		m.address = map.marker_1.address;
+		m.lat = map.marker_1.lat;
+		m.lng = map.marker_1.lng;
+		m.date = form.date.value;
+		m.time = form.time.value;
+		m.details = form.details.value;
+
+		var push = $.ajax({
+			type: 'POST',
+			url: '/newevent',
+			dataType: 'json',
+			contentType: 'application/json; charset=UTF-8',
+			data: JSON.stringify(m)
+		});
+
+		push.done(function (data) {
+			flow.change_slide('select_location');
+			notify({
+				type: 'success',
+				strong: 'Event created!',
+				message: 'We sent you a confirmation email.'
+			});
+		});
+
+		push.fail(function (data, status) {
+			notify({
+				type: 'danger',
+				strong: 'Sorry!',
+				message: 'The event was not created. Please try again.'
+			});
+		});
+	}
+});
+
 var Markers = augment(Object, function () {
 	this.constructor = function () {
 		this.req_events = $.ajax({
@@ -227,15 +356,6 @@ var Map = augment(Object, function () {
 
 		this.create_markers();
 
-		var ride_send_btn = document.querySelector('[data-send="ride"]');
-		ride_send_btn.addEventListener('click', this.send_ride.bind(this));
-
-		var passenger_send_form = document.querySelector('[data-send="passenger"]');
-		passenger_send_form.addEventListener('submit', this.send_passenger.bind(this));
-
-		var event_form = document.querySelector('[data-send="event"]');
-		event_form.addEventListener('submit', this.send_event.bind(this));
-
 		document.body.addEventListener('click', function (e) {
 			var target = e.target;
 			if (target.dataset.join) {
@@ -272,11 +392,6 @@ var Map = augment(Object, function () {
 
 		this.geocoder = new google.maps.Geocoder();
 	}
-
-
-
-
-
 
 	this.set_window = function (location, content) {
 		if (this.create_new_marker) {
@@ -408,69 +523,6 @@ var Map = augment(Object, function () {
 		}
 	}
 
-	this.send_ride = function (e) {
-		e.preventDefault();
-		var form = document.querySelector('#ride_form');
-		this.current_ride.max_passengers = form.max_passengers.value;
-		this.current_ride.date = form.date.value;
-		this.current_ride.time = form.time.value;
-		this.current_ride.details = form.details.value;
-		var req_rides = $.ajax({
-			type: 'POST',
-			url: '/newride',
-			dataType: 'json',
-			contentType: 'application/json; charset=UTF-8',
-			data: JSON.stringify(this.current_ride)
-		});
-		req_rides.done(function (message) {
-			flow.change_slide('select_location');
-			notify({
-				type: 'success',
-				strong: 'You created a new ride!',
-				message: 'We sent you a confirmation email.'
-			});
-		}.bind(this));
-		req_rides.fail(function (message, status) {
-			flow.change_slide('select_location');
-			notify({
-				type: 'danger',
-				strong: 'Sorry!',
-				message: 'The ride was not created. Please try again.'
-			});
-		}.bind(this));
-	}
-
-	this.send_passenger = function (e) {
-		e.preventDefault();
-		var form = document.querySelector('[data-send="passenger"]')
-		this.current_ride.date = form.date.value;
-		this.current_ride.time = form.time.value;
-		this.current_ride.details = form.details.value;
-		var req_rides = $.ajax({
-			type: 'POST',
-			url: '/newride',
-			dataType: 'json',
-			contentType: 'application/json; charset=UTF-8',
-			data: JSON.stringify(this.current_ride)
-		});
-		req_rides.done(function (message) {
-			flow.change_slide('select_location');
-			notify({
-				type: 'success',
-				strong: 'You asked for a ride!',
-				message: 'We sent you a confirmation email.'
-			});
-		}.bind(this));
-		req_rides.fail(function (message, status) {
-			flow.change_slide('select_location');
-			notify({
-				type: 'danger',
-				strong: 'Sorry!',
-				message: 'The ride was not created. Please try again.'
-			});
-		}.bind(this));
-	}
-
 	// Sends request for person to join ride as passenger
 	this.join_ride = function (e) {
 		var target = e.target;
@@ -502,43 +554,8 @@ var Map = augment(Object, function () {
 			});
 		}.bind(this));
 	}
-
-	this.send_event = function (e) {
-		e.preventDefault();
-		var form = document.querySelector('[data-send="event"]')
-		var event = {};
-		event.name = form.name.value;
-		event.address = this.marker_1.address;
-		event.lat = this.marker_1.lat;
-		event.lng = this.marker_1.lng;
-		event.date = form.date.value;
-		event.time = form.time.value;
-		event.details = form.details.value;
-		var req_event = $.ajax({
-			type: 'POST',
-			url: '/newevent',
-			dataType: 'json',
-			contentType: 'application/json; charset=UTF-8',
-			data: JSON.stringify(event)
-		});
-		req_event.done(function (message) {
-			flow.change_slide('select_location');
-			notify({
-				type: 'success',
-				strong: 'Event created!',
-				message: 'We sent you a confirmation email.'
-			});
-		}.bind(this));
-		req_event.fail(function (message, status) {
-			flow.change_slide('select_location');
-			notify({
-				type: 'danger',
-				strong: 'Sorry!',
-				message: 'The event was not created. Please try again.'
-			});
-		}.bind(this));
-	}
 });
 
 var map = new Map();
 var markers = new Markers();
+var forms = new Forms();
