@@ -9,6 +9,20 @@ body {
     color: #333339;
 }
 
+.key {
+    display: inline;
+    border-right: 1px solid #534A9A;
+    padding: 0px 15px 0px 15px;
+}
+
+.key:first-child {
+    padding-left: 0px;
+}
+
+.key:last-child {
+    border: none;
+}
+
 .nav-sub {
     margin-bottom: 15px;
 }

@@ -7,7 +7,44 @@ var College = augment(Object, function () {
 	}
 })
 
-var community = new College("Luther College", "700 College Drive Decorah,IA", 43.313059, -91.799501);
+var icons = {
+	event: {
+		url: '/static/stargate.png',
+		anchor: new google.maps.Point(20, 20),
+		size: new google.maps.Size(30, 40)
+	},
+	shadow: {
+		url: 'http://labs.google.com/ridefinder/images/mm_20_shadow.png',
+		size: new google.maps.Size(22, 20)
+	},
+	error: {
+		url: '/static/carRed.png',
+		anchor: new google.maps.Point(20, 20),
+		size: new google.maps.Size(30, 40)
+	},
+	success: {
+		url: '/static/carGreen.png',
+		anchor: new google.maps.Point(20, 20),
+		size: new google.maps.Size(30, 40)
+	},
+	person: {
+		url: '/static/person.png',
+		anchor: new google.maps.Point(20, 20),
+		size: new google.maps.Size(30, 40)
+	},
+	plus: {
+		url: '/static/cross.png',
+		anchor: new google.maps.Point(20, 20),
+		size: new google.maps.Size(30, 40)
+	}
+}
+
+var community = new College(
+	"Luther College",
+	"700 College Drive Decorah,IA",
+	43.313059,
+	-91.799501
+);
 
 var Map = augment(Object, function () {
 	this.constructor = function () {
@@ -19,7 +56,6 @@ var Map = augment(Object, function () {
 		this.rides = {};
 		this.windows = [];
 		this.events = {};
-		this.icons = {};
 		this.map;
 		this.geocoder;
 
@@ -33,8 +69,6 @@ var Map = augment(Object, function () {
 		this.create_new_marker = true;
 
 		this.table_container = document.querySelector('[data-container="tables"]');
-
-		var d = new Date();
 
 		var req_events = $.ajax({
 			type: 'POST',
@@ -102,47 +136,7 @@ var Map = augment(Object, function () {
 		}.bind(this));
 	}
 
-	this.set_flow = function (flow) {
-		this.flow = flow;
-	}
-
-	// Creates map markers and stores them in this.icons
 	this.create_markers = function () {
-		this.icons.event = {
-			url: '/static/stargate.png',
-			anchor: new google.maps.Point(20, 20),
-			size: new google.maps.Size(30, 40)
-		};
-		this.icons.marker_shadow = {
-			url: 'http://labs.google.com/ridefinder/images/mm_20_shadow.png',
-			size: new google.maps.Size(22, 20)
-		};
-		this.icons.car_success = {
-			url: '/static/carGreen.png',
-			anchor: new google.maps.Point(20, 20),
-			size: new google.maps.Size(30, 40)
-		};
-		this.icons.car_error = {
-			url: '/static/carRed.png',
-			anchor: new google.maps.Point(20, 20),
-			size: new google.maps.Size(30, 40)
-		};
-		this.icons.person = {
-			url: '/static/person.png',
-			anchor: new google.maps.Point(20, 20),
-			size: new google.maps.Size(30, 40)
-		};
-		this.icons.person_shadow = {
-			url: '/static/person.png',
-			anchor: new google.maps.Point(20, 20),
-			size: new google.maps.Size(30, 40)
-		};
-		this.icons.plus = {
-			url: '/static/cross.png',
-			anchor: new google.maps.Point(20, 20),
-			size: new google.maps.Size(30, 40)
-		};
-
 	    this.map = new google.maps.Map(document.querySelector('#map_canvas'), {
 	        draggableCursor: 'crosshair',
 	        center: new google.maps.LatLng(this.location.lat, this.location.lng),
@@ -163,7 +157,6 @@ var Map = augment(Object, function () {
 	}
 
 	this.add_event = function (idx) {
-		console.log('test')
 		/* Get Event */
 		var event = this.events[idx];
 		/* Get template for popup on click */
@@ -183,7 +176,7 @@ var Map = augment(Object, function () {
 
 		event.marker = new google.maps.Marker({
 			position: event_pos,
-			icon: this.icons.person
+			icon: icons.person
 		})
 
 		event.marker_info = new google.maps.InfoWindow({
@@ -220,7 +213,7 @@ var Map = augment(Object, function () {
 		);
 		ride.origin_marker = new google.maps.Marker({
 			position: origin_pos,
-			icon: this.icons.car_success
+			icon: icons.success
 		});
 		ride.origin_info = new google.maps.InfoWindow({
 			position: origin_pos,
@@ -246,7 +239,7 @@ var Map = augment(Object, function () {
 		)
 		ride.dest_marker = new google.maps.Marker({
 			position: dest_pos,
-			icon: this.icons.car_error
+			icon: icons.error
 		})
 		ride.dest_info = new google.maps.InfoWindow({
 			position: dest_pos,
@@ -284,8 +277,6 @@ var Map = augment(Object, function () {
 		}
 	}
 
-
-
 	this.get_address = function (e) {
 		this.latLng = e.latLng;
 		this.geocoder.geocode({
@@ -294,12 +285,6 @@ var Map = augment(Object, function () {
 	}
 
 	this.disp_address = function (location) {
-		// var source = document.querySelector('#location-template').innerHTML;
-		// var template = Handlebars.compile(source);
-		// var html = template({
-		// 	location: 'Test Location'
-		// });
-
 		var point = location[0].geometry.location;
 		this.set_window(point, 'New Marker');
 
@@ -319,6 +304,13 @@ var Map = augment(Object, function () {
 
 			location_2.textContent = this.marker_2.address;
 			location_btn.removeAttribute('disabled');
+		}
+		if (this.state == 'event_ride_location') {
+			this.event_loc = {};
+			this.event_loc.lat = point.k;
+			this.event_loc.lng = point.A;
+			this.event_loc.address = location[0].formatted_address;
+			flow.change_slide('event_ride_details');
 		}
 	}
 
@@ -406,7 +398,7 @@ var Map = augment(Object, function () {
 			data: JSON.stringify(this.current_ride)
 		});
 		req_rides.done(function (message) {
-			this.flow.change_slide('select_location');
+			flow.change_slide('select_location');
 			notify({
 				type: 'success',
 				strong: 'You created a new ride!',
@@ -414,7 +406,7 @@ var Map = augment(Object, function () {
 			});
 		}.bind(this));
 		req_rides.fail(function (message, status) {
-			this.flow.change_slide('select_location');
+			flow.change_slide('select_location');
 			notify({
 				type: 'danger',
 				strong: 'Sorry!',
@@ -437,7 +429,7 @@ var Map = augment(Object, function () {
 			data: JSON.stringify(this.current_ride)
 		});
 		req_rides.done(function (message) {
-			this.flow.change_slide('select_location');
+			flow.change_slide('select_location');
 			notify({
 				type: 'success',
 				strong: 'You asked for a ride!',
@@ -445,7 +437,7 @@ var Map = augment(Object, function () {
 			});
 		}.bind(this));
 		req_rides.fail(function (message, status) {
-			this.flow.change_slide('select_location');
+			flow.change_slide('select_location');
 			notify({
 				type: 'danger',
 				strong: 'Sorry!',
@@ -469,7 +461,7 @@ var Map = augment(Object, function () {
 			})
 		});
 		req_rides.done(function (data) {
-			this.flow.change_slide('select_location');
+			flow.change_slide('select_location');
 			notify({
 				type: 'success',
 				strong: 'You joined the ride!',
@@ -477,7 +469,7 @@ var Map = augment(Object, function () {
 			});
 		}.bind(this));
 		req_rides.fail(function (data, status) {
-			this.flow.change_slide('select_location');
+			flow.change_slide('select_location');
 			notify({
 				type: 'danger',
 				strong: 'Sorry!',
@@ -505,7 +497,7 @@ var Map = augment(Object, function () {
 			data: JSON.stringify(event)
 		});
 		req_event.done(function (message) {
-			this.flow.change_slide('select_location');
+			flow.change_slide('select_location');
 			notify({
 				type: 'success',
 				strong: 'Event created!',
@@ -513,7 +505,7 @@ var Map = augment(Object, function () {
 			});
 		}.bind(this));
 		req_event.fail(function (message, status) {
-			this.flow.change_slide('select_location');
+			flow.change_slide('select_location');
 			notify({
 				type: 'danger',
 				strong: 'Sorry!',
@@ -522,14 +514,6 @@ var Map = augment(Object, function () {
 		}.bind(this));
 	}
 });
-
-var Location = augment(Object, function () {
-	this.constructor = function (title, lat, long) {
-		this.title = title;
-		this.lat = lat;
-		this.long = long;
-	}
-})
 
 function getParameterByName(name) {
 

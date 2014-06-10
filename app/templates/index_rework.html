@@ -8,6 +8,26 @@
 
 {% block main %}
 <div data-notify="container"></div>
+<div class="panel panel-main">
+    <div class="panel-heading">Key</div>
+    <div class="panel-body">
+        <div class="key">
+            <button class='btn btn-primary' data-restart>Start over</button>
+        </div>
+        <div class="key">
+            <img src="/static/carRed.png" />
+            Destination
+        </div>
+        <div class="key">
+            <img src="/static/carGreen.png" />
+            Starting point
+        </div>
+        <div class="key">
+            <img src="/static/person.png" />
+            Event
+        </div>
+    </div>
+</div>
 <div class="row">
     <div class="col-md-8 map_con" id='col_map'>
         <div id="map_canvas"></div>
@@ -30,8 +50,11 @@
             </form>
         </div>
     </div>
+    <div class="col-md-4" data-route='event_ride_location'>
+        <p class="lead">Select the starting point.</p>
+    </div>
     <div class="col-md-4 map_con" data-route='trip_type'>
-        <p>Are you creating a new event or an indivudal ride?</p>
+        <p>Are you creating a new event or an indivdual ride?</p>
         <button class="btn btn-primary" data-next="event_details" type='button'>
             New Event
         </button>
@@ -215,7 +238,7 @@
     <button class='btn btn-primary' data-next='join_ride' data-id='{{id}}'>Join this ride</button>
 </script>
 
-<template data-template='popup-event' type="text/x-handlebars-template">
+<script data-template='popup-event' type="text/x-handlebars-template">
     <div class="entry">
         This is an <strong>event</strong>.
     </div>
@@ -228,7 +251,14 @@
     <a class='btn btn-primary' href='/event/{{id}}'>
         View Event
     </a>
+    <button class='btn btn-primary' data-next='event_ride_location'>
+        Create a ride to this event.
+    </button>
     <p class="help-block">Viewing the event to look for rides / set up rides.</p>
+</script>
+
+<template type="text/x-handlebars-template">
+    
 </template>
 
 <script data-notify="template" type='text/x-handlebars-template'>
@@ -249,10 +279,8 @@
 <script type="text/javascript">
 var map = new Map();
 var flow = new Flow('select_location');
-map.set_flow(flow);
 flow.set_handler(map);
 
-$('#event-date').datepicker();
 $('.date-select').datepicker();
 </script>
 
