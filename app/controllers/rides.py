@@ -63,6 +63,37 @@ class RideHandler(BaseHandler):
         self.response.write(results)
 
 class GetRideHandler(BaseHandler):
+    def post(self, ride_id):
+        json_str = self.request.body
+        data = json.loads(json_str)
+
+        user = self.current_user()
+
+        ride = Ride.get_by_id(ride_id)
+
+        if not ride:
+            print 'error'
+
+        if data['type'] == 'passenger':
+            if data['action'] == 'leave':
+                if user.key() in ride.passengers:
+                    ride.passengers.remove(user.key())
+            if data['action'] == 'join':
+                if user.key() not in ride.passengers:
+                    ride.passengers.push(user.key())
+            ride.put()
+        if data['type'] == 'driver':
+            if data['action'] == 'leave':
+                if ride.has_driver:
+                    ride.has_driver = False
+                    ride.driver = None
+            if data['action'] == 'join':
+                if not ride.has_driver:
+                    ride.has_driver = True
+                    ride.driver = user.key()
+            ride.put()
+
+
     def get(self, ride_id):
         ride = Ride.get_by_id(int(ride_id))
 
