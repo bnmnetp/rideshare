@@ -235,7 +235,6 @@ class NewRideHandler(BaseHandler):
             ride.passengers.append(user.key())
 
         ride.circle = ""
-        ride.event = ""
 
         ride_key = ride.put()
 
