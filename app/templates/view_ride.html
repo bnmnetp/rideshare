@@ -52,7 +52,7 @@
         </ul>
         <hr>
         <div class="options">
-        {% if ride.driver_key.key().id() == user.key().id() %}
+        {% if ride.driver.key().id() == user.key().id() %}
             <p class="help-block">You are currently the driver.</p>
             <button class='btn btn-danger' data-driver='leave'>Leave ride</button>
         {% elif not ride.driver %}
@@ -62,7 +62,7 @@
         {% if user.key in ride.passengers %}
             <p class="help-block">You are currently a passenger.</p>
             <button class='btn btn-danger' data-passenger='leave'>Leave ride</button>
-        {% elif not ride.driver_key.key().id() == user.key().id() %}
+        {% elif not ride.driver.key().id() == user.key().id() %}
             <button class='btn btn-success' data-passenger='join'>Join as Passenger</button>
         {% endif %}
         </div>

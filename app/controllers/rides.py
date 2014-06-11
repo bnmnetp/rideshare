@@ -22,8 +22,8 @@ class RideHandler(BaseHandler):
         for ride in rides_all:
             ride.dest = split_address(ride.dest_add)
             ride.orig = split_address(ride.origin_add)
-            if ride.driver_key:
-                if ride.driver_key.key().id() == user.key().id():
+            if ride.driver:
+                if ride.driver.key().id() == user.key().id():
                     ride.is_driver = True
                 else:
                     ride.is_driver = False
@@ -35,8 +35,8 @@ class RideHandler(BaseHandler):
         for ride in rides_user:
             ride.dest = split_address(ride.dest_add)
             ride.orig = split_address(ride.origin_add)
-            if ride.driver_key:
-                if ride.driver_key.key().id() == user.key().id():
+            if ride.driver:
+                if ride.driver.key().id() == user.key().id():
                     ride.is_driver = True
                 else:
                     ride.is_driver = False
@@ -69,7 +69,7 @@ class GetRideHandler(BaseHandler):
         user = self.current_user()
 
         if ride.driver:
-            driver = db.get(ride.driver_key.key())
+            driver = db.get(ride.driver.key())
             availible_seats = ride.passengers_max - ride.passengers_total;
         else:
             driver = {}
@@ -84,7 +84,7 @@ class GetRideHandler(BaseHandler):
 
         event = []
         if ride.event:
-            event = Event.get(ride.event)
+            event = Event.get(ride.event.key())
 
         comments = Comment.all().filter('ride = ', ride.key()).order('-date')
 
@@ -119,8 +119,8 @@ class RideJoinHandler(BaseHandler):
             elif data['type'] == 'driver':
                 ride.passengers_max = 1
                 ride.passengers_total = 0
-                ride.driver = True
-                ride.driver_key = user.key()
+                ride.has_driver = True
+                ride.driver = user.key()
                 # Replace
                 ride.driver_name = user.name
                 ride.contact = user.email
@@ -223,8 +223,8 @@ class NewRideHandler(BaseHandler):
         if data['driver'] == True:
             ride.passengers_max = int(data['max_passengers'])
             ride.passengers_total = 0
-            ride.driver_key = user.key()
-            ride.driver = data['driver']
+            ride.driver = user.key()
+            ride.has_driver = data['driver']
             ride.driver_name = "Replace"
             ride.contact = "Replace"
         else:

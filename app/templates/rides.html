@@ -26,12 +26,12 @@
                     <a href='/ride/{{ride.key().id()}}'>{{ride.orig}} to {{ride.dest}}</a>
                 </div>
                 <div class="details">
-                    {% if ride.driver %}
+                    {% if ride.is_driver %}
                     <div class="deta">
                         <span class="label label-success">Driver</span>
                     </div>
                     {% endif %}
-                    {% if ride.passenger %}
+                    {% if ride.is_passenger %}
                     <div class="deta">
                         <span class="label label-success">Passenger</span>
                     </div>
@@ -57,12 +57,12 @@
                     <a href='/ride/{{ride.key().id()}}'>{{ride.orig}} to {{ride.dest}}</a>
                 </div>
                 <div class="details">
-                    {% if ride.driver %}
+                    {% if ride.is_driver %}
                     <div class="deta">
                         <span class="label label-success">Driver</span>
                     </div>
                     {% endif %}
-                    {% if ride.passenger %}
+                    {% if ride.is_passenger %}
                     <div class="deta">
                         <span class="label label-success">Passenger</span>
                     </div>

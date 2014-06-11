@@ -1,4 +1,4 @@
-from app.common.toolbox import doRender
+from app.common.toolbox import doRender, split_address
 from google.appengine.ext import db
 from app.model import *
 from google.appengine.api import mail
@@ -15,7 +15,19 @@ class GetEventHandler(BaseHandler):
 
         event = Event.get_by_id(int(id))
 
-        rides = Ride.all().filter('event = ', event.key())
+        rides = Ride.all().filter('event = ', event.key()).fetch(100)
+
+        for ride in rides:
+            ride.orig = split_address(ride.origin_add)
+            ride.dest = split_address(ride.dest_add)
+            if user.key() == ride.driver.key():
+                ride.is_driver = True
+            else:
+                ride.is_driver = False
+            if user.key() in ride.passengers:
+                ride.is_passenger = True
+            else:
+                ride.is_passenger = False
 
         doRender(self, 'view_event.html', {
             'event': event,
@@ -28,15 +40,13 @@ class EventHandler(BaseHandler):
 
         user = self.current_user()
 
-        # create a list of strings of circle ids
-        key_list = [str(e) for e in user.circles]
-        print key_list
-        events_user = Event.all().filter('circle IN', key_list)
+        events_user = Event.all().filter('circle IN', user.circles).fetch(100)
 
-        events_user = Event.all()
+        events_all = Event.all().fetch(100)
 
         doRender(self, 'events.html', {
-
+            'events_user': events_user,
+            'events_all': events_all
         })
 
     def post(self):
@@ -110,8 +120,9 @@ class NewEventHandler(BaseHandler):
         event.lat = data['lat']
         event.lng = data['lng']
         event.address = data['address']
-        event.data = d_obj
+        event.date = d_obj
         event.time = data['time']
+        event.details = data['details']
         event.user = user.key()
 
         if 'circle' in data:

@@ -7,7 +7,7 @@
 
 {% block main %}
 <div data-notify="container"></div>
-<div class="btn-group btn-group-justified">
+<div class="btn-group btn-group-justified nav-sub">
     <div class="btn-group">
         <button type='button' class='btn btn-default' data-next="my_events">My Events</button>
     </div>
@@ -16,33 +16,48 @@
     </div>
 </div>
 <div data-route='all_events'>
-{% for ride in rides_all %}
-    <div class="block">
-        <div class="left">
-            <h1>{{ride.orig_cs}} to {{ride.dest_cs}}</h1>
-            <div class="line">
-                <b>Starting point:</b> {{ride.origin_add}}
+    <div class="panel panel-main">
+        <div class="panel-heading">All Events</div>
+        <div class="panel-body panel-no">
+        {% for event in events_all %}
+            <div class="block">
+                <div class="title">
+                    <a href='/event/{{event.key().id()}}'>{{event.name}}</a>
+                </div>
+                <div class="details">
+                    <div class="deta">
+                        <i class="fa fa-calendar"></i> {{event.date}}
+                    </div>
+                    <div class="deta">
+                        <i class="fa fa-location-arrow"></i> {{event.address}}
+                    </div>
+                </div>
             </div>
-            <div class="line">
-                <b>Destination:</b> {{ride.dest_add}}
-            </div>
-            <div class="line">
-                <b>Date:</b> {{ride.date}}
-            </div>
-            <div class="line">
-                <b>Time:</b> {{ride.time}}
-            </div>
-        </div>
-        <div class="right">
-            <!-- Link these -->
-            <button class='btn btn-primary'>Be the Driver</button>
-            <button class='btn btn-success'>Be a Passenger</button>
+        {% endfor %}
         </div>
     </div>
-{% endfor %}
 </div>
 <div data-route='my_events'>
-    <h1>My</h1>
+    <div class="panel panel-main">
+        <div class="panel-heading">My Events</div>
+        <div class="panel-body panel-no">
+        {% for event in events_user %}
+            <div class="block">
+                <div class="title">
+                    <a href='/event/{{event.key().id()}}'>{{event.name}}</a>
+                </div>
+                <div class="details">
+                    <div class="deta">
+                        <i class="fa fa-calendar"></i> {{event.date}}
+                    </div>
+                    <div class="deta">
+                        <i class="fa fa-location-arrow"></i> {{event.address}}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+    </div>
 </div>
 {% endblock %}
 
@@ -116,7 +131,7 @@
 
 
 <script type="text/javascript">
-var flow = new Flow();
+var flow = new Flow('my_events');
 </script>
 
 {% endblock %}

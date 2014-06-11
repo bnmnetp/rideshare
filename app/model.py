@@ -37,6 +37,7 @@ class Event(db.Model):
     address = db.StringProperty()
     time = db.StringProperty()
     user = db.ReferenceProperty(User)
+    details = db.TextProperty()
 
     def to_dict(self):
         resp = {}
@@ -48,8 +49,8 @@ class Event(db.Model):
 class Ride(db.Model):
     passengers_max = db.IntegerProperty()
     passengers_total = db.IntegerProperty()
-    driver = db.BooleanProperty()
-    driver_key = db.ReferenceProperty(User)
+    has_driver = db.BooleanProperty()
+    driver = db.ReferenceProperty(User)
     origin_add = db.StringProperty()
     origin_lat = db.FloatProperty()
     origin_lng = db.FloatProperty()
