@@ -1,4 +1,4 @@
-from app.common.toolbox import doRender
+from app.common.toolbox import doRender, split_address
 from app.model import *
 from google.appengine.ext import db
 import datetime
@@ -20,10 +20,8 @@ class RideHandler(BaseHandler):
         # Grabs the city and state from the addresses
         # Comes in format: Address, City, State Zip
         for ride in rides_all:
-            data = ride.dest_add.split(',')
-            ride.dest = data[1][1:] + ', ' + data[2][1:3]
-            data = ride.origin_add.split(',')
-            ride.orig = data[1][1:] + ', ' + data[2][1:3]
+            ride.dest = split_address(ride.dest_add)
+            ride.orig = split_address(ride.origin_add)
             if ride.driver_key:
                 if ride.driver_key.key().id() == user.key().id():
                     ride.is_driver = True
@@ -35,10 +33,8 @@ class RideHandler(BaseHandler):
                 ride.is_passenger = False
 
         for ride in rides_user:
-            data = ride.dest_add.split(',')
-            ride.dest = data[1][1:] + ', ' + data[2][1:3]
-            data = ride.origin_add.split(',')
-            ride.orig = data[1][1:] + ', ' + data[2][1:3]
+            ride.dest = split_address(ride.dest_add)
+            ride.orig = split_address(ride.origin_add)
             if ride.driver_key:
                 if ride.driver_key.key().id() == user.key().id():
                     ride.is_driver = True

@@ -13,8 +13,13 @@ class GetEventHandler(BaseHandler):
 
         user = self.current_user()
 
+        event = Event.get_by_id(int(id))
+
+        rides = Ride.all().filter('event = ', event.key())
+
         doRender(self, 'view_event.html', {
-            'event': {}
+            'event': event,
+            'rides': rides
         })
 
 class EventHandler(BaseHandler):

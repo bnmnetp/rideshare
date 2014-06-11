@@ -69,6 +69,8 @@ class Ride(db.Model):
         for p in Ride._properties:
             resp[p] = str(getattr(self, p))
         resp['id'] = self.key().id()
+        if self.event != None: 
+            resp['event'] = self.event.to_dict()
         return resp
 
 class Comment(db.Model):

@@ -10,3 +10,7 @@ JINJA_ENVIRONMENT = jinja2.Environment(
 def doRender(handler, name = 'map.html', value = {}):
 	template = JINJA_ENVIRONMENT.get_template(name)
 	handler.response.write(template.render(value))
+
+def split_address(add):
+	temp = add.split(',')
+	return temp[1][1:] + ', ' + temp[2][1:3]

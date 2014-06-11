@@ -326,32 +326,35 @@ var Markers = augment(Object, function () {
 			ride.origin_info.open(map.map, ride.origin_marker)
 		}.bind(this));
 		ride.origin_marker.setMap(map.map);
+		
+		if (ride.event == 'None') {
+			/* Create dest marker & info window */
+			var dest_html = source({
+				secondary: 'Starting',
+				secondary_add: ride.origin_add,
+				primary: 'Ending',
+				primary_add: ride.dest_add,
+				id: ride.id
+			})
+			dest_pos = new google.maps.LatLng(
+				ride.dest_lat,
+				ride.dest_lng
+			)
+			ride.dest_marker = new google.maps.Marker({
+				position: dest_pos,
+				icon: icons.error
+			})
+			ride.dest_info = new google.maps.InfoWindow({
+				position: dest_pos,
+				content: dest_html
+			});
 
-		/* Create dest marker & info window */
-		var dest_html = source({
-			secondary: 'Starting',
-			secondary_add: ride.origin_add,
-			primary: 'Ending',
-			primary_add: ride.dest_add,
-			id: ride.id
-		})
-		dest_pos = new google.maps.LatLng(
-			ride.dest_lat,
-			ride.dest_lng
-		)
-		ride.dest_marker = new google.maps.Marker({
-			position: dest_pos,
-			icon: icons.error
-		})
-		ride.dest_info = new google.maps.InfoWindow({
-			position: dest_pos,
-			content: dest_html
-		});
+			google.maps.event.addListener(ride.dest_marker, 'click', function () {
+				ride.dest_info.open(map.map, ride.dest_marker);
+			}.bind(this));
+			ride.dest_marker.setMap(map.map);
+		}
 
-		google.maps.event.addListener(ride.dest_marker, 'click', function () {
-			ride.dest_info.open(map.map, ride.dest_marker);
-		}.bind(this));
-		ride.dest_marker.setMap(map.map);
 	}
 });
 
@@ -503,7 +506,7 @@ var Map = augment(Object, function () {
 				this.current_ride.driver = true;
 			} else if (btn.dataset.ride == 'passenger') {
 				this.current_ride.driver = false;
-			}
+			} else { }
 			if (this.indicator == 'event_ride_location') {
 				if (this.current_ride.driver == true) {
 					flow.change_slide('driver_details');
