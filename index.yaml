@@ -24,6 +24,12 @@ indexes:
 
 - kind: Comment
   properties:
+  - name: event
+  - name: date
+    direction: desc
+
+- kind: Comment
+  properties:
   - name: ride
   - name: date
     direction: desc

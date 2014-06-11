@@ -29,9 +29,12 @@ class GetEventHandler(BaseHandler):
             else:
                 ride.is_passenger = False
 
+        comments = Comment.all().filter('event = ', event.key()).order('-date')
+
         doRender(self, 'view_event.html', {
             'event': event,
-            'rides': rides
+            'rides': rides,
+            'comments': comments
         })
 
 class EventHandler(BaseHandler):

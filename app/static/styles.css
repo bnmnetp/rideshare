@@ -41,6 +41,10 @@ body {
     color: #FFFFFF;
 }
 
+.panel-message {
+    padding: 15px;
+}
+
 .information {
     list-style: none;
     padding: 0px;

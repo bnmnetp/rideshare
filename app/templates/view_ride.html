@@ -55,7 +55,7 @@
         {% if ride.driver.key().id() == user.key().id() %}
             <p class="help-block">You are currently the driver.</p>
             <button class='btn btn-danger' data-driver='leave'>Leave ride</button>
-        {% elif not ride.driver %}
+        {% elif not ride.has_driver %}
              <button class='btn btn-success' data-driver='join'>Be the driver</button> 
         {% endif %}
 
@@ -101,6 +101,7 @@
 {% block scripts %}
 <script src="/static/augment.js" type="text/javascript"></script>
 <script type="text/javascript" src='/static/comment.js'></script>
+<script type='text/javascript' src='/static/ride_handler.js'></script>
 {% raw %}
 <script data-comment='template' type='text/x-handlebars-template'>
     <div class="media">
@@ -120,6 +121,6 @@ var comment = new Comment({
     type: 'ride',
     id: {{ride.key().id()}},
     container: '[data-comment="container"]'
-})
+});
 </script>
 {% endblock %}
