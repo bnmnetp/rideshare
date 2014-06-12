@@ -78,19 +78,55 @@ class GetRideHandler(BaseHandler):
             if data['action'] == 'leave':
                 if user.key() in ride.passengers:
                     ride.passengers.remove(user.key())
+                    resp = {
+                        'strong': 'Left the ride!',
+                        'message': 'You are no longer a passenger.'
+                    }
+                    self.response.write(json.dumps(resp))
             if data['action'] == 'join':
                 if user.key() not in ride.passengers:
-                    ride.passengers.push(user.key())
+                    if ride.passengers_total < passengers_max:
+                        ride.passengers.push(user.key())
+                        resp = {
+                            'strong': 'Joined the ride!',
+                            'message': 'You are now a passenger'
+                        }
+                        self.response.write(json.dumps(resp))
+                    else:
+                        self.response.set_status(500)
+                        resp = {
+                            'strong': 'This ride is full.',
+                            'message': 'Please try another ride.'
+                        }
+                        self.response.write(json.dumps(resp))
+
             ride.put()
         if data['type'] == 'driver':
             if data['action'] == 'leave':
                 if ride.has_driver:
                     ride.has_driver = False
                     ride.driver = None
+                    resp = {
+                        'strong': 'Left the ride!',
+                        'message': 'You are no longer the driver.'
+                    }
+                    self.response.write(json.dumps(resp))
             if data['action'] == 'join':
                 if not ride.has_driver:
                     ride.has_driver = True
                     ride.driver = user.key()
+                    resp = {
+                        'strong': 'Joined the ride!',
+                        'message': 'You are the driver of this ride.'
+                    }
+                    self.response.write(json.dumps(resp))
+                else:
+                    self.response.set_status(500)
+                    resp = {
+                        'strong': 'This ride already has a driver',
+                        'message': 'Thanks for your offer.'
+                    }
+                    self.response.write(json.dumps(resp))
             ride.put()
 
 
