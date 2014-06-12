@@ -52,19 +52,39 @@
         </ul>
         <hr>
         <div class="options">
-        {% if ride.driver.key().id() == user.key().id() %}
-            <p class="help-block">You are currently the driver.</p>
-            <button class='btn btn-danger' data-driver='leave'>Leave ride</button>
-        {% elif not ride.has_driver %}
-             <button class='btn btn-success' data-driver='join'>Be the driver</button> 
-        {% endif %}
+            {% if ride.is_driver %}
+            <div>
+            {% else %}
+            <div class="hidden">
+            {% endif %}
+                <p class="help-block">You are currently the driver.</p>
+                <button class='btn btn-danger' data-driver='leave'>Leave ride</button>
+            </div>
 
-        {% if user.key in ride.passengers %}
-            <p class="help-block">You are currently a passenger.</p>
-            <button class='btn btn-danger' data-passenger='leave'>Leave ride</button>
-        {% elif not ride.driver.key().id() == user.key().id() %}
-            <button class='btn btn-success' data-passenger='join'>Join as Passenger</button>
-        {% endif %}
+            {% if ride.need_driver %}
+            <div>
+            {% else %}
+            <div class="hidden">
+            {% endif %}
+                 <button class='btn btn-success' data-driver='join'>Be the driver</button>
+            </div>
+
+            {% if ride.is_pass %}
+            <div>
+            {% else %}
+            <div class="hidden">
+            {% endif %}
+                <p class="help-block">You are currently a passenger.</p>
+                <button class='btn btn-danger' data-passenger='leave'>Leave ride</button>
+            </div>
+
+            {% if ride.can_pass %}
+            <div>
+            {% else %}
+            <div class="hidden">
+            {% endif %}
+                <button class='btn btn-success' data-passenger='join'>Join as Passenger</button>
+            </div>
         </div>
     </div>
 </div>

@@ -141,17 +141,27 @@ class GetRideHandler(BaseHandler):
         else:
             driver = {}
 
-        passengers = []
-        for key in ride.passengers:
-            passengers.append(db.get(key))
+        # For view conditionals
+        if ride.driver.key().id() == user.key().id():
+            ride.is_driver = True
+            ride.need_driver = False
+        elif not rode.has_driver:
+            ride.is_driver = False
+            ride.need_driver = True
+        else:
+            ride.is_driver = False
+            ride.need_driver = False
 
-        circle = []
-        if ride.circle:
-            circle = db.get(ride.circle)
-
-        event = []
-        if ride.event:
-            event = Event.get(ride.event.key())
+        if user.key() in ride.passengers:
+            ride.is_pass = True
+            ride.can_pass = False
+        elif not ride.is_driver:
+            ride.is_pass = False
+            ride.can_pass = True
+        else:
+            ride.is_pass = False
+            ride.can_pass = False
+        # End view conditionals
 
         comments = Comment.all().filter('ride = ', ride.key()).order('-date')
 
@@ -159,10 +169,10 @@ class GetRideHandler(BaseHandler):
             doRender(self, 'view_ride.html', {
                 'ride': ride,
                 'driver': driver,
-                'passengers': passengers,
+                'passengers': ride.passengers,
                 'seats': availible_seats,
-                'circle': circle,
-                'event': event,
+                'circle': ride.circle,
+                'event': ride.event,
                 'user': user,
                 'comments': comments
             })
