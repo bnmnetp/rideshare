@@ -17,8 +17,6 @@ from app.secrets import SESSION_KEY
 
 from app.model import *
 
-community = db.Query(Community).get()
-
 app_config = {
     'webapp2_extras.sessions': {
         'cookie_name': '_simpleauth_sess',
@@ -26,8 +24,7 @@ app_config = {
     },
     'webapp2_extras.auth': {
         'user_attributes': []
-    },
-    'community': community
+    }
 }
 
 import wsgiref.handlers
@@ -53,6 +50,7 @@ from app.controllers.circles import *
 from app.controllers.events import *
 from app.controllers.rides import *
 from app.controllers.comments import *
+from app.controllers.users import *
 
 from app.common.toolbox import doRender
 
@@ -335,6 +333,11 @@ app = webapp2.WSGIApplication([
     ('/deleteride', DeleteRideHandler),
     ('/editride', EditRideHandler),
     # end rides
+
+    # controllers/users.py
+    ('/user/(\d+)', GetUserHandler),
+    ('/user', UserHandler),
+    # end users
 
     ('/applyedits', ChangeRideHandler),
     ('/removepassenger', RemovePassengerHandler),

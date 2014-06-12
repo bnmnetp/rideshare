@@ -9,6 +9,7 @@ import json
 
 class GetCircleHandler(BaseHandler):
     def get(self, circle_id):
+        self.auth()
         circle = Circle.get_by_id(int(circle_id))
 
         user = self.current_user()
@@ -38,6 +39,8 @@ class CircleHandler(BaseHandler):
             'user': user
         })
     def post(self):
+        self.auth()
+        
         circle = Circle()
 
         circle_schema = Schema({
