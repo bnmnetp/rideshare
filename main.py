@@ -15,6 +15,10 @@ from app.controllers.test_account import create_user
 
 from app.secrets import SESSION_KEY
 
+from app.model import *
+
+community = db.Query(Community).get()
+
 app_config = {
     'webapp2_extras.sessions': {
         'cookie_name': '_simpleauth_sess',
@@ -22,7 +26,8 @@ app_config = {
     },
     'webapp2_extras.auth': {
         'user_attributes': []
-    }
+    },
+    'community': community
 }
 
 import wsgiref.handlers
@@ -41,7 +46,7 @@ import urllib
 import random
 import os.path
 
-from app.model import *
+
 
 from app.controllers.account_flow import *
 from app.controllers.circles import *
@@ -115,7 +120,6 @@ class HomeHandler(BaseHandler):
         user = self.current_user()
 
         doRender(self, 'home.html', { 
-            'community': community,
             'user': user
         })
 
@@ -387,7 +391,7 @@ app = webapp2.WSGIApplication([
     ('/.*', IncorrectHandler)
     ],
     config = app_config,
-    debug=True)
+    debug = True)
 
 # This is actually the development one.
 # lutherrideshare.appspot key: ABQIAAAAg9WbCE_zwMIRW7jDFE_3ixS0LiYWImofzW4gd3oCqtkHKt0IaBT-STdq-gdH-mW2_ejMPXqxnfJjgw

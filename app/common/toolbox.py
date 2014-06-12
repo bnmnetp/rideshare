@@ -1,14 +1,17 @@
 import os.path
 import jinja2
+from app.model import *
 
-JINJA_ENVIRONMENT = jinja2.Environment(
+env = jinja2.Environment(
     loader=jinja2.PackageLoader('app', 'templates'),
     extensions=['jinja2.ext.autoescape'],
     autoescape=True
 )
 
+env.globals['community'] = db.Query(Community).get()
+
 def doRender(handler, name = 'map.html', value = {}):
-	template = JINJA_ENVIRONMENT.get_template(name)
+	template = env.get_template(name)
 	handler.response.write(template.render(value))
 
 def split_address(add):

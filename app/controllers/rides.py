@@ -141,6 +141,10 @@ class GetRideHandler(BaseHandler):
         else:
             driver = {}
 
+        passengers = []
+        for passenger in ride.passengers:
+            passengers.append(User.get(passenger))
+
         # For view conditionals
         if ride.driver:
             if ride.driver.key().id() == user.key().id():
@@ -170,7 +174,7 @@ class GetRideHandler(BaseHandler):
             doRender(self, 'view_ride.html', {
                 'ride': ride,
                 'driver': driver,
-                'passengers': ride.passengers,
+                'passengers': passengers,
                 'seats': availible_seats,
                 'circle': ride.circle,
                 'event': ride.event,
@@ -179,7 +183,6 @@ class GetRideHandler(BaseHandler):
             })
         else:
             self.response.write('No ride found.')
-
 
 class RideJoinHandler(BaseHandler):
     def post(self):
