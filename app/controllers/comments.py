@@ -28,7 +28,9 @@ class CommentHandler(BaseHandler):
 		elif data['type'] == 'circle':
 			circle = Circle.get_by_id(data['id'])
 			comment.circle = circle.key()
-
+		elif data['type'] == 'profile':
+			user = User.get_by_id(data['id'])
+			comment.profile = user.key()
 		comment.put()
 
 		self.response.write(json.dumps({

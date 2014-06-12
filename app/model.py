@@ -75,12 +75,21 @@ class Ride(db.Model):
         return resp
 
 class Comment(db.Model):
-    user = db.ReferenceProperty(User)
+    user = db.ReferenceProperty(
+        User,
+        required = False,
+        collection_name = 'user'
+    )
     date = db.DateProperty()
     text = db.TextProperty()
     event = db.ReferenceProperty(Event)
     ride = db.ReferenceProperty(Ride)
     circle = db.ReferenceProperty(Circle)
+    profile = db.ReferenceProperty(
+        User,
+        required = False,
+        collection_name = 'profile'
+    )
 
 class Community(db.Model):
     name = db.StringProperty()

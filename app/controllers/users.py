@@ -7,20 +7,24 @@ from app.base_handler import BaseHandler
 from app.common.voluptuous import *
 import json
 
-def GetUserHandler(BaseHandler):
+class GetUserHandler(BaseHandler):
 	def get(self, user_id):
 		self.auth()
 		user = User.get_by_id(int(user_id))
+		comments = Comment.all().filter('profile = ', user.key()).order('-date').fetch(100)
 
 		doRender(self, 'view_user.html', {
-			'user': user
+			'user': user,
+			'comments': comments
 		})
 
-def UserHandler(BaseHandler):
+class UserHandler(BaseHandler):
 	def get(self):
 		self.auth()
 		user = self.current_user()
+		comments = Comment.all().filter('profile = ', user.key()).order('-date').fetch(100)
 
 		doRender(self, 'view_user.html', {
-			'user': user
+			'user': user,
+			'comments': comments
 		})
