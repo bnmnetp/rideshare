@@ -69,7 +69,7 @@ class GetRideHandler(BaseHandler):
 
         user = self.current_user()
 
-        ride = Ride.get_by_id(ride_id)
+        ride = Ride.get_by_id(int(ride_id))
 
         if not ride:
             print 'error'
@@ -85,8 +85,8 @@ class GetRideHandler(BaseHandler):
                     self.response.write(json.dumps(resp))
             if data['action'] == 'join':
                 if user.key() not in ride.passengers:
-                    if ride.passengers_total < passengers_max:
-                        ride.passengers.push(user.key())
+                    if ride.passengers_total < ride.passengers_max:
+                        ride.passengers.append(user.key())
                         resp = {
                             'strong': 'Joined the ride!',
                             'message': 'You are now a passenger'
@@ -134,7 +134,7 @@ class GetRideHandler(BaseHandler):
         ride = Ride.get_by_id(int(ride_id))
 
         user = self.current_user()
-
+        availible_seats = 0
         if ride.driver:
             driver = db.get(ride.driver.key())
             availible_seats = ride.passengers_max - ride.passengers_total;
@@ -142,10 +142,11 @@ class GetRideHandler(BaseHandler):
             driver = {}
 
         # For view conditionals
-        if ride.driver.key().id() == user.key().id():
-            ride.is_driver = True
-            ride.need_driver = False
-        elif not rode.has_driver:
+        if ride.driver:
+            if ride.driver.key().id() == user.key().id():
+                ride.is_driver = True
+                ride.need_driver = False
+        elif not ride.has_driver:
             ride.is_driver = False
             ride.need_driver = True
         else:

@@ -6,6 +6,7 @@
 {% endblock %}
 
 {% block main %}
+<div data-notify="container"></div>
 <div class="panel panel-main">
     <div class="panel-heading">Ride details</div>
     <div class="panel-body">
@@ -133,6 +134,12 @@
             {{comment}}
         </div>
         <span class="label label-success">Posted on {{date}}</span>
+    </div>
+</script>
+<script data-notify="template" type='text/x-handlebars-template'>
+    <div class="alert alert-{{type}} alert-dismissable">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        <strong>{{strong}}</strong> {{message}}
     </div>
 </script>
 {% endraw %}

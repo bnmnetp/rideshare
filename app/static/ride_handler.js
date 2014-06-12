@@ -28,6 +28,7 @@ var send = function (type, action) {
 			strong: data.strong,
 			message: data.message
 		});
+		console.log(type, action)
 		if (type == 'driver' && action == 'leave') {
 			var primary = document.querySelector('[data-driver="leave"]');
 			var secondary = document.querySelector('[data-driver="join"]');
@@ -43,7 +44,7 @@ var send = function (type, action) {
 		}
 		primary.parentNode.classList.add('hidden');
 		secondary.parentNode.classList.remove('hidden');
-	});
+	}.bind(this));
 
 	push.fail(function (data, status) {
 		notify({
