@@ -40,7 +40,7 @@ class CircleHandler(BaseHandler):
         })
     def post(self):
         self.auth()
-        
+
         circle = Circle()
 
         circle_schema = Schema({
@@ -96,9 +96,13 @@ class JoinCircle(BaseHandler):
 
 class NewCircleHandler(BaseHandler): # actual page
     def get(self):
-        aquery = db.Query(Community)
-        community = aquery.get()  
-        doRender(self, "newCircle.html", {"community": community})
+        self.auth()
+
+        user = self.current_user()
+
+        doRender(self, "newCircle.html", {
+            "user": user
+        })
 
 
 class AddCircleHandler(BaseHandler): #add Circle Processing

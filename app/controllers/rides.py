@@ -47,7 +47,8 @@ class RideHandler(BaseHandler):
 
         doRender(self, 'rides.html', {
             'rides_user': rides_user,
-            'rides_all': rides_all
+            'rides_all': rides_all,
+            'user': user
         })
 
     def post(self):

@@ -8,17 +8,20 @@ from app.base_handler import BaseHandler
 class AuthHandler(BaseHandler, SimpleAuthHandler):
     def _on_signin(self,  data, auth_info, provider):
         auth_id = '%s:%s' % (provider, data['id'])
-        user_D = User.gql('WHERE auth_id = :id', id = auth_id).get()
+        user = User.gql('WHERE auth_id = :id', id = auth_id).get()
 
-        if user_D != None:
-            self.session['user'] = user_D.key().id()
+        if user != None:
+            self.session['user'] = user.key().id()
         else:
             user = User()
             user.auth_id = auth_id
             user.name = 'Replace'
             user.id = '123'
             user.put()
-        self.redirect('/map')
+        if user.phone == None or user.email == None:
+            self.redirect('/details')
+        else:
+            self.redirect('/map')
     def logout(self):
         self.session['user'] = None
         self.redirect('/')

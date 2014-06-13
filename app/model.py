@@ -8,6 +8,7 @@ class User(db.Model):
     updated = db.DateTimeProperty(auto_now=True)
     name = db.StringProperty()
     email = db.EmailProperty()
+    phone = db.StringProperty()
     circles = db.ListProperty(db.Key)
 
     def to_dict(self):

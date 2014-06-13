@@ -90,7 +90,10 @@ class MainHandler(BaseHandler):
 class MapHandler(BaseHandler):
     def get(self):
         self.auth()
-        doRender(self, 'index_rework.html', {})
+        user = self.current_user()
+        doRender(self, 'index_rework.html', {
+            'user': user
+        })
 
 class SubmitRatingHandler(BaseHandler):
     def post(self):
@@ -279,12 +282,25 @@ class IncorrectHandler(webapp2.RequestHandler):
 
 class HelpHandler(BaseHandler):
     def get(self):
-        doRender(self, 'help.html', {})
+        user = self.current_user()
+
+        doRender(self, 'help.html', {
+            'user': user
+        })
 
 class AllHandler(BaseHandler):
     def get(self):
         self.auth()
         doRender(self, 'index_rework.html', {})
+
+class DetailHandler(BaseHandler):
+    def get(self):
+        self.auth()
+        user = self.current_user()
+
+        doRender(self, 'details.html', {
+
+        })
 
 class MovePassengerHandler(BaseHandler):
     def post(self):
@@ -384,6 +400,7 @@ app = webapp2.WSGIApplication([
         handler='app.auth_handler.AuthHandler:logout',
         name='logout'
     ),
+    ('/details', DetailHandler),
     # end auth routes
 
     ('/movepass', MovePassengerHandler),

@@ -62,9 +62,11 @@
 
 					</ul>
 					<ul class="nav navbar-nav navbar-right">
+						{% if user %}
 						<li>
 							<a href="/user">{{user.name}}</a>
 						</li>
+						{% endif %}
 	    				<li>
 					        <a href="/help">Help</a>
 					    </li>

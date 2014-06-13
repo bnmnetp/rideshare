@@ -34,7 +34,8 @@ class GetEventHandler(BaseHandler):
         doRender(self, 'view_event.html', {
             'event': event,
             'rides': rides,
-            'comments': comments
+            'comments': comments,
+            'user': user
         })
 
 class EventHandler(BaseHandler):
@@ -49,7 +50,8 @@ class EventHandler(BaseHandler):
 
         doRender(self, 'events.html', {
             'events_user': events_user,
-            'events_all': events_all
+            'events_all': events_all,
+            'user': user
         })
 
     def post(self):
