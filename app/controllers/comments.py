@@ -54,7 +54,8 @@ class CommentHandler(BaseHandler):
 			'message': 'Success',
 			'name': user.name,
 			'date': str(d),
-			'comment': comment.text
+			'comment': comment.text,
+			'id': comment.key().id()
 		}))
 
 class FetchComments(BaseHandler):
@@ -70,13 +71,24 @@ class FetchComments(BaseHandler):
 
 		comments = Comment.all().filter(data['type'] + " = ", key).order('-date').fetch(25)
 
-		for comment in comments:
-			if comment.user == user.key():
-				comment.is_owner = True
+
+
+		resp = [c.to_dict() for c in comments]
+
+		for res in resp:
+			if res['user']['id'] == user.key().id():
+				res['is_owner'] = True
 			else:
-				comment.is_owner = False
+				res['is_owner'] = False
 
-		resp = json.dumps([c.to_dict() for c in comments])
+		self.response.write(json.dumps(resp))
 
-		self.response.write(resp)
+class GetComment(BaseHandler):
+	def get(self, comment_id):
+		self.auth()
 
+		comment = Comment.get_by_id(int(comment_id))
+
+		doRender(self, 'edit_comment.html', {
+			'comment': comment
+		})

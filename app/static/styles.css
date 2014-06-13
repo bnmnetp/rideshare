@@ -9,6 +9,10 @@ body {
     color: #333339;
 }
 
+.comments a {
+    text-decoration: none;
+}
+
 .key {
     display: inline;
     border-right: 1px solid #534A9A;

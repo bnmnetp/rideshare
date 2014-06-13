@@ -176,6 +176,7 @@ app = webapp2.WSGIApplication([
     ('/signout', SignOutHandler),
     ('/comment', CommentHandler),
     ('/comments', FetchComments),
+    ('/comment/(\d+)', GetComment),
 
     # controllers/circles.py
     ('/circle/(\d+)', GetCircleHandler),

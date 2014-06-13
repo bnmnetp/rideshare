@@ -16,8 +16,10 @@ var Comment = augment(Object, function () {
         var html = this.template({
             name: deta.user.name,
             date: deta.date,
-            comment: deta.text
-        })
+            comment: deta.text,
+            is_owner: deta.is_owner,
+            id: deta.id
+        });
         this.container.insertAdjacentHTML('afterbegin', html);
     }
 
@@ -54,7 +56,8 @@ var Comment = augment(Object, function () {
             data: JSON.stringify({
                 comment: e.target.comment.value,
                 type: this.deta.type,
-                id: this.deta.id
+                id: this.deta.id,
+                is_owner: true
             })
         });
         req.done(function (data) {
@@ -62,7 +65,8 @@ var Comment = augment(Object, function () {
             var deta = {
                 name: data.name,
                 date: data.date,
-                comment: data.comment
+                comment: data.comment,
+                id: data.id
             };
             this.add_comment(deta);
         }.bind(this));
