@@ -132,8 +132,22 @@ class DetailHandler(BaseHandler):
             'user': user
         })
     def post(self):
+        json_str = self.request.body
+        data = json.loads(json_str)
+
         self.auth()
         user = self.current_user()
+
+        user.email = data['email']
+        user.phone = data['phone']
+
+        user.put()
+
+        resp = {
+            'message': 'Information updated'
+        }
+
+        self.response.write(json.dumps(resp))
 
 app = webapp2.WSGIApplication([
     ('/', LoginPageHandler),
@@ -159,16 +173,9 @@ app = webapp2.WSGIApplication([
     ('/user', UserHandler),
     # end users
 
-    ('/applyedits', ChangeRideHandler),
-    ('/removepassenger', RemovePassengerHandler),
-          ('/signout', SignOutHandler),
-          ('/ratedriver', RateHandler),
-          ('/submittext', SubmitRatingHandler),
-    ('/driverrating',DriverRatingHandler),
-          ('/school',SchoolErrorHandler),
-    ('/ridesuccess',RideSuccessHandler),
-
+    ('/signout', SignOutHandler),
     ('/comment', CommentHandler),
+    ('/comments', FetchComments),
 
     # controllers/circles.py
     ('/circle/(\d+)', GetCircleHandler),
@@ -185,7 +192,6 @@ app = webapp2.WSGIApplication([
     ('/getevents', EventQueryHandler),
     ('/neweventride', NewEventRideHandler),
     ('/addevents', AddEventsHandler),
-    ('/addmultipleevents',AddMultipleEventsHandler),
     # end events
 
     # auth routes
@@ -206,10 +212,6 @@ app = webapp2.WSGIApplication([
     ),
     ('/details', DetailHandler),
     # end auth routes
-
-    ('/movepass', MovePassengerHandler),
-    ('/connectride',ConnectPageHandler),
-    ('/databasefix', DatabaseHandler),
     ('/testing', create_user),
     ('/help', HelpHandler),
     ('/.*', IncorrectHandler)

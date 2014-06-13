@@ -2,11 +2,47 @@ var Comment = augment(Object, function () {
 	this.constructor = function (deta) {
 		this.form = document.querySelector("[data-comment='form']");
 		this.container = document.querySelector(deta.container);
+        this.source = document.querySelector('[data-comment="template"]').innerHTML;
+        this.template = Handlebars.compile(this.source);
 
 		this.deta = deta;
 
+        this.get_comments(deta);
+
 	    this.form.addEventListener('submit', this.submit.bind(this))
 	}
+
+    this.add_comment = function (deta) {
+        var html = this.template({
+            name: deta.user.name,
+            date: deta.date,
+            comment: deta.text
+        })
+        this.container.insertAdjacentHTML('afterbegin', html);
+    }
+
+    this.get_comments = function (deta) {
+        var req = $.ajax({
+            type: 'POST',
+            url: '/comments',
+            dataType: 'json',
+            contentType: 'application/json; charset=UTF-8',
+            data: JSON.stringify({
+                type: deta.type,
+                id: deta.id
+            })
+        });
+
+        req.done(function (data) {
+            this.parse_comments(data);
+        }.bind(this));
+    }
+
+    this.parse_comments = function (data) {
+        for (var i = 0; i < data.length; i++) {
+            this.add_comment(data[i]);
+        }
+    }
 
 	this.submit = function (e) {
         e.preventDefault();
@@ -23,17 +59,15 @@ var Comment = augment(Object, function () {
         });
         req.done(function (data) {
             // Refer to comments.CommentHandler for expected response
-            var source = document.querySelector('[data-comment="template"]').innerHTML;
-            var template = Handlebars.compile(source);
-            var html = template({
+            var deta = {
                 name: data.name,
                 date: data.date,
                 comment: data.comment
-            })
-            this.container.insertAdjacentHTML('afterbegin', html);
+            };
+            this.add_comment(deta);
         }.bind(this));
         req.fail(function (data, status) {
-        	// Add notify func call
+
             console.log('Error');
         }.bind(this));
 	}

@@ -15,7 +15,6 @@ class User(db.Model):
         resp = {}
         for u in User._properties:
             resp[u] = str(getattr(self, u))
-        resp['key'] = self.key()
         resp['id'] = self.key().id()
         return resp
 
@@ -91,6 +90,15 @@ class Comment(db.Model):
         required = False,
         collection_name = 'profile'
     )
+
+    def to_dict(self):
+        resp = {}
+        for p in Comment._properties:
+            resp[p] = str(getattr(self, p))
+        resp['id'] = self.key().id()
+        if self.user:
+            resp['user'] = self.user.to_dict()
+        return resp
 
 class Community(db.Model):
     name = db.StringProperty()
