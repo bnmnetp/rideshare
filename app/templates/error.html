@@ -1,55 +1,16 @@
+{% extends "layout.html" %}
 
-<html>
-<head>
+{% block title %}Contact{% endblock %}
 
-    <link rel="stylesheet" href="static/style.css" type="text/css" media="screen" />
-</head>
+{% block head %}
+{% endblock %}
 
-<body>
-    <div id="wrapper">
-        <div id="header">
-            <div id="logo">
-                <h1><a href="/main"> Rideshare   </a></h1>
-            </div>
-        </div>
-
-        <div id="menu">
-            <ul>
-                <li>
-                    <a href="/home">Your Rides</a>
-                </li>
-                <li>
-                    <a href="/static/help.html">Help</a>
-                </li>
-                <li>
-                    <a href="{{logout}}">Sign out</a>
-                </li>
-            </ul>
-        </div>
-
-        <div id="page">
-            <div id="page-bgtop">
-                <div id="page-bgbtm">    
-                    <div id="content">
-
-                        
-
-                            <h1>Error</h1>
-
-                            <p>{{ error_message }}</p>
-
-
-
-
-                                    </div> <!--content-->
-                                </div>
-                            </div>
-                        </div>
-                        <div style="clear: both;"></div>
-
-                    <div id="footer">
-                        <p>Developed by Luther College</p>
-                    </div>
-                </body>
-                </html>
-
+{% block main %}
+<div data-notify="container"></div>
+<div class="panel panel-main">
+    <div class="panel-heading">Error</div>
+    <div class="panel-body">
+        {{error_message}}
+    </div>
+</div>
+{% endblock %}

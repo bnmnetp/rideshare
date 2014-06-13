@@ -271,10 +271,7 @@ class DatabaseHandler(BaseHandler):
             'next_url': next_url,
         })
 
-class IncorrectHandler(webapp2.RequestHandler):
-    """
-    Returns an error for URLs not defined
-    """
+class IncorrectHandler(BaseHandler):
     def get(self):
         doRender(self, 'error.html', {
             'error_message': "Page does not exist."
@@ -288,48 +285,17 @@ class HelpHandler(BaseHandler):
             'user': user
         })
 
-class AllHandler(BaseHandler):
-    def get(self):
-        self.auth()
-        doRender(self, 'index_rework.html', {})
-
 class DetailHandler(BaseHandler):
     def get(self):
         self.auth()
         user = self.current_user()
 
         doRender(self, 'details.html', {
-
+            'user': user
         })
-
-class MovePassengerHandler(BaseHandler):
     def post(self):
-        user= self.current_user
-        keys = self.request.get("keys")
-        keyList = keys.split("|")
-        pRide= Ride.get(keyList[0])
-        dRide= Ride.get(keyList[1])
-        logging.debug(dRide)
-        for passenger in pRide.passengers:
-            if dRide.passengers:
-                dRide.passengers.append(passenger)
-            else:
-                dRide.passengers=[passenger]
-        dRide.num_passengers = dRide.num_passengers +len(pRide.passengers)
-        dRide.put()
-        db.delete(keyList[0])
-
-        greeting = ''
-        if user:
-            greeting = ("Welcome, %s! (<a href=\"%s\">sign out</a>) Go to your <a href='/home'>Home Page</a>" %
-                        (user.nickname(), users.create_logout_url("/")))
-        message = 'You have added passengers to your ride.'
-
-        doRender(self, 'index.html', {
-            'greeting' : greeting,
-            'message' : message,
-            'mapkey':MAP_APIKEY,
-        })
+        self.auth()
+        user = self.current_user()
 
 app = webapp2.WSGIApplication([
     ('/', LoginPageHandler),
