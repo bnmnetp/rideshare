@@ -94,3 +94,24 @@ class GetComment(BaseHandler):
 			'comment': comment,
 			'user': user
 		})
+
+	def post(self, comment_id):
+		self.auth()
+
+		user = self.current_user()
+
+		json_str = self.request.body
+		data = json.loads(json_str)
+
+		comment = Comment.get_by_id(int(comment_id))
+
+		comment.text = data['text']
+
+		comment.put()
+
+		resp = {
+			'message': 'Success'
+		}
+
+		self.response.write(json.dumps(resp))
+

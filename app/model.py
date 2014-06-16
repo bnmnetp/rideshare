@@ -107,7 +107,25 @@ class Community(db.Model):
     lng = db.FloatProperty()
     # appId = db.StringProperty()
     # appSecret = db.StringProperty()
-        
+
+class Notification(db.Model):
+    created = db.DateTimeProperty(auto_now_add=True)
+    read = db.BooleanProperty()
+    text = db.TextProperty()
+    user = db.ReferenceProperty(User)
+    ride = db.ReferenceProperty(Ride)
+
+    def to_dict(self):
+        resp = {}
+        for n in Notification._properties:
+            resp[n] = str(getattr(self, n))
+        resp['id'] = self.key().id()
+        if self.user:
+            resp['user'] = self.user.to_dict()
+        if self.ride:
+            resp['ride'] = self.ride.to_dict()
+        return resp
+
 class ApplicationParameters(db.Model):
     apikey = db.StringProperty()
     notifyEmailAddr = db.StringProperty()

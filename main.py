@@ -62,24 +62,6 @@ if aquery.count() == 0:
         lng = secrets.community['lng']
     )
     community.put()
- 
-
-class MainHandler(BaseHandler):
-  def get(self):
-    self.auth()
-    user = self.current_user()
-    aquery = db.Query(Community)
-    community = aquery.get()
-
-    circles_all = Circle.all()
-    circles_user = Circle.all().filter('__key__ IN', user.circles)
-
-    doRender(self, 'main.html', {
-        'circles_user': circles_user,
-        'circles_all': circles_all,
-        'community': community,
-        'user': user
-    })
     
 class MapHandler(BaseHandler):
     def get(self):
@@ -96,16 +78,11 @@ class HomeHandler(BaseHandler):
         community = aquery.get()
         user = self.current_user()
 
-        doRender(self, 'home.html', { 
-            'user': user
-        })
+        notis = Notification.all().filter('user = ', user.key()).fetch(10)
 
-class ConnectPageHandler(BaseHandler):
-    def get(self):
-        user = self.current_user
-        userID = user.id
-        doRender(self, 'connectride.html',{
-            'drivernum': userID
+        doRender(self, 'home.html', { 
+            'user': user,
+            'notis': notis
         })
 
 class IncorrectHandler(BaseHandler):
@@ -151,7 +128,6 @@ class DetailHandler(BaseHandler):
 app = webapp2.WSGIApplication([
     ('/', LoginPageHandler),
     ('/map', MapHandler),
-    ('/circles', MainHandler),
 
     # controllers/rides.py
     ('/rides', RideHandler),

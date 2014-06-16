@@ -110,6 +110,10 @@ body {
     font-style: underline;
 }
 
+.small a {
+    font-size: 16px;
+}
+
 .block .details {
     display: block;
 }

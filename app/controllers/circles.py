@@ -27,16 +27,45 @@ class GetCircleHandler(BaseHandler):
 
 
 class CircleHandler(BaseHandler):
+    # def get(self):
+    #     self.auth()
+    #     community = db.Query(Community).get()
+    #     circles = Circle.all()
+    #     user = self.current_user()
+
+    #     doRender(self, 'join_circles.html', {
+    #         'community': community,
+    #         'circles': circles,
+    #         'user': user
+    #     })
     def get(self):
         self.auth()
-        community = db.Query(Community).get()
-        circles = Circle.all()
         user = self.current_user()
+        aquery = db.Query(Community)
+        community = aquery.get()
 
-        doRender(self, 'join_circles.html', {
+        circles_all = Circle.all()
+        circles_user = Circle.all().filter('__key__ IN', user.circles)
+
+        today = datetime.date.today()
+        upcoming = Ride.all().filter('date > ', today).fetch(20)
+
+        for up in upcoming:
+            if user.key() in up.passengers:
+                up.is_pass = True
+            else:
+                up.is_pass = False
+            if user.key() == driver.key():
+                up.is_driver = True
+            else:
+                up.is_driver = False
+
+        doRender(self, 'main.html', {
+            'circles_user': circles_user,
+            'circles_all': circles_all,
             'community': community,
-            'circles': circles,
-            'user': user
+            'user': user,
+            'upcoming': upcoming
         })
     def post(self):
         self.auth()
