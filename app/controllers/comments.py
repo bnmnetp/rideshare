@@ -4,6 +4,7 @@ from app.model import *
 import datetime
 from app.base_handler import BaseHandler
 from app.common import voluptuous
+from app.common.toolbox import doRender
 
 def get_key(id, type):
 	key = ''
@@ -71,8 +72,6 @@ class FetchComments(BaseHandler):
 
 		comments = Comment.all().filter(data['type'] + " = ", key).order('-date').fetch(25)
 
-
-
 		resp = [c.to_dict() for c in comments]
 
 		for res in resp:
@@ -87,8 +86,11 @@ class GetComment(BaseHandler):
 	def get(self, comment_id):
 		self.auth()
 
+		user = self.current_user()
+
 		comment = Comment.get_by_id(int(comment_id))
 
 		doRender(self, 'edit_comment.html', {
-			'comment': comment
+			'comment': comment,
+			'user': user
 		})

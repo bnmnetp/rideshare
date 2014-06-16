@@ -12,12 +12,8 @@
     <div class="panel-body">
         <form id='form'>
             <div class="form-group">
-                <label>Email</label>
-                <input type='email' class='form-control' placeholder='Email' name='email' value='{{user.email}}'>
-            </div>
-            <div class="form-group">
-                <label>Phone</label>
-                <input type='text' class='form-control' placeholder='Phone' name='phone' value='{{user.phone}}'>
+                <label>Text</label>
+                <textarea class='form-control' name='text'>{{comment.text}}</textarea>
             </div>
             <button type='submit' class='btn btn-default'>Edit Comment</button>
             <button type='button' class='btn btn-danger pull-right'>Delete Comment</button>
@@ -44,12 +40,11 @@
         var form = e.target;
 
         var data = {};
-        data.email = form.email.value;
-        data.phone = form.phone.value;
+        data.text = form.text.value;
 
         var push = $.ajax({
             type: 'POST',
-            url: '/details',
+            url: window.location.pathname,
             dataType: 'json',
             contentType: 'application/json; charset=UTF-8',
             data: JSON.stringify(data)
