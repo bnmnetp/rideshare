@@ -64,14 +64,20 @@
 					<ul class="nav navbar-nav navbar-right">
 						{% if user is defined %}
 						<li>
-							<a href="/user">{{user.name}}</a>
+							<a href="/user">
+								<i class="fa fa-user"></i>
+							</a>
 						</li>
 						{% endif %}
 	    				<li>
-					        <a href="/help">Help</a>
+					        <a href="/help">
+					        	<i class="fa fa-question"></i>
+					        </a>
 					    </li>
 					    <li>
-					        <a href="{{logout}}">Sign out</a>
+					        <a href="{{logout}}">
+					        	<i class="fa fa-sign-out"></i>
+					        </a>
 					    </li>
 					</ul>
 				</div>

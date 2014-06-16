@@ -161,16 +161,16 @@ class GetRideHandler(BaseHandler):
             passengers.append(User.get(passenger))
 
         # For view conditionals
-        if ride.driver:
+        if ride.has_driver:
             if ride.driver.key().id() == user.key().id():
                 ride.is_driver = True
                 ride.need_driver = False
-        elif not ride.has_driver:
-            ride.is_driver = False
-            ride.need_driver = True
+            else:
+                ride.is_driver = False
+                ride.need_driver = False
         else:
             ride.is_driver = False
-            ride.need_driver = False
+            ride.need_driver = True
 
         if user.key() in ride.passengers:
             ride.is_pass = True
