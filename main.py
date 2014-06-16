@@ -13,14 +13,14 @@ from app.base_handler import BaseHandler
 from app.controllers.test_account import create_user
 # end testing
 
-from app.secrets import SESSION_KEY
+import app.secrets as secrets
 
 from app.model import *
 
 app_config = {
     'webapp2_extras.sessions': {
         'cookie_name': '_simpleauth_sess',
-        'secret_key': SESSION_KEY
+        'secret_key': secrets.SESSION_KEY
     },
     'webapp2_extras.auth': {
         'user_attributes': []
@@ -51,18 +51,17 @@ from app.controllers.users import *
 
 from app.common.toolbox import doRender
 
-## Testing Code
+# Creates Community entry on first run.
 aquery = db.Query(Community)
 if aquery.count() == 0:
     #development site
     community = Community(
-        name = "Luther College",
-        address = "700 College Drive Decorah,IA",
-        lat = 43.313059,
-        lng = -91.799501,
+        name = secrets.community['name'],
+        address = secrets.community['address'],
+        lat = secrets.community['lat'],
+        lng = secrets.community['lng']
     )
     community.put()
-## Testing Code End
  
 
 class MainHandler(BaseHandler):
@@ -152,20 +151,14 @@ class DetailHandler(BaseHandler):
 app = webapp2.WSGIApplication([
     ('/', LoginPageHandler),
     ('/map', MapHandler),
-    ('/main', MainHandler),
+    ('/circles', MainHandler),
 
     # controllers/rides.py
     ('/rides', RideHandler),
     ('/ride/(\d+)', GetRideHandler),
     ('/join_ride', RideJoinHandler),
-    ('/getrides', RideQueryHandler),
-    ("/newride.*", NewRideHandler),
-    ("/addpass", AddPassengerHandler),
-    ("/adddriver",AddDriverHandler),
+    ("/newride", NewRideHandler),
     ('/home', HomeHandler),
-    ('/rideinfo', RideInfoHandler),
-    ('/deleteride', DeleteRideHandler),
-    ('/editride', EditRideHandler),
     # end rides
 
     # controllers/users.py
@@ -174,9 +167,12 @@ app = webapp2.WSGIApplication([
     # end users
 
     ('/signout', SignOutHandler),
+
+    # controllers/comments.py
     ('/comment', CommentHandler),
     ('/comments', FetchComments),
     ('/comment/(\d+)', GetComment),
+    # end comments
 
     # controllers/circles.py
     ('/circle/(\d+)', GetCircleHandler),
@@ -190,9 +186,6 @@ app = webapp2.WSGIApplication([
     ('/event/(\d+)', GetEventHandler),
     ('/events', EventHandler),
     ('/newevent', NewEventHandler),
-    ('/getevents', EventQueryHandler),
-    ('/neweventride', NewEventRideHandler),
-    ('/addevents', AddEventsHandler),
     # end events
 
     # auth routes

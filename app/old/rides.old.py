@@ -127,3 +127,123 @@ def get(self):
         #    'mapkey' : MAP_APIKEY,
         #   })
         self.redirect("/map?circle="+str(self.request.get("circleType")))
+
+class AddPassengerHandler(BaseHandler): 
+    """
+    Handles addition of passengers
+    """
+    def get(self):
+      """
+      Called when adding a passenger to a ride
+      
+      Arguments:
+      - 'self'
+      
+      Web Arguments:
+      - user_name
+      - ride_key
+      """
+      # The current user can add himself to the ride.  No need for this in the form.
+      aquery = db.Query(College)
+      mycollege= aquery.get()
+      user_name = self.current_user.id
+      
+      ride_key = self.request.get('ride_key')
+      contact = self.request.get('contact')
+      address = self.request.get('address')
+      lat = float(self.request.get('lat'))
+      lng = float(self.request.get('lng'))
+      ride = db.get(db.Key(ride_key))
+      if ride == None: # Check if the ride was found
+        temp = os.path.join(os.path.dirname(__file__), 'templates/error.html')
+        outstr = template.render(temp, {'error_message': 'Error in ride matching'})
+        self.response.out.write(outstr)
+      # Check if the current user is the driver
+      elif ride.max_passengers == ride.num_passengers:
+        doRender(self, 'error.html', {'error_message': 'This ride is full'})
+      # Check if the current user is already on the ride
+      already = False
+      for p in ride.passengers:
+        if db.get(p).name== user_name:
+          already = True
+      if already:
+        temp = os.path.join(os.path.dirname(__file__), 'templates/error.html')
+        outstr = template.render(temp, {'error_message': 'You are already registered for this ride!'})
+        self.response.out.write(outstr)
+      # Check if the current user is already the driver for the ride
+      elif user_name == ride.driver:
+        doRender(self, 'error.html', {'error_message': 'You can\'t be a passenger for a ride which you a driving.'})
+      else:
+        passenger = Passenger()
+        passenger.name = user_name
+        passenger.fullname = FBUser.get_by_key_name(user_name).nickname()
+        passenger.contact = contact
+        passenger.location = address
+        passenger.lat = lat
+        passenger.lng = lng
+        passenger.ride = db.Key(ride_key)
+        pass_key = passenger.put()
+        ride.num_passengers = ride.num_passengers + 1
+        ride.passengers.append(pass_key)
+        ride.put()
+
+        if ride.num_passengers == ride.max_passengers:
+          capacity_message = 'is now full.'
+        else:
+          num_left = ride.max_passengers - ride.num_passengers
+          capacity_message = 'can hold ' + str(num_left) + ' more passengers.'
+        query = db.Query(Ride)
+        query.filter("ToD > ", datetime.date.today())
+        ride_list = query.fetch(limit=100)
+        user = self.current_user
+        greeting = ''
+        if user:
+            greeting = ("Welcome, %s! (<a href=\"%s\">sign out</a>) Go to your <a href='/home'>Home Page</a>" %
+                  (user.nickname(), users.create_logout_url("/")))
+        message = 'You have been added to %s ride.' % (ride.driver)
+        self.sendDriverEmail(ride)
+        path = os.path.join(os.path.dirname(__file__), 'templates/map.html')
+        self.response.out.write(template.render(path, {
+            'ride_list': ride_list, 
+            'greeting': greeting,
+            'message': message,
+            'mapkey':MAP_APIKEY, 
+            'college':mycollege           
+            }))
+
+    def sendDriverEmail(self,ride):
+        logging.debug(ride.driver)
+        driver = FBUser.get_by_key_name(ride.driver)
+        logging.debug(driver)
+        if not ride.driver:
+            return
+        if driver.loginType == "google":
+           to = driver
+        else:
+           logging.debug(ride.driver)
+           to = FBUser.get_by_key_name(ride.driver)
+           logging.debug(to)
+        sender = FROM_EMAIL_ADDR
+        subject = "New Passenger for your ride"
+        p = db.get(ride.passengers[-1])
+        user = FBUser.get_by_key_name(p.name)
+        body = """
+Dear %s,
+We wanted to let you know that %s has been added to your ride
+from %s to %s on %s.  If you need to contact %s you can do so at %s.
+
+Thanks for being a driver!
+
+Sincerely,
+
+The Rideshare Team
+""" % (to.nickname(), user.nickname(), ride.start_point_title, ride.destination_title,
+       ride.ToD, user.nickname(), p.contact)
+
+        if driver.loginType == "google":
+          logging.debug(body)
+          mail.send_mail(sender,to.email,subject,body)
+        else:
+          graph = facebook.GraphAPI(to.access_token)
+          logging.debug(graph)
+          graph.put_object("me", "feed", message=body)
