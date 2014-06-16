@@ -6,7 +6,7 @@ class User(db.Model):
     auth_id = db.StringProperty()
     created = db.DateTimeProperty(auto_now_add=True)
     updated = db.DateTimeProperty(auto_now=True)
-    name = db.StringProperty()
+    name = db.StringProperty(default='')
     email = db.EmailProperty()
     phone = db.StringProperty()
     circles = db.ListProperty(db.Key)

@@ -42,7 +42,6 @@ import urllib
 import random
 import os.path
 
-from app.controllers.account_flow import *
 from app.controllers.circles import *
 from app.controllers.events import *
 from app.controllers.rides import *
@@ -70,6 +69,10 @@ class MapHandler(BaseHandler):
         doRender(self, 'index_rework.html', {
             'user': user
         })
+
+class LoginHandler(BaseHandler):
+    def get(self):
+        doRender(self, 'loginPage.html', {})
 
 class HomeHandler(BaseHandler):
     def get(self):
@@ -126,7 +129,7 @@ class DetailHandler(BaseHandler):
         self.response.write(json.dumps(resp))
 
 app = webapp2.WSGIApplication([
-    ('/', LoginPageHandler),
+    ('/', LoginHandler),
     ('/map', MapHandler),
 
     # controllers/rides.py
@@ -141,8 +144,6 @@ app = webapp2.WSGIApplication([
     ('/user/(\d+)', GetUserHandler),
     ('/user', UserHandler),
     # end users
-
-    ('/signout', SignOutHandler),
 
     # controllers/comments.py
     ('/comment', CommentHandler),

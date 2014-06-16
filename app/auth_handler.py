@@ -15,8 +15,6 @@ class AuthHandler(BaseHandler, SimpleAuthHandler):
         else:
             user = User()
             user.auth_id = auth_id
-            user.name = 'Replace'
-            user.id = '123'
             user.put()
         if user.phone == None or user.email == None:
             self.redirect('/details')
