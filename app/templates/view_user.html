@@ -15,13 +15,13 @@
                 <b>Name: </b> {{user.name}}
             </li>
             <li>
-                <b>Email:</b> {{user.email}}
+                <b>Email:</b> <a href='mailto:{{user.email}}'>{{user.email}}</a>
             </li>
             <li>
                 <b>Phone:</b> {{user.phone}}
             </li>
             <li>
-                <b>Member since:</b> {{user.created}}
+                <b>Member since:</b> {{user.created_str}}
             </li>
         </ul>
     </div>

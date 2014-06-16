@@ -1,43 +1,17 @@
+{% extends "layout.html" %}
 
-<html>
-<head>
+{% block title %}Logged Out{% endblock %}
 
-    <link rel="stylesheet" href="static/style.css" type="text/css" media="screen" />
-</head>
+{% block head %}
 
-<body>
-    <div id="wrapper">
-        <div id="header">
-            <div id="logo">
-                <h1 style="color:white">{{college.name}} Rideshare </h1>
-            </div>
-        </div>
+{% endblock %}
 
-        <div id="menu">
-            <ul>
-                
-            </ul>
-        </div>
-
-        <div id="page">
-            <div id="page-bgtop">
-                <div id="page-bgbtm">    
-                    <div id="content">
-
-
-                                <h1>{{ logout_message }}</h1>
-
-
-
-                                    </div> <!--content-->
-                                </div>
-                            </div>
-                        </div>
-                        <div style="clear: both;"></div>
-
-                    <div id="footer">
-                        <p>Developed by Luther College</p>
-                    </div>
-                </body>
-                </html>
-
+{% block main %}
+<div class="panel panel-main">
+    <div class="panel-heading">Logged Out</div>
+    <div class="panel-body">
+        <p>You have signed out.</p> 
+        <a href="/">Sign back in.</a>
+    </div>
+</div>
+{% endblock %}

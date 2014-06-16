@@ -12,6 +12,8 @@ class GetUserHandler(BaseHandler):
 		self.auth()
 		user = User.get_by_id(int(user_id))
 
+		user.created_str = user.created.strftime('%B %dth, %Y')
+
 		doRender(self, 'view_user.html', {
 			'user': user
 		})

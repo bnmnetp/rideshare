@@ -20,6 +20,5 @@ class LoginPageHandler(BaseHandler):
 
 class SignOutHandler(BaseHandler):
     def get(self):
-      aquery = db.Query(College)
-      mycollege = aquery.get()
-      doRender(self, 'logout.html', {'logout_message': "Thanks for using the "+ mycollege.name + " Rideshare Website!", "college": mycollege})
+        
+        doRender(self, 'logout.html', {})

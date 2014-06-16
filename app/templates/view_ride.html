@@ -37,7 +37,7 @@
                 <li>
                     <b>Other passengers:</b>
                     {% for p in passengers %}
-                        {{p.name}}
+                        <a href='/user/{{p.key().id()}}'>{{p.name}}</a>
                     {% endfor %}
                 </li>
             {% if ride.circle %}
