@@ -13,7 +13,10 @@ class RideHandler(BaseHandler):
         self.auth()
         user = self.current_user()
 
-        rides_user = Ride.all().filter('passengers =', user.key()).fetch(100)
+        rides_user_1 = Ride.all().filter('passengers =', user.key()).fetch(100)
+        rides_user_2 = Ride.all().filter('driver = ', user.key()).fetch(100)
+
+        rides_user = rides_user_1 + rides_user_2
 
         rides_all = Ride.all().fetch(100)
 
@@ -65,6 +68,8 @@ class RideHandler(BaseHandler):
 
 class GetRideHandler(BaseHandler):
     def post(self, ride_id):
+        self.auth()
+
         json_str = self.request.body
         data = json.loads(json_str)
 
@@ -132,6 +137,8 @@ class GetRideHandler(BaseHandler):
 
 
     def get(self, ride_id):
+        self.auth()
+        
         ride = Ride.get_by_id(int(ride_id))
 
         user = self.current_user()
