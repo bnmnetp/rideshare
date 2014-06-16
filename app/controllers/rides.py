@@ -5,6 +5,7 @@ import datetime
 from datetime import date
 import json
 from app.base_handler import BaseHandler
+from app.common.notification import push_noti
 
 class RideHandler(BaseHandler):
     def get(self):
@@ -83,6 +84,7 @@ class GetRideHandler(BaseHandler):
         if data['type'] == 'passenger':
             if data['action'] == 'leave':
                 if user.key() in ride.passengers:
+                    push_noti('pass_leave', ride.driver.key(), ride.key())
                     ride.passengers.remove(user.key())
                     resp = {
                         'strong': 'Left the ride!',
@@ -92,6 +94,7 @@ class GetRideHandler(BaseHandler):
             if data['action'] == 'join':
                 if user.key() not in ride.passengers:
                     if ride.passengers_total < ride.passengers_max:
+                        push_noti('pass_join', ride.driver.key(), ride.key())
                         ride.passengers.append(user.key())
                         resp = {
                             'strong': 'Joined the ride!',
@@ -110,6 +113,8 @@ class GetRideHandler(BaseHandler):
         if data['type'] == 'driver':
             if data['action'] == 'leave':
                 if ride.has_driver:
+                    for passenger in ride.passengers:
+                        push_noti('driver_leave', passenger, ride.key())
                     ride.has_driver = False
                     ride.driver = None
                     resp = {
@@ -119,6 +124,8 @@ class GetRideHandler(BaseHandler):
                     self.response.write(json.dumps(resp))
             if data['action'] == 'join':
                 if not ride.has_driver:
+                    for passenger in ride.passengers:
+                        push_noti('driver_join', passenger, ride.key())
                     ride.has_driver = True
                     ride.driver = user.key()
                     resp = {
@@ -138,7 +145,7 @@ class GetRideHandler(BaseHandler):
 
     def get(self, ride_id):
         self.auth()
-        
+
         ride = Ride.get_by_id(int(ride_id))
 
         user = self.current_user()

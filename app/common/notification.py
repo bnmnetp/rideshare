@@ -1,12 +1,12 @@
 from google.appengine.ext import db
 from app.model import *
 
-def NotificationSet(self, user_key, ride_key, type):
-	if type == 'driver_left':
+def push_noti(self, type, user_key, ride_key,):
+	if type == 'driver_leave':
 		message = 'The driver has left this ride.'
 	elif type == 'driver_join':
 		message = 'A driver has joined this ride.'
-	elif type == 'pass_left':
+	elif type == 'pass_leave':
 		message = 'X is no longer a passenger.'
 	elif type == 'pass_join':
 		message = 'X is now a passenger of this ride.'
