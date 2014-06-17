@@ -63,10 +63,13 @@ var Comment = augment(Object, function () {
         req.done(function (data) {
             // Refer to comments.CommentHandler for expected response
             var deta = {
-                name: data.name,
+                user: {
+                    name: data.name
+                },
                 date: data.date,
-                comment: data.comment,
-                id: data.id
+                text: data.comment,
+                id: data.id,
+                is_owner: true
             };
             this.add_comment(deta);
         }.bind(this));
