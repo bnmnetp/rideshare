@@ -1,0 +1,103 @@
+from app.common.toolbox import doRender, split_address
+from google.appengine.ext import db
+from app.model import *
+from google.appengine.api import mail
+import datetime
+from datetime import date
+import json
+from app.base_handler import BaseHandler
+
+class GetEventHandler(BaseHandler):
+    def get(self, id):
+        self.auth()
+
+        user = self.current_user()
+
+        event = Event.get_by_id(int(id))
+
+        rides = Ride.all().filter('event = ', event.key()).fetch(100)
+
+        for ride in rides:
+            ride.orig = split_address(ride.origin_add)
+            ride.dest = split_address(ride.dest_add)
+            if user.key() == ride.driver.key():
+                ride.is_driver = True
+            else:
+                ride.is_driver = False
+            if user.key() in ride.passengers:
+                ride.is_passenger = True
+            else:
+                ride.is_passenger = False
+
+        comments = Comment.all().filter('event = ', event.key()).order('-date')
+
+        doRender(self, 'view_event.html', {
+            'event': event,
+            'rides': rides,
+            'comments': comments,
+            'user': user
+        })
+
+class EventHandler(BaseHandler):
+    def get(self):
+        self.auth()
+
+        user = self.current_user()
+
+        events_user = Event.all().filter('circle IN', user.circles).fetch(100)
+
+        events_all = Event.all().fetch(100)
+
+        doRender(self, 'events.html', {
+            'events_user': events_user,
+            'events_all': events_all,
+            'user': user
+        })
+
+    def post(self):
+        json_str = self.request.body
+        data = json.loads(json_str)
+
+        events = Event.all()
+
+        if data['circle'] != '':
+            events.filter('circle = ',  data['circle'])
+
+        self.response.write(json.dumps([e.to_dict() for e in events]))
+
+class NewEventHandler(BaseHandler):
+    def post(self):
+        event = Event()
+
+        json_str = self.request.body
+        data = json.loads(json_str)
+
+        user = self.current_user()
+
+        # Creates date object from Month/Day/Year format
+        d_arr = data['date'].split('/')
+        d_obj = datetime.date(int(d_arr[2]), int(d_arr[0]), int(d_arr[1]))
+
+        # Refer to model.py for structure of data
+        # class Event
+        event.name = data['name']
+        event.lat = data['lat']
+        event.lng = data['lng']
+        event.address = data['address']
+        event.date = d_obj
+        event.time = data['time']
+        event.details = data['details']
+        event.user = user.key()
+
+        if 'circle' in data:
+            circle = Circle.get_by_id(data['circle'])
+            if circle:
+                event.circle = circle.key()
+        else:
+            event.circle = None
+
+        event.put()
+        response = {
+            'message': 'Event added!'
+        }
+        self.response.write(json.dumps(response))

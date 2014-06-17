@@ -1,0 +1,259 @@
+html {
+	position: relative;
+	min-height: 100%;
+}
+
+body {
+	margin-bottom: 60px;
+    padding-top: 70px;
+    color: #333339;
+}
+
+.comments a {
+    text-decoration: none;
+}
+
+.key {
+    display: inline;
+    border-right: 1px solid #534A9A;
+    padding: 0px 15px 0px 15px;
+}
+
+.key:first-child {
+    padding-left: 0px;
+}
+
+.key:last-child {
+    border: none;
+}
+
+.nav-sub {
+    margin-bottom: 15px;
+}
+
+.panel-no {
+    padding: 0px;
+}
+
+.panel-main {
+    border-color: #534A9A;
+}
+
+.panel-main .panel-heading {
+    background-color: #534A9A;
+    border-color: #534A9A;
+    color: #FFFFFF;
+}
+
+.panel-message {
+    padding: 15px;
+}
+
+.information {
+    list-style: none;
+    padding: 0px;
+    margin: 0px;
+}
+
+.information li {
+    margin: 0px 0px 15px 0px;
+    font-size: 18px;
+    line-height: 30px;
+}
+
+.information b {
+    font-weight: bold;
+    color: #252525;
+}
+
+.icon {
+    margin: 7px 0px 3px 0px;
+    padding-left: 15px;
+    height: 35px;
+    display: inline-block;
+    float: left;
+}
+
+.navbar-brand {
+    display: inline-block;
+    line-height: 30px;
+    padding: 10px;
+    padding-left: 20px;
+}
+
+.marker {
+    height: 35px;
+    color: white;
+    fill: white;
+    stroke: white;
+}
+
+.block {
+    width: 100%;
+    display: block;
+    overflow: auto;
+    border-bottom: 1px solid #534A9A;
+    padding: 15px;
+}
+
+.block:last-child {
+    border-bottom: none;
+}
+
+.block .title {
+    display: block;
+}
+
+.block .title a {
+    color: black;
+    font-size: 28px;
+    font-style: underline;
+}
+
+.small a {
+    font-size: 16px;
+}
+
+.block .details {
+    display: block;
+}
+
+.block .deta {
+    display: inline-block;
+    font-size: 14px;
+}
+
+#footer {
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+
+	height: 60px;
+	border-top: 1px solid #5E5E5E;
+	line-height: 60px;
+}
+
+template {
+	display: none;
+}
+
+#map_canvas {
+	height: 675px;
+	width: 100%;
+	margin: 0px;
+	padding: 0px;
+}
+
+.entry {
+    overflow: auto;
+    line-height: 22px;
+    font-size: 16px;
+    padding: 5px 0px 5px 0px;
+}
+
+.guide {
+	height: 60px;
+	background-color: #F8F8F8;
+	width: 100%;
+	padding: 0px 10px 0px 10px;
+	margin: 0px 0px 10px 0px;
+}
+
+.guide ul {
+	list-style-type: none;
+	padding: 0px;
+	margin: 0px;
+}
+
+.guide li {
+	display: inline-block;
+	cursor: pointer;
+	padding-left: 10px;
+	color: #5E5E5E;
+    line-height: 60px;
+    font-size: 24px;
+}
+
+.guide .active {
+	/*//padding-bottom: 12px;*/
+	border-bottom: 2px solid #DD4B39;
+	color: #333;
+}
+
+.map_con {
+	-webkit-transition: width 2s; /* For Safari 3.1 to 6.0 */
+	transition: width 2s;
+}
+
+.switch {
+    display: inline-block;
+    float: right;
+    transform: translateY(50%);
+}
+
+/* Join / Leave for Circles */
+
+.switch {
+    width: 80px;
+    height: 30px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    border-color: #4E5665;
+    border-width: 1px;
+    border-style: solid;
+    position: relative;
+    overflow: hidden;
+}
+
+.switch .true,
+.switch .true_padding,
+.switch .false,
+.switch .false_padding {
+    cursor: pointer;
+    line-height: 30px;
+    color: #FFFFFF;
+    width: 40px;
+    position: absolute;
+    transition-property: left;
+    transition-duration: 1s;
+    transition-delay: .1s;
+}
+
+.switch .true, .switch .false {
+    font-size: 10px;
+    text-align: center;
+    background: rgba(43,108,179,1);
+    background: -moz-linear-gradient(top, rgba(43,108,179,1) 0%, rgba(4,75,143,1) 100%);
+    background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(43,108,179,1)), color-stop(100%, rgba(4,75,143,1)));
+    background: -webkit-linear-gradient(top, rgba(43,108,179,1) 0%, rgba(4,75,143,1) 100%);
+    background: -o-linear-gradient(top, rgba(43,108,179,1) 0%, rgba(4,75,143,1) 100%);
+    background: -ms-linear-gradient(top, rgba(43,108,179,1) 0%, rgba(4,75,143,1) 100%);
+    background: linear-gradient(to bottom, rgba(43,108,179,1) 0%, rgba(4,75,143,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2b6cb3', endColorstr='#044b8f', GradientType=0 );
+}
+
+.switch[data-switch='true'] .true,
+.switch[data-switch='false'] .false {
+    left: 40px;
+}
+
+.switch[data-switch='true'] .true_padding,
+.switch[data-switch='false'] .false {
+    left: 0px;
+}
+
+.switch[data-switch='true'] .false {
+    left: -80px;
+}
+
+.switch[data-switch='true'] .false {
+    left: -40px;
+}
+
+.switch[data-switch='false'] .true {
+    left: 120px;
+}
+
+.switch[data-switch='false'] .true_padding {
+    left: 80px;

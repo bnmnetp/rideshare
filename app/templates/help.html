@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+
+{% block title %}Help{% endblock %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block menu %}
+<ul>
+    <li>
+        <a href="/home">Your Rides</a>
+    </li>
+    <li>
+        <a href="/help">Help</a>
+    </li>
+    <li>
+        <a href="{{logout}}">Sign out</a>
+    </li>
+</ul>
+{% endblock %}
+
+{% block main %}
+
+<h2>Creating a Ride</h2>
+<p>To create a ride, visit the map page to get started. You can either be a driver or passenger, you will be prompted for all the details.</p>
+
+<h2>Joining an Existing Ride</h2>
+<p>To join an exisiting ride simply click on a pushpin on the map.  A
+  popup will appear that gives you information about the date, time,
+  and driver for the trip.  Note that red pushpins indicate trips that
+  start at Luther and go to the pin, whereas green pushpins indicate a
+  trip that starts at the pushpin and goes back to Luther.
+</p>
+
+
+<h2>Finding out about my Trips</h2>
+<p>To see the complete list of trips that you have created either as
+  a driver or as a rider click on the 'Your Rides' tab on the
+homepage.  You can also delete rides and get the phone numbers for
+your riders or driver on this page.</p> 
+{% endblock %}

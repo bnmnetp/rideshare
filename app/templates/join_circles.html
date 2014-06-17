@@ -1,0 +1,76 @@
+{% extends "layout.html" %}
+
+{% block title %}Add Circle{% endblock %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block main %}
+<h1>Join a Circle</h1>
+
+<div class="circles">
+{% for circle in circles %}
+	<div class="circle">
+		<h2>{{ circle.name }}</h2>
+		<p>{{ circle.description }}</p>
+		<div class='switch' data-id='{{ circle.key().id() }}'
+			{% if circle.key() in user.circles %}
+				data-switch='true'
+			{% else %}
+				data-switch='false'
+			{% endif %}
+		>
+			<div class="true_padding"></div>
+			<div class="true">In</div>
+			<div class="false_padding"></div>
+			<div class="false">Out</div>
+		</div>
+	</div>
+{% endfor %}
+</div>
+
+
+
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript">
+	var switcher = function (e) {
+		var target = e.target;
+		if (!target.hasAttribute('data-switch')) {
+			target = target.parentNode;
+		}
+		if (target.dataset.switch == 'true') {
+			target.dataset.switch = 'false';
+		} else {
+			target.dataset.switch = 'true';
+		}
+
+		var data = {}
+		data.user = {{ user.key().id() }}
+		if (target.dataset.switch == 'true') {
+			data.action = 'add';
+		} else {
+			data.action = 'remove';
+		}
+		data.circle = target.dataset.id;
+		
+		var req = $.ajax({
+            type: 'POST',
+            url: '/join_circle',
+            dataType: 'json',
+            contentType: 'application/json; charset=UTF-8',
+            data: JSON.stringify(data)
+        });
+	}
+
+	var switchs = document.querySelectorAll('.switch');
+
+	for (var i = 0; i < switchs.length; i++) {
+		var current = switchs[i];
+		current.addEventListener('click', switcher);
+	}
+
+</script>
+{% endblock %}

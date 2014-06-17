@@ -1,0 +1,75 @@
+{% extends "layout.html" %}
+
+{% block title %}Add Circle{% endblock %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block main %}
+<div data-notify='container'></div>
+<div class="panel panel-main">
+    <div class="panel-heading">Create a Circle</div>
+    <div class="panel-body">
+        <form data-circle='create'>
+            <div class='form-group'>
+                <label>Name</label>
+                <input type='text' name='name' placeholder='Name' class='form-control'>
+            </div>
+            <div class='form-group'>
+                <label>Description</label>
+                <input type='text' name='description' placeholder='Description' class='form-control'>
+            </div>
+            <button type='submit' class='btn btn-primary'>Create Circle</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% raw %}
+<template data-notify="template" type='text/x-handlebars-template'>
+    <div class="alert alert-{{type}} alert-dismissable">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        <strong>{{strong}}</strong> {{message}}
+    </div>
+</template>
+{% endraw %}
+<script type="text/javascript">
+    var form = document.querySelector('[data-circle="create"]');
+
+    var submit_handler = function (e) {
+        e.preventDefault();
+        var form = e.target;
+        var data = {};
+        data.name = form.name.value;
+        data.description = form.description.value;
+
+        var req = $.ajax({
+            type: 'POST',
+            url: '/circles',
+            dataType: 'json',
+            contentType: 'application/json; charset=UTF-8',
+            data: JSON.stringify(data)
+        });
+        req.done(function (message) {
+            console.log("Test")
+            notify({
+                type: 'success',
+                strong: 'You created a new circle!',
+                message: 'Great job.'
+            });
+        });
+        req.fail(function (message, status) {
+            console.log("Test")
+            notify({
+                type: 'danger',
+                strong: 'Sorry!',
+                message: 'The circle was not created. Please try again.'
+            });
+        });
+    }
+
+    form.addEventListener('submit', submit_handler);
+</script>
+{% endblock %}
