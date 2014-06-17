@@ -27,48 +27,26 @@ class GetCircleHandler(BaseHandler):
 
 
 class CircleHandler(BaseHandler):
-    # def get(self):
-    #     self.auth()
-    #     community = db.Query(Community).get()
-    #     circles = Circle.all()
-    #     user = self.current_user()
-
-    #     doRender(self, 'join_circles.html', {
-    #         'community': community,
-    #         'circles': circles,
-    #         'user': user
-    #     })
     def get(self):
         self.auth()
         user = self.current_user()
-        aquery = db.Query(Community)
-        community = aquery.get()
 
-        circles_all = Circle.all()
-        circles_user = Circle.all().filter('__key__ IN', user.circles)
+        circles = Circle.all().fetch(100)
 
-        today = datetime.date.today()
-        upcoming = Ride.all().filter('date > ', today).fetch(20)
-
-        for up in upcoming:
-            if user.key() in up.passengers:
-                up.is_pass = True
+        for circle in circles:
+            if circle.key() in user.circles:
+                circle.user = True
             else:
-                up.is_pass = False
-            if user.key() == driver.key():
-                up.is_driver = True
-            else:
-                up.is_driver = False
+                circle.user = False
 
         doRender(self, 'main.html', {
-            'circles_user': circles_user,
-            'circles_all': circles_all,
-            'community': community,
-            'user': user,
-            'upcoming': upcoming
+            'circles': circles,
+            'user': user
         })
     def post(self):
         self.auth()
+
+        user = self.current_user()
 
         circle = Circle()
 
@@ -95,6 +73,10 @@ class CircleHandler(BaseHandler):
         circle.description = data['description']
 
         circle.put()
+
+        user.circles.append(circle.key())
+
+        user.put()
 
         self.response.write(json.dumps({
             'message': 'Circle created!'

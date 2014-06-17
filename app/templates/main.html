@@ -26,8 +26,12 @@
     <div class="panel panel-main">
         <div class="panel-heading">My Circles</div>
         <div class='panel-body panel-no'>
-            {% for circle in circles_user %}
-                <div class="block">
+            {% for circle in circles %}
+                {% if circle.user %}
+                <div class="block" data-circle='{{circle.key().id()}}'>
+                {% else %}
+                <div class="block hidden" data-circle='{{circle.key().id()}}'>
+                {% endif %}
                     <div class="title">
                         <a href="/circle/{{circle.key().id()}}">{{circle.name}}</a>
                     </div>
@@ -49,7 +53,7 @@
     <div class="panel panel-main">
         <div class="panel-heading">All Circles</div>
         <div class="panel-body panel-no">
-            {% for circle in circles_all %}
+            {% for circle in circles %}
                 <div class="block">
                     <div class="title">
                         <a href="/circle/{{circle.key().id()}}">{{circle.name}}</a>
@@ -110,14 +114,19 @@
             target.dataset.switch = 'true';
         }
 
+        var user_block = document.querySelector('[data-circle="' + target.dataset.id + '"]');
+
         var data = {}
         data.user = {{ user.key().id() }}
         if (target.dataset.switch == 'true') {
             data.action = 'add';
+            user_block.classList.remove('hidden');
         } else {
             data.action = 'remove';
+            user_block.classList.add('hidden');
         }
         data.circle = target.dataset.id;
+
         
         var req = $.ajax({
             type: 'POST',
