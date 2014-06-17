@@ -10,6 +10,7 @@ class User(db.Model):
     email = db.EmailProperty()
     phone = db.StringProperty()
     circles = db.ListProperty(db.Key)
+    photo = db.Blob()
 
     def to_dict(self):
         resp = {}

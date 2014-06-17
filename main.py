@@ -157,6 +157,7 @@ app = webapp2.WSGIApplication([
 
     # controllers/users.py
     ('/user/(\d+)', GetUserHandler),
+    ('/user/edit/(\d+)', EditUserHandler),
     ('/user', UserHandler),
     # end users
 
