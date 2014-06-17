@@ -83,9 +83,23 @@ class HomeHandler(BaseHandler):
 
         notis = Notification.all().filter('user = ', user.key()).fetch(10)
 
+        today = datetime.date.today()
+        upcoming = Ride.all().filter('date > ', today).fetch(20)
+
+        for up in upcoming:
+            if user.key() in up.passengers:
+                up.is_pass = True
+            else:
+                up.is_pass = False
+            if user.key() == up.driver.key():
+                up.is_driver = True
+            else:
+                up.is_driver = False
+
         doRender(self, 'home.html', { 
             'user': user,
-            'notis': notis
+            'notis': notis,
+            'upcoming': upcoming
         })
 
 class IncorrectHandler(BaseHandler):
@@ -111,6 +125,7 @@ class DetailHandler(BaseHandler):
             'user': user
         })
     def post(self):
+        self.auth()
         json_str = self.request.body
         data = json.loads(json_str)
 
@@ -142,6 +157,7 @@ app = webapp2.WSGIApplication([
 
     # controllers/users.py
     ('/user/(\d+)', GetUserHandler),
+    ('/user/edit/(\d+)', EditUserHandler),
     ('/user', UserHandler),
     # end users
 

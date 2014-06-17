@@ -15,6 +15,8 @@ class GetEventHandler(BaseHandler):
 
         event = Event.get_by_id(int(id))
 
+        event.date_str = event.date.strftime('%B %dth, %Y')
+
         rides = Ride.all().filter('event = ', event.key()).fetch(100)
 
         for ride in rides:
