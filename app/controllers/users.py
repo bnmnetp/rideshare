@@ -50,9 +50,22 @@ class EditUserHandler(BaseHandler):
 			return None
 		else:
 			if data['photo'] is not None and len(data['photo']) > 0:
-				user.photo = db.Blob(base64.b64decode(data['photo']))
+				d64 = re.search(r'base64,(.*)', data).group(1)
+				decoded = d64.decode('base64')
+
+				file_name = files.blobstore.create(mime_type='image/png')
+
+				with files.open(file_name, 'a') as f:
+					f.write(decoded)
+
+				files.finalize(file_name)
+
+				key = files.blobstore.get_blob_key(file_name)
+				user.photo = key
+				print key
 
 		user.put()
+
 class UserHandler(BaseHandler):
 	def get(self):
 		self.auth()

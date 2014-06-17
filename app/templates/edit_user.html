@@ -50,17 +50,17 @@
         e.preventDefault();
 
         var form = e.target;
-
-        console.log(form.photo)
-
+        
         var data = {};
         data.email = form.email.value;
         data.phone = form.phone.value;
         //data.photo = getBase64Image(form.photo);
 
-        var file = form.photo.files[0];
+        var photo = document.querySelector('[data-image="profile"]');
 
-        data.photo = get_b64(file);
+        if (photo) {
+            data.photo = getBase64Image(photo);
+        }
 
         var push = $.ajax({
             type: 'POST',

@@ -1,6 +1,5 @@
-from google.appengine.ext import db
+from google.appengine.ext import db, blobstore
 from google.appengine.api import users
-import logging
 
 class User(db.Model):
     auth_id = db.StringProperty()
