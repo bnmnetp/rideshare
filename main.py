@@ -111,6 +111,7 @@ class DetailHandler(BaseHandler):
             'user': user
         })
     def post(self):
+        self.auth()
         json_str = self.request.body
         data = json.loads(json_str)
 
