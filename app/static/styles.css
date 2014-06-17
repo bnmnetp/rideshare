@@ -9,6 +9,10 @@ body {
     color: #333339;
 }
 
+#output img {
+    width: 300px;
+}
+
 .comments a {
     text-decoration: none;
 }

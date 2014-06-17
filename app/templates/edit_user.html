@@ -99,15 +99,15 @@
     file_input.addEventListener('change', disp_image);
 
     function disp_image (e) {
-        console.log(e);
-        var file = e.files[0];
+        var file = e.target.files[0];
         var output = document.querySelector('#output');
         var img = document.createElement('img');
         img.file = file;
+        img.setAttribute('data-image', 'profile');
         output.appendChild(img);
 
         if (!file.type.match('image.*')) {
-            continue;
+            console.log('Not an image.');
         }
 
         var reader = new FileReader();
