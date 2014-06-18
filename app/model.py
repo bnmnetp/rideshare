@@ -9,7 +9,7 @@ class User(db.Model):
     email = db.EmailProperty()
     phone = db.StringProperty()
     circles = db.ListProperty(db.Key)
-    photo = db.Blob()
+    photo = db.StringProperty()
 
     def to_dict(self):
         resp = {}

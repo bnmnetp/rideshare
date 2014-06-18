@@ -84,13 +84,28 @@
 
     function getBase64Image(imgElem) {
         // imgElem must be on the same server otherwise a cross-origin error will be thrown "SECURITY_ERR: DOM Exception 18"
-        var canvas = document.createElement("canvas");
-        canvas.width = imgElem.clientWidth;
-        canvas.height = imgElem.clientHeight;
-        var ctx = canvas.getContext("2d");
-        ctx.drawImage(imgElem, 0, 0);
+        var canvas = document.createElement('canvas');
+        var ctx = canvas.getContext('2d');
+        var ratio = 1;
+        var max = 300;
+        console.log(imgElem);
+
+        if (imgElem.width > max) {
+            ratio = max/imgElem.naturalWidth;
+        } else if (imgElem.height > max) {
+            ratio = max/imgElem.naturalHeight;
+        }
+
+        canvas.width = imgElem.width * ratio;
+        canvas.height = imgElem.height * ratio;
+        ctx.drawImage(imgElem,
+            0, 0,
+            imgElem.naturalWidth, imgElem.naturalHeight,
+            0, 0,
+            canvas.width, canvas.height
+        );
         var dataURL = canvas.toDataURL("image/png");
-        // return dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
+        //return dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
         return dataURL;
     }
 

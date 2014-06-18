@@ -159,6 +159,7 @@ app = webapp2.WSGIApplication([
     ('/user/(\d+)', GetUserHandler),
     ('/user/edit/(\d+)', EditUserHandler),
     ('/user', UserHandler),
+    ('/user/photo/(\d+)', GetImage),
     # end users
 
     # controllers/comments.py

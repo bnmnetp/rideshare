@@ -1,5 +1,7 @@
 from app.common.toolbox import doRender
 from google.appengine.ext import db
+from google.appengine.api import files, images
+from google.appengine.ext.webapp import blobstore_handlers
 from app.model import *
 import datetime
 from datetime import date
@@ -20,6 +22,12 @@ class GetUserHandler(BaseHandler):
 		doRender(self, 'view_user.html', {
 			'user': user
 		})
+
+class GetImage(BaseHandler):
+	def get(self, user_id):
+		user = User.get_by_id(int(user_id))
+		self.redirect(images.get_serving_url(user.photo))
+		# blobstore_handlers.BlobstoreDownloadHandler.send_blob(user.photo)
 
 class EditUserHandler(BaseHandler):
 	def get(self, user_id):
@@ -50,8 +58,10 @@ class EditUserHandler(BaseHandler):
 			return None
 		else:
 			if data['photo'] is not None and len(data['photo']) > 0:
-				d64 = re.search(r'base64,(.*)', data).group(1)
+				d64 = re.search(r'base64,(.*)', data['photo']).group(1)
 				decoded = d64.decode('base64')
+
+				# decoded = data['photo'].decode('base64')
 
 				file_name = files.blobstore.create(mime_type='image/png')
 
@@ -61,10 +71,16 @@ class EditUserHandler(BaseHandler):
 				files.finalize(file_name)
 
 				key = files.blobstore.get_blob_key(file_name)
-				user.photo = key
+				user.photo = str(key)
 				print key
 
 		user.put()
+
+		resp = {
+			'message': 'Edited!'
+		}
+
+		self.response.write(json.dumps(resp))
 
 class UserHandler(BaseHandler):
 	def get(self):
