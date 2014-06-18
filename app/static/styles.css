@@ -5,12 +5,20 @@ html {
 
 body {
 	margin-bottom: 60px;
-    padding-top: 70px;
+
     color: #333339;
+}
+
+#wrapper {
+    padding-top: 70px;
 }
 
 #output img {
     width: 300px;
+}
+
+img {
+    max-width: 100%;
 }
 
 .comments a {

@@ -72,18 +72,24 @@
 
         push.done(function (data) {
             console.log(data)
+            notify({
+                type: 'success',
+                strong: 'Profile edited!',
+                message: 'You have updated your profile'
+            });
         });
 
         push.fail(function (data, status) {
             console.log(status)
             notify({
-                type: 'danger'
+                type: 'danger',
+                strong: 'Whoops',
+                message: 'Something went wrong. Try again.'
             });
         });
     });
 
     function getBase64Image(imgElem) {
-        // imgElem must be on the same server otherwise a cross-origin error will be thrown "SECURITY_ERR: DOM Exception 18"
         var canvas = document.createElement('canvas');
         var ctx = canvas.getContext('2d');
         var ratio = 1;

@@ -11,18 +11,22 @@
 
 <div class="row">
 
+    <div class="panel panel-default">
+        <div class="panel-body">
+            To get started, <b>click on a marker to get details</b> or
+            <div class="btn-group">
+                <button class='btn btn-default' data-next='event_details'>Create a new Event</button>
+                <button class='btn btn-default' data-next='select_type'>Create a new Ride</button>
+            </div>
+            <button class='btn btn-primary pull-right' data-reset>Start over</button>
+        </div>
+    </div>
+
     <div class="col-md-8 map_con" id='col_map'>
         <div id="map_canvas"></div>
     </div>
 
     <div class="col-md-4 map_con" id='col_dialog' data-route='select_location'>
-        <div class="alert alert-success">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            <strong>Instructions</strong>
-            <p>You can create an event or ride by clicking on the map or typing an address in. You can add yourself to a ride by clicking on one of the red or green pushpins on the map.</p>
-            <hr>
-            <p>Check out the existing ride table below to join a ride.</p>
-        </div>
         <div>
             <form id='search_form'>
                 <div class="form-group" >
@@ -34,19 +38,12 @@
         </div>
     </div>
 
-    <div class="col-md-4" data-route='event_ride_location'>
-        <h1>Select the starting point.</h1>
+    <div class="col-md-4" data-route='event_location'>
+        <h1>Select the event location.</h1>
     </div>
-    <div class="col-md-4 map_con" data-route='trip_type'>
-        <p>Are you creating a new event or an indivdual ride?</p>
-        <button class="btn btn-primary" data-next="event_details" type='button'>
-            New Event
-        </button>
-        <button class="btn btn-primary" data-next='select_type' type='button'>
-            Individual Ride
-        </button>
-        <hr>
-        <button class="btn btn-default">Back</button>
+
+    <div class="col-md-4" data-route='ride_location'>
+        <h1>Select the starting location.</h1>
     </div>
 
     <div class="col-md-4" data-route='event_details'>
@@ -79,10 +76,10 @@
 
     <div class="col-md-4" data-route='select_type'>
         <p>Do you need a ride or can you drive?</p>
-        <button class="btn btn-primary" data-next='location_1' data-ride='passenger'>
+        <button class="btn btn-primary" data-next='location_dest' data-ride='passenger'>
             Need a Ride
         </button>
-        <button class="btn btn-primary" data-next='location_1' data-ride='driver'>
+        <button class="btn btn-primary" data-next='location_dest' data-ride='driver'>
             Driving
         </button>
     </div>
@@ -107,37 +104,17 @@
         </form>
     </div>
 
-    <div class="col-md-4" data-route='location_1'>
-        <form>
-            <p class="lead">Is this the starting or ending point?</p>
-            <div class="form-group" >
-                <label>Location #1:
-                    <span data-ride="loc_1"></span>
-                </label>
-                <select class='form-control' data-ride="loc_1_type" name="location">
-                    <option value="destination">Destination</option>
-                    <option value="origin">Starting Point</option>
-                </select>
-            </div>
-            <button class="btn btn-primary" data-next="location_2" type='button'>
-                Next
-            </button>
-        </form>
-    </div>
-
-    <div class="col-md-4" data-route='location_2'>
+    <div class="col-md-4" data-route='location_dest'>
         <form>
             <p class="lead">
-                Select the 
-                <span data-ride="loc_2_type"></span>
+                Select the Destination
             </p>
-            <div class="form-group" >
+            <div class="form-group">
                 <label>Location #2:
-                    <span data-ride="loc_2"></span>
+                    <span data-ride="location_dest"></span>
                 </label>
-
             </div>
-            <button class="btn btn-primary" data-next="details" type='button' disabled='disabled' data-ride="loc_btn">
+            <button class="btn btn-primary hidden" data-next="details" type='button' data-ride="loc_btn">
                 Next
             </button>
         </form>
@@ -184,9 +161,6 @@
 <div class="panel panel-main">
     <div class="panel-heading">Key</div>
     <div class="panel-body">
-        <div class="key">
-            <button class='btn btn-primary' data-reset>Start over</button>
-        </div>
         <div class="key">
             <img src="/static/carRed.png" />
             Destination

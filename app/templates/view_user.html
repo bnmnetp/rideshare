@@ -11,10 +11,14 @@
     <div class="panel-heading">User details</div>
     <div class="panel-body">
         <div class="row">
-            <div class="col-md-4">
-                <img src="/user/photo/{{user.key().id()}}">
+            <div class="col-md-3">
+                {% if user.photo %}
+                    <img src="/user/photo/{{user.key().id()}}" class='img-rounded'>
+                {% endif %}
+                <h1>{{user.name}}</h1>
+                <p class="lead">{{user.email}}</p>
             </div>
-            <div class="col-md-8">
+            <div class="col-md-9">
                 <ul class='information'>
                     <li>
                         <b>Name: </b> {{user.name}}

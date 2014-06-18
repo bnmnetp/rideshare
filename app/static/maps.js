@@ -11,6 +11,20 @@ function getParameterByName(name) {
 	}		
 }
 
+// if ('geolocation' in navigator) {
+// 	console.log('location availible')
+// 	display_geolocation();
+// } else {
+// 	console.log('no geolocation')
+// }
+
+// var display_geolocation = function () {
+// 	var geo_btn = document.querySelector('#geo_btn');
+// 	geo_btn.classList.remove('hidden');
+
+// 	geo_btn.addEventListener('click');
+// }
+
 var icons = {
 	event: {
 		url: '/static/stargate.png',
@@ -378,8 +392,8 @@ var Map = augment(Object, function () {
 
 		this.markers = [];
 
-		this.marker_1 = {};
-		this.marker_2 = {};
+		this.marker_start = {};
+		this.marker_end = {};
 
 		this.create_new_marker = true;
 
@@ -472,11 +486,17 @@ var Map = augment(Object, function () {
 		var point = location[0].geometry.location;
 		this.set_window(point, 'New Marker');
 
-		if (this.state == 'select_location') {
-			this.marker_1.lat = point.k;
-			this.marker_1.lng = point.A;
-			this.marker_1.address = location[0].formatted_address;
-			flow.change_slide('trip_type');
+		if (this.state == 'event_location') {
+			this.marker_start.lat = point.k;
+			this.marker_start.lng = point.A;
+			this.marker_start.address = location[0].formatted_address;
+			flow.change_slide('events_details');
+		}
+		if (this.state == 'ride_location') {
+			this.marker_start.lat = point.k;
+			this.marker_start.lng = point.A;
+			this.marker_start.address = location[0].formatted_address;
+			flow.change_slide('select_type');
 		}
 		if (this.state == 'location_2') {
 			this.marker_2.lat = point.k;
@@ -487,56 +507,27 @@ var Map = augment(Object, function () {
 			var location_btn = document.querySelector('[data-ride="loc_btn"]');
 
 			location_2.textContent = this.marker_2.address;
-			location_btn.removeAttribute('disabled');
-		}
-		if (this.state == 'event_ride_location') {
-			this.current_ride.origin = {};
-			this.current_ride.origin.lat = point.k;
-			this.current_ride.origin.lng = point.A;
-			this.current_ride.origin.address = location[0].formatted_address;
-			this.indicator = this.state;
-			flow.change_slide('select_type');
+			location_btn.classList.remove('hidden');
 		}
 	}
 
 	this.special_action = function (route, btn) {
 		// Set location #1
-		if (route == 'location_1') {
+		if (route == 'location_dest') {
 			if (btn.dataset.ride == 'driver') {
 				this.current_ride.driver = true;
 			} else if (btn.dataset.ride == 'passenger') {
 				this.current_ride.driver = false;
-			} else { }
-			if (this.indicator == 'event_ride_location') {
+			}
+			if (this.indicator == 'event_location') {
 				if (this.current_ride.driver == true) {
 					flow.change_slide('driver_details');
 				} else if (this.current_ride.driver == false) {
 					flow.change_slide('passenger_details');
 				}
 			} else {
-				console.log(route)
-				var location = document.querySelector('[data-ride="loc_1"]');
-				location.textContent = this.marker_1.address;
 				flow.change_slide(route);
 			}
-		} else if (route == 'location_2') {
-			// Set location_type when selecting location #2
-			var location_type_form = document.querySelector('[data-ride="loc_1_type"]');
-			var location_type_disp = document.querySelector('[data-ride="loc_2_type"]');
-			var text;
-			this.marker_1.location_type = location_type_form.value;
-			if (this.marker_1.location_type == 'destination') {
-				this.current_ride.destination = this.marker_1;
-				this.marker_2.location_type = 'origin';
-				text = 'destination';
-			} else if (this.marker_1.location_type == 'origin') {
-				this.current_ride.origin = this.marker_1;
-				this.marker_2.location_type = 'destination';
-				text = 'starting point';
-			}
-			location_type_disp.textContent = text;
-			this.create_new_marker = true;
-			flow.change_slide(route);
 		} else if (route == 'details') {
 			this.current_ride[this.marker_2.location_type] = this.marker_2;
 			if (this.current_ride.driver == true) {
