@@ -10,20 +10,28 @@
 <div class="panel panel-main">
     <div class="panel-heading">User details</div>
     <div class="panel-body">
-        <ul class='information'>
-            <li>
-                <b>Name: </b> {{user.name}}
-            </li>
-            <li>
-                <b>Email:</b> <a href='mailto:{{user.email}}'>{{user.email}}</a>
-            </li>
-            <li>
-                <b>Phone:</b> {{user.phone}}
-            </li>
-            <li>
-                <b>Member since:</b> {{user.created_str}}
-            </li>
-        </ul>
+        <div class="row">
+            <div class="col-md-4">
+                <img src="/user/photo/{{user.key().id()}}">
+            </div>
+            <div class="col-md-8">
+                <ul class='information'>
+                    <li>
+                        <b>Name: </b> {{user.name}}
+                    </li>
+                    <li>
+                        <b>Email:</b> <a href='mailto:{{user.email}}'>{{user.email}}</a>
+                    </li>
+                    <li>
+                        <b>Phone:</b> {{user.phone}}
+                    </li>
+                    <li>
+                        <b>Member since:</b> {{user.created_str}}
+                    </li>
+                </ul>
+            </div>
+        </div>
+
         <hr>
         <a href='/user/edit/{{user.key().id()}}' class='btn btn-primary'>Edit Profile</a>
     </div>

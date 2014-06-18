@@ -52,6 +52,10 @@ class CommentHandler(BaseHandler):
 		comment.put()
 
 		self.response.write(json.dumps({
+			'user': {
+				'name': user.name,
+				'id': user.key().id()
+			},
 			'message': 'Success',
 			'name': user.name,
 			'date': str(d),
