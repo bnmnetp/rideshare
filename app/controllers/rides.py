@@ -258,9 +258,9 @@ class NewRideHandler(BaseHandler):
             ride.dest_lng = event.lng
             ride.event = event.key()
         else:
-            ride.dest_add = data['destination']['address']
-            ride.dest_lat = data['destination']['lat']
-            ride.dest_lng = data['destination']['lng']
+            ride.dest_add = data['dest']['address']
+            ride.dest_lat = data['dest']['lat']
+            ride.dest_lng = data['dest']['lng']
 
         ride.origin_add = data['origin']['address']
         ride.origin_lat = data['origin']['lat']

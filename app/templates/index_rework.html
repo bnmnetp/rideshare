@@ -15,8 +15,8 @@
         <div class="panel-body">
             To get started, <b>click on a marker to get details</b> or
             <div class="btn-group">
-                <button class='btn btn-default' data-next='event_details'>Create a new Event</button>
-                <button class='btn btn-default' data-next='select_type'>Create a new Ride</button>
+                <button class='btn btn-default' data-next='event_location'>Create a new Event</button>
+                <button class='btn btn-default' data-next='ride_location'>Create a new Ride</button>
             </div>
             <button class='btn btn-primary pull-right' data-reset>Start over</button>
         </div>
@@ -36,6 +36,10 @@
                 <button type="submit" class="btn btn-primary">Search</button>
             </form>
         </div>
+    </div>
+
+    <div class="col-md-4" data-route='event_ride_location'>
+        <h1>Select the starting location.</h1>
     </div>
 
     <div class="col-md-4" data-route='event_location'>
@@ -110,8 +114,8 @@
                 Select the Destination
             </p>
             <div class="form-group">
-                <label>Location #2:
-                    <span data-ride="location_dest"></span>
+                <label>Destination:
+                    <span data-ride="loc_dest"></span>
                 </label>
             </div>
             <button class="btn btn-primary hidden" data-next="details" type='button' data-ride="loc_btn">
