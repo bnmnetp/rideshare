@@ -439,17 +439,13 @@ var Map = augment(Object, function () {
 
 	    google.maps.event.addListener(this.map, 'click', this.get_address.bind(this))
 
-		this.marker = new google.maps.Marker({
-			position: this.location,
-			map: this.map
-		})
 		this.direction_service = new google.maps.DirectionsService();
 		this.direction_display = new google.maps.DirectionsRenderer({preserveViewport:false});
 
 		this.geocoder = new google.maps.Geocoder();
 	}
 
-	this.set_window = function (location, content) {
+	this.set_window = function (location, content, icon) {
 		if (this.create_new_marker) {
 			var LatLng = new google.maps.LatLng(location.k, location.A);
 			var dialog = new google.maps.InfoWindow({
@@ -459,7 +455,9 @@ var Map = augment(Object, function () {
 			var marker = new google.maps.Marker({
 				position: LatLng,
 				map: this.map,
-			})
+				icon: icons[icon]
+			});
+			this.map.setCenter(LatLng);
 			this.markers.push(marker);
 			google.maps.event.addListener(marker, 'click', function () {
 				dialog.open(this.map, marker)
@@ -483,15 +481,16 @@ var Map = augment(Object, function () {
 
 	this.disp_address = function (location) {
 		var point = location[0].geometry.location;
-		this.set_window(point, 'New Marker');
 
 		if (this.state == 'event_location') {
+			this.set_window(point, location[0].formatted_address, 'person');
 			this.marker_start.lat = point.k;
 			this.marker_start.lng = point.A;
 			this.marker_start.address = location[0].formatted_address;
 			flow.change_slide('events_details');
 		}
 		if (this.state == 'ride_location') {
+			this.set_window(point, location[0].formatted_address, 'success');
 			this.marker_start.lat = point.k;
 			this.marker_start.lng = point.A;
 			this.marker_start.address = location[0].formatted_address;
@@ -499,6 +498,7 @@ var Map = augment(Object, function () {
 			flow.change_slide('select_type');
 		}
 		if (this.state == 'location_dest') {
+			this.set_window(point, location[0].formatted_address, 'error');
 			this.marker_dest.lat = point.k;
 			this.marker_dest.lng = point.A;
 			this.marker_dest.address = location[0].formatted_address;
@@ -510,6 +510,7 @@ var Map = augment(Object, function () {
 			loc_btn.classList.remove('hidden');
 		}
 		if (this.state == 'event_ride_location') {
+			this.set_window(point, location[0].formatted_address, 'success');
 			this.marker_start.lat = point.k;
 			this.marker_start.lng = point.A;
 			this.marker_start.address = location[0].formatted_address;
