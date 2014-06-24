@@ -66,8 +66,14 @@ class MapHandler(BaseHandler):
     def get(self):
         self.auth()
         user = self.current_user()
+        circle_id = self.request.get('circle')
+        if circle_id:
+            circle = Circle.get_by_id(int(circle_id))
+        else:
+            circle = None
         doRender(self, 'index_rework.html', {
-            'user': user
+            'user': user,
+            'circle': circle
         })
 
 class LoginHandler(BaseHandler):

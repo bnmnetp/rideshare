@@ -9,6 +9,14 @@
 {% block main %}
 <div data-notify="container"></div>
 
+{% if circle %}
+<div class="panel panel-default">
+    <div class="panel-body">
+        You are currently viewing the events and rides for {{circle.name}} circle. Any rides or events created will only be visible to this circle.
+    </div>
+</div>
+{% endif %}
+
 <div class="row">
 
     <div class="panel panel-default">

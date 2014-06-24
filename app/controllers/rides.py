@@ -61,7 +61,7 @@ class RideHandler(BaseHandler):
 
         rides = Ride.all()
 
-        if data['circle']:
+        if data['circle'] != '':
             rides.filter('circle = ', data['circle'])
 
         results = json.dumps([r.to_dict() for r in rides])
@@ -280,7 +280,12 @@ class NewRideHandler(BaseHandler):
         else:
             ride.passengers.append(user.key())
 
-        ride.circle = ""
+        if data['circle'] != '':
+            circle = Circle.get_by_id(data['circle'])
+            if circle:
+                ride.circle = circle.key()
+        else:
+            ride.circle = None
 
         ride_key = ride.put()
 

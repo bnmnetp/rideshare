@@ -18,11 +18,27 @@ class GetCircleHandler(BaseHandler):
 
         members = User.all().filter('circles = ', circle.key())
 
+        rides = Ride.all().filter('circle = ',  circle.key())
+
+        for ride in rides:
+            ride.dest = split_address(ride.dest_add)
+            ride.orig = split_address(ride.origin_add)
+            if ride.driver:
+                if ride.driver.key().id() == user.key().id():
+                    ride.is_driver = True
+                else:
+                    ride.is_driver = False
+            if user.key() in ride.passengers:
+                ride.is_passenger = True
+            else:
+                ride.is_passenger = False
+
         doRender(self, 'view_circle.html', {
             'circle': circle,
             'comments': comments,
             'user': user,
-            'members': members
+            'members': members,
+            'rides': rides
         })
 
 

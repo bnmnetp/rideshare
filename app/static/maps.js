@@ -87,6 +87,7 @@ var Forms = augment(Object, function () {
 		m.date = form.date.value;
 		m.time = form.time.value;
 		m.details = form.details.value;
+		m.circle = getParameterByName('circle');
 
 		var push = $.ajax({
 			type: 'POST',
@@ -124,6 +125,7 @@ var Forms = augment(Object, function () {
 		m.date = form.date.value;
 		m.time = form.time.value;
 		m.details = form.details.value;
+		m.circle = getParameterByName('circle');
 
 		var push = $.ajax({
 			type: 'POST',
@@ -164,6 +166,7 @@ var Forms = augment(Object, function () {
 		m.date = form.date.value;
 		m.time = form.time.value;
 		m.details = form.details.value;
+		m.circle = getParameterByName('circle');
 
 		var push = $.ajax({
 			type: 'POST',
