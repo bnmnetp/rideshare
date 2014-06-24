@@ -439,9 +439,6 @@ var Map = augment(Object, function () {
 
 	    google.maps.event.addListener(this.map, 'click', this.get_address.bind(this))
 
-		this.direction_service = new google.maps.DirectionsService();
-		this.direction_display = new google.maps.DirectionsRenderer({preserveViewport:false});
-
 		this.geocoder = new google.maps.Geocoder();
 	}
 
@@ -487,7 +484,7 @@ var Map = augment(Object, function () {
 			this.marker_start.lat = point.k;
 			this.marker_start.lng = point.A;
 			this.marker_start.address = location[0].formatted_address;
-			flow.change_slide('events_details');
+			flow.change_slide('event_details');
 		}
 		if (this.state == 'ride_location') {
 			this.set_window(point, location[0].formatted_address, 'success');
@@ -575,6 +572,9 @@ var Map = augment(Object, function () {
 		} else if (route == 'event_ride_location') {
 			this.current_ride.event = btn.dataset.id;
 			this.indicator = 'event_ride';
+			flow.change_slide(route);
+		} else if (route == 'event_location' || route == 'ride_location') {
+			this.reset();
 			flow.change_slide(route);
 		} else {
 			flow.change_slide(route);
