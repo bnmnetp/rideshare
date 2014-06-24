@@ -20,6 +20,8 @@ class GetCircleHandler(BaseHandler):
 
         rides = Ride.all().filter('circle = ',  circle.key())
 
+        events = Event.all().filter('circle = ', circle.key())
+
         for ride in rides:
             ride.dest = split_address(ride.dest_add)
             ride.orig = split_address(ride.origin_add)
@@ -38,7 +40,8 @@ class GetCircleHandler(BaseHandler):
             'comments': comments,
             'user': user,
             'members': members,
-            'rides': rides
+            'rides': rides,
+            'events': events
         })
 
 

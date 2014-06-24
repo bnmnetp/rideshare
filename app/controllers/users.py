@@ -52,12 +52,15 @@ class EditUserHandler(BaseHandler):
 		self.auth()
 
 		user = self.current_user()
+		user.name = data['name']
+		user.email = data['email']
+		user.phone = data['phone']
 
 		if not user.key().id() == int(user_id):
 			self.redirect('/user/' + user_id)
 			return None
 		else:
-			if data['photo'] is not None and len(data['photo']) > 0:
+			if 'photo' in data and len(data['photo']) > 0:
 				d64 = re.search(r'base64,(.*)', data['photo']).group(1)
 				decoded = d64.decode('base64')
 
