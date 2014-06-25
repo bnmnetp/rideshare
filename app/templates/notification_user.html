@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 
-{% block title %}Edit User{% endblock %}
+{% block title %}Notification Preference{% endblock %}
 
 {% block head %}
 {% endblock %}
@@ -52,10 +52,8 @@
         var form = e.target;
         
         var data = {};
-        data.name = form.name.value;
-        data.email = form.email.value;
-        data.phone = form.phone.value;
-        //data.photo = getBase64Image(form.photo);
+        data.type = form.type.value;
+        data.time = form.time.value;
 
         var push = $.ajax({
             type: 'POST',
@@ -69,8 +67,8 @@
             console.log(data)
             notify({
                 type: 'success',
-                strong: 'Profile edited!',
-                message: 'You have updated your profile'
+                strong: 'Preferences edited!',
+                message: 'You have updated your preferences.'
             });
         });
 

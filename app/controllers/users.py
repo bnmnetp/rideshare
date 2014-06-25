@@ -38,6 +38,28 @@ class NotificationUserHandler(BaseHandler):
 			'user': user
 		})
 
+	def post(self, user_id):
+		self.auth()
+
+		json_str = self.request.body
+		data = json.loads(json_str)
+
+		user = self.current_user()
+
+		if not user.key().id() == int(user_id):
+			self.redirect('/user/' + user_id)
+			return None
+		else:
+			user.noti_type = data['type']
+			user.noti_time = int(data['time'])
+			user.put()
+
+			resp = {
+				'message': 'Updated!'
+			}
+
+			self.response.write(json.dumps(resp))
+
 class EditUserHandler(BaseHandler):
 	def get(self, user_id):
 		self.auth()

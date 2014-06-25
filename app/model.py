@@ -10,6 +10,8 @@ class User(db.Model):
     phone = db.StringProperty(default='')
     circles = db.ListProperty(db.Key)
     photo = db.StringProperty()
+    noti_time = db.IntegerProperty()
+    noti_type = db.StringProperty()
 
     def to_dict(self):
         resp = {}
