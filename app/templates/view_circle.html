@@ -16,6 +16,9 @@
     <div class="btn-group">
         <button type='button' class='btn btn-default' data-next="events">Events for Circles</button>
     </div>
+    <div class="btn-group">
+        <button type='button' class='btn btn-default' data-next='invites'>Invite to Circle</button>
+    </div>
 </div>
 <div data-route='details'>
     <div class="panel panel-main">
@@ -61,7 +64,7 @@
                 <div class="panel-body">
                     {% for member in members %}
                         <div class="media">
-                            <a href="#">
+                            <a href="#" class='pull-left'>
                                 <img src="/user/photo/{{member.key().id()}}" style="width: 64px; height: 64px;" class="media-object" alt="64x64">
                             </a>
                             <div class="media-body">
@@ -131,6 +134,22 @@
                 There are no events yet. Visit <a href="/map">the map</a> to create one.
             </div>
         {% endif %}
+        </div>
+    </div>
+</div>
+<div data-route='invites'>
+    <div class="panel panel-main">
+        <div class="panel-heading">Send Invites</div>
+        <div class="panel-body">
+            <form id='invites'>
+                <div class="form-group">
+                    <label>Emails</label>
+                    <textarea name='emails' class='form-control'></textarea>
+                    <p class="help-block">Type emails seperated by commas</p>
+                    <p class="help-block">Not functional yet</p>
+                </div>
+                <button type='submit' class='btn btn-primary'>Send Invites</button>
+            </form>
         </div>
     </div>
 </div>
