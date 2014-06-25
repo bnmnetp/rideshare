@@ -32,6 +32,11 @@ class GetImage(BaseHandler):
 class NotificationUserHandler(BaseHandler):
 	def get(self, user_id):
 		self.auth()
+		user = self.current_user()
+
+		doRender(self, 'notification_user.html', {
+			'user': user
+		})
 
 class EditUserHandler(BaseHandler):
 	def get(self, user_id):
