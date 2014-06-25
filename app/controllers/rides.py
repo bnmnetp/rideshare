@@ -84,7 +84,8 @@ class GetRideHandler(BaseHandler):
         if data['type'] == 'passenger':
             if data['action'] == 'leave':
                 if user.key() in ride.passengers:
-                    push_noti('pass_leave', ride.driver.key(), ride.key())
+                    if ride.driver:
+                        push_noti('pass_leave', ride.driver.key(), ride.key())
                     ride.passengers.remove(user.key())
                     resp = {
                         'strong': 'Left the ride!',
@@ -94,7 +95,8 @@ class GetRideHandler(BaseHandler):
             if data['action'] == 'join':
                 if user.key() not in ride.passengers:
                     if ride.passengers_total < ride.passengers_max:
-                        push_noti('pass_join', ride.driver.key(), ride.key())
+                        if ride.driver:
+                            push_noti('pass_join', ride.driver.key(), ride.key())
                         ride.passengers.append(user.key())
                         resp = {
                             'strong': 'Joined the ride!',

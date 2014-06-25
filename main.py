@@ -97,10 +97,12 @@ class HomeHandler(BaseHandler):
                 up.is_pass = True
             else:
                 up.is_pass = False
-            if user.key() == up.driver.key():
-                up.is_driver = True
-            else:
-                up.is_driver = False
+            
+            up.is_driver = False
+            if up.driver:
+                if user.key() == up.driver.key():
+                    up.is_driver = True
+                    
 
         doRender(self, 'home.html', { 
             'user': user,
