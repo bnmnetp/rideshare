@@ -29,6 +29,10 @@ class GetImage(BaseHandler):
 		self.redirect(images.get_serving_url(user.photo))
 		# blobstore_handlers.BlobstoreDownloadHandler.send_blob(user.photo)
 
+class NotificationUserHandler(BaseHandler):
+	def get(self, user_id):
+		self.auth()
+
 class EditUserHandler(BaseHandler):
 	def get(self, user_id):
 		self.auth()
@@ -89,6 +93,8 @@ class UserHandler(BaseHandler):
 	def get(self):
 		self.auth()
 		user = self.current_user()
+
+		user.created_str = user.created.strftime('%B %dth, %Y')
 
 		doRender(self, 'view_user.html', {
 			'user': user

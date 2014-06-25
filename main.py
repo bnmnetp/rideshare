@@ -164,6 +164,7 @@ app = webapp2.WSGIApplication([
     # controllers/users.py
     ('/user/(\d+)', GetUserHandler),
     ('/user/edit/(\d+)', EditUserHandler),
+    ('/user/notification/(\d+)', NotificationUserHandler),
     ('/user', UserHandler),
     ('/user/photo/(\d+)', GetImage),
     # end users
