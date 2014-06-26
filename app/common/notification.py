@@ -1,5 +1,6 @@
 from google.appengine.ext import db
 from app.model import *
+from app.common.email import send_email
 
 from datetime import timedelta, datetime
 
@@ -24,5 +25,14 @@ def push_noti(type, user_key, ride_key,):
 	if user.noti_time != 0:
 		today = datetime.today().date()
 		day_until = (ride.date - today).days
-		if days_until < user.noti_time:
-			print 'send notificaiton'
+		if days_until <= user.noti_time:
+			if user.noti_type == 'email' and user.email:
+				send_email(
+					user,
+					'Notification from Rideshare',
+					'emails/notification.html',
+					{
+						'message': message
+						'name': user.name
+					}
+				)
