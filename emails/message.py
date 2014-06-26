@@ -4,7 +4,9 @@ from __future__ import unicode_literals
 import time
 from functools import wraps
 
-from dateutil.parser import parse as dateutil_parse
+import datetime
+
+# from dateutil.parser import parse as dateutil_parse
 from email.header import Header
 from email.utils import formatdate, getaddresses
 
@@ -186,22 +188,24 @@ class Message(BaseEmail):
         return self._attachments
 
     def set_date(self, value):
-        if isinstance(value, string_types):
-            _d = dateutil_parse(value)
-            value = time.mktime(_d.timetuple())
-            value = formatdate(value, True)
-        self._date = value
+        # if isinstance(value, string_types):
+        #     _d = dateutil_parse(value)
+        #     value = time.mktime(_d.timetuple())
+        #     value = formatdate(value, True)
+        # self._date = value
+        self._date = datetime.today()
 
     def get_date(self):
-        if self._date is False:
-            return None
-        timeval = self._date
-        if timeval:
-            if is_callable(timeval):
-                timeval = timeval()
-        elif timeval is None:
-            timeval = formatdate(None, True)
-        return timeval
+        # if self._date is False:
+        #     return None
+        # timeval = self._date
+        # if timeval:
+        #     if is_callable(timeval):
+        #         timeval = timeval()
+        # elif timeval is None:
+        #     timeval = formatdate(None, True)
+        # return timeval
+        return datetime.today()
 
     message_date = property(get_date, set_date)
 

@@ -5,7 +5,7 @@ import uuid
 
 from os.path import splitext, basename
 
-import requests
+# import requests
 from mimetypes import guess_type
 from email.mime.base import MIMEBase
 from email.encoders import encode_base64

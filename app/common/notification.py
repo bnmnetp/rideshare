@@ -32,7 +32,8 @@ def push_noti(type, user_key, ride_key,):
 					'Notification from Rideshare',
 					'emails/notification.html',
 					{
-						'message': message
-						'name': user.name
+						'message': message,
+						'name': user.name,
+						'community': {}
 					}
 				)
