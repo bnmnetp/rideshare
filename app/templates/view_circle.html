@@ -6,20 +6,20 @@
 {% endblock %}
 
 {% block main %}
-<div class="btn-group btn-group-justified nav-sub">
-    <div class="btn-group">
-        <button type='button' class='btn btn-default' data-next="details">Details</button>
-    </div>
-    <div class="btn-group">
-        <button type='button' class='btn btn-default' data-next="rides">Rides for Circles</button>
-    </div>
-    <div class="btn-group">
-        <button type='button' class='btn btn-default' data-next="events">Events for Circles</button>
-    </div>
-    <div class="btn-group">
-        <button type='button' class='btn btn-default' data-next='invites'>Invite to Circle</button>
-    </div>
-</div>
+<ul class="ntabs">
+    <li data-next="details">
+        Details
+    </li>
+    <li data-next="rides">
+        Rides
+    </li>
+    <li data-next="events">
+        Events
+    </li>
+    <li data-next="invites">
+        Invite
+    </li>
+</ul>
 <div data-route='details'>
     <div class="panel panel-main">
         <div class="panel-heading">Circle details</div>

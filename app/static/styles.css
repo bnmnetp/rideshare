@@ -93,6 +93,8 @@ img {
     line-height: 30px;
     padding: 10px;
     padding-left: 20px;
+    font-weight: 500;
+    font-size: 20px;
 }
 
 .marker {
@@ -287,3 +289,61 @@ template {
 
 .switch[data-switch='false'] .true_padding {
     left: 80px;
+}
+
+.ntabs {
+    background-color: #303F9F;
+    list-style: none;
+    padding: 0;
+    margin: 0px 0px 15px 0px;
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: separate;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.ntabs li {
+    line-height: 45px;
+    font-size: 17px;
+    display: table-cell;
+    width: 100%;
+    color: #C5CAE9;
+    text-align: center;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.ntabs .active {
+    color: white;
+    border-bottom: solid 3px white;
+}
+
+.ntabs li a {
+    color: inherit
+}
+
+.ntab {
+
+}
+
+@media (max-width: 768px) {
+    body {
+        padding-top: 50px;
+    }
+    .container {
+        padding: 0px;
+    }
+    .navbar .container {
+        padding: 0px 15px 0px 15px;
+    }
+    .navbar {
+        margin-bottom: 0px;
+    }
+    .panel {
+        margin-bottom: 0px;
+    }
+    .panel, .panel-heading {
+        border-radius: 0px;
+    }
+}

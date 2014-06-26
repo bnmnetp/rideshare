@@ -25,10 +25,15 @@ var Flow = augment(Object, function () {
 			}
 		}.bind(this));
 
+		this.current = this.find_next(default_route);
+		if (this.current) {
+			this.current.classList.add('active');
+		}
 	}
 
 	this.set_handler = function (handler) {
 		this.handler = handler;
+
 	}
 
 	this.next_event = function (e) {
@@ -40,7 +45,27 @@ var Flow = augment(Object, function () {
 		}	
 	}
 
+	this.find_next = function (attr) {
+		var next = false;
+		for (var i = 0; i < this.next.length; i++) {
+			var cur = this.next[i];
+			if (cur.dataset.next == attr) {
+				next = cur;
+				break;
+			}
+		}
+		return next;
+	}
+
 	this.change_slide = function (route) {
+		if (this.current) {
+			this.current.classList.remove('active');
+		}
+		this.current = this.find_next(route);
+		if (this.current) {
+			this.current.classList.add('active');
+		}
+
 		this.id_last = route;
 		this.handler.state = route;
 		for (var i = 0; i < this.views.length; i++) {
@@ -54,5 +79,6 @@ var Flow = augment(Object, function () {
 			}
 
 		}
+
 	}
 });
