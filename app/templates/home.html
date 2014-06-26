@@ -10,7 +10,7 @@
 <div class="row">
     <div class="col-md-6">
         <div class="panel panel-main">
-            <div class="panel-heading">Alerts</div>
+            <div class="panel-heading">Alerts - Last 5</div>
             <div class="panel-body panel-no">
                 {% if notis %}
                     {% for noti in notis %}
@@ -20,9 +20,9 @@
                             </div>
                             <div class="details">
                                 <div class="deta">
-                                    <i class="fa fa-automobile"></i>
-                                    <a href="/ride/{{noti.ride.key().id()}}">
-                                        {{noti.ride.dest_add}}
+                                    <a href="/ride/{{noti.ride.key().id()}}" class='btn btn-primary btn-xs'>
+                                        <i class="fa fa-automobile"></i>
+                                        {{noti.ride.orig}} to {{noti.ride.dest}}
                                     </a>
                                 </div>
                             </div>
@@ -62,21 +62,28 @@
 
 
 <div class="panel panel-main">
-    <div class="panel-heading">Upcoming Events</div>
+    <div class="panel-heading">Your Upcoming Events</div>
     <div class="panel-body panel-no">
         {% if upcoming %}
             {% for up in upcoming %}
                 <div class="block">
                     <div class="title">
-                        <a href="/ride/{{up.key().id()}}">{{up.dest_add}}</a>
+                        <a href="/ride/{{up.key().id()}}">Ride to {{up.dest_add}}</a>
                     </div>
                     <div class="details">
                         <div class="deta">
-                            <i class="fa fa-calendar"></i> {{up.date}}
+                            <i class="fa fa-calendar"></i> {{up.date_str}}
                         </div>
+                        {% if up.is_driver %}
                         <div class="deta">
                             <i class="fa fa-automobile"></i> You are Driving
                         </div>
+                        {% endif %}
+                        {% if up.is_pass %}
+                        <div class="deta">
+                            <i class="fa fa-automobile"></i> You are a Passenger
+                        </div>
+                        {% endif %}
                     </div>
                 </div>
             {% endfor %}

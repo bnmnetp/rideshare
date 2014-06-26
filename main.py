@@ -48,7 +48,7 @@ from app.controllers.rides import *
 from app.controllers.comments import *
 from app.controllers.users import *
 
-from app.common.toolbox import doRender
+from app.common.toolbox import doRender, split_address
 
 # Creates Community entry on first run.
 aquery = db.Query(Community)
@@ -87,21 +87,28 @@ class HomeHandler(BaseHandler):
         community = aquery.get()
         user = self.current_user()
 
-        notis = Notification.all().filter('user = ', user.key()).fetch(10)
+        notis = Notification.all().filter('user = ', user.key()).fetch(5)
 
         today = datetime.date.today()
         upcoming = Ride.all().filter('date > ', today).fetch(20)
 
         for up in upcoming:
+            up.dest_add = split_address(up.dest_add)
             if user.key() in up.passengers:
                 up.is_pass = True
             else:
                 up.is_pass = False
-            
+
             up.is_driver = False
             if up.driver:
                 if user.key() == up.driver.key():
                     up.is_driver = True
+
+            up.date_str = up.date.strftime('%B %dth, %Y')
+
+        for noti in notis:
+            noti.ride.orig = split_address(noti.ride.origin_add)
+            noti.ride.dest = split_address(noti.ride.dest_add)
                     
 
         doRender(self, 'home.html', { 

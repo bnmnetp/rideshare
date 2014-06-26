@@ -6,7 +6,7 @@ html {
 body {
 	/*margin-bottom: 60px;*/
     padding-top: 70px;
-    color: #333339;
+    color: #262626;
 }
 
 #wrapper {
@@ -52,8 +52,10 @@ img {
 }
 
 .panel-main .panel-heading {
-    background-color: #534A9A;
-    border-color: #534A9A;
+/*    background-color: #534A9A;
+    border-color: #534A9A;*/
+    background-color:  #3F51B5;
+    border-color:  #3F51B5;
     color: #FFFFFF;
 }
 
@@ -69,8 +71,8 @@ img {
 
 .information li {
     margin: 0px 0px 15px 0px;
-    font-size: 18px;
-    line-height: 30px;
+    font-size: 20px;
+    line-height: 34px;
 }
 
 .information b {
@@ -113,13 +115,14 @@ img {
 }
 
 .block .title {
+    font-size: 20px;
+    line-height: 32px;
+    font-weight: 500;
     display: block;
 }
 
 .block .title a {
-    color: black;
-    font-size: 28px;
-    font-style: underline;
+    color: #262626;
 }
 
 .small a {
@@ -128,11 +131,26 @@ img {
 
 .block .details {
     display: block;
+    color: #5A5A5A;
+}
+
+.block .details i {
+    margin: 0px 3px 0px 3px;
+}
+
+/*.block .deta a {
+    color: #5A5A5A;
+}*/
+
+.block .details .deta:first-child i {
+    margin: 0px 3px 0px 0px;
 }
 
 .block .deta {
     display: inline-block;
     font-size: 14px;
+    font-weight: 300;
+    line-height: 24px;
 }
 
 #footer {
