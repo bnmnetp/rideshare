@@ -16,12 +16,13 @@
                     {% for noti in notis %}
                         <div class="block">
                             <div class="title">
-                                {{noti.text}}
+                                {{noti.text | safe}}
                             </div>
                             <div class="details">
                                 <div class="deta">
+                                    <i class="fa fa-automobile"></i>
                                     <a href="/ride/{{noti.ride.key().id()}}">
-                                        <i class="fa fa-automobile"></i> {{noti.ride.dest_add}}
+                                        {{noti.ride.dest_add}}
                                     </a>
                                 </div>
                             </div>

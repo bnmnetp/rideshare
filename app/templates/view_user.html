@@ -35,10 +35,11 @@
                 </ul>
             </div>
         </div>
-
         <hr>
-        <a href='/user/edit/{{user.key().id()}}' class='btn btn-primary'>Edit Profile</a>
-        <a href="/user/notification/{{user.key().id()}}" class='btn btn-primary'> Notification settings</a>
+        {% if is_user %}
+            <a href='/user/edit/{{user.key().id()}}' class='btn btn-primary'>Edit Profile</a>
+            <a href="/user/notification/{{user.key().id()}}" class='btn btn-primary'> Notification settings</a>
+        {% endif %}
     </div>
 </div>
 

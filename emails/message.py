@@ -193,7 +193,7 @@ class Message(BaseEmail):
         #     value = time.mktime(_d.timetuple())
         #     value = formatdate(value, True)
         # self._date = value
-        self._date = datetime.today()
+        self._date = datetime.date.today()
 
     def get_date(self):
         # if self._date is False:

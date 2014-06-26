@@ -14,13 +14,21 @@ import re
 
 class GetUserHandler(BaseHandler):
 	def get(self, user_id):
+		current_user = self.current_user()
+
 		self.auth()
 		user = User.get_by_id(int(user_id))
 
 		user.created_str = user.created.strftime('%B %dth, %Y')
 
+		if user_id == current_user.key().id():
+			is_user = True
+		else:
+			is_user = False
+
 		doRender(self, 'view_user.html', {
-			'user': user
+			'user': user,
+			'is_user': is_user
 		})
 
 class GetImage(BaseHandler):
@@ -124,5 +132,6 @@ class UserHandler(BaseHandler):
 		user.created_str = user.created.strftime('%B %dth, %Y')
 
 		doRender(self, 'view_user.html', {
-			'user': user
+			'user': user,
+			'is_user': True
 		})

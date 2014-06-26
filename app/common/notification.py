@@ -4,27 +4,36 @@ from app.common.email import send_email
 
 from datetime import timedelta, datetime
 
-def push_noti(type, user_key, ride_key,):
-	if type == 'driver_leave':
-		message = 'The driver has left this ride.'
-	elif type == 'driver_join':
-		message = 'A driver has joined this ride.'
-	elif type == 'pass_leave':
-		message = 'X is no longer a passenger.'
-	elif type == 'pass_join':
-		message = 'X is now a passenger of this ride.'
-	noti = Notification()
-	noti.text = message
-	noti.ride = ride_key
-	noti.user = user_key
-	noti.put()
-
+def push_noti(type, user_key, ride_key):
 	user = User.get(user_key)
 	ride = Ride.get(ride_key)
 
+	if type == 'driver_leave':
+		message = """
+		The driver has left this ride.
+		"""
+	elif type == 'driver_join':
+		message = """
+		A driver has joined this ride.
+		"""
+	elif type == 'pass_leave':
+		message = """
+		<a href='/user/%s'>%s</a> is no longer a passenger.
+		""" % (user.key().id(), user.name)
+	elif type == 'pass_join':
+		message = """
+		<a href='/user/%s'>%s</a> is now a passenger of this ride.
+		""" % (user.key().id(), user.name)
+	noti = Notification()
+	noti.text = message
+	noti.ride = ride.key()
+	noti.user = user.key()
+	noti.put()
+
+
 	if user.noti_time != 0:
 		today = datetime.today().date()
-		day_until = (ride.date - today).days
+		days_until = (ride.date - today).days
 		if days_until <= user.noti_time:
 			if user.noti_type == 'email' and user.email:
 				send_email(
