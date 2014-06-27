@@ -94,7 +94,7 @@ img {
     padding: 10px;
     padding-left: 20px;
     font-weight: 500;
-    font-size: 20px;
+    font-size: 16px;
 }
 
 .marker {
@@ -345,5 +345,17 @@ template {
     }
     .panel, .panel-heading {
         border-radius: 0px;
+    }
+    #map_canvas {
+        padding-right: 20px;
+    }
+    .padding {
+        padding: 0px 15px 0px 15px;
+    }
+    #map_canvas {
+        height: 300px;
+    }
+    .col-md-4 {
+        margin: 10px 15px 10px 15px;
     }
 }

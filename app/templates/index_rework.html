@@ -10,25 +10,25 @@
 <div data-notify="container"></div>
 
 {% if circle %}
-<div class="panel panel-primary">
+<div class="panel panel-primary padding">
     <div class="panel-body">
         You are currently viewing the events and rides for <a href='/circle/{{circle.key().id()}}'>{{circle.name}}</a> circle. Any rides or events created will only be visible to this circle. <a href='/map'>Exit circle view.</a>
     </div>
 </div>
 {% endif %}
 
-<div class="row">
-
-    <div class="panel panel-default">
-        <div class="panel-body">
-            To get started, <b>click on a marker to get details</b> or
-            <div class="btn-group">
-                <button class='btn btn-default' data-next='event_location'>Create a new Event</button>
-                <button class='btn btn-default' data-next='ride_location'>Create a new Ride</button>
-            </div>
-            <button class='btn btn-primary pull-right' data-reset>Start over</button>
+<div class="panel panel-default padding">
+    <div class="panel-body">
+        To get started, <b>click on a marker to get details</b> or
+        <div class="btn-group">
+            <button class='btn btn-default' data-next='event_location'>Create a new Event</button>
+            <button class='btn btn-default' data-next='ride_location'>Create a new Ride</button>
         </div>
+        <button class='btn btn-primary pull-right' data-reset>Start over</button>
     </div>
+</div>
+
+<div class="row">
 
     <div class="col-md-8 map_con" id='col_map'>
         <div id="map_canvas"></div>
