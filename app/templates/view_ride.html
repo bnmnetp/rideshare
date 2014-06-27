@@ -7,88 +7,103 @@
 
 {% block main %}
 <div data-notify="container"></div>
-<div class="panel panel-main">
-    <div class="panel-heading">Ride details</div>
-    <div class="panel-body">
-        <ul class='information'>
-            <li>
-                <b>Starting point: </b> {{ride.origin_add}}
-            </li>
-            <li>
-                <b>Destination:</b> {{ride.dest_add}}
-            </li>
-            <li>
-                <b>Date:</b> {{ride.date}}
-            </li>
-            <li>
-                <b>Time:</b> {{ride.time}}
-            </li>
-            {% if ride.driver %}
-                <li>
-                    <b>Availible seats:</b> {{seats}}
-                </li>
-                <li>
-                    <b>Driver:</b> <a href="/user/{{driver.key().id()}}">{{driver.name}}</a>
-                </li>
-                <li>
-                    <b>Driver contact:</b> {{driver.email}}
-                </li>
-            {% endif %}
-                <li>
-                    <b>Other passengers:</b>
-                    {% for p in passengers %}
-                        <a href='/user/{{p.key().id()}}'>{{p.name}}</a>
-                    {% endfor %}
-                </li>
-            {% if ride.circle %}
-                <li>
-                    <b>Circle:</b>
-                </li>
-            {% endif %}
-            {% if ride.event %}
-                <li>
-                    <b>Event:</b>
-                </li>
-            {% endif %}
-        </ul>
-        <hr>
-        <div class="options">
-            {% if ride.is_driver %}
-            <div>
-            {% else %}
-            <div class="hidden">
-            {% endif %}
-                <p class="help-block">You are currently the driver.</p>
-                <button class='btn btn-danger' data-driver='leave'>Leave ride</button>
-            </div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="panel panel-main">
+            <div class="panel-heading">Ride details</div>
+            <div class="panel-body">
+                <ul class='information'>
+                    <li>
+                        <b>Starting point: </b> {{ride.origin_add}}
+                    </li>
+                    <li>
+                        <b>Destination:</b> {{ride.dest_add}}
+                    </li>
+                    <li>
+                        <b>Date:</b> {{ride.date}}
+                    </li>
+                    <li>
+                        <b>Time:</b> {{ride.time}}
+                    </li>
+                    {% if ride.driver %}
+                        <li>
+                            <b>Availible seats:</b> {{seats}}
+                        </li>
+                        <li>
+                            <b>Driver:</b> <a href="/user/{{driver.key().id()}}">{{driver.name}}</a>
+                        </li>
+                        <li>
+                            <b>Driver contact:</b> {{driver.email}}
+                        </li>
+                    {% endif %}
+                        <li>
+                            <b>Other passengers:</b>
+                            {% for p in passengers %}
+                                <a href='/user/{{p.key().id()}}'>{{p.name}}</a>
+                            {% endfor %}
+                        </li>
+                    {% if ride.circle %}
+                        <li>
+                            <b>Circle:</b>
+                        </li>
+                    {% endif %}
+                    {% if ride.event %}
+                        <li>
+                            <b>Event:</b>
+                        </li>
+                    {% endif %}
+                </ul>
+                <hr>
+                <div class="options">
+                    {% if ride.is_driver %}
+                    <div>
+                    {% else %}
+                    <div class="hidden">
+                    {% endif %}
+                        <p class="help-block">You are currently the driver.</p>
+                        <button class='btn btn-danger' data-driver='leave'>Leave ride</button>
+                    </div>
 
-            {% if ride.need_driver %}
-            <div>
-            {% else %}
-            <div class="hidden">
-            {% endif %}
-                 <button class='btn btn-success' data-driver='join'>Be the driver</button>
-            </div>
+                    {% if ride.need_driver %}
+                    <div>
+                    {% else %}
+                    <div class="hidden">
+                    {% endif %}
+                         <button class='btn btn-success' data-driver='join'>Be the driver</button>
+                    </div>
 
-            {% if ride.is_pass %}
-            <div>
-            {% else %}
-            <div class="hidden">
-            {% endif %}
-                <p class="help-block">You are currently a passenger.</p>
-                <button class='btn btn-danger' data-passenger='leave'>Leave ride</button>
-            </div>
+                    {% if ride.is_pass %}
+                    <div>
+                    {% else %}
+                    <div class="hidden">
+                    {% endif %}
+                        <p class="help-block">You are currently a passenger.</p>
+                        <button class='btn btn-danger' data-passenger='leave'>Leave ride</button>
+                    </div>
 
-            {% if ride.can_pass %}
-            <div>
-            {% else %}
-            <div class="hidden">
-            {% endif %}
-                <button class='btn btn-success' data-passenger='join'>Join as Passenger</button>
+                    {% if ride.can_pass %}
+                    <div>
+                    {% else %}
+                    <div class="hidden">
+                    {% endif %}
+                        <button class='btn btn-success' data-passenger='join'>Join as Passenger</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="panel panel-main">
+            <div class="panel-heading">
+                Ride Map
+            </div>
+            <div class="panel-body">
+                <div id="map_event"></div>
             </div>
         </div>
     </div>
 </div>
+
 
 <div class='comments'>
     <div class="panel panel-main">
@@ -107,6 +122,7 @@
 {% endblock %}
 
 {% block scripts %}
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB15X6ti6tDQUQKjwPCI2zi3XFfxZW3MGM&sensor=false" type="text/javascript"></script>
 <script src="/static/augment.js" type="text/javascript"></script>
 <script type="text/javascript" src='/static/comment.js'></script>
 <script type='text/javascript' src='/static/ride_handler.js'></script>
@@ -125,5 +141,37 @@ var comment = new Comment({
     id: {{ride.key().id()}},
     container: '[data-comment="container"]'
 });
+
+var orig_icon = {
+    url: '/static/carGreen.png',
+    anchor: new google.maps.Point(20, 20),
+    size: new google.maps.Size(30, 40)
+};
+
+var dest_icon = {
+    url: '/static/carRed.png',
+    anchor: new google.maps.Point(20, 20),
+    size: new google.maps.Size(30, 40)
+};
+
+var map = new google.maps.Map(document.querySelector('#map_event'), {
+    draggableCursor: 'crosshair',
+    center: new google.maps.LatLng({{ride.origin_lat}}, {{ride.origin_lng}}),
+    mapTypeId: google.maps.MapTypeId.ROADMAP,
+    zoom: 5
+});
+
+var orig_marker = new google.maps.Marker({
+    position: new google.maps.LatLng({{ride.origin_lat}}, {{ride.origin_lng}}),
+    map: map,
+    icon: orig_icon
+});
+
+var dest_marker = new google.maps.Marker({
+    position: new google.maps.LatLng({{ride.dest_lat}}, {{ride.dest_lng}}),
+    map: map,
+    icon: dest_icon
+});
+
 </script>
 {% endblock %}

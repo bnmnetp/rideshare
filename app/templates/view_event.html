@@ -21,8 +21,6 @@
 					<li>
 						<b>Date:</b> {{event.date_str}}
 					</li>
-					<hr>
-					<button class='btn btn-primary'>View this event on map</button>
 				</ul>
 			</div>
 		</div>
@@ -30,7 +28,7 @@
 	<div class="col-md-6">
 		<div class="panel panel-main">
 			<div class="panel-heading">
-				Map
+				Event Location
 			</div>
 			<div class="panel-body">
 				<div id="map_event"></div>
@@ -128,5 +126,14 @@ var event_marker = new google.maps.Marker({
 	map: map,
 	icon: icon
 });
+
+var info_window = new google.maps.InfoWindow({
+	content: 'Event Location'
+});
+
+google.maps.event.addListener(event_marker, 'click', function () {
+	info_window.open(map, event_marker);
+});
+
 </script>
 {% endblock %}
