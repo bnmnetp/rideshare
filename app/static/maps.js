@@ -11,19 +11,31 @@ function getParameterByName(name) {
 	}		
 }
 
-// if ('geolocation' in navigator) {
-// 	console.log('location availible')
-// 	display_geolocation();
-// } else {
-// 	console.log('no geolocation')
-// }
+var get_geolocation = function (e) {
+	var target = e.target;
+	navigator.geolocation.getCurrentPosition(function (pos) {
+		map.geocode_latlng({
+			lat: pos.coords.latitude,
+			lng: pos.coords.longitude
+		});
+	});
+};
 
-// var display_geolocation = function () {
-// 	var geo_btn = document.querySelector('#geo_btn');
-// 	geo_btn.classList.remove('hidden');
+var display_geolocation = function () {
+	var geo_btns = document.querySelectorAll('.geo_location');
+	for (var i = 0; i < geo_btns.length; i++) {
+		var btn = geo_btns[i];
+		btn.classList.remove('hidden');
+		btn.addEventListener('click', get_geolocation);
+	}
+};
 
-// 	geo_btn.addEventListener('click');
-// }
+if ('geolocation' in navigator) {
+	console.log('location availible')
+	display_geolocation();
+} else {
+	console.log('no geolocation')
+}
 
 var icons = {
 	event: {
@@ -407,7 +419,7 @@ var Map = augment(Object, function () {
 			var address = this.search_form.address.value;
 			this.geocoder.geocode({
 				address: address
-			}, this.disp_address.bind(this));
+			}, this.extract_address.bind(this));
 		}.bind(this));
 		this.reset();
 
@@ -415,7 +427,7 @@ var Map = augment(Object, function () {
 		this.reset_btn.addEventListener('click', function (e) {
 			this.reset();
 		}.bind(this));
-	}
+	};
 
 	this.reset = function () {
 		if (typeof flow != 'undefined') {
@@ -430,7 +442,7 @@ var Map = augment(Object, function () {
 			this.markers[i].setMap(null);
 		}
 		this.markers = [];
-	}
+	};
 
 	this.create_markers = function () {
 	    this.map = new google.maps.Map(document.querySelector('#map_canvas'), {
@@ -443,21 +455,21 @@ var Map = augment(Object, function () {
 	    google.maps.event.addListener(this.map, 'click', this.get_address.bind(this))
 
 		this.geocoder = new google.maps.Geocoder();
-	}
+	};
 
 	this.set_window = function (location, content, icon) {
 		if (this.create_new_marker) {
-			var LatLng = new google.maps.LatLng(location.k, location.A);
+			var latlng = new google.maps.LatLng(location.k, location.A);
 			var dialog = new google.maps.InfoWindow({
-				position: LatLng,
+				position: latlng,
 				content: content
 			});
 			var marker = new google.maps.Marker({
-				position: LatLng,
+				position: latlng,
 				map: this.map,
 				icon: icons[icon]
 			});
-			this.map.setCenter(LatLng);
+			this.map.setCenter(latlng);
 			this.markers.push(marker);
 			google.maps.event.addListener(marker, 'click', function () {
 				dialog.open(this.map, marker)
@@ -470,38 +482,58 @@ var Map = augment(Object, function () {
 		} else {
 			console.log('Cannot create new marker right now');
 		}
-	}
+	};
+
+	this.geocode_latlng = function (deta) {
+		console.log(deta);
+		var latlng = new google.maps.LatLng(deta.lat, deta.lng);
+		this.geocoder.geocode({
+			latLng: latlng
+		}, this.extract_address.bind(this));
+	};
 
 	this.get_address = function (e) {
-		this.latLng = e.latLng;
+		this.latlng = e.latLng;
 		this.geocoder.geocode({
-			latLng: this.latLng
-		}, this.disp_address.bind(this));
-	}
+			latLng: this.latlng
+		}, this.extract_address.bind(this));
+	};
 
-	this.disp_address = function (location) {
+	this.extract_address = function (location) {
+		console.log(location);
 		var point = location[0].geometry.location;
 
+		var details = {};
+		details.lat = point.k;
+		details.lng = point.A;
+		details.add = location[0].formatted_address;
+		details.point = point;
+
+		this.disp_address(details);
+	};
+
+	this.disp_address = function (deta) {
+
 		if (this.state == 'event_location') {
-			this.set_window(point, location[0].formatted_address, 'person');
-			this.marker_start.lat = point.k;
-			this.marker_start.lng = point.A;
-			this.marker_start.address = location[0].formatted_address;
+			this.set_window(deta.point, deta.add, 'person');
+			this.marker_start.lat = deta.lat;
+			this.marker_start.lng = deta.lng;
+			this.marker_start.address = deta.add;
 			flow.change_slide('event_details');
 		}
 		if (this.state == 'ride_location') {
-			this.set_window(point, location[0].formatted_address, 'success');
-			this.marker_start.lat = point.k;
-			this.marker_start.lng = point.A;
-			this.marker_start.address = location[0].formatted_address;
+			this.set_window(deta.point, deta.add, 'success');
+			this.marker_start.lat = deta.lat;
+			this.marker_start.lng = deta.lng;
+			this.marker_start.address = deta.add;
 			this.create_new_marker = true;
 			flow.change_slide('select_type');
 		}
 		if (this.state == 'location_dest') {
-			this.set_window(point, location[0].formatted_address, 'error');
-			this.marker_dest.lat = point.k;
-			this.marker_dest.lng = point.A;
-			this.marker_dest.address = location[0].formatted_address;
+			this.set_window(deta.point, deta.add, 'error');
+			this.marker_dest.lat = deta.lat;
+			this.marker_dest.lng = deta.lng;
+			this.marker_dest.address = deta.add;
 
 			var loc_dest = document.querySelector('[data-ride="loc_dest"]');
 			var loc_btn = document.querySelector('[data-ride="loc_btn"]');
@@ -510,13 +542,13 @@ var Map = augment(Object, function () {
 			loc_btn.classList.remove('hidden');
 		}
 		if (this.state == 'event_ride_location') {
-			this.set_window(point, location[0].formatted_address, 'success');
-			this.marker_start.lat = point.k;
-			this.marker_start.lng = point.A;
-			this.marker_start.address = location[0].formatted_address;
+			this.set_window(deta.point, deta.add, 'success');
+			this.marker_start.lat = deta.lat;
+			this.marker_start.lng = deta.lng;
+			this.marker_start.address = deta.add;
 			flow.change_slide('select_type');
 		}
-	}
+	};
 
 	this.special_action = function (route, btn) {
 		if (route == 'select_location') {
@@ -582,7 +614,7 @@ var Map = augment(Object, function () {
 		} else {
 			flow.change_slide(route);
 		}
-	}
+	};
 });
 
 var map = new Map();
