@@ -31,10 +31,10 @@ var display_geolocation = function () {
 };
 
 if ('geolocation' in navigator) {
-	console.log('location availible')
+	console.log('Geolocation Availible');
 	display_geolocation();
 } else {
-	console.log('no geolocation')
+	console.log('Geolocation Unavailible');
 }
 
 var icons = {

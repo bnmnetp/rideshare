@@ -5,8 +5,12 @@
             <img src="/user/photo/{{user.id}}" style="width: 64px; height: 64px;" class="media-object img-circle" alt="64x64">
         </a>
         <div class="media-body">
-            <h4 class="media-heading">{{user.name}}</h4>
-            {{comment}}
+            <h4 class="media-heading">
+                <a href='/user/{{user.id}}'>
+                    {{user.name}}
+                </a>
+            </h4>
+            {{text}}
         </div>
         <span class="label label-success">Posted on {{date}}</span>
         {{#if is_owner}}

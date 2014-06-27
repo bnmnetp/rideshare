@@ -59,7 +59,7 @@ class CommentHandler(BaseHandler):
 			'message': 'Success',
 			'name': user.name,
 			'date': str(d),
-			'comment': comment.text,
+			'text': comment.text,
 			'id': comment.key().id()
 		}))
 
@@ -118,4 +118,28 @@ class GetComment(BaseHandler):
 		}
 
 		self.response.write(json.dumps(resp))
+
+	def delete(self, comment_id):
+		self.auth()
+
+		user = self.current_user()
+
+		comment = Comment.get_by_id(int(comment_id))
+
+		if comment.user.key() == user.key():
+			comment.delete()
+
+			resp = {
+				'message': 'Deleted'
+			}
+
+			self.response.write(json.dumps(resp))
+
+		else:
+			resp = {
+				'message': 'Not deleted'
+			}
+
+			self.response.write(json.dumps(resp))
+
 

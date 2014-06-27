@@ -176,6 +176,11 @@ template {
 	padding: 0px;
 }
 
+#map_event {
+    height: 300px;
+    width: 100%;
+}
+
 .entry {
     overflow: auto;
     line-height: 22px;
@@ -345,6 +350,10 @@ template {
     }
     .panel, .panel-heading {
         border-radius: 0px;
+    }
+    .alert {
+        border-radius: 0px;
+        margin: 0px;
     }
     #map_canvas {
         padding-right: 20px;
