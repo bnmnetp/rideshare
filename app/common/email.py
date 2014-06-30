@@ -14,12 +14,12 @@ def send_email(user, subject, template_file, ctx):
 	html = template.render(ctx)
 
 	message = mail.EmailMessage(
-		sender='Rideshare Team <team@rideshare.com>',
+		sender='Rideshare Team <bananagus@gmail.com>',
 		subject=subject
 	)
 
 	message.to = user.name + ' <' + user.email + '>'
 
-	message.body = html
+	message.html = html
 
 	message.send()
