@@ -10,7 +10,7 @@ from simpleauth import SimpleAuthHandler
 from app.base_handler import BaseHandler
 
 # testing
-from app.controllers.test_account import create_user
+from app.controllers.test_account import email_test
 # end testing
 
 import app.secrets as secrets
@@ -216,7 +216,7 @@ app = webapp2.WSGIApplication([
     ),
     ('/details', DetailHandler),
     # end auth routes
-    ('/testing', create_user),
+    ('/email_test', email_test),
     ('/help', HelpHandler),
     ('/.*', IncorrectHandler)
     ],

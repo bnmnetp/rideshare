@@ -1,4 +1,4 @@
-import emails
+from google.appengine.api import mail
 import jinja2
 
 env = jinja2.Environment(
@@ -13,10 +13,13 @@ def send_email(user, subject, template_file, ctx):
 	template = env.get_template(template_file)
 	html = template.render(ctx)
 
-	message = emails.html(
-		subject=subject,
-		html=html,
-		mail_from=('Rideshare', 'team@rideshare.com')
+	message = mail.EmailMessage(
+		sender='Rideshare Team <team@rideshare.com>',
+		subject=subject
 	)
 
-	message.send(to=(user.name, user.email))
+	message.to = user.name + ' <' + user.email + '>'
+
+	message.body = html
+
+	message.send()
