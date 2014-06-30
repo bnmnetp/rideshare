@@ -6,6 +6,7 @@ from datetime import date
 from app.base_handler import BaseHandler
 from app.common.voluptuous import *
 import json
+import re
 
 class GetCircleHandler(BaseHandler):
     def get(self, circle_id):
@@ -146,3 +147,13 @@ class AddCircleHandler(BaseHandler): #add Circle Processing
         newCircle.description = circleDesc
         newCircle.put()
         self.redirect("/")
+
+class SendInvite(BaseHandler):
+    def post(self):
+        self.auth()
+
+        user = self.current_user()
+
+        json_str = self.request.body
+        data = json.loads(json_str)
+
