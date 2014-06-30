@@ -450,7 +450,7 @@ var Map = augment(Object, function () {
 	        center: new google.maps.LatLng(this.location.lat, this.location.lng),
 	        mapTypeId: google.maps.MapTypeId.ROADMAP,
 	        zoom: 10
-	    })
+	    });
 
 	    google.maps.event.addListener(this.map, 'click', this.get_address.bind(this))
 
