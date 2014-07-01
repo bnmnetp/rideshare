@@ -149,7 +149,7 @@ class AddCircleHandler(BaseHandler): #add Circle Processing
         self.redirect("/")
 
 class SendInvite(BaseHandler):
-    def post(self):
+    def post(self, circle_id):
         self.auth()
 
         user = self.current_user()
@@ -157,3 +157,22 @@ class SendInvite(BaseHandler):
         json_str = self.request.body
         data = json.loads(json_str)
 
+        print data['emails']
+
+        email_list = data['emails'].split(',')
+
+        email_regex = re.compile(r'[^@]+@[^@]+\.[^@]+')
+        resp = {
+            'invalid': [],
+            'valid': []
+        }
+        for email in email_list:
+            if email_regex.match(email):
+                resp['valid'].append(email)
+            else:
+                resp['invalid'].append(email)
+
+        for email in resp['valid']:
+            print email
+
+        self.response.write(json.dumps(resp))

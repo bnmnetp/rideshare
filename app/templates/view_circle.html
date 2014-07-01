@@ -6,6 +6,7 @@
 {% endblock %}
 
 {% block main %}
+<div data-notify="container"></div>
 <ul class="ntabs">
     <li data-next="details">
         Details
@@ -161,7 +162,14 @@
 <script src="/static/flow.js" type="text/javascript"></script>
 
 {% include 'comment.html' %}
-
+{% raw %}
+<script data-notify="template" type='text/x-handlebars-template'>
+    <div class="alert alert-{{type}} alert-dismissable">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        <strong>{{strong}}</strong> {{message}}
+    </div>
+</script>
+{% endraw %}
 <script type="text/javascript">
 var comment = new Comment({
     type: 'circle',
@@ -169,5 +177,38 @@ var comment = new Comment({
     container: '[data-comment="container"]'
 });
 var flow = new Flow('details');
+
+var invites = document.querySelector('#invites');
+
+invites.addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    var form = e.target;
+
+    var data = {};
+    data.emails = form.emails.value;
+
+    var push = $.ajax({
+        type: 'POST',
+        url: '/invite/{{circle.key().id()}}',
+        dataType: 'json',
+        contentType: 'application/json; charset=UTF-8',
+        data: JSON.stringify(data)
+    });
+
+    push.done(function (data) {
+        notify({
+            type: 'success',
+            strong: 'Invites sent!'
+        });
+    });
+
+    push.fail(function (data, status) {
+        notify({
+            type: 'danger',
+            strong: 'Invites not sent.'
+        });
+    });
+});
 </script>
 {% endblock %}
