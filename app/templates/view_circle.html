@@ -156,11 +156,13 @@
                     </form>
                 </div>
                 <div class="col-md-6">
-                    <p class="lead">Invite by name</p>
-                    <div class="form-group">
-                        <label>Search by name</label>
-                        <input type="text" class='form-control' placeholder='Name' id='search_name'>
-                    </div>
+                    <form>
+                        <p class="lead">Invite by name</p>
+                        <div class="form-group">
+                            <label>Search by name</label>
+                            <input type="text" class='form-control' placeholder='Name' id='search_name'>
+                        </div>
+                    </form>
                 </div>
             </div>
 
@@ -225,9 +227,17 @@ invites.addEventListener('submit', function (e) {
     });
 });
 
-$('#search_name').typeahead([{
+var name_sug = new Bloodhound({
+    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+    queryTokenizer: Bloodhound.tokenizers.whitespace,
+    remote: '/invite/names?q=%QUERY'
+});
+name_sug.initialize();
+
+$('#search_name').typeahead(null, {
     name: 'names',
-    remote: '/invite/names'
-}])
+    displayKey: 'value',
+    source: name_sug.ttAdapter()
+});
 </script>
 {% endblock %}

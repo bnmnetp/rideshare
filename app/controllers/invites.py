@@ -1,5 +1,6 @@
 from app.common.toolbox import doRender
 from google.appengine.ext import db
+from google.appengine.api import search
 from app.model import *
 import datetime
 from datetime import date
@@ -38,12 +39,14 @@ class SendInvite(BaseHandler):
         self.response.write(json.dumps(resp))
 
 class GetNames(BaseHandler):
-	def post(self):
+	def get(self):
 		self.auth()
 
 		name = self.request.get('q')
 
-		users = Users.search(name)
+		index = search.Index(name='User')
+
+		users = index.search(name)
 
 		user_dict = [u.to_dict() for u in users]
 
