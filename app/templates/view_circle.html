@@ -142,15 +142,28 @@
     <div class="panel panel-main">
         <div class="panel-heading">Send Invites</div>
         <div class="panel-body">
-            <form id='invites'>
-                <div class="form-group">
-                    <label>Emails</label>
-                    <textarea name='emails' class='form-control'></textarea>
-                    <p class="help-block">Type emails seperated by commas</p>
-                    <p class="help-block">Not functional yet</p>
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="lead">Invite by email</p>
+                    <form id='invites'>
+                        <div class="form-group">
+                            <label>Emails</label>
+                            <textarea name='emails' class='form-control'></textarea>
+                            <p class="help-block">Type emails seperated by commas</p>
+                            <p class="help-block">Not functional yet</p>
+                        </div>
+                        <button type='submit' class='btn btn-primary'>Send Invites</button>
+                    </form>
                 </div>
-                <button type='submit' class='btn btn-primary'>Send Invites</button>
-            </form>
+                <div class="col-md-6">
+                    <p class="lead">Invite by name</p>
+                    <div class="form-group">
+                        <label>Search by name</label>
+                        <input type="text" class='form-control' placeholder='Name' id='search_name'>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
@@ -160,6 +173,7 @@
 <script src="/static/augment.js" type="text/javascript"></script>
 <script type="text/javascript" src='/static/comment.js'></script>
 <script src="/static/flow.js" type="text/javascript"></script>
+<script src='/static/typeahead.js' type='text/javascript'></script>
 
 {% include 'comment.html' %}
 {% raw %}
@@ -210,5 +224,10 @@ invites.addEventListener('submit', function (e) {
         });
     });
 });
+
+$('#search_name').typeahead([{
+    name: 'names',
+    remote: '/invite/names'
+}])
 </script>
 {% endblock %}

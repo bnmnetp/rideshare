@@ -47,6 +47,7 @@ from app.controllers.events import *
 from app.controllers.rides import *
 from app.controllers.comments import *
 from app.controllers.users import *
+from app.controllers.invites import *
 
 from app.common.toolbox import doRender, split_address
 
@@ -190,8 +191,13 @@ app = webapp2.WSGIApplication([
     ('/newCircle',NewCircleHandler),
     ('/circles', CircleHandler),
     ('/join_circle', JoinCircle),
-    ('/invite/(\d+)', SendInvite),
+
     # end circles
+
+    # controllers/invites.py
+    ('/invite/(\d+)', SendInvite),
+    ('/invite/names', GetNames),
+    # end invite
 
     # controllers/events.py
     ('/event/(\d+)', GetEventHandler),
