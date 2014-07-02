@@ -51,7 +51,7 @@ class CircleHandler(BaseHandler):
         self.auth()
         user = self.current_user()
 
-        circles = Circle.all().fetch(100)
+        circles = Circle.all().filter('privacy = ', 'public').fetch(100)
 
         for circle in circles:
             if circle.key() in user.circles:
@@ -72,7 +72,8 @@ class CircleHandler(BaseHandler):
 
         circle_schema = Schema({
             Required('name'): All(unicode, Length(min=3)),
-            Required('description', default=""): unicode
+            Required('description', default=""): unicode,
+            Required('privacy', default="public"): unicode
         })
 
         json_str = self.request.body
@@ -91,6 +92,7 @@ class CircleHandler(BaseHandler):
 
         circle.name = data['name']
         circle.description = data['description']
+        circle.privacy = data['privacy']
 
         circle.put()
 

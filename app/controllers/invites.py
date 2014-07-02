@@ -42,11 +42,7 @@ class GetNames(BaseHandler):
 	def get(self):
 		self.auth()
 
-		name = self.request.get('q')
-
-		index = search.Index(name='User')
-
-		users = index.search(name)
+		users = User.all().fetch(100)
 
 		user_dict = [u.to_dict() for u in users]
 

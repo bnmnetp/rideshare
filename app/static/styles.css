@@ -123,9 +123,10 @@ img {
     display: block;
 }
 
-.block .title a {
+/*.block .title a {
     color: #262626;
-}
+    text-decoration: underline;
+}*/
 
 .small a {
     font-size: 16px;
@@ -325,11 +326,8 @@ template {
 }
 
 .ntabs li a {
-    color: inherit
-}
-
-.ntab {
-
+    color: inherit;
+    display: block;
 }
 
 @media (max-width: 768px) {
@@ -366,5 +364,8 @@ template {
     }
     .col-md-4 {
         margin: 10px 15px 10px 15px;
+    }
+    .ntabs li {
+        font-size: 12px;
     }
 }

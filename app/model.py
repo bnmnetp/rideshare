@@ -23,11 +23,13 @@ class User(db.Model):
 class Circle(db.Model):
     name = db.StringProperty()
     description = db.StringProperty()
+    privacy = db.StringProperty()
     def to_dict(self):
         d = {}
         d['id'] = Circle.key().id()
         d['name'] = Circle.name
         d['description'] = Circle.description
+        d['privacy'] = Circle.privacy
         return d
 
 class Event(db.Model):
@@ -127,6 +129,20 @@ class Notification(db.Model):
         if self.ride:
             resp['ride'] = self.ride.to_dict()
         return resp
+
+class Invites(db.Model):
+    circle = db.ReferenceProperty(Circle)
+    email = db.StringProperty()
+    user = db.ReferenceProperty(
+        User,
+        required = False,
+        collection_name = 'to_user'
+    )
+    sender = db.ReferenceProperty(
+        User,
+        required = False,
+        collection_name = 'from_user'
+    )
 
 class ApplicationParameters(db.Model):
     apikey = db.StringProperty()

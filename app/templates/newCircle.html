@@ -20,6 +20,14 @@
                 <label>Description</label>
                 <input type='text' name='description' placeholder='Description' class='form-control'>
             </div>
+            <div class="form-group">
+                <label>Privacy</label>
+                <select class='form-control' name='privacy'>
+                    <option value="public">Public</option>
+                    <option value="private">Private</option>
+                </select>
+                <p class="help-block">Public circles are visible to everyone. Private groups are invite only.</p>
+            </div>
             <button type='submit' class='btn btn-primary'>Create Circle</button>
         </form>
     </div>
@@ -44,6 +52,7 @@
         var data = {};
         data.name = form.name.value;
         data.description = form.description.value;
+        data.privacy = form.privacy.value;
 
         var req = $.ajax({
             type: 'POST',

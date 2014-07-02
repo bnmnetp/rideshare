@@ -228,15 +228,15 @@ invites.addEventListener('submit', function (e) {
 });
 
 var name_sug = new Bloodhound({
-    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
     queryTokenizer: Bloodhound.tokenizers.whitespace,
-    remote: '/invite/names?q=%QUERY'
+    prefetch: '/invite/names'
 });
 name_sug.initialize();
 
 $('#search_name').typeahead(null, {
-    name: 'names',
-    displayKey: 'value',
+    name: 'name',
+    displayKey: 'name',
     source: name_sug.ttAdapter()
 });
 </script>

@@ -14,10 +14,13 @@
     <li data-next="all_circles">
         All Circles
     </li>
+    <li data-next='invites'>
+        Invites
+    </li>
     <li>
         <a href="/newCircle">
             <i class='fa fa-plus-circle'></i>
-            Create
+            Create Circle
         </a>
     </li>
 </ul>
@@ -49,6 +52,28 @@
     </div>
 </div>
 
+<div data-route='invites'>
+    <div class="alert alert-info">
+        You have been invited to private circles. Accept the invite to join the circle.
+    </div>
+    <div class="panel panel-main">
+        <div class="panel-heading">
+            Circle Invites
+        </div>
+        <div class="panel-body panel-no">
+
+            {% for invite in invites %}
+                <div class="block">
+                    <div class="title">Circle Name</div>
+                </div>
+                <div class="details">
+                    Accept Invite
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
 <div data-route='all_circles'>
     <div class="panel panel-main">
         <div class="panel-heading">All Circles</div>
@@ -56,7 +81,7 @@
             {% for circle in circles %}
                 <div class="block">
                     <div class="title">
-                        <a href="/circle/{{circle.key().id()}}">{{circle.name}}</a>
+                        {{circle.name}}
                         <div class='switch' data-id='{{ circle.key().id() }}'
                             {% if circle.key() in user.circles %}
                                 data-switch='true'
@@ -79,6 +104,7 @@
                 </div>
             {% endfor %}
         </div>
+    </div>
 </div>
 
 {% endblock %}
