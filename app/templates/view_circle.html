@@ -161,7 +161,7 @@
                             <label>Search by name</label>
                             <br>
                             <input type="text" placeholder='Name' id='search_name' class='form-style'>
-                            <button class='btn btn-default btn-dropdown' type='button' style='display:inline-block;'>Select</button>
+                            <button class='btn btn-default btn-dropdown' type='button' data-select>Select</button>
                         </div>
 
                         <button type='button' class='btn btn-primary'>Send</button>
@@ -236,8 +236,26 @@ var name_sug = new Bloodhound({
 });
 name_sug.initialize();
 
+var select_btn = document.querySelector('[data-select]');
+select_btn.disabled = true;
+
+var select_form = document.querySelector('#search_name');
+
+var selected;
+
+select_btn.addEventListener('click', function (e) {
+    console.log('clicked');
+    select_btn.disabled = true;
+});
+
+select_form.addEventListener('input', function () {
+    console.log('change');
+    select_btn.disabled = true;
+});
+
 var on_selected = function (ev, sug, name) {
-    console.log(ev, sug, name);
+    select_btn.disabled = false;
+    selected = sug;
 };
 
 $('#search_name').typeahead(null, {
