@@ -156,13 +156,15 @@
                     </form>
                 </div>
                 <div class="col-md-6">
-                    <form>
-                        <p class="lead">Invite by name</p>
+                    <p class="lead">Invite by name</p>
                         <div class="form-group">
                             <label>Search by name</label>
-                            <input type="text" class='form-control' placeholder='Name' id='search_name'>
+                            <br>
+                            <input type="text" placeholder='Name' id='search_name' class='form-style'>
+                            <button class='btn btn-default btn-dropdown' type='button' style='display:inline-block;'>Select</button>
                         </div>
-                    </form>
+
+                        <button type='button' class='btn btn-primary'>Send</button>
                 </div>
             </div>
 
@@ -234,10 +236,16 @@ var name_sug = new Bloodhound({
 });
 name_sug.initialize();
 
+var on_selected = function (ev, sug, name) {
+    console.log(ev, sug, name);
+};
+
 $('#search_name').typeahead(null, {
-    name: 'name',
+    name: 'query',
     displayKey: 'name',
     source: name_sug.ttAdapter()
-});
+})
+.on('typeahead:selected', on_selected);
+
 </script>
 {% endblock %}
