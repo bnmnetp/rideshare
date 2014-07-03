@@ -160,11 +160,11 @@
                         <div class="form-group">
                             <label>Search by name</label>
                             <br>
-                            <input type="text" placeholder='Name' id='search_name' class='form-style'>
-                            <button class='btn btn-default btn-dropdown' type='button' data-select>Select</button>
+                            <input type="text" placeholder='Name' data-invite='input' class='form-style'>
+                            <button class='btn btn-default btn-dropdown' type='button' data-invite='select'>Select</button>
                         </div>
-
-                        <button type='button' class='btn btn-primary'>Send</button>
+                        <div data-invite="output"></div>
+                        <button type='button' class='btn btn-primary' data-invite='send'>Send</button>
                 </div>
             </div>
 
@@ -185,6 +185,14 @@
     <div class="alert alert-{{type}} alert-dismissable">
         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
         <strong>{{strong}}</strong> {{message}}
+    </div>
+</script>
+<script data-invite='template' type='text/x-handlebars-template'>
+    <div class='btn-group'>
+        <button type='button' class='btn btn-default'>{{name}}</button>
+        <button type='button' class='btn btn-default' data-id='{{id}}'>
+            <i class='fa fa-times'></i>
+        </button>
     </div>
 </script>
 {% endraw %}
@@ -232,19 +240,53 @@ invites.addEventListener('submit', function (e) {
 var name_sug = new Bloodhound({
     datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
     queryTokenizer: Bloodhound.tokenizers.whitespace,
-    prefetch: '/invite/names'
+    prefetch: {
+        url: '/invite/names',
+        ttl: 1,
+        thumbprint: Math.random()
+    }
 });
 name_sug.initialize();
 
-var select_btn = document.querySelector('[data-select]');
+var select_btn = document.querySelector('[data-invite="select"]');
 select_btn.disabled = true;
 
-var select_form = document.querySelector('#search_name');
+var select_form = document.querySelector('[data-invite="input"]');
+var output = document.querySelector('[data-invite="output"]');
+var source = document.querySelector('[data-invite="template"]').innerHTML;
+var template = Handlebars.compile(source);
+
+document.addEventListener('click', function (e) {
+    var target = e.target;
+
+    if (target.dataset.id) {
+        remove_by_id(send_arr, target.dataset.id);
+
+        target.parentNode.parentNode.removeChild(target.parentNode);
+        console.log(send_arr);
+    }
+});
+
+var remove_by_id = function (arr, id) {
+    for (var i = 0; i < arr.length; i++) {
+        var cur = arr[i];
+        if (cur.id == id) {
+            arr.splice(i);
+        }
+    }
+};
 
 var selected;
+var send_arr = [];
 
 select_btn.addEventListener('click', function (e) {
     console.log('clicked');
+    send_arr.push(selected);
+    var html = template({
+        id: selected.id,
+        name: selected.name
+    });
+    output.insertAdjacentHTML('beforeend', html);
     select_btn.disabled = true;
 });
 
@@ -258,12 +300,43 @@ var on_selected = function (ev, sug, name) {
     selected = sug;
 };
 
-$('#search_name').typeahead(null, {
+$('[data-invite="input"]').typeahead(null, {
     name: 'query',
     displayKey: 'name',
     source: name_sug.ttAdapter()
-})
-.on('typeahead:selected', on_selected);
+}).on('typeahead:selected', on_selected);
+
+
+invites.addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    var form = e.target;
+
+    var data = {};
+    data.emails = form.emails.value;
+
+    var push = $.ajax({
+        type: 'POST',
+        url: '/invite/{{circle.key().id()}}',
+        dataType: 'json',
+        contentType: 'application/json; charset=UTF-8',
+        data: JSON.stringify(data)
+    });
+
+    push.done(function (data) {
+        notify({
+            type: 'success',
+            strong: 'Invites sent!'
+        });
+    });
+
+    push.fail(function (data, status) {
+        notify({
+            type: 'danger',
+            strong: 'Invites not sent.'
+        });
+    });
+});
 
 </script>
 {% endblock %}

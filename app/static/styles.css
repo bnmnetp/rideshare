@@ -485,3 +485,7 @@ margin: 0;
 .btn-dropdown {
     display: inline-block;
 }
+
+[data-invite='output'] {
+    padding-bottom: 10px;
+}
