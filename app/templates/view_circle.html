@@ -138,46 +138,12 @@
         </div>
     </div>
 </div>
-<div data-route='invites'>
-    <div class="panel panel-main">
-        <div class="panel-heading">Send Invites</div>
-        <div class="panel-body">
-            <div class="row">
-                <div class="col-md-6">
-                    <p class="lead">Invite by email</p>
-                    <form id='invites'>
-                        <div class="form-group">
-                            <label>Emails</label>
-                            <textarea name='emails' class='form-control'></textarea>
-                            <p class="help-block">Type emails seperated by commas</p>
-                            <p class="help-block">Not functional yet</p>
-                        </div>
-                        <button type='submit' class='btn btn-primary'>Send Invites</button>
-                    </form>
-                </div>
-                <div class="col-md-6">
-                    <p class="lead">Invite by name</p>
-                        <div class="form-group">
-                            <label>Search by name</label>
-                            <br>
-                            <input type="text" placeholder='Name' data-invite='input' class='form-style'>
-                            <button class='btn btn-default btn-dropdown' type='button' data-invite='select'>Select</button>
-                        </div>
-                        <div data-invite="output"></div>
-                        <button type='button' class='btn btn-primary' data-invite='send'>Send</button>
-                </div>
-            </div>
-
-        </div>
-    </div>
-</div>
 {% endblock %}
 
 {% block scripts %}
 <script src="/static/augment.js" type="text/javascript"></script>
 <script type="text/javascript" src='/static/comment.js'></script>
 <script src="/static/flow.js" type="text/javascript"></script>
-<script src='/static/typeahead.js' type='text/javascript'></script>
 
 {% include 'comment.html' %}
 {% raw %}
@@ -185,14 +151,6 @@
     <div class="alert alert-{{type}} alert-dismissable">
         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
         <strong>{{strong}}</strong> {{message}}
-    </div>
-</script>
-<script data-invite='template' type='text/x-handlebars-template'>
-    <div class='btn-group'>
-        <button type='button' class='btn btn-default'>{{name}}</button>
-        <button type='button' class='btn btn-default' data-id='{{id}}'>
-            <i class='fa fa-times'></i>
-        </button>
     </div>
 </script>
 {% endraw %}
@@ -203,140 +161,5 @@ var comment = new Comment({
     container: '[data-comment="container"]'
 });
 var flow = new Flow('details');
-
-var invites = document.querySelector('#invites');
-
-invites.addEventListener('submit', function (e) {
-    e.preventDefault();
-
-    var form = e.target;
-
-    var data = {};
-    data.emails = form.emails.value;
-
-    var push = $.ajax({
-        type: 'POST',
-        url: '/invite/{{circle.key().id()}}',
-        dataType: 'json',
-        contentType: 'application/json; charset=UTF-8',
-        data: JSON.stringify(data)
-    });
-
-    push.done(function (data) {
-        notify({
-            type: 'success',
-            strong: 'Invites sent!'
-        });
-    });
-
-    push.fail(function (data, status) {
-        notify({
-            type: 'danger',
-            strong: 'Invites not sent.'
-        });
-    });
-});
-
-var name_sug = new Bloodhound({
-    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
-    queryTokenizer: Bloodhound.tokenizers.whitespace,
-    prefetch: {
-        url: '/invite/names',
-        ttl: 1,
-        thumbprint: Math.random()
-    }
-});
-name_sug.initialize();
-
-var select_btn = document.querySelector('[data-invite="select"]');
-select_btn.disabled = true;
-
-var select_form = document.querySelector('[data-invite="input"]');
-var output = document.querySelector('[data-invite="output"]');
-var source = document.querySelector('[data-invite="template"]').innerHTML;
-var template = Handlebars.compile(source);
-
-document.addEventListener('click', function (e) {
-    var target = e.target;
-
-    if (target.dataset.id) {
-        remove_by_id(send_arr, target.dataset.id);
-
-        target.parentNode.parentNode.removeChild(target.parentNode);
-        console.log(send_arr);
-    }
-});
-
-var remove_by_id = function (arr, id) {
-    for (var i = 0; i < arr.length; i++) {
-        var cur = arr[i];
-        if (cur.id == id) {
-            arr.splice(i);
-        }
-    }
-};
-
-var selected;
-var send_arr = [];
-
-select_btn.addEventListener('click', function (e) {
-    console.log('clicked');
-    send_arr.push(selected);
-    var html = template({
-        id: selected.id,
-        name: selected.name
-    });
-    output.insertAdjacentHTML('beforeend', html);
-    select_btn.disabled = true;
-});
-
-select_form.addEventListener('input', function () {
-    console.log('change');
-    select_btn.disabled = true;
-});
-
-var on_selected = function (ev, sug, name) {
-    select_btn.disabled = false;
-    selected = sug;
-};
-
-$('[data-invite="input"]').typeahead(null, {
-    name: 'query',
-    displayKey: 'name',
-    source: name_sug.ttAdapter()
-}).on('typeahead:selected', on_selected);
-
-
-invites.addEventListener('submit', function (e) {
-    e.preventDefault();
-
-    var form = e.target;
-
-    var data = {};
-    data.emails = form.emails.value;
-
-    var push = $.ajax({
-        type: 'POST',
-        url: '/invite/{{circle.key().id()}}',
-        dataType: 'json',
-        contentType: 'application/json; charset=UTF-8',
-        data: JSON.stringify(data)
-    });
-
-    push.done(function (data) {
-        notify({
-            type: 'success',
-            strong: 'Invites sent!'
-        });
-    });
-
-    push.fail(function (data, status) {
-        notify({
-            type: 'danger',
-            strong: 'Invites not sent.'
-        });
-    });
-});
-
 </script>
 {% endblock %}
