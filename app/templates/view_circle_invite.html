@@ -7,6 +7,11 @@
 
 {% block main %}
 <div data-notify="container"></div>
+<div class="panel panel-default">
+    <div class="panel-body">
+        <a href="/circle/{{circle.key().id()}}">Go back</a>
+    </div>
+</div>
 <div class="panel panel-main">
     <div class="panel-heading">Send Invites</div>
     <div class="panel-body">
@@ -41,10 +46,8 @@
 {% endblock %}
 
 {% block scripts %}
-<script type="text/javascript" src='/static/comment.js'></script>
 <script src='/static/typeahead.js' type='text/javascript'></script>
 
-{% include 'comment.html' %}
 {% raw %}
 <script data-notify="template" type='text/x-handlebars-template'>
     <div class="alert alert-{{type}} alert-dismissable">
@@ -75,7 +78,7 @@ var remove_by_id = function (arr, id) {
 
 var invite = {};
 
-var invite.email = document.querySelector('[data-invite="email"]');
+invite.email = document.querySelector('[data-invite="email"]');
 
 invite.email.addEventListener('submit', function (e) {
     e.preventDefault();
@@ -119,7 +122,7 @@ var suggestions = new Bloodhound({
 });
 suggestions.initialize();
 
-var invite.select = document.querySelector('[data-invite="select"]');
+invite.select = document.querySelector('[data-invite="select"]');
 invite.select.disabled = true;
 
 invite.send_array = [];

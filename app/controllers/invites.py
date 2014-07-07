@@ -38,6 +38,10 @@ class SendInvite(BaseHandler):
 
         self.response.write(json.dumps(resp))
 
+class SendInviteName(BaseHandler):
+	def post(self, circle_id):
+		print 'test'
+
 class GetNames(BaseHandler):
 	def get(self):
 		self.auth()

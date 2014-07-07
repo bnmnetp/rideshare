@@ -45,6 +45,18 @@ class GetCircleHandler(BaseHandler):
             'events': events
         })
 
+class GetCircleInvite(BaseHandler):
+    def get(self, circle_id):
+        self.auth()
+
+        circle = Circle.get_by_id(int(circle_id))
+
+        user = self.current_user()
+
+        doRender(self, 'view_circle_invite.html', {
+            'circle': circle
+        })
+
 
 class CircleHandler(BaseHandler):
     def get(self):

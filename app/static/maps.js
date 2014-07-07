@@ -413,14 +413,26 @@ var Map = augment(Object, function () {
 
 		this.create_markers();
 
-		this.search_form = document.querySelector('#search_form');
-		this.search_form.addEventListener('submit', function (e) {
-			e.preventDefault();
-			var address = this.search_form.address.value;
-			this.geocoder.geocode({
-				address: address
-			}, this.extract_address.bind(this));
-		}.bind(this));
+		this.s_forms = document.querySelectorAll('[data-search]');
+		for (var i = 0; i < this.s_forms.length; i++) {
+			var current = this.s_forms[i];
+			current.addEventListener('submit', function (e) {
+				e.preventDefault();
+				var address = current.address.value;
+				this.geocoder.geocode({
+					address: address
+				}, this.extract_address.bind(this));
+			}.bind(this));
+		}
+
+		// this.search_form = document.querySelector('#search_form');
+		// this.search_form.addEventListener('submit', function (e) {
+		// 	e.preventDefault();
+		// 	var address = this.search_form.address.value;
+		// 	this.geocoder.geocode({
+		// 		address: address
+		// 	}, this.extract_address.bind(this));
+		// }.bind(this));
 		this.reset();
 
 		this.reset_btn = document.querySelector('[data-reset]');
@@ -459,25 +471,25 @@ var Map = augment(Object, function () {
 
 	this.set_window = function (location, content, icon) {
 		if (this.create_new_marker) {
-			var latlng = new google.maps.LatLng(location.k, location.A);
-			var dialog = new google.maps.InfoWindow({
-				position: latlng,
-				content: content
-			});
+			var latlng = new google.maps.LatLng(location.lat, location.lng);
+			// var dialog = new google.maps.InfoWindow({
+			// 	position: latlng,
+			// 	content: content
+			// });
 			var marker = new google.maps.Marker({
 				position: latlng,
 				map: this.map,
 				icon: icons[icon]
 			});
-			this.map.setCenter(latlng);
+			this.map.panTo(latlng);
 			this.markers.push(marker);
-			google.maps.event.addListener(marker, 'click', function () {
-				dialog.open(this.map, marker)
-			})
-			google.maps.event.addListener(
-				dialog,
-				'closeclick'
-			);
+			// google.maps.event.addListener(marker, 'click', function () {
+			// 	dialog.open(this.map, marker)
+			// })
+			// google.maps.event.addListener(
+			// 	dialog,
+			// 	'closeclick'
+			// );
 			this.create_new_marker = false;
 		} else {
 			console.log('Cannot create new marker right now');
@@ -504,25 +516,25 @@ var Map = augment(Object, function () {
 		var point = location[0].geometry.location;
 
 		var details = {};
-		details.lat = point.k;
-		details.lng = point.A;
+		details.lat = point.lat();
+		details.lng = point.lng();
 		details.add = location[0].formatted_address;
 		details.point = point;
-
+		console.log(details);
 		this.disp_address(details);
 	};
 
 	this.disp_address = function (deta) {
 
 		if (this.state == 'event_location') {
-			this.set_window(deta.point, deta.add, 'person');
+			this.set_window(deta, deta.add, 'person');
 			this.marker_start.lat = deta.lat;
 			this.marker_start.lng = deta.lng;
 			this.marker_start.address = deta.add;
 			flow.change_slide('event_details');
 		}
 		if (this.state == 'ride_location') {
-			this.set_window(deta.point, deta.add, 'success');
+			this.set_window(deta, deta.add, 'success');
 			this.marker_start.lat = deta.lat;
 			this.marker_start.lng = deta.lng;
 			this.marker_start.address = deta.add;
@@ -530,7 +542,7 @@ var Map = augment(Object, function () {
 			flow.change_slide('select_type');
 		}
 		if (this.state == 'location_dest') {
-			this.set_window(deta.point, deta.add, 'error');
+			this.set_window(deta, deta.add, 'error');
 			this.marker_dest.lat = deta.lat;
 			this.marker_dest.lng = deta.lng;
 			this.marker_dest.address = deta.add;
@@ -542,7 +554,7 @@ var Map = augment(Object, function () {
 			loc_btn.classList.remove('hidden');
 		}
 		if (this.state == 'event_ride_location') {
-			this.set_window(deta.point, deta.add, 'success');
+			this.set_window(deta, deta.add, 'success');
 			this.marker_start.lat = deta.lat;
 			this.marker_start.lng = deta.lng;
 			this.marker_start.address = deta.add;
