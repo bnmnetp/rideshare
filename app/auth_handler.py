@@ -25,6 +25,7 @@ class AuthHandler(BaseHandler, SimpleAuthHandler):
         self.session['user'] = None
         self.redirect('/')
     def _callback_uri_for(self, provider):
-        return self.uri_for('auth_callback', provider = provider, _full = True)
+        print self.uri_for('auth_callback', provider = provider, redirect = self.GET['redirect'], _full = True)
+        return self.uri_for('auth_callback', provider = provider, redirect = self.GET['redirect'], _full = True)
     def _get_consumer_info_for(self, provider):
         return secrets.AUTH_CONFIG[provider]

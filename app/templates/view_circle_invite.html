@@ -9,7 +9,7 @@
 <div data-notify="container"></div>
 <div class="panel panel-default">
     <div class="panel-body">
-        <a href="/circle/{{circle.key().id()}}">Go back</a>
+        <a href="/circle/{{circle.key().id()}}">Go back to Circle</a>
     </div>
 </div>
 <div class="panel panel-main">
@@ -169,7 +169,7 @@ send_invites.addEventListener('click', function (e) {
         url: '/invite/{{circle.key().id()}}/name',
         dataType: 'json',
         contentType: 'application/json; charset=UTF-8',
-        data: JSON.stringify(send_arr)
+        data: JSON.stringify(invite.send_array)
     });
 
     push.done(function (data) {
