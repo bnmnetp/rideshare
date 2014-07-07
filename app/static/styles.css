@@ -21,6 +21,29 @@ img {
     max-width: 100%;
 }
 
+/* Location selection */
+.locsec {
+
+}
+.locsec h1 {
+    font-size: 24px;
+    font-weight: 300;
+}
+.locsec ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.locsec li {
+    border-top: 1px solid #C5CAE9;
+    padding: 15px 0px 15px 0px;
+}
+.locsec li:first-child {
+    border-top: none;
+    padding: 0px 0px 15px 0px;
+}
+/* End */
+
 .comments a {
     text-decoration: none;
 }
