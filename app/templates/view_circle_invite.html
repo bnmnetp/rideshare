@@ -66,16 +66,6 @@
 {% endraw %}
 <script type="text/javascript">
 
-/* Helper */
-var remove_by_id = function (arr, id) {
-    for (var i = 0; i < arr.length; i++) {
-        var cur = arr[i];
-        if (cur.id == id) {
-            arr.splice(i);
-        }
-    }
-};
-
 var invite = {};
 
 invite.email = document.querySelector('[data-invite="email"]');
@@ -126,7 +116,6 @@ invite.select = document.querySelector('[data-invite="select"]');
 invite.select.disabled = true;
 
 invite.send_array = [];
-invite.selected;
 
 invite.input = document.querySelector('[data-invite="input"]');
 invite.output = document.querySelector('[data-invite="output"]');
@@ -147,23 +136,23 @@ document.addEventListener('click', function (e) {
 });
 
 invite.select.addEventListener('click', function (e) {
-    send_arr.push(invite.selected.id);
+    invite.send_array.push(invite.selected.id);
     var html = invite.template({
-        id: selected.id,
-        name: selected.name
+        id: invite.selected.id,
+        name: invite.selected.name
     });
     invite.output.insertAdjacentHTML('beforeend', html);
     invite.select.disabled = true;
 });
 
 invite.input.addEventListener('input', function () {
-    invite.selected.disabled = true;
+    invite.select.disabled = true;
 });
 
 $('[data-invite="input"]').typeahead(null, {
     name: 'query',
     displayKey: 'name',
-    source: name_sug.ttAdapter()
+    source: suggestions.ttAdapter()
 })
 .on('typeahead:selected', function (ev, sug, name) {
     invite.select.disabled = false;
