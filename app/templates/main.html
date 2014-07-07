@@ -79,29 +79,31 @@
         <div class="panel-heading">All Circles</div>
         <div class="panel-body panel-no">
             {% for circle in circles %}
-                <div class="block">
-                    <div class="title">
-                        {{circle.name}}
-                        <div class='switch' data-id='{{ circle.key().id() }}'
-                            {% if circle.key() in user.circles %}
-                                data-switch='true'
-                            {% else %}
-                                data-switch='false'
-                            {% endif %}
-                        >
-                            <div class="true_padding"></div>
-                            <div class="true">In</div>
-                            <div class="false_padding"></div>
-                            <div class="false">Out</div>
+                {% if circle.privacy == 'public' %}
+                    <div class="block">
+                        <div class="title">
+                            {{circle.name}}
+                            <div class='switch' data-id='{{ circle.key().id() }}'
+                                {% if circle.key() in user.circles %}
+                                    data-switch='true'
+                                {% else %}
+                                    data-switch='false'
+                                {% endif %}
+                            >
+                                <div class="true_padding"></div>
+                                <div class="true">In</div>
+                                <div class="false_padding"></div>
+                                <div class="false">Out</div>
+                            </div>
+                        </div>
+                        <div class="details">
+                            <div class="deta">
+                                <i class="fa fa-square-o"></i>
+                                {{circle.description}}
+                            </div>
                         </div>
                     </div>
-                    <div class="details">
-                        <div class="deta">
-                            <i class="fa fa-square-o"></i>
-                            {{circle.description}}
-                        </div>
-                    </div>
-                </div>
+                {% endif %}
             {% endfor %}
         </div>
     </div>

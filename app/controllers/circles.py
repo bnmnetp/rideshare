@@ -63,7 +63,7 @@ class CircleHandler(BaseHandler):
         self.auth()
         user = self.current_user()
 
-        circles = Circle.all().filter('privacy = ', 'public').fetch(100)
+        circles = Circle.all().fetch(100)
 
         for circle in circles:
             if circle.key() in user.circles:
