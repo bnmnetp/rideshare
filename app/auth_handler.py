@@ -2,6 +2,7 @@ import webapp2
 from simpleauth import SimpleAuthHandler
 from app import secrets
 from app.model import *
+import urllib
 
 from app.base_handler import BaseHandler
 
@@ -17,15 +18,19 @@ class AuthHandler(BaseHandler, SimpleAuthHandler):
             user.auth_id = auth_id
             user.put()
             self.session['user'] = user.key().id()
-        if user.phone == None or user.email == None:
-            self.redirect('/details')
+        redirect = self.session.get('redirect')
+        if redirect:
+            self.session['redirect'] = None
+            self.redirect(redirect)
         else:
-            self.redirect('/map')
+            if user.phone == None or user.email == None:
+                self.redirect('/details')
+            else:
+                self.redirect('/map')
     def logout(self):
         self.session['user'] = None
         self.redirect('/')
     def _callback_uri_for(self, provider):
-        print self.uri_for('auth_callback', provider = provider, redirect = self.GET['redirect'], _full = True)
-        return self.uri_for('auth_callback', provider = provider, redirect = self.GET['redirect'], _full = True)
+        return self.uri_for('auth_callback', provider = provider, _full = True)
     def _get_consumer_info_for(self, provider):
         return secrets.AUTH_CONFIG[provider]

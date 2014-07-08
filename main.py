@@ -79,7 +79,9 @@ class MapHandler(BaseHandler):
 
 class LoginHandler(BaseHandler):
     def get(self):
-        doRender(self, 'loginPage.html', {})
+        doRender(self, 'loginPage.html', {
+
+        })
 
 class HomeHandler(BaseHandler):
     def get(self):
@@ -214,7 +216,7 @@ app = webapp2.WSGIApplication([
         name='auth_login'
     ),
     webapp2.Route(
-        '/auth/<provider>/callback?redirect=<redirect>', 
+        '/auth/<provider>/callback', 
         handler='app.auth_handler.AuthHandler:_auth_callback',
         name='auth_callback'
     ),

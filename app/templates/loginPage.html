@@ -13,15 +13,15 @@
     <h1>Welcome to {{community.name}} Rideshare!</h1>
     <p>To get started, select how you would like to login:</p>
     <div class="btns">
-        <a class='btn btn-primary' href='/auth/google'>
+        <a class='btn btn-primary' href='/auth/google?redirect={{redirect}}'>
             <i class='fa fa-google'></i>
             Google
         </a>
-        <a class='btn btn-primary' href='/auth/facebook'>
+        <a class='btn btn-primary' href='/auth/facebook?redirect={{redirect}}'>
             <i class='fa fa-facebook'></i>
             Facebook
         </a>
-        <a class='btn btn-primary' href='/auth/twitter'>
+        <a class='btn btn-primary' href='/auth/twitter?redirect={{redirect}}'>
             <i class='fa fa-twitter'></i>
             Twitter
         </a>

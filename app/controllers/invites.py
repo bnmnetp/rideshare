@@ -9,6 +9,10 @@ from app.common.voluptuous import *
 import json
 import re
 
+class ViewInvite(BaseHandler):
+    def get(self, invite_id):
+           print ''
+
 class SendInvite(BaseHandler):
     def post(self, circle_id):
         self.auth()

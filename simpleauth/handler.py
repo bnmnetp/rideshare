@@ -138,7 +138,7 @@ class SimpleAuthHandler(object):
     # with redirecting user to an auth endpoint
     meth(provider, cfg[1])
       
-  def _auth_callback(self, provider=None, redirect=None):
+  def _auth_callback(self, provider=None):
     """Dispatcher of callbacks from auth providers, e.g.
     /auth/PROVIDER/callback?params=...
     
