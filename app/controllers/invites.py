@@ -9,11 +9,13 @@ from app.common.voluptuous import *
 import json
 import re
 
-class ViewInvite(BaseHandler):
-    def get(self, invite_id):
-           print ''
-
 class SendInvite(BaseHandler):
+    def get(self, invite_id):
+        invite = Invite.get_by_id(int(invite_id))
+
+        doRender(self, 'view_invite.html', {
+            'invite': invite
+        })
     def post(self, circle_id):
         self.auth()
 
@@ -21,6 +23,8 @@ class SendInvite(BaseHandler):
 
         json_str = self.request.body
         data = json.loads(json_str)
+
+        circle = Circle.get_by_id(int(circle_id))
 
         print data['emails']
 
@@ -38,7 +42,11 @@ class SendInvite(BaseHandler):
                 resp['invalid'].append(email)
 
         for email in resp['valid']:
-            print email
+            invite = Invite()
+            invite.circle = circle.key()
+            invite.email = email
+            invite.sender = user.key()
+            invite.put()
 
         self.response.write(json.dumps(resp))
 
@@ -48,15 +56,25 @@ class SendInviteName(BaseHandler):
 
         user = self.current_user()
 
+        circle = Circle.get_by_id(int(circle_id))
+
         json_str = self.request.body
         ids = json.loads(json_str)
 
         print ids
 
         for id in ids:
-            user = User.get_by_id(int(id))
+            user_send = User.get_by_id(int(id))
 
-            if user.email:
+            if user_send:
+
+                invite = Invite()
+                invite.circle = circle.key()
+                invite.user = user
+                invite.sender = user.key()
+                invite.put()
+
+            if user_send.email:
                 print 'Email Sent!'
 
         self.response.write(json.dumps({

@@ -130,7 +130,7 @@ class Notification(db.Model):
             resp['ride'] = self.ride.to_dict()
         return resp
 
-class Invites(db.Model):
+class Invite(db.Model):
     circle = db.ReferenceProperty(Circle)
     email = db.StringProperty()
     user = db.ReferenceProperty(

@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+
+{% block title %}Invite{% endblock %}
+
+{% block head %}
+{% endblock %}
+
+{% block main %}
+<div class="panel panel-main">
+	<div class="panel-heading">Invite details</div>
+	<div class="panel-body">
+		<ul class="information">
+			<li>
+				<b>Circle:</b> {{invite.circle.name}}
+			</li>
+			<li>
+				<b>Invited by:</b> {{invite.sender.name}}
+			</li>
+		</ul>
+		<a href="/circle/join/{{invite.key().id()}}" class='btn btn-primary'>Join Circle</a>
+	</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/augment.js" type="text/javascript"></script>
+<script type="text/javascript" src='/static/comment.js'></script>
+{% include 'comment.html' %}
+{% raw %}
+<script data-notify="template" type='text/x-handlebars-template'>
+    <div class="alert alert-{{type}} alert-dismissable">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        <strong>{{strong}}</strong> {{message}}
+    </div>
+</script>
+{% endraw %}
+{% endblock %}

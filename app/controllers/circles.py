@@ -23,6 +23,8 @@ class GetCircleHandler(BaseHandler):
 
         events = Event.all().filter('circle = ', circle.key())
 
+        
+
         for ride in rides:
             ride.dest = split_address(ride.dest_add)
             ride.orig = split_address(ride.origin_add)
@@ -65,6 +67,8 @@ class CircleHandler(BaseHandler):
 
         circles = Circle.all().fetch(100)
 
+        invites = Invite.all().filter('user = ', user.key())
+
         for circle in circles:
             if circle.key() in user.circles:
                 circle.user = True
@@ -73,7 +77,8 @@ class CircleHandler(BaseHandler):
 
         doRender(self, 'main.html', {
             'circles': circles,
-            'user': user
+            'user': user,
+            'invites': invites
         })
     def post(self):
         self.auth()
