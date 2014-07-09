@@ -24,9 +24,20 @@
             <button class='btn btn-default' data-next='event_location'>Create a new Event</button>
             <button class='btn btn-default' data-next='ride_location'>Create a new Ride</button>
         </div>
-        <button class='btn btn-primary pull-right' data-reset>Start over</button>
+        <div class="btn-group pull-right">
+            <button class='btn btn-primary' data-reset>
+                <i class="fa fa-tencent-weibo"></i>
+                Start over
+            </button>
+            <button class='btn btn-primary' data-help='toggle'>
+                <i class="fa fa-navicon"></i>
+                Help
+            </button>
+        </div>
     </div>
 </div>
+
+{% include 'help_map.html' %}
 
 <div class="row">
 
@@ -321,10 +332,6 @@
     <p class="help-block">Viewing the event to look for rides / set up rides.</p>
 </script>
 
-<template type="text/x-handlebars-template">
-    
-</template>
-
 <script data-notify="template" type='text/x-handlebars-template'>
     <div class="alert alert-{{type}} alert-dismissable">
         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
@@ -338,13 +345,25 @@
 <script src="/static/maps.js" type="text/javascript"></script>
 <script src="/static/flow.js" type="text/javascript"></script>
 <script type="text/javascript" src="/static/jquery_ui/jquery-ui-1.10.4.custom.js"></script>
-
+<script src='//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/js/bootstrap.min.js' type="text/javascript"></script>
 
 <script type="text/javascript">
 var flow = new Flow('select_location');
 flow.set_handler(map);
 
 $('.date-select').datepicker();
+
+var help = {};
+
+help.btn = document.querySelector('[data-help="toggle"]');
+help.container = document.querySelector('[data-help="container"]');
+
+help.btn.addEventListener('click', function (e) {
+    var target = e.target;
+
+    help.container.classList.toggle('hidden');
+});
+
 </script>
 
 {% endblock %}
