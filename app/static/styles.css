@@ -21,6 +21,23 @@ img {
     max-width: 100%;
 }
 
+/* Noti Badge */
+.nbadge {
+    position: absolute;
+    right: 5px;
+    bottom: 7px;
+    min-width: 10px;
+    padding: 3px 7px;
+    font-size: 10px;
+    font-weight: bold;
+    color: #FFF;
+    line-height: 1;
+    text-align: center;
+    background-color: #999;
+    border-radius: 10px;
+}
+/* End */
+
 /* Location selection */
 .locsec {
 

@@ -26,7 +26,7 @@
 						<span class="icon-bar"></span>
 					</button>
 					<div class='icon'>
-						<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Your_Icon" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve" class='marker'>
+						<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="marker" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve" class='marker'>
 							<g>
 								<path class="marker-surrond" d="M50,76.948c-1.071,0-2.068-0.544-2.647-1.445L27.969,45.346c-2.719-4.224-4.155-9.12-4.155-14.16   C23.814,16.747,35.561,5,50,5s26.186,11.747,26.186,26.186c0,5.043-1.438,9.941-4.158,14.163L52.647,75.503   C52.068,76.404,51.071,76.948,50,76.948z M50,11.294c-10.969,0-19.892,8.924-19.892,19.892c0,3.83,1.09,7.548,3.152,10.751   L50,67.981l16.737-26.038c2.065-3.206,3.156-6.925,3.156-10.757C69.892,20.218,60.969,11.294,50,11.294z"/>
 							</g>
@@ -56,7 +56,12 @@
 	    				<li>
 	    					<a href="/events">Events</a>
 	    				</li>
-
+						<li>
+							<a href="/circles">Invites</a>
+							{% if invite_noti %}
+								<span class="nbadge">{{invite_noti}}</span>
+							{% endif%}
+						</li>
 					</ul>
 					<ul class="nav navbar-nav navbar-right">
 						{% if user is defined %}

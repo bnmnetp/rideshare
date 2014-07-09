@@ -15,7 +15,6 @@ class BaseHandler(webapp2.RequestHandler):
             return webapp2.redirect('/', False, True)
     def current_user(self):
         id = self.session.get('user')
-        print id
         if id and id != None:
             return User.get_by_id(id)
         else:
@@ -47,5 +46,6 @@ class BaseHandler(webapp2.RequestHandler):
 
     @webapp2.cached_property
     def session(self):
+        self.session_store = sessions.get_store(request=self.request)
         # Returns a session using the default cookie key.
         return self.session_store.get_session()
