@@ -9,6 +9,17 @@ from app.common.voluptuous import *
 import json
 import re
 
+class ViewInvites(BaseHandler):
+    def get(self):
+        self.auth()
+        user = self.current_user()
+
+        invites = Invite.all().filter('user = ', user.key())
+
+        doRender(self, 'view_invites.html', {
+            'invites': invites
+        })
+
 class SendInvite(BaseHandler):
     def get(self, invite_id):
         invite = Invite.get_by_id(int(invite_id))

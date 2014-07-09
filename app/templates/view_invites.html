@@ -1,0 +1,80 @@
+{% extends "layout.html" %}
+
+{% block title %}Circles{% endblock %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block main %}
+<ul class="ntabs">
+    <li>
+        <a href="/circles">
+            My Circles
+        </a>
+    </li>
+    <li>
+        <a href="/circles">
+            All Circles
+        </a>
+    </li>
+    <li class='active'>
+        <a href="/circles">
+            Invites
+        </a>
+    </li>
+    <li>
+        <a href="/newCircle">
+            <i class='fa fa-plus-circle'></i>
+            Create Circle
+        </a>
+    </li>
+</ul>
+
+<div data-route='invites'>
+    <div class="alert alert-info">
+        You have been invited to private circles. Accept the invite to join the circle.
+    </div>
+    <div class="panel panel-main">
+        <div class="panel-heading">
+            Circle Invites
+        </div>
+        <div class="panel-body panel-no">
+            {% for invite in invites %}
+            <div class="list">
+                <div class="ctx">
+                    <i class='fa fa-circle-o'></i>
+                </div>
+                <div class="info">
+                    <div class="title">
+                        Public Circle
+                    </div>
+                    <div class="sub">
+                        Invited by Gus Nelson
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+
+{% raw %}
+
+<script data-notify="template" type='text/x-handlebars-template'>
+    <div class="alert alert-{{type}} alert-dismissable">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        <strong>{{strong}}</strong> {{message}}
+    </div>
+</script>
+
+{% endraw %}
+
+<script src="static/augment.js" type="text/javascript"></script>
+<script src="static/flow.js" type="text/javascript"></script>
+<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+
+{% endblock %}

@@ -23,8 +23,6 @@ class GetCircleHandler(BaseHandler):
 
         events = Event.all().filter('circle = ', circle.key())
 
-        
-
         for ride in rides:
             ride.dest = split_address(ride.dest_add)
             ride.orig = split_address(ride.origin_add)
@@ -90,7 +88,8 @@ class CircleHandler(BaseHandler):
         circle_schema = Schema({
             Required('name'): All(unicode, Length(min=3)),
             Required('description', default=""): unicode,
-            Required('privacy', default="public"): unicode
+            Required('privacy', default="public"): unicode,
+            Required('color', default="#607d8b"): unicode
         })
 
         json_str = self.request.body
@@ -110,6 +109,7 @@ class CircleHandler(BaseHandler):
         circle.name = data['name']
         circle.description = data['description']
         circle.privacy = data['privacy']
+        circle.color = data['color']
 
         circle.put()
 

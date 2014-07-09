@@ -201,6 +201,7 @@ app = webapp2.WSGIApplication([
     ('/invite/(\d+)', SendInvite),
     ('/invite/(\d+)/name', SendInviteName),
     ('/invite/names', GetNames),
+    ('/invites', ViewInvites),
     # end invite
 
     # controllers/events.py

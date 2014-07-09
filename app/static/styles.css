@@ -21,6 +21,52 @@ img {
     max-width: 100%;
 }
 
+/* List */
+.list {
+    /*padding: 10px 0px;*/
+    margin-top: 20px;
+}
+
+.list:last-child {
+    margin-bottom: 20px;
+}
+
+.list .ctx {
+    width: 40px;
+    display: inline-block;
+    font-size: 24px;
+    color: white;
+    background-color: #B2B2B2;
+    border-radius: 10px;
+    height: 40px;
+    text-align: center;
+    line-height: 40px;
+    margin-left: 20px;
+    vertical-align: top;
+}
+
+.list .info {
+    display: inline-block;
+    padding: 0px 0px 7px 0px;
+    border-bottom: 2px solid #B2B2B2;
+    margin-left: 10px;
+    width: calc(100% - 75px);
+}
+
+.list .title {
+    font-size: 20px;
+    line-height: 30px;
+    color: #4D4D4D;
+}
+
+.list .sub {
+    font-size: 15px;
+    color: #616161;
+}
+
+
+/* End */
+
 /* Noti Badge */
 .nbadge {
     position: absolute;
