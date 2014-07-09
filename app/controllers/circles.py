@@ -25,6 +25,21 @@ class GetCircleHandler(BaseHandler):
         # Grabs Events
         events = Event.all().filter('circle = ', circle.key())
 
+
+        if circle.key() in user.circles:
+            has_permission = True
+        else:
+            has_permission = False
+
+        check_invites = Invite.all()
+            .filter('circle = ', circle.key())
+            .filter('user = ', user.key())
+            .fetch(1)
+
+        if check_invites:
+            invited = True
+            has_permission = True
+
         for ride in rides:
             ride.dest = split_address(ride.dest_add)
             ride.orig = split_address(ride.origin_add)

@@ -69,7 +69,6 @@ img {
     color: #616161;
 }
 
-
 /* End */
 
 /* Noti Badge */
@@ -78,14 +77,14 @@ img {
     right: 5px;
     bottom: 7px;
     min-width: 10px;
-    padding: 3px 7px;
+    padding: 2px 5px;
     font-size: 10px;
     font-weight: bold;
     color: #FFF;
     line-height: 1;
     text-align: center;
-    background-color: #999;
-    border-radius: 10px;
+    background-color: #5677FC;
+    border-radius: 3px;
 }
 /* End */
 

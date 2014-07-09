@@ -34,6 +34,23 @@
                 Help
             </button>
         </div>
+        <hr>
+        <div class="key">
+            <i class='fa fa-key'></i>
+            Key
+        </div>
+        <div class="key">
+            <img src="/static/carRed.png" />
+            Destination
+        </div>
+        <div class="key">
+            <img src="/static/carGreen.png" />
+            Starting point
+        </div>
+        <div class="key">
+            <img src="/static/person.png" />
+            Event
+        </div>
     </div>
 </div>
 
@@ -46,7 +63,7 @@
     </div>
 
     <div class="col-md-4 map_con" id='col_dialog' data-route='select_location'>
-        <p class="lead">Replace</p>
+
     </div>
 
     <div class="col-md-4" data-route='event_ride_location'>
@@ -251,23 +268,6 @@
         
     </div>
 </div>
-<div class="panel panel-main">
-    <div class="panel-heading">Key</div>
-    <div class="panel-body">
-        <div class="key">
-            <img src="/static/carRed.png" />
-            Destination
-        </div>
-        <div class="key">
-            <img src="/static/carGreen.png" />
-            Starting point
-        </div>
-        <div class="key">
-            <img src="/static/person.png" />
-            Event
-        </div>
-    </div>
-</div>
 {% endblock %}
 
 {% block scripts %}
@@ -354,7 +354,6 @@ flow.set_handler(map);
 $('.date-select').datepicker();
 
 var help = {};
-
 help.btn = document.querySelector('[data-help="toggle"]');
 help.container = document.querySelector('[data-help="container"]');
 
