@@ -28,23 +28,34 @@
 </ul>
 
 <div data-route='my_circles'>
+    <div class="panel panel-default">
+        <div class="panel-body">
+            This is a list of circles you have joined. To leave these circles, switch over to All Circles.
+        </div>
+    </div>
     <div class="panel panel-main">
         <div class="panel-heading">My Circles</div>
         <div class='panel-body panel-no'>
             {% for circle in circles %}
                 {% if circle.user %}
-                <div class="block" data-circle='{{circle.key().id()}}'>
+                <div class="list" data-circle='{{circle.key().id()}}'>
                 {% else %}
-                <div class="block hidden" data-circle='{{circle.key().id()}}'>
-                {% endif %}
-                    <div class="title">
-                        <a href="/circle/{{circle.key().id()}}">{{circle.name}}</a>
+                <div class="list hidden" data-circle='{{circle.key().id()}}'>
+                {% endif %}    
+                    {% if circle.color %}
+                    <div class="ctx" style='background-color:{{circle.color}};'>
+                    {% else %}
+                    <div class="ctx">
+                    {% endif %}
+                        <i class='fa fa-circle-o'></i>
                     </div>
-                    <div class="details">
-                        <div class="deta">
-                            <a href='/map?circle={{circle.key().id()}}' class='btn btn-success btn-large'>
+                    <div class="info">
+                        <div class="title">
+                            <a href='/circle/{{circle.key().id()}}'>{{circle.name}}</a>
+                        </div>
+                        <div class="sub">
+                            <a href='/map?circle={{circle.key().id()}}'>
                                 Add events for this circle
-                                <i class='fa fa-plus'></i>
                             </a>
                         </div>
                     </div>
@@ -54,58 +65,45 @@
     </div>
 </div>
 
-<div data-route='invites'>
-    <div class="alert alert-info">
-        You have been invited to private circles. Accept the invite to join the circle.
-    </div>
-    <div class="panel panel-main">
-        <div class="panel-heading">
-            Circle Invites
-        </div>
-        <div class="panel-body panel-no">
-
-            {% for invite in invites %}
-                <div class="block">
-                    <div class="title">Circle Name</div>
-                </div>
-                <div class="details">
-                    <a class='btn btn-primary' href="/invite/{{invite.key().id()}}">View Invite</a>
-                </div>
-            {% endfor %}
-        </div>
-    </div>
-</div>
-
 <div data-route='all_circles'>
+    <div class="panel panel-default">
+        <div class="panel-body">
+            This is a list of all public circles. You can join and leaves circles by toggling in / out.
+        </div>
+    </div>
     <div class="panel panel-main">
         <div class="panel-heading">All Circles</div>
         <div class="panel-body panel-no">
             {% for circle in circles %}
-                {% if circle.privacy == 'public' %}
-                    <div class="block">
-                        <div class="title">
-                            {{circle.name}}
-                            <div class='switch' data-id='{{ circle.key().id() }}'
-                                {% if circle.key() in user.circles %}
-                                    data-switch='true'
-                                {% else %}
-                                    data-switch='false'
-                                {% endif %}
-                            >
-                                <div class="true_padding"></div>
-                                <div class="true">In</div>
-                                <div class="false_padding"></div>
-                                <div class="false">Out</div>
-                            </div>
-                        </div>
-                        <div class="details">
-                            <div class="deta">
-                                <i class="fa fa-square-o"></i>
-                                {{circle.description}}
-                            </div>
+            {% if circle.privacy == 'public' %}
+            <div class="list">
+                {% if circle.color %}
+                <div class="ctx" style='background-color:{{circle.color}};'>
+                {% else %}
+                <div class="ctx">
+                {% endif %}
+                    <i class='fa fa-circle-o'></i>
+                </div>
+                <div class="info">
+                    <div class="title">
+                        {{circle.name}}
+                        {% if circle.user %}
+                        <div class="switch" data-id='{{circle.key().id()}}' data-switch='true'>
+                        {% else %}
+                        <div class="switch" data-id='{{circle.key().id()}}' data-switch='false'>
+                        {% endif %}
+                            <div class="true_padding"></div>
+                            <div class="true">In</div>
+                            <div class="false_padding"></div>
+                            <div class="false">Out</div>
                         </div>
                     </div>
-                {% endif %}
+                    <div class="sub">
+                        {{circle.description}}
+                    </div>
+                </div>
+            </div>  
+            {% endif %}
             {% endfor %}
         </div>
     </div>

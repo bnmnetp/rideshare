@@ -11,16 +11,18 @@ import re
 class GetCircleHandler(BaseHandler):
     def get(self, circle_id):
         self.auth()
+
         circle = Circle.get_by_id(int(circle_id))
 
         user = self.current_user()
 
-        comments = Comment.all().filter('circle = ', circle.key()).order('-date').fetch(100)
-
+        # Grabs members
         members = User.all().filter('circles = ', circle.key())
 
+        # Grabs rides
         rides = Ride.all().filter('circle = ',  circle.key())
 
+        # Grabs Events
         events = Event.all().filter('circle = ', circle.key())
 
         for ride in rides:
@@ -36,9 +38,10 @@ class GetCircleHandler(BaseHandler):
             else:
                 ride.is_passenger = False
 
+
+
         doRender(self, 'view_circle.html', {
             'circle': circle,
-            'comments': comments,
             'user': user,
             'members': members,
             'rides': rides,

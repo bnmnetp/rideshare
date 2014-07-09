@@ -47,10 +47,10 @@ img {
 
 .list .info {
     display: inline-block;
-    padding: 0px 0px 7px 0px;
-    border-bottom: 2px solid #B2B2B2;
-    margin-left: 10px;
-    width: calc(100% - 75px);
+    padding: 0px 0px 15px 0px;
+    border-bottom: 1px solid #B2B2B2;
+    margin-left: 15px;
+    width: calc(100% - 81px);
 }
 
 .list .title {
@@ -59,8 +59,13 @@ img {
     color: #4D4D4D;
 }
 
+.list .title a {
+    color: #3F51B5;
+}
+
 .list .sub {
     font-size: 15px;
+    line-height: 24px;
     color: #616161;
 }
 
@@ -314,15 +319,10 @@ template {
 	transition: width 2s;
 }
 
+/* Switch */
 .switch {
     display: inline-block;
     float: right;
-    transform: translateY(50%);
-}
-
-/* Join / Leave for Circles */
-
-.switch {
     width: 80px;
     height: 30px;
     -webkit-border-radius: 3px;
@@ -333,6 +333,7 @@ template {
     border-style: solid;
     position: relative;
     overflow: hidden;
+    margin-right: 20px;
 }
 
 .switch .true,
@@ -387,6 +388,7 @@ template {
 .switch[data-switch='false'] .true_padding {
     left: 80px;
 }
+/* End */
 
 .ntabs {
     background-color: #303F9F;

@@ -32,8 +32,10 @@
 </ul>
 
 <div data-route='invites'>
-    <div class="alert alert-info">
-        You have been invited to private circles. Accept the invite to join the circle.
+    <div class="panel panel-default">
+        <div class="panel-body">
+            This is a list of invites you have recieved. Clicking on a circle will show you details and prompt you to join.
+        </div>
     </div>
     <div class="panel panel-main">
         <div class="panel-heading">
@@ -41,16 +43,20 @@
         </div>
         <div class="panel-body panel-no">
             {% for invite in invites %}
-            <div class="list">
+            <div class="list">      
+                {% if invite.circle.color %}
+                <div class="ctx" style='background-color:{{invite.circle.color}};'>
+                {% else %}
                 <div class="ctx">
+                {% endif %}
                     <i class='fa fa-circle-o'></i>
                 </div>
                 <div class="info">
                     <div class="title">
-                        Public Circle
+                        <a href='/circle/{{invite.circle.key().id()}}'>{{invite.circle.name}}</a>
                     </div>
                     <div class="sub">
-                        Invited by Gus Nelson
+                        Invited by <a href='/user/{{invite.sender.key().id()}}'>{{invite.sender.name}}</a>
                     </div>
                 </div>
             </div>
