@@ -56,6 +56,9 @@
                 <hr>
                 <div class="options">
                     {% if ride.is_driver %}
+                    <a href="/ride/{{ride.key().id()}}/edit" class='btn btn-primary'>Edit ride details</a>
+                    {% endif %}
+                    {% if ride.is_driver %}
                     <div>
                     {% else %}
                     <div class="hidden">

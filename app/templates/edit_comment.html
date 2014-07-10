@@ -37,10 +37,8 @@
 
     document.body.addEventListener('click', function (e) {
         var target = e.target;
-        console.log(target);
 
         if (target.dataset.back) {
-            console.log('hit');
             history.back();
             return false;
         }

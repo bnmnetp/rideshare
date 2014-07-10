@@ -67,6 +67,44 @@ class RideHandler(BaseHandler):
         results = json.dumps([r.to_dict() for r in rides])
         self.response.write(results)
 
+class EditRide(BaseHandler):
+    def get(self, ride_id):
+        self.auth()
+
+        user = self.current_user()
+
+        ride = Ride.get_by_id(int(ride_id))
+
+        if not ride or ride.driver == None:
+            self.redirect('/rides')
+            return None
+
+        doRender(self, 'edit_ride.html', {
+            'user': user,
+            'ride': ride
+        })
+
+    def post(self, ride_id):
+        self.auth()
+
+        user = self.current_user()
+
+        ride = Ride.get_by_id(int(ride_id))
+
+        if not ride:
+             return self.json_resp(500, {
+                'error': 'Message'
+            })
+
+        if ride.driver == None:
+             return self.json_resp(500, {
+                'error': 'Message'
+            })
+
+        print 'Test #1'
+
+        print 'Test #2'
+
 class GetRideHandler(BaseHandler):
     def post(self, ride_id):
         self.auth()
@@ -77,9 +115,6 @@ class GetRideHandler(BaseHandler):
         user = self.current_user()
 
         ride = Ride.get_by_id(int(ride_id))
-
-        if not ride:
-            print 'error'
 
         if data['type'] == 'passenger':
             if data['action'] == 'leave':

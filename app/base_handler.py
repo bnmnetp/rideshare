@@ -44,6 +44,11 @@ class BaseHandler(webapp2.RequestHandler):
             # Save all sessions.
             self.session_store.save_sessions(self.response)
 
+    def json_resp(self, code, ctx):
+        self.response.status(code)
+        self.response.write(ctx)
+        return None
+
     @webapp2.cached_property
     def session(self):
         self.session_store = sessions.get_store(request=self.request)
