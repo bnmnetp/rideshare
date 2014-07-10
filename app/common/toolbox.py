@@ -23,3 +23,10 @@ def doRender(handler, name = 'map.html', value = {}):
 def split_address(add):
 	temp = add.split(',')
 	return temp[1][1:] + ', ' + temp[2][1:3]
+
+def grab_json(obj, prop):
+	resp = {}
+	for p in prop:
+		if p in obj:
+			resp[p] = str(obj[p])
+	return resp

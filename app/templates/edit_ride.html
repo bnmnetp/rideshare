@@ -46,6 +46,8 @@
 {% endblock %}
 
 {% block scripts %}
+<script src="/static/augment.js"></script>
+<script src='/static/default.js'></script>
 {% raw %}
 <script data-notify="template" type='text/x-handlebars-template'>
     <div class="alert alert-{{type}} alert-dismissable">
@@ -57,6 +59,8 @@
 {% endraw %}
 <script type="text/javascript">
     var form = document.querySelector('#form');
+
+    var def = new Default(form, {{ride_json}});
 
     form.addEventListener('submit', function (e) {
         e.preventDefault();

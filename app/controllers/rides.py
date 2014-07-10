@@ -1,4 +1,4 @@
-from app.common.toolbox import doRender, split_address
+from app.common.toolbox import doRender, split_address, grab_json
 from app.model import *
 from google.appengine.ext import db
 import datetime
@@ -79,9 +79,14 @@ class EditRide(BaseHandler):
             self.redirect('/rides')
             return None
 
+        properties = ['passengers_max', 'date', 'time', 'details']
+
+        ride_json = grab_json(ride, properties)
+
         doRender(self, 'edit_ride.html', {
             'user': user,
-            'ride': ride
+            'ride': ride,
+            'ride_json': ride_json
         })
 
     def post(self, ride_id):
