@@ -7,6 +7,11 @@
 
 {% block main %}
 <div data-notify="container"></div>
+<div class="panel panel-default">
+    <div class="panel-body">
+        Create a ride by visiting the <a href='/map'>map page</a>.
+    </div>
+</div>
 <ul class="ntabs">
     <li data-next="my_rides">
         My Rides
@@ -21,21 +26,28 @@
         <div class="panel-body panel-no">
         {% if rides_user %}
         {% for ride in rides_user %}
-            <div class="block">
-                <div class="title">
-                    <a href='/ride/{{ride.key().id()}}'>{{ride.orig}} to {{ride.dest}}</a>
+            <div class="list">
+                <div class="ctx">
+                    <i class="fa fa-car"></i>
                 </div>
-                <div class="details">
-                    {% if ride.is_driver %}
-                    <div class="deta">
-                        <span class="label label-success">Driver</span>
+                <div class="info">
+                    <div class="title">
+                        <a href='/ride/{{ride.key().id()}}'>
+                            {{ride.orig}} to {{ride.dest}}
+                        </a>
                     </div>
-                    {% endif %}
-                    {% if ride.is_passenger %}
-                    <div class="deta">
-                        <span class="label label-success">Passenger</span>
+                    <div class="sub">
+                        {% if ride.is_driver %}
+                        <div class="deta">
+                            <span class="label label-success">Driver</span>
+                        </div>
+                        {% endif %}
+                        {% if ride.is_passenger %}
+                        <div class="deta">
+                            <span class="label label-success">Passenger</span>
+                        </div>
+                        {% endif %}
                     </div>
-                    {% endif %}
                 </div>
             </div>
         {% endfor %}
@@ -54,21 +66,28 @@
         <div class="panel-body panel-no">
         {% if rides_all %}
         {% for ride in rides_all %}
-            <div class="block">
-                <div class="title">
-                    <a href='/ride/{{ride.key().id()}}'>{{ride.orig}} to {{ride.dest}}</a>
+            <div class="list">
+                <div class="ctx">
+                    <i class="fa fa-car"></i>
                 </div>
-                <div class="details">
-                    {% if ride.is_driver %}
-                    <div class="deta">
-                        <span class="label label-success">Driver</span>
+                <div class="info">
+                    <div class="title">
+                        <a href='/ride/{{ride.key().id()}}'>
+                            {{ride.orig}} to {{ride.dest}}
+                        </a>
                     </div>
-                    {% endif %}
-                    {% if ride.is_passenger %}
-                    <div class="deta">
-                        <span class="label label-success">Passenger</span>
+                    <div class="sub">
+                        {% if ride.is_driver %}
+                        <div class="deta">
+                            <span class="label label-success">Driver</span>
+                        </div>
+                        {% endif %}
+                        {% if ride.is_passenger %}
+                        <div class="deta">
+                            <span class="label label-success">Passenger</span>
+                        </div>
+                        {% endif %}
                     </div>
-                    {% endif %}
                 </div>
             </div>
         {% endfor %}

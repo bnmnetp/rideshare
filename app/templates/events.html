@@ -6,17 +6,28 @@
 {% endblock %}
 
 {% block main %}
-<div data-notify="container"></div>
-<div class="alert alert-info">Create an event by visiting the <a href='/map'>map page</a>.</div>
+<div data-notify="container">
+    
+</div>
+<div class="panel panel-default">
+    <div class="panel-body">
+        Create an event by visiting the <a href='/map'>map page</a>.
+    </div>
+</div>
 <ul class="ntabs">
-<!--     <li data-next="my_events">
+    <li data-next="my_events">
         My Events
-    </li> -->
+    </li>
     <li data-next="all_events">
-        All Events
+        Public Events
     </li>
 </ul>
 <div data-route='all_events'>
+    <div class="panel panel-default">
+        <div class="panel-body">
+            This is a list of all the events in your circles.
+        </div>
+    </div>
     <div class="panel panel-main">
         <div class="panel-heading">All Events</div>
         <div class="panel-body panel-no">
@@ -45,6 +56,11 @@
     </div>
 </div>
 <div data-route='my_events'>
+    <div class="panel panel-default">
+        <div class="panel-body">
+            This is a list of all the events in your circles.
+        </div>
+    </div>
     <div class="panel panel-main">
         <div class="panel-heading">My Events</div>
         <div class="panel-body panel-no">
