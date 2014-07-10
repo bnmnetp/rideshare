@@ -14,10 +14,11 @@ class ViewInvites(BaseHandler):
         self.auth()
         user = self.current_user()
 
-        invites = Invite.all().filter('user = ', user.key())
+        invites = Invite.all().filter('user = ', user.key()).fetch(100)
 
         doRender(self, 'view_invites.html', {
-            'invites': invites
+            'invites': invites,
+            'user': user
         })
 
 class SendInvite(BaseHandler):

@@ -23,10 +23,11 @@
         </a>
     </li>
 </ul>
-{% if invited %}
+{% if invite %}
 <div class="panel pane-default">
     <div class="panel-body">
-        
+        You have been invited to this circle by {{invite.sender.name}}.
+        <button class='btn btn-primary'>Join Circle</button>
     </div>
 </div>
 {% endif %}

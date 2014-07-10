@@ -79,8 +79,9 @@ class MapHandler(BaseHandler):
 
 class LoginHandler(BaseHandler):
     def get(self):
+        redirect = self.request.get('redirect', default_value='')
         doRender(self, 'loginPage.html', {
-
+            'redirect': redirect
         })
 
 class HomeHandler(BaseHandler):

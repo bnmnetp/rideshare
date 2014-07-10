@@ -10,9 +10,9 @@ class BaseHandler(webapp2.RequestHandler):
         if id and id != None:
             user = User.get_by_id(id)
             if not user:
-                return webapp2.redirect('/', False, True)
+                return webapp2.redirect('/?redirect=' + self.request.path, False, True)
         else:
-            return webapp2.redirect('/', False, True)
+            return webapp2.redirect('/?redirect=' + self.request.path, False, True)
     def current_user(self):
         id = self.session.get('user')
         if id and id != None:

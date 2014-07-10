@@ -42,6 +42,7 @@
             Circle Invites
         </div>
         <div class="panel-body panel-no">
+        {% if invites %}
             {% for invite in invites %}
             <div class="list">      
                 {% if invite.circle.color %}
@@ -61,6 +62,11 @@
                 </div>
             </div>
             {% endfor %}
+        {% else %}
+            <div class="panel-message">
+                You do not have any invites yet.
+            </div>
+        {% endif %}
         </div>
     </div>
 </div>

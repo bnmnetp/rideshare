@@ -31,37 +31,35 @@ class GetCircleHandler(BaseHandler):
         else:
             has_permission = False
 
-        check_invites = Invite.all()
-            .filter('circle = ', circle.key())
-            .filter('user = ', user.key())
-            .fetch(1)
+        invite = Invite.all().filter('circle = ', circle.key()).filter('user = ', user.key()).fetch(1)
 
-        if check_invites:
-            invited = True
+        if invite:
             has_permission = True
 
-        for ride in rides:
-            ride.dest = split_address(ride.dest_add)
-            ride.orig = split_address(ride.origin_add)
-            if ride.driver:
-                if ride.driver.key().id() == user.key().id():
-                    ride.is_driver = True
+        if not has_permisson:
+            self.redirect('/circles')
+        else:
+            for ride in rides:
+                ride.dest = split_address(ride.dest_add)
+                ride.orig = split_address(ride.origin_add)
+                if ride.driver:
+                    if ride.driver.key().id() == user.key().id():
+                        ride.is_driver = True
+                    else:
+                        ride.is_driver = False
+                if user.key() in ride.passengers:
+                    ride.is_passenger = True
                 else:
-                    ride.is_driver = False
-            if user.key() in ride.passengers:
-                ride.is_passenger = True
-            else:
-                ride.is_passenger = False
+                    ride.is_passenger = False
 
-
-
-        doRender(self, 'view_circle.html', {
-            'circle': circle,
-            'user': user,
-            'members': members,
-            'rides': rides,
-            'events': events
-        })
+            doRender(self, 'view_circle.html', {
+                'circle': circle,
+                'user': user,
+                'members': members,
+                'rides': rides,
+                'events': events,
+                'invite': invite
+            })
 
 class GetCircleInvite(BaseHandler):
     def get(self, circle_id):

@@ -9,19 +9,26 @@
 {% endblock %}
 
 {% block main %}
+{% if redirect %}
+<div class="panel panel-default">
+    <div class="panel-body">
+        You must login before you can visit that page. You will be redirected after you login. If you do not have an account, just select how you would like to login and you will still be redirected.
+    </div>
+</div>
+{% endif %}
 <div class="jumbotron">
     <h1>Welcome to {{community.name}} Rideshare!</h1>
     <p>To get started, select how you would like to login:</p>
     <div class="btns">
-        <a class='btn btn-primary' href='/auth/google?redirect={{redirect}}'>
+        <a class='btn btn-primary' href='/auth/google'>
             <i class='fa fa-google'></i>
             Google
         </a>
-        <a class='btn btn-primary' href='/auth/facebook?redirect={{redirect}}'>
+        <a class='btn btn-primary' href='/auth/facebook'>
             <i class='fa fa-facebook'></i>
             Facebook
         </a>
-        <a class='btn btn-primary' href='/auth/twitter?redirect={{redirect}}'>
+        <a class='btn btn-primary' href='/auth/twitter'>
             <i class='fa fa-twitter'></i>
             Twitter
         </a>
