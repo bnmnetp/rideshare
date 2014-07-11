@@ -219,11 +219,9 @@ class GetRideHandler(BaseHandler):
 
         user = self.current_user()
         availible_seats = 0
+
         if ride.driver:
-            driver = db.get(ride.driver.key())
             availible_seats = ride.passengers_max - ride.passengers_total;
-        else:
-            driver = {}
 
         passengers = []
         for passenger in ride.passengers:
@@ -257,13 +255,9 @@ class GetRideHandler(BaseHandler):
         if ride:
             doRender(self, 'view_ride.html', {
                 'ride': ride,
-                'driver': driver,
                 'passengers': passengers,
                 'seats': availible_seats,
-                'circle': ride.circle,
-                'event': ride.event,
-                'user': user,
-                'comments': comments
+                'user': user
             })
         else:
             self.response.write('No ride found.')

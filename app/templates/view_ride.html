@@ -30,26 +30,38 @@
                             <b>Availible seats:</b> {{seats}}
                         </li>
                         <li>
-                            <b>Driver:</b> <a href="/user/{{driver.key().id()}}">{{driver.name}}</a>
+                            <b>Driver:</b> <a href="/user/{{ride.driver.key().id()}}">{{ride.driver.name}}</a>
                         </li>
                         <li>
-                            <b>Driver contact:</b> {{driver.email}}
+                            <b>Driver contact:</b> {{ride.driver.email}}
                         </li>
                     {% endif %}
-                        <li>
-                            <b>Other passengers:</b>
+                    <li>
+                        <b>Other passengers:</b>
+                        {% if passengers %}
                             {% for p in passengers %}
-                                <a href='/user/{{p.key().id()}}'>{{p.name}}</a>
+                                <div class='chip'>
+                                    <div class="ind">
+                                        <i class="fa fa-user"></i>
+                                    </div>
+                                    <div class="name">
+                                        <a href='/user/{{p.key().id()}}'>{{p.name}}</a>
+                                    </div>
+                                </div>
                             {% endfor %}
-                        </li>
+                        {% else %}
+                            <p>No other passengers</p>
+                        {% endif %}
+                    </li>
+
                     {% if ride.circle %}
                         <li>
-                            <b>Circle:</b>
+                            <b>Circle:</b> <a href="/circle/{{circle.key().id()}}">{{circle.name}}</a>
                         </li>
                     {% endif %}
                     {% if ride.event %}
                         <li>
-                            <b>Event:</b>
+                            <b>Event:</b> <a href="/event/{{event.key().id()}}">{{event.name}}</a>
                         </li>
                     {% endif %}
                 </ul>

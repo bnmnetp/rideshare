@@ -120,7 +120,7 @@ class CircleHandler(BaseHandler):
                     'error': True,
                     'message': 'Data could not be validated'
                 }))
-            return
+            return None
 
         circle.name = data['name']
         circle.description = data['description']

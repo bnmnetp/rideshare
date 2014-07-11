@@ -21,6 +21,32 @@ img {
     max-width: 100%;
 }
 
+/* Chip */
+.chip {
+    background-color: #E7E7E7;
+    color: #7F7F7F;
+    border-radius: 10px;
+    font-size: 18px;
+    line-height: 32px;
+    height: 32px;
+
+}
+.chip .ind {
+    border-radius: 4px;
+    color: #424242;
+    font-size: 24px;
+    line-height: 32px;
+    vertical-align: top;
+    display: inline-block;
+    margin-left: 10px;
+    margin-right: 2px;
+
+}
+.chip .name {
+    display: inline-block;
+}
+/* End Chip */
+
 /* List */
 .list {
     /*padding: 10px 0px;*/
@@ -166,13 +192,14 @@ img {
 
 .information li {
     margin: 0px 0px 15px 0px;
-    font-size: 20px;
-    line-height: 34px;
+    font-size: 16px;
+    line-height: 32px;
+    color: #212121;
 }
 
 .information b {
-    font-weight: bold;
-    color: #252525;
+    font-weight: 400;
+    color: #757575;
 }
 
 .icon {
