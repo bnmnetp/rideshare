@@ -68,7 +68,7 @@
         var form = e.target;
 
         var data = {};
-        data.text = form.text.value;
+        def.get_values(data);
 
         var push = $.ajax({
             type: 'POST',

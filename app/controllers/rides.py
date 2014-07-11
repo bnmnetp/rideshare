@@ -2,10 +2,11 @@ from app.common.toolbox import doRender, split_address, grab_json
 from app.model import *
 from google.appengine.ext import db
 import datetime
-from datetime import date
+from datetime import date, datetime
 import json
 from app.base_handler import BaseHandler
 from app.common.notification import push_noti
+from app.common.voluptuous import *
 
 class RideHandler(BaseHandler):
     def get(self):
@@ -96,19 +97,45 @@ class EditRide(BaseHandler):
 
         ride = Ride.get_by_id(int(ride_id))
 
-        if not ride:
+        if not ride or ride.driver == None:
              return self.json_resp(500, {
                 'error': 'Message'
             })
 
-        if ride.driver == None:
-             return self.json_resp(500, {
-                'error': 'Message'
-            })
+        json_str = self.request.body
+        data = json.loads(json_str)
 
-        print 'Test #1'
+        ride_validator = Schema({
+            Required('passengers_max', default=1): Coerce(int),
+            Required('date'): self.Date(),
+            Required('time'): unicode,
+            'details': unicode
+        })
 
-        print 'Test #2'
+        try:
+            data = ride_validator(data)
+        except MultipleInvalid as e:
+            print str(e)
+            self.response.set_status(500)
+            self.response.write(json.dumps({
+                'error': 'Invalid data'
+            }))
+            return None
+
+        ride.passengers_max = data['passengers_max']
+        ride.date = data['date'].date()
+        ride.time = data['time']
+        ride.details = data['details']
+
+        ride.put()
+
+        self.response.write(json.dumps({
+            'message': 'Edited.'
+        }))
+
+    def Date(self, fmt='%Y-%m-%d'):
+        return lambda v: datetime.strptime(v, fmt)
+
 
 class GetRideHandler(BaseHandler):
     def post(self, ride_id):

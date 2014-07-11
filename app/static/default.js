@@ -11,7 +11,8 @@ var Default = augment(Object, function () {
 	}
 
 	this.get_values = function (data) {
-		for (var i = 0; i < this.arr; i++) {
+		for (var i = 0; i < this.arr.length; i++) {
+			var cur = this.arr[i];
 			if (form[cur]) {
 				data[cur] = form[cur].value;
 			}
