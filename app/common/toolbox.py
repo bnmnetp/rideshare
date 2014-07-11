@@ -27,6 +27,6 @@ def split_address(add):
 def grab_json(obj, prop):
 	resp = {}
 	for p in prop:
-		if p in obj:
-			resp[p] = str(obj[p])
+		if p in obj._properties:
+			resp[p] = str(getattr(obj, p))
 	return resp

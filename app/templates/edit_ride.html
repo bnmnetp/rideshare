@@ -15,7 +15,7 @@
         <form id='form'>
             <div class="form-group">
                 <label>Max Passengers</label>
-                <select class="form-control" name='max_passengers' value='{{ride.passengers_max}}'>
+                <select class="form-control" name='passengers_max'>
                     <option value='1'>1</option>
                     <option value='2'>2</option>
                     <option value='3'>3</option>
@@ -28,15 +28,15 @@
             </div>
             <div class="form-group">
                 <label>Date</label>
-                <input class="form-control date-select" type="text" placeholder="Date" name='date' value='{{ride.date}}'>
+                <input class="form-control date-select" type="text" placeholder="Date" name='date'>
             </div>
             <div class="form-group">
                 <label>Time</label>
-                <input class="form-control" type="text" placeholder="Time" name='time' value='{{ride.time}}'>
+                <input class="form-control" type="text" placeholder="Time" name='time'>
             </div>
             <div class="form-group">
                 <label>Additional Details</label>
-                <input class="form-control" type="text" placeholder="Details" name='details' value='{{ride.details}}'>
+                <input class="form-control" type="text" placeholder="Details" name='details'>
             </div>
             <button type='submit' class='btn btn-default'>Edit Ride</button>
             <button type='button' class='btn btn-danger pull-right'>Delete Ride</button>
@@ -60,7 +60,7 @@
 <script type="text/javascript">
     var form = document.querySelector('#form');
 
-    var def = new Default(form, {{ride_json}});
+    var def = new Default(form, {{ride_json|safe}});
 
     form.addEventListener('submit', function (e) {
         e.preventDefault();
