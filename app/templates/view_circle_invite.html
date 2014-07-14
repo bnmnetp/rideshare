@@ -80,7 +80,7 @@ invite.email.addEventListener('submit', function (e) {
 
     var push = $.ajax({
         type: 'POST',
-        url: '/invite/{{circle.key().id()}}',
+        url: '/invite/{{circle.key().id()}}/email',
         dataType: 'json',
         contentType: 'application/json; charset=UTF-8',
         data: JSON.stringify(data)

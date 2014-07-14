@@ -21,12 +21,21 @@ class ViewInvites(BaseHandler):
             'user': user
         })
 
-    def post(self):
+
+
+class SendInvite(BaseHandler):
+    def get(self, invite_id):
+        invite = Invite.get_by_id(int(invite_id))
+
+        doRender(self, 'view_invite.html', {
+            'invite': invite
+        })
+    def post(self, invite_id):
         self.auth()
 
         user = self.current_user()
 
-        invite = Invite.all().filter('user = ', user.key()).get()
+        invite = Invite.get_by_id(int(invite_id))
 
         if not invite:
             self.response.status(500)
@@ -43,13 +52,8 @@ class ViewInvites(BaseHandler):
             'message': 'You have joined the circle'
         }))
 
-class SendInvite(BaseHandler):
-    def get(self, invite_id):
-        invite = Invite.get_by_id(int(invite_id))
 
-        doRender(self, 'view_invite.html', {
-            'invite': invite
-        })
+class SendInviteEmail(BaseHandler):
     def post(self, circle_id):
         self.auth()
 

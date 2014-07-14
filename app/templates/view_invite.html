@@ -6,6 +6,7 @@
 {% endblock %}
 
 {% block main %}
+<div data-notify="container"></div>
 <div class="panel panel-main">
 	<div class="panel-heading">Invite details</div>
 	<div class="panel-body">
@@ -37,7 +38,7 @@
 {% endraw %}
 
 <script type="text/javascript">
-	var invite = document.querySelect('[data-invite="join"]');
+	var invite = document.querySelector('[data-invite="join"]');
 
 	invite.addEventListener('click', function (e) {
 		e.preventDefault();
