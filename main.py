@@ -208,6 +208,7 @@ app = webapp2.WSGIApplication([
 
     # controllers/events.py
     ('/event/(\d+)', GetEventHandler),
+    ('/event/(\d+)/join', JoinEvent),
     ('/events', EventHandler),
     ('/newevent', NewEventHandler),
     # end events

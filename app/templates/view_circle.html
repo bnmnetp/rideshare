@@ -7,6 +7,14 @@
 
 {% block main %}
 <div data-notify="container"></div>
+{% if invite %}
+<div class="panel panel-default">
+    <div class="panel-body">
+        You have been invited to this circle by {{invite.sender.name}}.
+        <a href='/invite/{{invite.key().id()}}' class='btn btn-primary'>Join Circle</a>
+    </div>
+</div>
+{% endif %}
 <ul class="ntabs">
     <li data-next="details">
         Details
@@ -23,14 +31,7 @@
         </a>
     </li>
 </ul>
-{% if invite %}
-<div class="panel pane-default">
-    <div class="panel-body">
-        You have been invited to this circle by {{invite.sender.name}}.
-        <button class='btn btn-primary'>Join Circle</button>
-    </div>
-</div>
-{% endif %}
+
 <div data-route='details'>
     <div class="panel panel-main">
         <div class="panel-heading">Circle details</div>

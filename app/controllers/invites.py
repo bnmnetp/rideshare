@@ -21,6 +21,28 @@ class ViewInvites(BaseHandler):
             'user': user
         })
 
+    def post(self):
+        self.auth()
+
+        user = self.current_user()
+
+        invite = Invite.all().filter('user = ', user.key()).get()
+
+        if not invite:
+            self.response.status(500)
+            self.response.write(json.dumps({
+                'error': 'You have no pending invites'
+            }))
+            return None
+
+        user.circles.append(invite.circle.key())
+
+        invite.delete()
+
+        self.response.write(json.dumps({
+            'message': 'You have joined the circle'
+        }))
+
 class SendInvite(BaseHandler):
     def get(self, invite_id):
         invite = Invite.get_by_id(int(invite_id))
@@ -82,7 +104,7 @@ class SendInviteName(BaseHandler):
 
                 invite = Invite()
                 invite.circle = circle.key()
-                invite.user = user
+                invite.user = user_send
                 invite.sender = user.key()
                 invite.put()
 
@@ -92,6 +114,10 @@ class SendInviteName(BaseHandler):
         self.response.write(json.dumps({
             'message': 'Success'
         }))
+
+class JoinCircleInvite(BaseHandler):
+    def post(self):
+        print 'temp'
 
 class GetNames(BaseHandler):
 	def get(self):

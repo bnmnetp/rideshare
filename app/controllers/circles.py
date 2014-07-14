@@ -30,7 +30,7 @@ class GetCircleHandler(BaseHandler):
         else:
             has_permission = False
 
-        invite = Invite.all().filter('circle = ', circle.key()).filter('user = ', user.key()).fetch(1)
+        invite = Invite.all().filter('circle = ', circle.key()).filter('user = ', user.key()).get()
 
         if invite:
             has_permission = True

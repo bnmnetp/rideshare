@@ -17,7 +17,8 @@
 				<b>Invited by:</b> {{invite.sender.name}}
 			</li>
 		</ul>
-		<a href="/circle/join/{{invite.key().id()}}" class='btn btn-primary'>Join Circle</a>
+		<button data-invite='join' class='btn btn-primary'>Join Circle</button>
+		<button data-invite='decline' class='btn btn-danger'>Decline Invite</button>
 	</div>
 </div>
 {% endblock %}
@@ -30,8 +31,42 @@
 <script data-notify="template" type='text/x-handlebars-template'>
     <div class="alert alert-{{type}} alert-dismissable">
         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-        <strong>{{strong}}</strong> {{message}}
+        <strong>{{strong}}</strong> {{{message}}}
     </div>
 </script>
 {% endraw %}
+
+<script type="text/javascript">
+	var invite = document.querySelect('[data-invite="join"]');
+
+	invite.addEventListener('click', function (e) {
+		e.preventDefault();
+
+		var push = $.ajax({
+			type: 'POST',
+			url: window.location.pathname,
+			dataType: 'json',
+            contentType: 'application/json; charset=UTF-8',
+            data: JSON.stringify({
+            	type: 'join'
+            })
+		});
+
+		push.done(function (data) {
+			notify({
+				type: 'success',
+				strong: 'You have accepted the invite',
+				message: '<a href="/circle/' + data.id + '">Visit the circle you joined.</a>'
+			})
+		});
+
+		push.fail(function (data, status) {
+			notify({
+				type: 'danger',
+				strong: 'Whoops',
+				message: 'Please refresh the page and try again.'
+			})
+		});
+	});
+</script>
 {% endblock %}
