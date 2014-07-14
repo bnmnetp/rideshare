@@ -24,6 +24,10 @@ def push_noti(type, user_key, ride_key):
 		message = """
 		<a href='/user/%s'>%s</a> is now a passenger of this ride.
 		""" % (user.key().id(), user.name)
+	elif type =='edited':
+		message = """
+		Your ride has been edited.
+		"""
 	noti = Notification()
 	noti.text = message
 	noti.ride = ride.key()

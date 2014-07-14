@@ -91,8 +91,12 @@ img {
 
 .list .sub {
     font-size: 15px;
-    line-height: 24px;
+    line-height: 28px;
     color: #616161;
+}
+
+.list .sub i {
+    padding: 0px 3px;
 }
 
 /* End */

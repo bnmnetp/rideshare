@@ -25,7 +25,7 @@
 <div data-route='all_events'>
     <div class="panel panel-default">
         <div class="panel-body">
-            This is a list of all the events in your circles.
+            This is a list of all public events.
         </div>
     </div>
     <div class="panel panel-main">
@@ -33,15 +33,16 @@
         <div class="panel-body panel-no">
         {% if events_all %}
             {% for event in events_all %}
-                <div class="block">
-                    <div class="title">
-                        <a href='/event/{{event.key().id()}}'>{{event.name}}</a>
+                <div class="list">
+                    <div class="ctx">
+                        <i class="fa fa-location-arrow"></i>
                     </div>
-                    <div class="details">
-                        <div class="deta">
-                            <i class="fa fa-calendar"></i> {{event.date}}
+                    <div class="info">
+                        <div class="title">
+                            <a href="/event/{{event.key().id()}}">{{event.name}}</a>
                         </div>
-                        <div class="deta">
+                        <div class="sub">
+                            <i class="fa fa-calendar"></i> {{event.date}}
                             <i class="fa fa-location-arrow"></i> {{event.address}}
                         </div>
                     </div>
@@ -66,15 +67,16 @@
         <div class="panel-body panel-no">
         {% if events_user %}
             {% for event in events_user %}
-                <div class="block">
-                    <div class="title">
-                        <a href='/event/{{event.key().id()}}'>{{event.name}}</a>
+                <div class="list">
+                    <div class="ctx">
+                        <i class="fa fa-location-arrow"></i>
                     </div>
-                    <div class="details">
-                        <div class="deta">
-                            <i class="fa fa-calendar"></i> {{event.date}}
+                    <div class="info">
+                        <div class="title">
+                            <a href="/event/{{event.key().id()}}">{{event.name}}</a>
                         </div>
-                        <div class="deta">
+                        <div class="sub">
+                            <i class="fa fa-calendar"></i> {{event.date}}
                             <i class="fa fa-location-arrow"></i> {{event.address}}
                         </div>
                     </div>

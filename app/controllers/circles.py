@@ -25,7 +25,6 @@ class GetCircleHandler(BaseHandler):
         # Grabs Events
         events = Event.all().filter('circle = ', circle.key())
 
-
         if circle.key() in user.circles:
             has_permission = True
         else:
@@ -36,7 +35,7 @@ class GetCircleHandler(BaseHandler):
         if invite:
             has_permission = True
 
-        if not has_permisson:
+        if not has_permission:
             self.redirect('/circles')
         else:
             for ride in rides:

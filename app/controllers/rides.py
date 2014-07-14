@@ -129,6 +129,9 @@ class EditRide(BaseHandler):
 
         ride.put()
 
+        for p in ride.passengers:
+            push_noti('edited', p, ride.key())
+
         self.response.write(json.dumps({
             'message': 'Edited.'
         }))

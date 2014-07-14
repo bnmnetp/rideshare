@@ -10,22 +10,24 @@
 <div class="row">
     <div class="col-md-6">
         <div class="panel panel-main">
-            <div class="panel-heading">Alerts - Last 5</div>
+            <div class="panel-heading">Alerts</div>
             <div class="panel-body panel-no">
                 {% if notis %}
                     {% for noti in notis %}
-                        <div class="block">
-                            <div class="title">
-                                {{noti.text | safe}}
+                        <div class="list">
+                            <div class="ctx">
+                                <i class="fa fa-paper-plane"></i>
                             </div>
-                            <div class="details">
-                                <div class="deta">
+                            <div class="info">
+                                <div class="title">{{noti.text | safe}}</div>
+                                <div class="sub">
                                     <a href="/ride/{{noti.ride.key().id()}}" class='btn btn-primary btn-xs'>
                                         <i class="fa fa-automobile"></i>
                                         {{noti.ride.orig}} to {{noti.ride.dest}}
                                     </a>
                                 </div>
                             </div>
+
                         </div>
                     {% endfor %}
                 {% else %}
@@ -38,60 +40,54 @@
     </div>
     <div class="col-md-6">
         <div class="panel panel-main">
-            <div class="panel-heading">Quick options</div>
+            <div class="panel-heading">Notifications - Upcoming Events</div>
             <div class="panel-body panel-no">
-                <div class="block">
-                    <div class="title">
-                        <a href="/map">Create Rides and Events</a>  
+                {% if upcoming %}
+                    {% for up in upcoming %}
+                        <div class="list">
+                            <div class="ctx">
+                                <i class="fa fa-exclamation"></i>
+                            </div>
+                            <div class="info">
+                                <div class="title">
+                                    <a href="/ride/{{up.key().id()}}">Ride to {{up.dest_add}}</a>
+                                </div>
+                                <div class="sub">
+                                    <i class="fa fa-calendar"></i> {{up.date_str}}
+                                    <i class="fa fa-automobile"></i> You are Driving
+                                    <i class="fa fa-automobile"></i> You are a Passenger
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="panel-message">
+                        You do not have any upcoming events.
                     </div>
-                </div>
-                <div class="block">
-                    <div class="title">
-                        <a href="/circles">Join a Circle</a>  
-                    </div>
-                </div>
-                <div class="block">
-                    <div class="title">
-                        <a href="/user">Edit Profile</a>
-                    </div>
-                </div>
+                {% endif %}
             </div>
         </div>
     </div>
 </div>
 
-
 <div class="panel panel-main">
-    <div class="panel-heading">Your Upcoming Events</div>
+    <div class="panel-heading">Quick options</div>
     <div class="panel-body panel-no">
-        {% if upcoming %}
-            {% for up in upcoming %}
-                <div class="block">
-                    <div class="title">
-                        <a href="/ride/{{up.key().id()}}">Ride to {{up.dest_add}}</a>
-                    </div>
-                    <div class="details">
-                        <div class="deta">
-                            <i class="fa fa-calendar"></i> {{up.date_str}}
-                        </div>
-                        {% if up.is_driver %}
-                        <div class="deta">
-                            <i class="fa fa-automobile"></i> You are Driving
-                        </div>
-                        {% endif %}
-                        {% if up.is_pass %}
-                        <div class="deta">
-                            <i class="fa fa-automobile"></i> You are a Passenger
-                        </div>
-                        {% endif %}
-                    </div>
-                </div>
-            {% endfor %}
-        {% else %}
-            <div class="panel-message">
-                You do not have any upcoming events.
+        <div class="block">
+            <div class="title">
+                <a href="/map">Create Rides and Events</a>  
             </div>
-        {% endif %}
+        </div>
+        <div class="block">
+            <div class="title">
+                <a href="/circles">Join a Circle</a>  
+            </div>
+        </div>
+        <div class="block">
+            <div class="title">
+                <a href="/user">Edit Profile</a>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}
