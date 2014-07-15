@@ -21,8 +21,8 @@
     <div class="panel-body">
         To get started, <b>click on a marker to get details</b> or
         <div class="btn-group">
-            <button class='btn btn-default' data-next='event_location'>Create a new Event</button>
-            <button class='btn btn-default' data-next='ride_location'>Create a new Ride</button>
+            <button class='btn btn-default' data-next='create_event'>Create a new Event</button>
+            <button class='btn btn-default' data-next='create_ride'>Create a new Ride</button>
         </div>
         <div class="btn-group pull-right">
             <button class='btn btn-primary' data-reset>
@@ -177,10 +177,10 @@
 
     <div class="col-md-4" data-route='select_type'>
         <p>Do you need a ride or can you drive?</p>
-        <button class="btn btn-primary" data-next='location_dest' data-ride='passenger'>
+        <button class="btn btn-primary" data-next='location_dest' data-option='passenger'>
             Need a Ride
         </button>
-        <button class="btn btn-primary" data-next='location_dest' data-ride='driver'>
+        <button class="btn btn-primary" data-next='location_dest' data-option='driver'>
             Driving
         </button>
     </div>
@@ -342,17 +342,18 @@
 {% endraw %}
 
 <script src="/static/augment.js" type="text/javascript"></script>
-<script src="/static/maps.js" type="text/javascript"></script>
-<script src="/static/flow.js" type="text/javascript"></script>
+<script src="/static/maps2.js" type="text/javascript"></script>
+<script src="/static/flow2.js" type="text/javascript"></script>
 <script type="text/javascript" src="/static/jquery_ui/jquery-ui-1.10.4.custom.js"></script>
 <script src='//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/js/bootstrap.min.js' type="text/javascript"></script>
 
 <script type="text/javascript">
-var flow = new Flow('select_location');
+var flow = new Flow('select_location', paths);
 flow.set_handler(map);
 
 $('.date-select').datepicker();
 
+/* Toggle Help */
 var help = {};
 help.btn = document.querySelector('[data-help="toggle"]');
 help.container = document.querySelector('[data-help="container"]');
@@ -362,6 +363,7 @@ help.btn.addEventListener('click', function (e) {
 
     help.container.classList.toggle('hidden');
 });
+/* End */
 
 </script>
 

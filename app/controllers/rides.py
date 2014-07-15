@@ -2,7 +2,8 @@ from app.common.toolbox import doRender, split_address, grab_json
 from app.model import *
 from google.appengine.ext import db
 import datetime
-from datetime import date, datetime
+from datetime import date
+import datetime
 import json
 from app.base_handler import BaseHandler
 from app.common.notification import push_noti
@@ -107,7 +108,7 @@ class EditRide(BaseHandler):
 
         ride_validator = Schema({
             Required('passengers_max', default=1): Coerce(int),
-            Required('date'): self.Date(),
+            Required('date'): unicode,
             Required('time'): unicode,
             'details': unicode
         })
@@ -123,7 +124,7 @@ class EditRide(BaseHandler):
             return None
 
         ride.passengers_max = data['passengers_max']
-        ride.date = data['date'].date()
+        # ride.date = data['date'].date()
         ride.time = data['time']
         ride.details = data['details']
 
