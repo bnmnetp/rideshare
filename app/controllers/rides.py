@@ -124,7 +124,7 @@ class EditRide(BaseHandler):
             return None
 
         ride.passengers_max = data['passengers_max']
-        # ride.date = data['date'].date()
+        # ride.date = data['date'].date
         ride.time = data['time']
         ride.details = data['details']
 
@@ -329,9 +329,9 @@ class NewRideHandler(BaseHandler):
             ride.dest_lat = data['dest']['lat']
             ride.dest_lng = data['dest']['lng']
 
-        ride.origin_add = data['origin']['address']
-        ride.origin_lat = data['origin']['lat']
-        ride.origin_lng = data['origin']['lng']
+        ride.origin_add = data['orig']['address']
+        ride.origin_lat = data['orig']['lat']
+        ride.origin_lng = data['orig']['lng']
 
         ride.date = d_obj
         ride.time = data['time']

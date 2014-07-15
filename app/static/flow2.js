@@ -35,6 +35,14 @@ var Flow = augment(Object, function () {
 		}
 	}
 
+	this.reset = function () {
+		this.path = [];
+		this.has_path = false;
+		this.path_str = '';
+		this.idx = 0;
+		this.view_slide('select_location');
+	}
+
 	this.set_handler = function (handler) {
 		this.handler = handler;
 
@@ -63,23 +71,26 @@ var Flow = augment(Object, function () {
 
 	this.change_slide = function (btn = false) {
 		var route, option;
-		if (!this.has_path) {
-			route = btn.dataset.next;
-			this.path = this.paths[route];
-			this.path_str += route;
-			this.has_path = true;
-			this.idx = 0;
-			this.view_slide(this.path[this.idx])
-			this.idx++;
-			this.path_str += '.';
-			this.path_str += this.path[this.idx];
 
-			this.handler.state = this.path[this.idx];
+		if (btn.dataset.next) {
+			route = btn.dataset.next;
+			if (route in paths) {
+				this.reset();
+				this.path = this.paths[route];
+				this.path_str += route;
+				this.has_path = true;
+				this.view_slide(this.path[this.idx])
+				
+				this.path_str += '.';
+				this.path_str += this.path[this.idx];
+
+				this.handler.state = this.path[this.idx];
+			}
 		} else if (this.has_path) {
 			this.idx++;
 
 			if (typeof this.path[this.idx] === 'object') {
-				var imd = this.path[this.idx][btn.dataset.opt];
+				var imd = this.path[this.idx][btn.dataset.option];
 				this.path = imd;
 				this.idx = 0;
 			}

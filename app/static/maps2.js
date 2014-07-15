@@ -172,9 +172,9 @@ var Forms = augment(Object, function () {
 
 		var m = {};
 		m.name = form.name.value;
-		m.address = map.marker_start.address;
-		m.lat = map.marker_start.lat;
-		m.lng = map.marker_start.lng;
+		m.address = map.new_event['loc'].address;
+		m.lat = map.new_event['loc'].lat;
+		m.lng = map.new_event['loc'].lng;
 		m.date = form.date.value;
 		m.time = form.time.value;
 		m.details = form.details.value;
@@ -426,8 +426,8 @@ var Map = augment(Object, function () {
 
 		this.state = 'select_location';
 		this.indicator = '';
-		this.current_ride = {};
-		this.current_event = {};
+		this.new_ride = {};
+		this.new_event = {};
 
 		this.markers = [];
 
@@ -450,14 +450,6 @@ var Map = augment(Object, function () {
 			}.bind(this));
 		}
 
-		// this.search_form = document.querySelector('#search_form');
-		// this.search_form.addEventListener('submit', function (e) {
-		// 	e.preventDefault();
-		// 	var address = this.search_form.address.value;
-		// 	this.geocoder.geocode({
-		// 		address: address
-		// 	}, this.extract_address.bind(this));
-		// }.bind(this));
 		this.reset();
 
 		this.reset_btn = document.querySelector('[data-reset]');
@@ -497,24 +489,16 @@ var Map = augment(Object, function () {
 	this.set_window = function (location, content, icon) {
 		if (this.create_new_marker) {
 			var latlng = new google.maps.LatLng(location.lat, location.lng);
-			// var dialog = new google.maps.InfoWindow({
-			// 	position: latlng,
-			// 	content: content
-			// });
+
 			var marker = new google.maps.Marker({
 				position: latlng,
 				map: this.map,
 				icon: icons[icon]
 			});
+
 			this.map.panTo(latlng);
 			this.markers.push(marker);
-			// google.maps.event.addListener(marker, 'click', function () {
-			// 	dialog.open(this.map, marker)
-			// })
-			// google.maps.event.addListener(
-			// 	dialog,
-			// 	'closeclick'
-			// );
+
 			this.create_new_marker = false;
 		} else {
 			console.log('Cannot create new marker right now');
@@ -537,39 +521,37 @@ var Map = augment(Object, function () {
 	};
 
 	this.extract_address = function (location) {
-		console.log(location);
 		var point = location[0].geometry.location;
-
 		var details = {};
 		details.lat = point.lat();
 		details.lng = point.lng();
 		details.add = location[0].formatted_address;
 		details.point = point;
-		console.log(details);
 		this.disp_address(details);
 	};
 
 	this.disp_address = function (deta) {
+		console.log(this.state);
 		if (this.state == 'event_location') {
 			this.set_window(deta, deta.add, 'person');
-			this.marker_start.lat = deta.lat;
-			this.marker_start.lng = deta.lng;
-			this.marker_start.address = deta.add;
+			this.new_event['loc'].lat = deta.lat;
+			this.new_event['loc'].lng = deta.lng;
+			this.new_event['loc'].address = deta.add;
 			flow.change_slide();
 		}
 		if (this.state == 'ride_location') {
 			this.set_window(deta, deta.add, 'success');
-			this.marker_start.lat = deta.lat;
-			this.marker_start.lng = deta.lng;
-			this.marker_start.address = deta.add;
+			this.new_ride['orig'].lat = deta.lat;
+			this.new_ride['orig'].lng = deta.lng;
+			this.new_ride['orig'].address = deta.add;
 			this.create_new_marker = true;
 			flow.change_slide();
 		}
 		if (this.state == 'location_dest') {
 			this.set_window(deta, deta.add, 'error');
-			this.marker_dest.lat = deta.lat;
-			this.marker_dest.lng = deta.lng;
-			this.marker_dest.address = deta.add;
+			this.new_ride['dest'].lat = deta.lat;
+			this.new_ride['dest'].lng = deta.lng;
+			this.new_ride['dest'].address = deta.add;
 
 			var loc_dest = document.querySelector('[data-ride="loc_dest"]');
 			var loc_btn = document.querySelector('[data-ride="loc_btn"]');
@@ -586,21 +568,17 @@ var Map = augment(Object, function () {
 		}
 	};
 
-	this.special_action = function (route, btn) {
-		if (route == 'select_location') {
+	this.special_action = function (route) {
+		if (this.state == 'select_location') {
 			this.create_new_marker = false;
-			flow.change_slide(route);
 		}
 		if (this.state == 'location_dest') {
 			if (route == 'create_ride.ride_location.select_type.driver.location_dest') {
-				this.current_ride.driver = true;
+				this.new_ride.driver = true;
 			}
 			if (route == 'create_ride.ride_location.select_type.passenger.location_dest') {
-				this.current_ride.driver = false;
+				this.new_ride.driver = false;
 			}
-		} else if (route == 'details') {
-			this.current_ride['origin'] = this.marker_start;
-			this.current_ride['dest'] = this.marker_dest;
 		} else if (route == 'join_ride') {
 			var id = btn.dataset.id;
 			var container = document.querySelector('[data-route="join_ride"]');
