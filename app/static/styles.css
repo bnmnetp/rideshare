@@ -1,5 +1,6 @@
 body {
 	/*margin-bottom: 60px;*/
+    overflow: auto;
     padding-top: 70px;
     color: #262626;
 }

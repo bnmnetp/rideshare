@@ -21,8 +21,6 @@ class ViewInvites(BaseHandler):
             'user': user
         })
 
-
-
 class SendInvite(BaseHandler):
     def get(self, invite_id):
         invite = Invite.get_by_id(int(invite_id))

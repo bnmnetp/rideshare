@@ -48,15 +48,6 @@ var Flow = augment(Object, function () {
 
 	}
 
-	this.next_event = function (e) {
-		var btn = e.target;
-		if (this.handler) {
-			this.handler.special_action(btn);
-		} else {
-			this.change_slide(btn);
-		}	
-	}
-
 	this.find_next = function (attr) {
 		var next = false;
 		for (var i = 0; i < this.next.length; i++) {
@@ -72,15 +63,19 @@ var Flow = augment(Object, function () {
 	this.change_slide = function (btn = false) {
 		var route, option;
 
-		if (btn.dataset.next) {
+		if (!this.has_path && btn && btn.dataset.next) {
 			route = btn.dataset.next;
 			if (route in paths) {
 				this.reset();
 				this.path = this.paths[route];
 				this.path_str += route;
 				this.has_path = true;
+				this.handler.state = route;
+				if (this.handler) {
+					this.handler.special_action(btn);
+				}
 				this.view_slide(this.path[this.idx])
-				
+
 				this.path_str += '.';
 				this.path_str += this.path[this.idx];
 
@@ -88,7 +83,6 @@ var Flow = augment(Object, function () {
 			}
 		} else if (this.has_path) {
 			this.idx++;
-
 			if (typeof this.path[this.idx] === 'object') {
 				var imd = this.path[this.idx][btn.dataset.option];
 				this.path = imd;
@@ -97,11 +91,9 @@ var Flow = augment(Object, function () {
 			this.path_str += '.';
 			this.path_str += this.path[this.idx];
 			if (this.handler) {
-				this.handler.special_action(this.path_str);
+				this.handler.special_action(btn);
 			}
 			this.view_slide(this.path[this.idx]);
-
-			
 
 			this.handler.state = this.path[this.idx];
 		}
@@ -122,29 +114,4 @@ var Flow = augment(Object, function () {
 
 		}
 	}
-
-	// this.change_slide = function (route) {
-	// 	if (this.current) {
-	// 		this.current.classList.remove('active');
-	// 	}
-	// 	this.current = this.find_next(route);
-	// 	if (this.current) {
-	// 		this.current.classList.add('active');
-	// 	}
-
-	// 	this.id_last = route;
-	// 	this.handler.state = route;
-	// 	for (var i = 0; i < this.views.length; i++) {
-	// 		var view = this.views[i];
-	// 		if (view.dataset.route == route) {
-	// 			view.classList.remove('hidden');
-	// 		} else {
-	// 			if (!view.classList.contains('hidden')) {
-	// 				view.classList.add('hidden');
-	// 			}
-	// 		}
-
-	// 	}
-
-	// }
 });
