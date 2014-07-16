@@ -399,6 +399,7 @@ var paths = {
 			driver: [
 				'ride_location',
 				'location_dest',
+				'safety',
 				'driver_details'
 			],
 			passenger: [
@@ -413,6 +414,7 @@ var paths = {
 		'select_type',
 		{
 			driver: [
+				'safety',
 				'driver_details'
 			],
 			passenger: [
@@ -442,9 +444,6 @@ var Map = augment(Object, function () {
 		this.new_event = {};
 
 		this.markers = [];
-
-		this.marker_start = {};
-		this.marker_dest = {};
 
 		this.create_new_marker = false;
 
@@ -573,7 +572,7 @@ var Map = augment(Object, function () {
 			var loc_dest = document.querySelector('[data-ride="loc_dest"]');
 			var loc_btn = document.querySelector('[data-ride="loc_btn"]');
 
-			loc_dest.textContent = this.marker_dest.address;
+			loc_dest.textContent = this.new_ride.dest.address;
 			loc_btn.classList.remove('hidden');
 		}
 		if (this.state == 'event_ride_location') {
@@ -620,7 +619,7 @@ var Map = augment(Object, function () {
 		if (this.state == 'ride_to_event') {
 			this.new_ride.event = btn.dataset.id;
 		}
-		if (this.state == 'event_location' || this.state == 'ride_location') {
+		if (this.state == 'select_location') {
 			this.reset();
 		}
 	};
