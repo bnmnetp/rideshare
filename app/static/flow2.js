@@ -6,7 +6,7 @@ var Flow = augment(Object, function () {
 		this.paths = paths;
 		this.path = [];
 		this.has_path = false;
-		this.path_str = '';
+		this.path_history = [];
 
 		this.option = '';
 		this.handler = false;
@@ -38,14 +38,13 @@ var Flow = augment(Object, function () {
 	this.reset = function () {
 		this.path = [];
 		this.has_path = false;
-		this.path_str = '';
+		this.path_history = [];
 		this.idx = 0;
 		this.view_slide('select_location');
 	}
 
 	this.set_handler = function (handler) {
 		this.handler = handler;
-
 	}
 
 	this.find_next = function (attr) {
@@ -68,7 +67,7 @@ var Flow = augment(Object, function () {
 			if (route in paths) {
 				this.reset();
 				this.path = this.paths[route];
-				this.path_str += route;
+				this.path_history.push(route);
 				this.has_path = true;
 				this.handler.state = route;
 				if (this.handler) {
@@ -76,8 +75,7 @@ var Flow = augment(Object, function () {
 				}
 				this.view_slide(this.path[this.idx])
 
-				this.path_str += '.';
-				this.path_str += this.path[this.idx];
+				this.path_history.push(this.path[this.idx]);
 
 				this.handler.state = this.path[this.idx];
 			}
@@ -88,8 +86,7 @@ var Flow = augment(Object, function () {
 				this.path = imd;
 				this.idx = 0;
 			}
-			this.path_str += '.';
-			this.path_str += this.path[this.idx];
+			this.path_history.push(this.path[this.idx]);
 			if (this.handler) {
 				this.handler.special_action(btn);
 			}

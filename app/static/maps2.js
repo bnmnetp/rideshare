@@ -11,6 +11,12 @@ function getParameterByName(name) {
 	}		
 }
 
+if (!Array.prototype.last){
+    Array.prototype.last = function () {
+        return this[this.length - 1];
+    };
+};
+
 var get_geolocation = function (e) {
 	var target = e.target;
 	navigator.geolocation.getCurrentPosition(function (pos) {
@@ -390,27 +396,27 @@ var Markers = augment(Object, function () {
 
 var paths = {
 	create_event: [
-		'event_location',
+		'location_selection',
 		'event_details'
 	],
 	create_ride: [
 		'select_type',
 		{
 			driver: [
-				'ride_location',
+				'location_selection',
 				'location_dest',
 				'safety',
 				'driver_details'
 			],
 			passenger: [
-				'ride_location',
+				'location_selection',
 				'location_dest',
 				'passenger_details'
 			]
 		}
 	],
 	ride_to_event: [
-		'event_ride_location',
+		'location_selection',
 		'select_type',
 		{
 			driver: [
@@ -421,6 +427,9 @@ var paths = {
 				'passenger_details'
 			]
 		}
+	],
+	join_ride: [
+		'join_ride'
 	]
 };
 
@@ -499,7 +508,7 @@ var Map = augment(Object, function () {
 		this.geocoder = new google.maps.Geocoder();
 	};
 
-	this.set_window = function (location, content, icon) {
+	this.set_window = function (location, icon) {
 		if (this.create_new_marker) {
 			var latlng = new google.maps.LatLng(location.lat, location.lng);
 
@@ -545,25 +554,33 @@ var Map = augment(Object, function () {
 
 	this.disp_address = function (deta) {
 		console.log(this.state);
-		if (this.state == 'event_location') {
-			this.set_window(deta, deta.add, 'person');
-			this.new_event.loc = {}
-			this.new_event.loc.lat = deta.lat;
-			this.new_event.loc.lng = deta.lng;
-			this.new_event.loc.address = deta.add;
-			flow.change_slide();
-		}
-		if (this.state == 'ride_location') {
-			this.set_window(deta, deta.add, 'success');
-			this.new_ride.orig = {};
-			this.new_ride.orig.lat = deta.lat;
-			this.new_ride.orig.lng = deta.lng;
-			this.new_ride.orig.address = deta.add;
-			this.create_new_marker = true;
-			flow.change_slide();
+		if (this.state = 'location_selection') {
+			var set = {};
+			if (flow.path_history.indexOf('create_ride') > -1) {
+				this.set_window(deta, 'success');
+				this.new_event.loc = {};
+				set = this.new_event.loc;
+			} else if (flow.path_history.indexOf('create_event') > -1) {
+				this.set_window(deta, 'person');
+				this.new_ride.orig = {};
+				set = this.new_ride.orig;
+			} else if (flow.path_history.indexOf('ride_to_event') > -1) {
+				this.set_window(deta, 'error');
+				this.new_ride.dest = {};
+				set = this.new_ride.dest;
+			}
+			set.lat = deta.lat;
+			set.lng = deta.lng;
+			set.address = deta.add;
+
+			var select_text = document.querySelector('[data-location="text"]');
+			var select_btn = document.querySelector('[data-location="btn"]');
+
+			select_text.textContent = set.address;
+			select_btn.classList.remove('hidden');
 		}
 		if (this.state == 'location_dest') {
-			this.set_window(deta, deta.add, 'error');
+			this.set_window(deta, 'error');
 			this.new_ride.dest = {};
 			this.new_ride.dest.lat = deta.lat;
 			this.new_ride.dest.lng = deta.lng;
@@ -574,14 +591,6 @@ var Map = augment(Object, function () {
 
 			loc_dest.textContent = this.new_ride.dest.address;
 			loc_btn.classList.remove('hidden');
-		}
-		if (this.state == 'event_ride_location') {
-			this.set_window(deta, deta.add, 'success');
-			this.new_ride.orig = {};
-			this.new_ride.orig.lat = deta.lat;
-			this.new_ride.orig.lng = deta.lng;
-			this.new_ride.orig.address = deta.add;
-			flow.change_slide();
 		}
 	};
 
@@ -621,6 +630,19 @@ var Map = augment(Object, function () {
 		}
 		if (this.state == 'select_location') {
 			this.reset();
+		}
+		if (flow.path_history.last() == 'location_selection') {
+			var container = document.querySelector('[data-route="location_selection"]');
+			var source = document.querySelector('[data-template="select_location"]').innerHTML;
+			var template = Handlebars.compile(source);
+
+			var html = template({
+				type: 'test'
+			});
+			while (container.firstChild) {
+				container.removeChild(container.firstChild)
+			}
+			container.insertAdjacentHTML('beforeend', html);
 		}
 	};
 });

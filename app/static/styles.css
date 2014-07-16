@@ -21,6 +21,7 @@ img {
     font-size: 18px;
     line-height: 32px;
     height: 32px;
+    margin: 3px 0px 3px 0px;
 
 }
 .chip .ind {
@@ -187,7 +188,7 @@ img {
 }
 
 .information li {
-    margin: 0px 0px 15px 0px;
+    margin: 0px 0px 10px 0px;
     font-size: 16px;
     line-height: 32px;
     color: #212121;

@@ -66,85 +66,8 @@
 
     </div>
 
-    <div class="col-md-4" data-route='event_ride_location'>
-        <div class="locsec">
-            <h1>Select the starting location</h1>
-            <p>Use one of the following options</p>
-            <ul>
-                <li>
-                    <h2>Point & Click</h2>
-                    Select a location by clicking on the map
-                </li>
-                <li>
-                    <h2>Geolocation</h2>
-                    <button class='geo_location hidden btn btn-primary'>Use your current location.</button>
-                </li>
-                <li>
-                    <h2>Search</h2>
-                    <form data-search>
-                        <div class="form-group">
-                            <label>Enter an address, city, or state:</label>
-                            <input type="text" class="form-control" name="address">
-                        </div>
-                        <button type="submit" class="btn btn-primary">Search</button>
-                    </form>
-                </li>
-            </ul>
-        </div>
-    </div>
-
-    <div class="col-md-4" data-route='event_location'>
-        <div class="locsec">
-            <h1>Select the event location</h1>
-            <p>Use one of the following options</p>
-            <ul>
-                <li>
-                    <h2>Point & Click</h2>
-                    Select a location by clicking on the map
-                </li>
-                <li>
-                    <h2>Geolocation</h2>
-                    <button class='geo_location hidden btn btn-primary'>Use your current location.</button>
-                </li>
-                <li>
-                    <h2>Search</h2>
-                    <form data-search>
-                        <div class="form-group">
-                            <label>Enter an address, city, or state:</label>
-                            <input type="text" class="form-control" name="address">
-                        </div>
-                        <button type="submit" class="btn btn-primary">Search</button>
-                    </form>
-                </li>
-            </ul>
-        </div>
-    </div>
-
-    <div class="col-md-4" data-route='ride_location'>
-        <div class="locsec">
-            <h1>Select the starting location</h1>
-            <p>Use one of the following options</p>
-            <ul>
-                <li>
-                    <h2>Point & Click</h2>
-                    Select a location by clicking on the map
-                </li>
-                <li>
-                    <h2>Geolocation</h2>
-                    <button class='geo_location hidden btn btn-primary'>Use your current location.</button>
-                </li>
-                <li>
-                    <h2>Search</h2>
-                    <form data-search>
-                        <div class="form-group">
-                            <label>Enter an address, city, or state:</label>
-                            <input type="text" class="form-control" name="address">
-                        </div>
-                        <button type="submit" class="btn btn-primary">Search</button>
-                    </form>
-                </li>
-            </ul>
-        </div>
+    <div class="col-md-4" data-route='location_selection'>
+        
     </div>
 
     <div class="col-md-4" data-route='event_details'>
@@ -279,26 +202,58 @@
 
 {% raw %}
 
+<script data-template='select_location' type='text/x-handlebars-template'>
+    <div class="locsec">
+        <h1>Select the {{type}} location</h1>
+        <p>Use one of the following options:</p>
+        <ul>
+            <li>
+                <h2>Point & Click</h2>
+                Select a location by clicking on the map
+            </li>
+            <li>
+                <h2>Geolocation</h2>
+                <button class='geo_location btn btn-primary'>Use your current location.</button>
+            </li>
+            <li>
+                <h2>Search</h2>
+                <form data-search>
+                    <div class="form-group">
+                        <label>Enter an address, city, or state:</label>
+                        <input type="text" class="form-control" name="address">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </form>
+            </li>
+        </ul>
+        <hr>
+        Selected location: <span data-location='text'>None</span>
+        <button class="btn btn-primary hidden" data-next="true" type='button' data-location="btn">
+            Next
+        </button>
+    </div>
+</script>
+
 <script data-template='join_ride' type="text/x-handlebars-template">
     <h1>Join a ride</h1>
-    <div class="entry">
-        <strong>Origin:</strong> {{origin}}
-    </div>
-    <div class="entry">
-        <strong>Destination:</strong> {{dest}}
-    </div>
-    <div class="entry">
-        <strong>Date:</strong> {{date}}
-    </div>
-    <div class="entry">
-        <strong>Time:</strong> {{time}}
-    </div>
-    <div class="entry">
-        <strong>Driver:</strong> {{driver_name}}
-    </div>
-    <div class="entry">
-        <strong>Driver contact:</strong> {{contact}}
-    </div>
+    <ul class="information">
+        <li>
+            <b>Origin:</b> {{origin}}
+        </li>
+        <li>
+            <b>Destination:</b> {{dest}}
+        </li>
+        <li>
+            <b>Date:</b> {{date}}
+        </li>
+        <li>
+            <b>Time:</b> {{time}}
+        </li>
+        <li>
+            <b>Driver:</b> {{driver}}
+        </li>
+
+    </ul>
     <button class="btn btn-primary btn-large" data-join='passenger:{{id}}'>Join as Passenger</button>
     {{#unless driver}}
     <button class='btn btn-primary btn-large' data-join='driver:{{id}}'>Join as Driver</button>
