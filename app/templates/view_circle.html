@@ -95,21 +95,24 @@
         <div class="panel-body panel-no">
         {% if rides %}
             {% for ride in rides %}
-                <div class="block">
-                    <div class="title">
-                        <a href='/ride/{{ride.key().id()}}'>{{ride.orig}} to {{ride.dest}}</a>
+                <div class="list">
+                    <div class="ctx">
+                        <i class="fa fa-car"></i>
                     </div>
-                    <div class="details">
-                        {% if ride.is_driver %}
-                        <div class="deta">
-                            <span class="label label-success">Driver</span>
+                    <div class="info">
+                        <div class="title">
+                            <a href='/ride/{{ride.key().id()}}'>
+                                {{ride.orig}} to {{ride.dest}}
+                            </a>
                         </div>
-                        {% endif %}
-                        {% if ride.is_passenger %}
-                        <div class="deta">
-                            <span class="label label-success">Passenger</span>
+                        <div class="sub">
+                            {% if ride.is_driver %}
+                                <span class="label label-success">Driver</span>
+                            {% endif %}
+                            {% if ride.is_passenger %}
+                                <span class="label label-success">Passenger</span>
+                            {% endif %}
                         </div>
-                        {% endif %}
                     </div>
                 </div>
             {% endfor %}
@@ -125,17 +128,20 @@
     <div class="panel panel-main">
         <div class="panel-heading">Events</div>
         <div class="panel-body panel-no">
-        {% if events_all %}
+        {% if events %}
             {% for event in events %}
-                <div class="block">
-                    <div class="title">
-                        <a href='/event/{{event.key().id()}}'>{{event.name}}</a>
+                <div class="list">
+                    <div class="ctx">
+                        <i class="fa fa-location-arrow"></i>
                     </div>
-                    <div class="details">
-                        <div class="deta">
-                            <i class="fa fa-calendar"></i> {{event.date}}
+                    <div class="info">
+                        <div class="title">
+                            <a href='/event/{{event.key().id()}}'>
+                                {{event.name}}
+                            </a>
                         </div>
-                        <div class="deta">
+                        <div class="sub">
+                            <i class="fa fa-calendar"></i> {{event.date}}
                             <i class="fa fa-location-arrow"></i> {{event.address}}
                         </div>
                     </div>

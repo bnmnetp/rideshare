@@ -1,4 +1,4 @@
-from app.common.toolbox import doRender
+from app.common.toolbox import doRender, split_address
 from google.appengine.ext import db
 from app.model import *
 import datetime
@@ -21,13 +21,13 @@ class GetCircleHandler(BaseHandler):
         user = self.current_user()
 
         # Grabs members
-        members = User.all().filter('circles = ', circle.key())
+        members = User.all().filter('circles = ', circle.key()).fetch(100)
 
         # Grabs rides
-        rides = Ride.all().filter('circle = ',  circle.key())
+        rides = Ride.all().filter('circle = ',  circle.key()).fetch(100)
 
-        # Grabs Events
-        events = Event.all().filter('circle = ', circle.key())
+        # Grabs events
+        events = Event.all().filter('circle = ', circle.key()).fetch(100)
 
         if circle.key() in user.circles:
             has_permission = True
@@ -41,28 +41,29 @@ class GetCircleHandler(BaseHandler):
 
         if not has_permission:
             self.redirect('/circles')
-        else:
-            for ride in rides:
-                ride.dest = split_address(ride.dest_add)
-                ride.orig = split_address(ride.origin_add)
-                if ride.driver:
-                    if ride.driver.key().id() == user.key().id():
-                        ride.is_driver = True
-                    else:
-                        ride.is_driver = False
-                if user.key() in ride.passengers:
-                    ride.is_passenger = True
-                else:
-                    ride.is_passenger = False
+            return None
 
-            doRender(self, 'view_circle.html', {
-                'circle': circle,
-                'user': user,
-                'members': members,
-                'rides': rides,
-                'events': events,
-                'invite': invite
-            })
+        for ride in rides:
+            ride.dest = split_address(ride.dest_add)
+            ride.orig = split_address(ride.origin_add)
+            if ride.driver:
+                if ride.driver.key().id() == user.key().id():
+                    ride.is_driver = True
+                else:
+                    ride.is_driver = False
+            if user.key() in ride.passengers:
+                ride.is_passenger = True
+            else:
+                ride.is_passenger = False
+
+        doRender(self, 'view_circle.html', {
+            'circle': circle,
+            'user': user,
+            'members': members,
+            'rides': rides,
+            'events': events,
+            'invite': invite
+        })
 
 class GetCircleInvite(BaseHandler):
     def get(self, circle_id):

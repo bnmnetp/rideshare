@@ -180,9 +180,9 @@ var Forms = augment(Object, function () {
 
 		var m = {};
 		m.name = form.name.value;
-		m.address = map.new_event['loc'].address;
-		m.lat = map.new_event['loc'].lat;
-		m.lng = map.new_event['loc'].lng;
+		m.address = map.new_event.loc.address;
+		m.lat = map.new_event.loc.lat;
+		m.lng = map.new_event.loc.lng;
 		m.date = form.date.value;
 		m.time = form.time.value;
 		m.details = form.details.value;
@@ -563,8 +563,8 @@ var Map = augment(Object, function () {
 				set = this.new_ride.orig;
 			} else if (flow.path_history.indexOf('create_event') > -1) {
 				this.set_window(deta, 'person');
-				this.new_ride.orig = {};
-				set = this.new_ride.orig;
+				this.new_event.loc = {};
+				set = this.new_event.loc;
 			} else if (flow.path_history.indexOf('ride_to_event') > -1) {
 				this.set_window(deta, 'error');
 				this.new_ride.dest = {};
@@ -629,9 +629,6 @@ var Map = augment(Object, function () {
 		}
 		if (this.state == 'ride_to_event') {
 			this.new_ride.event = btn.dataset.id;
-		}
-		if (this.state == 'select_location') {
-			this.reset();
 		}
 		if (flow.path_history.last() == 'location_selection') {
 			this.create_new_marker = true;

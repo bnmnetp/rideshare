@@ -122,7 +122,7 @@ class NewEventHandler(BaseHandler):
         event.user = user.key()
 
         if data['circle'] != '':
-            circle = Circle.get_by_id(data['circle'])
+            circle = Circle.get_by_id(int(data['circle']))
             if circle:
                 event.circle = circle.key()
         else:

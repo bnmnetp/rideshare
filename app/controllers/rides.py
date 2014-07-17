@@ -348,7 +348,7 @@ class NewRideHandler(BaseHandler):
             ride.passengers.append(user.key())
 
         if data['circle'] != '':
-            circle = Circle.get_by_id(data['circle'])
+            circle = Circle.get_by_id(int(data['circle']))
             if circle:
                 ride.circle = circle.key()
         else:

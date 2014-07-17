@@ -56,12 +56,12 @@
 
                     {% if ride.circle %}
                         <li>
-                            <b>Circle:</b> <a href="/circle/{{circle.key().id()}}">{{circle.name}}</a>
+                            <b>Circle:</b> <a href="/circle/{{ride.circle.key().id()}}">{{ride.circle.name}}</a>
                         </li>
                     {% endif %}
                     {% if ride.event %}
                         <li>
-                            <b>Event:</b> <a href="/event/{{event.key().id()}}">{{event.name}}</a>
+                            <b>Event:</b> <a href="/event/{{ride.event.key().id()}}">{{ride.event.name}}</a>
                         </li>
                     {% endif %}
                 </ul>

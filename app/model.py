@@ -68,7 +68,7 @@ class Ride(db.Model):
     passengers = db.ListProperty(db.Key)
     contact = db.StringProperty()
     details = db.StringProperty()
-    circle = db.StringProperty()
+    circle = db.ReferenceProperty(Circle)
     event = db.ReferenceProperty(Event)
 
     def to_dict(self):

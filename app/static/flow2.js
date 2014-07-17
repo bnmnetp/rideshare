@@ -62,25 +62,16 @@ var Flow = augment(Object, function () {
 	this.change_slide = function (btn = false) {
 		var route, option;
 
-		if (!this.has_path && btn && btn.dataset.next) {
+		if (btn) {
 			route = btn.dataset.next;
 			if (route in paths) {
 				this.reset();
-				this.path = this.paths[route];
+				this.path = paths[route];
 				this.path_history.push(route);
 				this.has_path = true;
-				this.handler.state = route;
-				if (this.handler) {
-					this.handler.special_action(btn);
-				}
-				this.view_slide(this.path[this.idx])
-
-				this.path_history.push(this.path[this.idx]);
-
-				this.handler.state = this.path[this.idx];
 			}
-		} else if (this.has_path) {
-			this.idx++;
+		}
+		if (this.has_path) {
 			if (typeof this.path[this.idx] === 'object') {
 				var imd = this.path[this.idx][btn.dataset.option];
 				this.path = imd;
@@ -91,10 +82,10 @@ var Flow = augment(Object, function () {
 				this.handler.special_action(btn);
 			}
 			this.view_slide(this.path[this.idx]);
-
 			this.handler.state = this.path[this.idx];
+			this.idx++;
 		}
-		console.log('Path', this.path_history);
+		console.log(this.path_history);
 		console.log('IDX', this.idx);
 	}
 
