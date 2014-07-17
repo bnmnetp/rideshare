@@ -47,6 +47,9 @@
 					
 					<li>
 						<a href="/home">Home</a>
+						{% if alert_badge %}
+							<span class="nbadge">{{alert_badge}}</span>
+						{% endif%}
 					</li>
 				    <li>
         				<a href="/circles">Circles</a>
@@ -62,8 +65,8 @@
     				</li>
 					<li>
 						<a href="/invites">Invites</a>
-						{% if invite_noti %}
-							<span class="nbadge">{{invite_noti}}</span>
+						{% if invite_badge %}
+							<span class="nbadge">{{invite_badge}}</span>
 						{% endif%}
 					</li>
 					

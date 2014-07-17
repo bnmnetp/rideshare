@@ -11,11 +11,13 @@ env = jinja2.Environment(
 
 def doRender(handler, name = 'map.html', value = {}):
 	value['community'] = db.Query(Community).get()
+
 	b = BaseHandler()
 	user = b.current_user()
-	if user:
-		value['invite_noti'] = Invite.all().filter('user = ', user.key()).count()
 
+	if user:
+		value['invite_badge'] = Invite.all().filter('user = ', user.key()).count()
+		value['alert_badge'] = Notification.all().filter('user = ', user.key()).count()
 
 	template = env.get_template(name)
 	handler.response.write(template.render(value))

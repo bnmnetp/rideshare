@@ -97,8 +97,8 @@ img {
 /* Noti Badge */
 .nbadge {
     position: absolute;
-    right: 5px;
-    bottom: 7px;
+    right: 3px;
+    bottom: 5px;
     min-width: 10px;
     padding: 2px 5px;
     font-size: 10px;
@@ -106,7 +106,7 @@ img {
     color: #FFF;
     line-height: 1;
     text-align: center;
-    background-color: #E51C23;
+    background-color: #F36C60;
     border-radius: 3px;
 }
 /* End */

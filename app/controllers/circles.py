@@ -14,6 +14,10 @@ class GetCircleHandler(BaseHandler):
 
         circle = Circle.get_by_id(int(circle_id))
 
+        if not circle:
+            self.redirect('/circles')
+            return None
+
         user = self.current_user()
 
         # Grabs members
