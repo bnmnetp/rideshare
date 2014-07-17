@@ -1,10 +1,3 @@
-# This is actually the development one.
-# lutherrideshare.appspot key: ABQIAAAAg9WbCE_zwMIRW7jDFE_3ixS0LiYWImofzW4gd3oCqtkHKt0IaBT-STdq-gdH-mW2_ejMPXqxnfJjgw
-
-# This has the app id of ridesharebeta   and is also on ridesharebeta.appspot.com
-# rideshare.luther.edu key:  ABQIAAAAg9WbCE_zwMIRW7jDFE_3ixQ2JlMNfqnGb2qqWZtmZLchh1TSjRS0zuchuhlR8g4tlMGrjg34sNmyjQ
-#!/usr/bin/env python2.7
-
 import webapp2
 from simpleauth import SimpleAuthHandler
 from app.base_handler import BaseHandler
@@ -48,6 +41,7 @@ from app.controllers.rides import *
 from app.controllers.comments import *
 from app.controllers.users import *
 from app.controllers.invites import *
+from app.controllers.alert import *
 
 from app.common.toolbox import doRender, split_address
 
@@ -213,6 +207,10 @@ app = webapp2.WSGIApplication([
     ('/events', EventHandler),
     ('/newevent', NewEventHandler),
     # end events
+
+    # controllers/alert.py
+    ('/alert/(\d+)/dismiss', DismissAlert),
+    # end alert
 
     # auth routes
     webapp2.Route(

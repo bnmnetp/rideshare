@@ -46,7 +46,7 @@ class BaseHandler(webapp2.RequestHandler):
 
     def json_resp(self, code, ctx):
         self.response.set_status(code)
-        self.response.write(ctx)
+        self.response.write(json.dumps(ctx))
         return None
 
     @webapp2.cached_property
