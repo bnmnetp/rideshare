@@ -20,6 +20,41 @@ class ViewInvites(BaseHandler):
             'invites': invites,
             'user': user
         })
+    def post(self):
+        self.auth()
+
+        user = self.current_user()
+
+        json_str = self.request.body
+        data = json.loads(json_str)
+
+        invite = Invite.get_by_id(int(data['id']))
+
+        if not invite:
+            return self.json_resp(500, {
+                'message': 'Invite does not exist.'
+            })
+
+        if data['type'] == 'join':
+            if invite.circle.key() not in user.circles:
+                user.circles.append(invite.circle.key())
+            resp = {
+                'redirect': True,
+                'circle_id': invite.circle.key().id()
+            }
+        elif data['type'] == 'decline':
+            # if invite.circle.key() in user.circles:
+            #      user.circles.remove(invite.circle.key())
+            resp = {
+                'message': 'You have declined the invite',
+                'redirect': False
+            }
+
+        user.put()
+
+        invite.delete()
+
+        self.response.write(json.dumps(resp))
 
 class SendInvite(BaseHandler):
     def get(self, invite_id):

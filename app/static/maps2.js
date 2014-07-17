@@ -554,12 +554,13 @@ var Map = augment(Object, function () {
 
 	this.disp_address = function (deta) {
 		console.log(this.state);
-		if (this.state = 'location_selection') {
+		if (this.state == 'location_selection') {
+			console.log('selection')
 			var set = {};
 			if (flow.path_history.indexOf('create_ride') > -1) {
 				this.set_window(deta, 'success');
-				this.new_event.loc = {};
-				set = this.new_event.loc;
+				this.new_ride.orig = {};
+				set = this.new_ride.orig;
 			} else if (flow.path_history.indexOf('create_event') > -1) {
 				this.set_window(deta, 'person');
 				this.new_ride.orig = {};
@@ -580,6 +581,7 @@ var Map = augment(Object, function () {
 			select_btn.classList.remove('hidden');
 		}
 		if (this.state == 'location_dest') {
+			console.log('destination')
 			this.set_window(deta, 'error');
 			this.new_ride.dest = {};
 			this.new_ride.dest.lat = deta.lat;
@@ -632,6 +634,7 @@ var Map = augment(Object, function () {
 			this.reset();
 		}
 		if (flow.path_history.last() == 'location_selection') {
+			this.create_new_marker = true;
 			var container = document.querySelector('[data-route="location_selection"]');
 			var source = document.querySelector('[data-template="select_location"]').innerHTML;
 			var template = Handlebars.compile(source);
@@ -643,6 +646,9 @@ var Map = augment(Object, function () {
 				container.removeChild(container.firstChild)
 			}
 			container.insertAdjacentHTML('beforeend', html);
+		}
+		if (flow.path_history.last() == 'location_dest') {
+			this.create_new_marker = true;
 		}
 	};
 });

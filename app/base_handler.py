@@ -45,7 +45,7 @@ class BaseHandler(webapp2.RequestHandler):
             self.session_store.save_sessions(self.response)
 
     def json_resp(self, code, ctx):
-        self.response.status(code)
+        self.response.set_status(code)
         self.response.write(ctx)
         return None
 

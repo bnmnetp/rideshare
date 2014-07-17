@@ -94,7 +94,7 @@ var Flow = augment(Object, function () {
 
 			this.handler.state = this.path[this.idx];
 		}
-		console.log('Path STR', this.path_str);
+		console.log('Path', this.path_history);
 		console.log('IDX', this.idx);
 	}
 
