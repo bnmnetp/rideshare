@@ -18,8 +18,12 @@
 				<b>Invited by:</b> {{invite.sender.name}}
 			</li>
 		</ul>
-		<button data-invite='join' class='btn btn-primary'>Join Circle</button>
-		<button data-invite='decline' class='btn btn-danger'>Decline Invite</button>
+        <button data-invite='join' data-id='{{invite.key().id()}}' class='btn btn-primary'>
+            Join Circle
+        </button>
+        <button data-invite='decline' data-id='{{invite.key().id()}}' class='btn btn-danger'>
+            Decline Invite
+        </button>
 	</div>
 </div>
 {% endblock %}
@@ -38,36 +42,50 @@
 {% endraw %}
 
 <script type="text/javascript">
-	var invite = document.querySelector('[data-invite="join"]');
-
-	invite.addEventListener('click', function (e) {
-		e.preventDefault();
-
-		var push = $.ajax({
-			type: 'POST',
-			url: window.location.pathname,
-			dataType: 'json',
+    var send_req = function (type, id) {
+        var push = $.ajax({
+            type: 'POST',
+            url: '/invites',
+            dataType: 'json',
             contentType: 'application/json; charset=UTF-8',
             data: JSON.stringify({
-            	type: 'join'
+                type: type,
+                id: id
             })
-		});
+        });
 
-		push.done(function (data) {
-			notify({
-				type: 'success',
-				strong: 'You have accepted the invite',
-				message: '<a href="/circle/' + data.id + '">Visit the circle you joined.</a>'
-			})
-		});
+        push.done(function (data) {
+            if (data.redirect) {
+                document.location.href = '/circle/' + data.circle_id;
+            } else {
+                notify({
+                    type: 'success',
+                    strong: 'Success',
+                    message: 'You have declined the invite.'
+                });
+            }
 
-		push.fail(function (data, status) {
-			notify({
-				type: 'danger',
-				strong: 'Whoops',
-				message: 'Please refresh the page and try again.'
-			})
-		});
-	});
+        });
+
+        push.fail(function (data, status) {
+            notify({
+                type: 'danger',
+                strong: 'Whoops',
+                message: 'Please refresh the page and try again.'
+            });
+        });
+    };
+
+    document.body.addEventListener('click', function (e) {
+        var target = e.target;
+
+        if (target.dataset.invite) {
+            if (target.dataset.invite == 'join') {
+                send_req('join', target.dataset.id);
+            } else if (target.dataset.invite == 'decline') {
+                send_req('decline', target.dataset.id);
+            }
+        }
+    });
 </script>
 {% endblock %}
