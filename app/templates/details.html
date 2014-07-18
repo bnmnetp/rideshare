@@ -10,8 +10,12 @@
 <div class="panel panel-main">
     <div class="panel-heading">Additional Details</div>
     <div class="panel-body">
-        <p class="lead">To finish signing up, we need a few additional details. This information will only be availible to other users who sign up the service.</p>
+        <p class="lead">To finish signing up, we need a few additional details.</p>
         <form id='form'>
+            <div class="form-group">
+                <label>Name</label>
+                <input type="text" class='form-control' placeholder=='Name' name='name'>
+            </div>
             <div class="form-group">
                 <label>Email</label>
                 <input type='email' class='form-control' placeholder='Email' name='email' value='{{user.email}}'>

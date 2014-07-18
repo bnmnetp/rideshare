@@ -1,4 +1,4 @@
-from app.common.toolbox import doRender
+from app.common.toolbox import doRender, grab_json
 from google.appengine.ext import db
 from google.appengine.api import files, images
 from google.appengine.ext.webapp import blobstore_handlers
@@ -74,12 +74,17 @@ class EditUserHandler(BaseHandler):
 
 		user = self.current_user()
 
+		properties = ['name', 'email', 'phone']
+
+		user_json = grab_json(user, properties)
+
 		if not user.key().id() == int(user_id):
 			self.redirect('/user/' + user_id)
 			return None
 		else:
 			doRender(self, 'edit_user.html', {
-				'user': user
+				'user': user,
+				'user_json': user_json
 			})
 
 	def post(self, user_id):

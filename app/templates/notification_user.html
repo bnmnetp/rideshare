@@ -13,27 +13,29 @@
         <form id='form'>
             <div class="panel panel-default">
                 <div class="panel-body">
+                    Set your preferences to recieve notifications for important events. These wi
                     You are notified if:
                     <ul>
-                        <li>You are a driver and passenger leaves or joins.</li>
-                        <li>You are a passenger and the driver leaves or joins.</li>
+                        <li>You are the driver and a passenger leaves the ride.</li>
+                        <li>You are the driver and a passenger joins the ride.</li>
+                        <li>You are a passenger of a ride and a driver volunteers to drive.</li>
+                        <li>You are a passenger of a ride and a driver leaves the ride.</li>
                     </ul>
-                    These notifications appear on your <a href='/home'>home page</a>. You can set preferences for quicker and easier notifications here.
+                    Notifications always appear on your <a href='/home'>home page</a>. These preferences 
                 </div>
             </div>
             <div class="form-group">
-                <label>When to notify:</label>
+                <label>How long prior to scheduled departue would you like to be notified?</label>
                 <select class='form-control' name='time'>
                     <option value="0">No notifications</option>
-                    <option value="1">Within a day</option>
-                    <option value="2">Within 2 days</option>
-                    <option value="7">Within a week</option>
+                    <option value="1">Within 24 hours</option>
+                    <option value="2">Within 48 days</option>
+                    <option value="7">Within 7 days</option>
                 </select>
             </div>
             <div class="form-group">
                 <label>How to notify:</label>
                 <select class='form-control' name="type">
-                    <option value='text'>Text me</option>
                     <option value='email'>Email me</option>
                 </select>
             </div>
