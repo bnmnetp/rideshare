@@ -43,7 +43,7 @@ from app.controllers.users import *
 from app.controllers.invites import *
 from app.controllers.alert import *
 
-from app.common.toolbox import doRender, split_address
+from app.common.toolbox import doRender, split_address, grab_json
 
 # Creates Community entry on first run.
 aquery = db.Query(Community)
@@ -134,8 +134,13 @@ class DetailHandler(BaseHandler):
         self.auth()
         user = self.current_user()
 
+        properties = ['name', 'email', 'phone']
+
+        user_json = grab_json(user, properties)
+
         doRender(self, 'details.html', {
-            'user': user
+            'user': user,
+            'user_json': user_json
         })
     def post(self):
         self.auth()
