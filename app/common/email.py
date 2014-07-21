@@ -23,3 +23,19 @@ def send_email(user, subject, template_file, ctx):
 	message.html = html
 
 	message.send()
+
+def send_invite(email, ctx):
+
+	template = env.get_template('emails/invite.html')
+	html = template.render(ctx)
+
+	message = mail.EmailMessage(
+		sender='Rideshare Team <bananagus@gmail.com>',
+		subject='Invite to Rideshare'
+	)
+
+	message.to = ' <' + email + '>'
+
+	message.html = html
+
+	message.send()

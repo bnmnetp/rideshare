@@ -8,6 +8,7 @@ from app.base_handler import BaseHandler
 from app.common.voluptuous import *
 import json
 import re
+from app.common.email import send_invite
 
 class ViewInvites(BaseHandler):
     def get(self):
@@ -118,6 +119,12 @@ class SendInviteEmail(BaseHandler):
             invite.email = email
             invite.sender = user.key()
             invite.put()
+
+            send_invite(email, {
+                'sender_name': user.name,
+                'circle_name': circle_name,
+                'invite_id': invite.key().id() 
+            })
 
         self.response.write(json.dumps(resp))
 
