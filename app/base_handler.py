@@ -2,6 +2,7 @@ import webapp2
 from webapp2_extras import sessions
 from app.model import *
 import urllib
+import json
 
 class BaseHandler(webapp2.RequestHandler):
     def auth(self):

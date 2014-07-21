@@ -25,31 +25,33 @@ class RideHandler(BaseHandler):
 
         # Grabs the city and state from the addresses
         # Comes in format: Address, City, State Zip
-        for ride in rides_all:
-            ride.dest = split_address(ride.dest_add)
-            ride.orig = split_address(ride.origin_add)
-            if ride.driver:
-                if ride.driver.key().id() == user.key().id():
-                    ride.is_driver = True
+        if rides_all:
+            for ride in rides_all:
+                ride.dest = split_address(ride.dest_add)
+                ride.orig = split_address(ride.origin_add)
+                if ride.driver:
+                    if ride.driver.key().id() == user.key().id():
+                        ride.is_driver = True
+                    else:
+                        ride.is_driver = False
+                if user.key() in ride.passengers:
+                    ride.is_passenger = True
                 else:
-                    ride.is_driver = False
-            if user.key() in ride.passengers:
-                ride.is_passenger = True
-            else:
-                ride.is_passenger = False
+                    ride.is_passenger = False
 
-        for ride in rides_user:
-            ride.dest = split_address(ride.dest_add)
-            ride.orig = split_address(ride.origin_add)
-            if ride.driver:
-                if ride.driver.key().id() == user.key().id():
-                    ride.is_driver = True
+        if rides_user:
+            for ride in rides_user:
+                ride.dest = split_address(ride.dest_add)
+                ride.orig = split_address(ride.origin_add)
+                if ride.driver:
+                    if ride.driver.key().id() == user.key().id():
+                        ride.is_driver = True
+                    else:
+                        ride.is_driver = False
+                if user.key() in ride.passengers:
+                    ride.is_passenger = True
                 else:
-                    ride.is_driver = False
-            if user.key() in ride.passengers:
-                ride.is_passenger = True
-            else:
-                ride.is_passenger = False
+                    ride.is_passenger = False
 
         doRender(self, 'rides.html', {
             'rides_user': rides_user,

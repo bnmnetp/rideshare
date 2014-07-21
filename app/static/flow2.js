@@ -63,12 +63,14 @@ var Flow = augment(Object, function () {
 		var route, option;
 
 		if (btn) {
-			route = btn.dataset.next;
-			if (route in paths) {
-				this.reset();
-				this.path = paths[route];
-				this.path_history.push(route);
-				this.has_path = true;
+			if (btn.dataset) {
+				route = btn.dataset.next;
+				if (route in paths) {
+					this.reset();
+					this.path = paths[route];
+					this.path_history.push(route);
+					this.has_path = true;
+				}
 			}
 		}
 		if (this.has_path) {
