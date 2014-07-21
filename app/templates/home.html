@@ -8,10 +8,50 @@
 
 {% block main %}
 <div data-notify='container'></div>
+<div class="row hidden" data-help='container'>
+    <div class="col-md-4">
+        <ul class='list-group'>
+            <a href="#q1" data-toggle='tab' class='list-group-item active'>
+                What is an alert?
+            </a>
+            <a href="#q2" data-toggle='tab' class='list-group-item'>
+                What is a notification?
+            </a>
+            <a href="#q3" data-toggle='tab' class='list-group-item'>
+                Can I be emailed when I recieve an alert?
+            </a>
+        </ul>
+    </div>
+    <div class="col-md-8">
+        <div class="tab-content">
+            <div class="tab-pane active" id="q1">
+                Alerts are important messages regarding rides you are connected to. You will be alerted if:
+
+                If you are a passenger and the driver of the ride leaves.
+                If you are a passenger and the ride gets a driver.
+                If you are a driver and a passenger joins your ride.
+                If you are a driver and a passenger leaves your ride.
+
+                These alerts will always be shown on your home page but you can also receive these messages through email. Set your preferences by visiting your profile page.
+            </div>
+            <div class="tab-pane" id="q2">
+                Notifications are reminders about upcoming rides. Notifications are shown on your home page.
+            </div>
+            <div class="tab-pane" id="q3">
+                Yes! Visit your notification preference page.
+            </div>
+        </div>
+    </div>
+</div>
 <div class="row">
     <div class="col-md-6">
         <div class="panel panel-main">
-            <div class="panel-heading">Alerts</div>
+            <div class="panel-heading">
+                Alerts
+                <div class="pull-right">
+                    <i class="fa fa-question" data-help='toggle'></i>
+                </div>
+            </div>
             <div class="panel-body panel-no">
                 {% if notis %}
                     {% for noti in notis %}
@@ -46,7 +86,12 @@
     </div>
     <div class="col-md-6">
         <div class="panel panel-main">
-            <div class="panel-heading">Notifications - Upcoming Events</div>
+            <div class="panel-heading">
+                Notifications - Upcoming Events
+                <div class="pull-right">
+                    <i class="fa fa-question" data-help='toggle'></i>
+                </div>
+            </div>
             <div class="panel-body panel-no">
                 {% if upcoming %}
                     {% for up in upcoming %}
@@ -159,6 +204,18 @@
             send_req(target.dataset.alert);
         }
     });
+
+/* Toggle Help */
+var help = {};
+help.btn = document.querySelector('[data-help="toggle"]');
+help.container = document.querySelector('[data-help="container"]');
+
+help.btn.addEventListener('click', function (e) {
+    var target = e.target;
+
+    help.container.classList.toggle('hidden');
+});
+/* End */
 </script>
 
 {% endblock %}

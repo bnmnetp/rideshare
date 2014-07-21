@@ -13,6 +13,10 @@ img {
     max-width: 100%;
 }
 
+.fa-question {
+    cursor: pointer;
+}
+
 /* Chip */
 .chip {
     background-color: #E7E7E7;

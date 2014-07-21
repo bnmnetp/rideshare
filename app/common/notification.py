@@ -46,7 +46,8 @@ def push_noti(type, user_key, ride_key):
 					'emails/notification.html',
 					{
 						'message': message,
-						'name': user.name,
-						'community': {}
+						'user_name': user.name,
+						'community_name': '',
+						'rideshare_url': 'http://rideshare-dev.appspot.com'
 					}
 				)
