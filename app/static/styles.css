@@ -17,6 +17,33 @@ img {
     cursor: pointer;
 }
 
+/* Menu */
+.menu {
+    list-style: none;
+    margin: 0px 0px 20px 0px;
+    padding: 0;
+    border: 1px solid #9e9e9e;
+    color: #212121;
+    -webkit-box-shadow: 1px 1px 2px 0px rgba(66,66,66,1);
+    -moz-box-shadow: 1px 1px 2px 0px rgba(66,66,66,1);
+    box-shadow: 1px 1px 2px 0px rgba(66,66,66,1);
+}
+.menu li {
+    font-size: 16px;
+    line-height: 38px;
+    display: block;
+    font-weight: 200;
+    padding: 0px 0px 0px 15px;
+    cursor: pointer;
+}
+.menu li:hover {
+    background-color: #EEEEEE;
+}
+.menu li.active {
+    background-color: #e0e0e0;
+}
+/* End */
+
 /* Chip */
 .chip {
     background-color: #E7E7E7;

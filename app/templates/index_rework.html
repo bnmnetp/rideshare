@@ -19,10 +19,22 @@
 
 <div class="panel panel-default padding">
     <div class="panel-body">
-        To get started, <b>click on a marker to get details</b> or
-        <div class="btn-group">
-            <button class='btn btn-default' data-next='create_event'>Create a new Event</button>
-            <button class='btn btn-default' data-next='create_ride'>Create a new Ride</button>
+        
+        <div class="key">
+            <i class='fa fa-key'></i>
+            Key
+        </div>
+        <div class="key">
+            <img src="/static/carRed.png" />
+            Destination
+        </div>
+        <div class="key">
+            <img src="/static/start.png" />
+            Starting point
+        </div>
+        <div class="key">
+            <img src="/static/end.png" />
+            Event
         </div>
         <div class="btn-group pull-right">
             <button class='btn btn-primary' data-reset>
@@ -34,23 +46,7 @@
                 Help
             </button>
         </div>
-        <hr>
-        <div class="key">
-            <i class='fa fa-key'></i>
-            Key
-        </div>
-        <div class="key">
-            <img src="/static/carRed.png" />
-            Destination
-        </div>
-        <div class="key">
-            <img src="/static/carGreen.png" />
-            Starting point
-        </div>
-        <div class="key">
-            <img src="/static/person.png" />
-            Event
-        </div>
+
     </div>
 </div>
 
@@ -63,7 +59,12 @@
     </div>
 
     <div class="col-md-4 map_con" id='col_dialog' data-route='select_location'>
-
+        To get started, <b>click on a marker to get details</b> or
+        <ul class="menu">
+            <li data-next='new_event'>Create a new Event</li>
+            <li data-next='new_ride'>Request a Ride</li>
+            <li data-next='new_trip'>Create a new Trip</li>
+        </ul>
     </div>
 
     <div class="col-md-4" data-route='location_selection'>
@@ -88,24 +89,8 @@
                 <label>Details</label>
                 <input class="form-control" type="text" placeholder="Details" name='details'>
             </div>
-            <!-- <div class="form-group">
-                <label>Circle</label>
-                <select class="form-control" >
-                    <option>All</option>
-                </select>
-            </div> -->
             <button type='submit' class='btn btn-primary'>Create Event</button>
         </form>
-    </div>
-
-    <div class="col-md-4" data-route='select_type'>
-        <p>Do you need a ride or can you drive?</p>
-        <button class="btn btn-primary" data-next='location_dest' data-option='passenger'>
-            Need a Ride
-        </button>
-        <button class="btn btn-primary" data-next='location_dest' data-option='driver'>
-            Driving
-        </button>
     </div>
 
     <div class="col-md-4" data-route='passenger_details'>
@@ -205,6 +190,14 @@
 <script data-template='select_location' type='text/x-handlebars-template'>
     <div class="locsec">
         <h1>Select the {{type}} location</h1>
+        <div class="form-group">
+            <label>Origin:
+                <span data-location='text'>None</span>
+            </label>
+        </div>
+        <button class="btn btn-primary hidden" data-next="true" type='button' data-location="btn">
+            Next
+        </button>
         <p>Use one of the following options:</p>
         <ul>
             <li>
@@ -226,38 +219,7 @@
                 </form>
             </li>
         </ul>
-        <hr>
-        Selected location: <span data-location='text'>None</span>
-        <button class="btn btn-primary hidden" data-next="true" type='button' data-location="btn">
-            Next
-        </button>
     </div>
-</script>
-
-<script data-template='join_ride' type="text/x-handlebars-template">
-    <h1>Join a ride</h1>
-    <ul class="information">
-        <li>
-            <b>Origin:</b> {{origin}}
-        </li>
-        <li>
-            <b>Destination:</b> {{dest}}
-        </li>
-        <li>
-            <b>Date:</b> {{date}}
-        </li>
-        <li>
-            <b>Time:</b> {{time}}
-        </li>
-        <li>
-            <b>Driver:</b> {{driver}}
-        </li>
-
-    </ul>
-    <button class="btn btn-primary btn-large" data-join='passenger:{{id}}'>Join as Passenger</button>
-    {{#unless driver}}
-    <button class='btn btn-primary btn-large' data-join='driver:{{id}}'>Join as Driver</button>
-    {{/unless}}
 </script>
 
 <script data-template='popup' type="text/x-handlebars-template">

@@ -11,13 +11,20 @@ function getParameterByName(name) {
 	}		
 }
 
-if (!Array.prototype.last){
+if (!Array.prototype.last) {
     Array.prototype.last = function () {
         return this[this.length - 1];
     };
 };
 
+if (!Array.prototype.contains) {
+	Array.prototype.contains = function (str) {
+		return this.indexOf(str) > -1;
+	}
+}
+
 var get_geolocation = function (e) {
+	console.log('Geo Called')
 	var target = e.target;
 	navigator.geolocation.getCurrentPosition(function (pos) {
 		map.geocode_latlng({
@@ -54,12 +61,12 @@ var icons = {
 		size: new google.maps.Size(22, 20)
 	},
 	error: {
-		url: '/static/carRed.png',
+		url: '/static/end.png',
 		anchor: new google.maps.Point(20, 20),
 		size: new google.maps.Size(30, 40)
 	},
 	success: {
-		url: '/static/carGreen.png',
+		url: '/static/start.png',
 		anchor: new google.maps.Point(20, 20),
 		size: new google.maps.Size(30, 40)
 	},
@@ -268,10 +275,6 @@ var Markers = augment(Object, function () {
 			}
 		}.bind(this));
 
-		this.req_events.fail(function (message, status) {
-
-		}.bind(this));
-
 		this.req_rides = $.ajax({
 			type: 'POST',
 			url: '/rides',
@@ -287,10 +290,6 @@ var Markers = augment(Object, function () {
 			for (var i = 0; i < map.rides.length; i++) {
 				this.add_ride(i);
 			}
-		}.bind(this));
-
-		this.req_rides.fail(function (message, status) {
-
 		}.bind(this));
 	}
 
@@ -395,43 +394,31 @@ var Markers = augment(Object, function () {
 });
 
 var paths = {
-	create_event: [
+	new_event: [
 		'location_selection',
 		'event_details'
 	],
-	create_ride: [
-		'select_type',
-		{
-			driver: [
-				'location_selection',
-				'location_dest',
-				'safety',
-				'driver_details'
-			],
-			passenger: [
-				'location_selection',
-				'location_dest',
-				'passenger_details'
-			]
-		}
+	new_ride: [
+		'location_selection',
+		'location_dest',
+		'passenger_details'
+	],
+	new_trip: [
+		'location_selection',
+		'location_dest',
+		'safety',
+		'driver_details'
 	],
 	ride_to_event: [
 		'location_selection',
-		'select_type',
-		{
-			driver: [
-				'safety',
-				'driver_details'
-			],
-			passenger: [
-				'passenger_details'
-			]
-		}
+		'passenger_details'
 	],
-	join_ride: [
-		'join_ride'
+	trip_to_event: [
+		'location_selection',
+		'safety',
+		'driver_details'
 	]
-};
+}
 
 var Map = augment(Object, function () {
 	this.constructor = function () {
@@ -555,24 +542,18 @@ var Map = augment(Object, function () {
 	this.disp_address = function (deta) {
 		console.log(this.state);
 		if (this.state == 'location_selection') {
-			console.log('selection')
-			var set = {};
-			if (flow.path_history.indexOf('create_ride') > -1) {
+			if (flow.path_history.contains('create_ride')) {
 				this.set_window(deta, 'success');
-				this.new_ride.orig = {};
-				set = this.new_ride.orig;
-			} else if (flow.path_history.indexOf('create_event') > -1) {
+			} else if (flow.path_history.contains('create_event')) {
 				this.set_window(deta, 'person');
-				this.new_event.loc = {};
-				set = this.new_event.loc;
-			} else if (flow.path_history.indexOf('ride_to_event') > -1) {
+			} else if (flow.path_history.contains('ride_to_event')) {
 				this.set_window(deta, 'error');
-				this.new_ride.dest = {};
-				set = this.new_ride.dest;
 			}
-			set.lat = deta.lat;
-			set.lng = deta.lng;
-			set.address = deta.add;
+			this.start = {
+				lat: deta.lat,
+				lng: deta.lng,
+				address: deta.add
+			};
 
 			var select_text = document.querySelector('[data-location="text"]');
 			var select_btn = document.querySelector('[data-location="btn"]');
@@ -581,12 +562,12 @@ var Map = augment(Object, function () {
 			select_btn.classList.remove('hidden');
 		}
 		if (this.state == 'location_dest') {
-			console.log('destination')
 			this.set_window(deta, 'error');
-			this.new_ride.dest = {};
-			this.new_ride.dest.lat = deta.lat;
-			this.new_ride.dest.lng = deta.lng;
-			this.new_ride.dest.address = deta.add;
+			this.end = {
+				lat: deta.lat,
+				lng: deta.lng,
+				address: deta.add
+			};
 
 			var loc_dest = document.querySelector('[data-ride="loc_dest"]');
 			var loc_btn = document.querySelector('[data-ride="loc_btn"]');
