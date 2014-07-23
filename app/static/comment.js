@@ -13,13 +13,7 @@ var Comment = augment(Object, function () {
 	}
 
     this.add_comment = function (deta) {
-        var html = this.template({
-            name: deta.user.name,
-            date: deta.date,
-            comment: deta.text,
-            is_owner: deta.is_owner,
-            id: deta.id
-        });
+        var html = this.template(deta);
         this.container.insertAdjacentHTML('afterbegin', html);
     }
 
@@ -62,16 +56,8 @@ var Comment = augment(Object, function () {
         });
         req.done(function (data) {
             // Refer to comments.CommentHandler for expected response
-            var deta = {
-                user: {
-                    name: data.name
-                },
-                date: data.date,
-                text: data.comment,
-                id: data.id,
-                is_owner: true
-            };
-            this.add_comment(deta);
+            data.is_owner = true
+            this.add_comment(data);
         }.bind(this));
         req.fail(function (data, status) {
 

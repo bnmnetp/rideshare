@@ -1,0 +1,149 @@
+{% extends "layout.html" %}
+
+{% block title %}Circles{% endblock %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block main %}
+<div data-notify='container'></div>
+<ul class="ntabs">
+    <li>
+        <a href="/circles">
+            My Circles
+        </a>
+    </li>
+    <li>
+        <a href="/circles">
+            All Circles
+        </a>
+    </li>
+    <li class='active'>
+        <a href="/circles">
+            Invites
+        </a>
+    </li>
+    <li>
+        <a href="/newCircle">
+            <i class='fa fa-plus-circle'></i>
+            Create Circle
+        </a>
+    </li>
+</ul>
+
+<div class="panel panel-default">
+    <div class="panel-body">
+        This is a list of invites you have recieved. Clicking on a circle will show you details and prompt you to join.
+    </div>
+</div>
+<div class="panel panel-main">
+    <div class="panel-heading">
+        Circle Invites
+    </div>
+    <div class="panel-body panel-no">
+    {% if invites %}
+        {% for invite in invites %}
+        <div class="list">      
+            {% if invite.circle.color %}
+            <div class="ctx" style='background-color:{{invite.circle.color}};'>
+            {% else %}
+            <div class="ctx">
+            {% endif %}
+                <i class='fa fa-circle-o'></i>
+            </div>
+            <div class="info">
+                <div class="title">
+                    <a href='/circle/{{invite.circle.key().id()}}'>
+                        {{invite.circle.name}}
+                    </a>
+                    <div class="btn-group pull-right">
+                        <button data-invite='join' data-id='{{invite.key().id()}}' class='btn btn-primary'>
+                            Join Circle
+                        </button>
+                        <button data-invite='decline' data-id='{{invite.key().id()}}' class='btn btn-danger'>
+                            Decline Invite
+                        </button>
+                    </div>
+                </div>
+                <div class="sub">
+                    Invited by <a href='/user/{{invite.sender.key().id()}}'>{{invite.sender.name}}</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="panel-message">
+            You do not have any invites yet.
+        </div>
+    {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+
+{% raw %}
+
+<script data-notify="template" type='text/x-handlebars-template'>
+    <div class="alert alert-{{type}} alert-dismissable">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        <strong>{{strong}}</strong> {{{message}}}
+    </div>
+</script>
+
+{% endraw %}
+
+<script src="static/augment.js" type="text/javascript"></script>
+<script src="static/flow.js" type="text/javascript"></script>
+<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+
+<script type="text/javascript">
+    var send_req = function (type, id) {
+        var push = $.ajax({
+            type: 'POST',
+            url: window.location.pathname,
+            dataType: 'json',
+            contentType: 'application/json; charset=UTF-8',
+            data: JSON.stringify({
+                type: type,
+                id: id
+            })
+        });
+
+        push.done(function (data) {
+            if (data.redirect) {
+                document.location.href = '/circle/' + data.circle_id;
+            } else {
+                notify({
+                    type: 'success',
+                    strong: 'Success',
+                    message: 'You have declined the invite.'
+                });
+            }
+
+        });
+
+        push.fail(function (data, status) {
+            notify({
+                type: 'danger',
+                strong: 'Whoops',
+                message: 'Please refresh the page and try again.'
+            });
+        });
+    };
+
+    document.body.addEventListener('click', function (e) {
+        var target = e.target;
+
+        if (target.dataset.invite) {
+            if (target.dataset.invite == 'join') {
+                send_req('join', target.dataset.id);
+            } else if (target.dataset.invite == 'decline') {
+                send_req('decline', target.dataset.id);
+            }
+        }
+    });
+</script>
+
+{% endblock %}

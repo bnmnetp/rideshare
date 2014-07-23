@@ -1,4 +1,4 @@
-from app.common.toolbox import doRender
+from app.common.toolbox import doRender, split_address
 from google.appengine.ext import db
 from app.model import *
 import datetime
@@ -6,23 +6,75 @@ from datetime import date
 from app.base_handler import BaseHandler
 from app.common.voluptuous import *
 import json
+import re
 
 class GetCircleHandler(BaseHandler):
     def get(self, circle_id):
         self.auth()
+
+        circle = Circle.get_by_id(int(circle_id))
+
+        if not circle:
+            self.redirect('/circles')
+            return None
+
+        user = self.current_user()
+
+        # Grabs members
+        members = User.all().filter('circles = ', circle.key()).fetch(100)
+
+        # Grabs rides
+        rides = Ride.all().filter('circle = ',  circle.key()).fetch(100)
+
+        # Grabs events
+        events = Event.all().filter('circle = ', circle.key()).fetch(100)
+
+        if circle.key() in user.circles:
+            has_permission = True
+        else:
+            has_permission = False
+
+        invite = Invite.all().filter('circle = ', circle.key()).filter('user = ', user.key()).get()
+
+        if invite:
+            has_permission = True
+
+        if not has_permission:
+            self.redirect('/circles')
+            return None
+
+        for ride in rides:
+            ride.dest = split_address(ride.dest_add)
+            ride.orig = split_address(ride.origin_add)
+            if ride.driver:
+                if ride.driver.key().id() == user.key().id():
+                    ride.is_driver = True
+                else:
+                    ride.is_driver = False
+            if user.key() in ride.passengers:
+                ride.is_passenger = True
+            else:
+                ride.is_passenger = False
+
+        doRender(self, 'view_circle.html', {
+            'circle': circle,
+            'user': user,
+            'members': members,
+            'rides': rides,
+            'events': events,
+            'invite': invite
+        })
+
+class GetCircleInvite(BaseHandler):
+    def get(self, circle_id):
+        self.auth()
+
         circle = Circle.get_by_id(int(circle_id))
 
         user = self.current_user()
 
-        comments = Comment.all().filter('circle = ', circle.key()).order('-date').fetch(100)
-
-        members = User.all().filter('circles = ', circle.key())
-
-        doRender(self, 'view_circle.html', {
-            'circle': circle,
-            'comments': comments,
-            'user': user,
-            'members': members
+        doRender(self, 'view_circle_invite.html', {
+            'circle': circle
         })
 
 
@@ -33,6 +85,8 @@ class CircleHandler(BaseHandler):
 
         circles = Circle.all().fetch(100)
 
+        invites = Invite.all().filter('user = ', user.key())
+
         for circle in circles:
             if circle.key() in user.circles:
                 circle.user = True
@@ -41,7 +95,8 @@ class CircleHandler(BaseHandler):
 
         doRender(self, 'main.html', {
             'circles': circles,
-            'user': user
+            'user': user,
+            'invites': invites
         })
     def post(self):
         self.auth()
@@ -52,7 +107,9 @@ class CircleHandler(BaseHandler):
 
         circle_schema = Schema({
             Required('name'): All(unicode, Length(min=3)),
-            Required('description', default=""): unicode
+            Required('description', default=""): unicode,
+            Required('privacy', default="public"): unicode,
+            Required('color', default="#607d8b"): unicode
         })
 
         json_str = self.request.body
@@ -67,10 +124,12 @@ class CircleHandler(BaseHandler):
                     'error': True,
                     'message': 'Data could not be validated'
                 }))
-            return
+            return None
 
         circle.name = data['name']
         circle.description = data['description']
+        circle.privacy = data['privacy']
+        circle.color = data['color']
 
         circle.put()
 

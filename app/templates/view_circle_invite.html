@@ -1,0 +1,191 @@
+{% extends "layout.html" %}
+
+{% block title %}Send Invites{% endblock %}
+
+{% block head %}
+{% endblock %}
+
+{% block main %}
+<div data-notify="container"></div>
+<div class="panel panel-default">
+    <div class="panel-body">
+        <a href="/circle/{{circle.key().id()}}">Go back to Circle</a>
+    </div>
+</div>
+<div class="panel panel-main">
+    <div class="panel-heading">Send Invites</div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-6">
+                <p class="lead">Invite by email</p>
+                <form data-invite='email'>
+                    <div class="form-group">
+                        <label>Emails</label>
+                        <textarea name='emails' class='form-control'></textarea>
+                        <p class="help-block">Type emails seperated by commas</p>
+                        <p class="help-block">Not functional yet</p>
+                    </div>
+                    <button type='submit' class='btn btn-primary'>Send Invites</button>
+                </form>
+            </div>
+            <div class="col-md-6">
+                <p class="lead">Invite by name</p>
+                    <div class="form-group">
+                        <label>Search by name</label>
+                        <br>
+                        <input type="text" placeholder='Name' data-invite='input' class='form-style'>
+                        <button class='btn btn-default btn-dropdown' type='button' data-invite='select'>Select</button>
+                    </div>
+                    <div data-invite="output"></div>
+                    <button type='button' class='btn btn-primary' data-invite='send'>Send Invite</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src='/static/typeahead.js' type='text/javascript'></script>
+
+{% raw %}
+<script data-notify="template" type='text/x-handlebars-template'>
+    <div class="alert alert-{{type}} alert-dismissable">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        <strong>{{strong}}</strong> {{message}}
+    </div>
+</script>
+<script data-invite='template' type='text/x-handlebars-template'>
+    <div class='btn-group'>
+        <button type='button' class='btn btn-default'>{{name}}</button>
+        <button type='button' class='btn btn-default' data-id='{{id}}'>
+            <i class='fa fa-times'></i>
+        </button>
+    </div>
+</script>
+{% endraw %}
+<script type="text/javascript">
+
+var invite = {};
+
+invite.email = document.querySelector('[data-invite="email"]');
+
+invite.email.addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    var form = e.target;
+
+    var data = {};
+    data.emails = form.emails.value;
+
+    var push = $.ajax({
+        type: 'POST',
+        url: '/invite/{{circle.key().id()}}/email',
+        dataType: 'json',
+        contentType: 'application/json; charset=UTF-8',
+        data: JSON.stringify(data)
+    });
+
+    push.done(function (data) {
+        notify({
+            type: 'success',
+            strong: 'Invites sent!'
+        });
+    });
+
+    push.fail(function (data, status) {
+        notify({
+            type: 'danger',
+            strong: 'Invites not sent.'
+        });
+    });
+});
+
+var suggestions = new Bloodhound({
+    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+    queryTokenizer: Bloodhound.tokenizers.whitespace,
+    prefetch: {
+        url: '/invite/names',
+        ttl: 1,
+        thumbprint: Math.random()
+    }
+});
+suggestions.initialize();
+
+invite.select = document.querySelector('[data-invite="select"]');
+invite.select.disabled = true;
+
+invite.send_array = [];
+
+invite.input = document.querySelector('[data-invite="input"]');
+invite.output = document.querySelector('[data-invite="output"]');
+invite.source = document.querySelector('[data-invite="template"]').innerHTML;
+invite.template = Handlebars.compile(invite.source);
+
+/* Listens for removal of person from list */
+document.addEventListener('click', function (e) {
+    var target = e.target;
+
+    if (target.dataset.id) {
+        /* Remove from array */
+        var idx = invite.send_array.indexOf(target.dataset.id);
+        invite.send_array.splice(idx, 1);
+        /* Remove from view */
+        target.parentNode.parentNode.removeChild(target.parentNode);
+    }
+});
+
+invite.select.addEventListener('click', function (e) {
+    invite.send_array.push(invite.selected.id);
+    var html = invite.template({
+        id: invite.selected.id,
+        name: invite.selected.name
+    });
+    invite.output.insertAdjacentHTML('beforeend', html);
+    invite.select.disabled = true;
+});
+
+invite.input.addEventListener('input', function () {
+    invite.select.disabled = true;
+});
+
+$('[data-invite="input"]').typeahead(null, {
+    name: 'query',
+    displayKey: 'name',
+    source: suggestions.ttAdapter()
+})
+.on('typeahead:selected', function (ev, sug, name) {
+    invite.select.disabled = false;
+    invite.selected = sug;
+});
+
+var send_invites = document.querySelector('[data-invite="send"]');
+
+send_invites.addEventListener('click', function (e) {
+    e.preventDefault();
+
+    var push = $.ajax({
+        type: 'POST',
+        url: '/invite/{{circle.key().id()}}/name',
+        dataType: 'json',
+        contentType: 'application/json; charset=UTF-8',
+        data: JSON.stringify(invite.send_array)
+    });
+
+    push.done(function (data) {
+        notify({
+            type: 'success',
+            strong: 'Invites sent!'
+        });
+    });
+
+    push.fail(function (data, status) {
+        notify({
+            type: 'danger',
+            strong: 'Invites not sent.'
+        });
+    });
+});
+
+</script>
+{% endblock %}

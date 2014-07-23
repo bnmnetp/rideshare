@@ -27,12 +27,22 @@
 <script data-notify="template" type='text/x-handlebars-template'>
     <div class="alert alert-{{type}} alert-dismissable">
         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-        <strong>Something went wrong.</strong> <a href='/map'>Continue to rideshare.</a>
+        <strong>{{strong}}</strong>
+        <button data-back='true' class='btn btn-primary'>Go to previous page.</button>
     </div>
 </script>
 {% endraw %}
 <script type="text/javascript">
     var form = document.querySelector('#form');
+
+    document.body.addEventListener('click', function (e) {
+        var target = e.target;
+
+        if (target.dataset.back) {
+            history.back();
+            return false;
+        }
+    });
 
     form.addEventListener('submit', function (e) {
         e.preventDefault();
@@ -51,16 +61,18 @@
         });
 
         push.done(function (data) {
-            console.log(data)
-            //document.location = '/map';
+            notify({
+                type: 'success',
+                strong: 'Comment edited!'
+            });
         });
 
         push.fail(function (data, status) {
-            console.log(status)
             notify({
-                type: 'danger'
-            })
+                type: 'danger',
+                strong: 'Comment not edited.'
+            });
         });
-    })
+    });
 </script>
 {% endblock %}

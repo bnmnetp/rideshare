@@ -1,16 +1,9 @@
-# This is actually the development one.
-# lutherrideshare.appspot key: ABQIAAAAg9WbCE_zwMIRW7jDFE_3ixS0LiYWImofzW4gd3oCqtkHKt0IaBT-STdq-gdH-mW2_ejMPXqxnfJjgw
-
-# This has the app id of ridesharebeta   and is also on ridesharebeta.appspot.com
-# rideshare.luther.edu key:  ABQIAAAAg9WbCE_zwMIRW7jDFE_3ixQ2JlMNfqnGb2qqWZtmZLchh1TSjRS0zuchuhlR8g4tlMGrjg34sNmyjQ
-#!/usr/bin/env python2.7
-
 import webapp2
 from simpleauth import SimpleAuthHandler
 from app.base_handler import BaseHandler
 
 # testing
-from app.controllers.test_account import create_user
+from app.controllers.test_account import email_test
 # end testing
 
 import app.secrets as secrets
@@ -47,8 +40,10 @@ from app.controllers.events import *
 from app.controllers.rides import *
 from app.controllers.comments import *
 from app.controllers.users import *
+from app.controllers.invites import *
+from app.controllers.alert import *
 
-from app.common.toolbox import doRender
+from app.common.toolbox import doRender, split_address, grab_json
 
 # Creates Community entry on first run.
 aquery = db.Query(Community)
@@ -66,13 +61,22 @@ class MapHandler(BaseHandler):
     def get(self):
         self.auth()
         user = self.current_user()
+        circle_id = self.request.get('circle')
+        if circle_id:
+            circle = Circle.get_by_id(int(circle_id))
+        else:
+            circle = None
         doRender(self, 'index_rework.html', {
-            'user': user
+            'user': user,
+            'circle': circle
         })
 
 class LoginHandler(BaseHandler):
     def get(self):
-        doRender(self, 'loginPage.html', {})
+        redirect = self.request.get('redirect', default_value='')
+        doRender(self, 'loginPage.html', {
+            'redirect': redirect
+        })
 
 class HomeHandler(BaseHandler):
     def get(self):
@@ -81,20 +85,29 @@ class HomeHandler(BaseHandler):
         community = aquery.get()
         user = self.current_user()
 
-        notis = Notification.all().filter('user = ', user.key()).fetch(10)
+        notis = Notification.all().filter('user = ', user.key()).fetch(5)
 
         today = datetime.date.today()
         upcoming = Ride.all().filter('date > ', today).fetch(20)
 
         for up in upcoming:
+            up.dest_add = split_address(up.dest_add)
             if user.key() in up.passengers:
                 up.is_pass = True
             else:
                 up.is_pass = False
-            if user.key() == up.driver.key():
-                up.is_driver = True
-            else:
-                up.is_driver = False
+
+            up.is_driver = False
+            if up.driver:
+                if user.key() == up.driver.key():
+                    up.is_driver = True
+
+            up.date_str = up.date.strftime('%B %dth, %Y')
+
+        for noti in notis:
+            noti.ride.orig = split_address(noti.ride.origin_add)
+            noti.ride.dest = split_address(noti.ride.dest_add)
+                    
 
         doRender(self, 'home.html', { 
             'user': user,
@@ -121,8 +134,13 @@ class DetailHandler(BaseHandler):
         self.auth()
         user = self.current_user()
 
+        properties = ['name', 'email', 'phone']
+
+        user_json = grab_json(user, properties)
+
         doRender(self, 'details.html', {
-            'user': user
+            'user': user,
+            'user_json': user_json
         })
     def post(self):
         self.auth()
@@ -150,6 +168,7 @@ app = webapp2.WSGIApplication([
     # controllers/rides.py
     ('/rides', RideHandler),
     ('/ride/(\d+)', GetRideHandler),
+    ('/ride/(\d+)/edit', EditRide),
     ('/join_ride', RideJoinHandler),
     ("/newride", NewRideHandler),
     ('/home', HomeHandler),
@@ -158,7 +177,9 @@ app = webapp2.WSGIApplication([
     # controllers/users.py
     ('/user/(\d+)', GetUserHandler),
     ('/user/edit/(\d+)', EditUserHandler),
+    ('/user/notification/(\d+)', NotificationUserHandler),
     ('/user', UserHandler),
+    ('/user/photo/(\d+)', GetImage),
     # end users
 
     # controllers/comments.py
@@ -169,17 +190,32 @@ app = webapp2.WSGIApplication([
 
     # controllers/circles.py
     ('/circle/(\d+)', GetCircleHandler),
+    ('/circle/(\d+)/invite', GetCircleInvite),
     ('/addCircle', AddCircleHandler),
     ('/newCircle',NewCircleHandler),
     ('/circles', CircleHandler),
     ('/join_circle', JoinCircle),
+
     # end circles
+
+    # controllers/invites.py
+    ('/invite/(\d+)', SendInvite),
+    ('/invite/(\d+)/name', SendInviteName),
+    ('/invite/(\d+)/email', SendInviteEmail),
+    ('/invite/names', GetNames),
+    ('/invites', ViewInvites),
+    # end invite
 
     # controllers/events.py
     ('/event/(\d+)', GetEventHandler),
+    ('/event/(\d+)/join', JoinEvent),
     ('/events', EventHandler),
     ('/newevent', NewEventHandler),
     # end events
+
+    # controllers/alert.py
+    ('/alert/(\d+)/dismiss', DismissAlert),
+    # end alert
 
     # auth routes
     webapp2.Route(
@@ -199,7 +235,7 @@ app = webapp2.WSGIApplication([
     ),
     ('/details', DetailHandler),
     # end auth routes
-    ('/testing', create_user),
+    ('/email_test', email_test),
     ('/help', HelpHandler),
     ('/.*', IncorrectHandler)
     ],

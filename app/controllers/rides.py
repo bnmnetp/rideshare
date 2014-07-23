@@ -1,11 +1,13 @@
-from app.common.toolbox import doRender, split_address
+from app.common.toolbox import doRender, split_address, grab_json
 from app.model import *
 from google.appengine.ext import db
 import datetime
 from datetime import date
+import datetime
 import json
 from app.base_handler import BaseHandler
 from app.common.notification import push_noti
+from app.common.voluptuous import *
 
 class RideHandler(BaseHandler):
     def get(self):
@@ -23,31 +25,33 @@ class RideHandler(BaseHandler):
 
         # Grabs the city and state from the addresses
         # Comes in format: Address, City, State Zip
-        for ride in rides_all:
-            ride.dest = split_address(ride.dest_add)
-            ride.orig = split_address(ride.origin_add)
-            if ride.driver:
-                if ride.driver.key().id() == user.key().id():
-                    ride.is_driver = True
+        if rides_all:
+            for ride in rides_all:
+                ride.dest = split_address(ride.dest_add)
+                ride.orig = split_address(ride.origin_add)
+                if ride.driver:
+                    if ride.driver.key().id() == user.key().id():
+                        ride.is_driver = True
+                    else:
+                        ride.is_driver = False
+                if user.key() in ride.passengers:
+                    ride.is_passenger = True
                 else:
-                    ride.is_driver = False
-            if user.key() in ride.passengers:
-                ride.is_passenger = True
-            else:
-                ride.is_passenger = False
+                    ride.is_passenger = False
 
-        for ride in rides_user:
-            ride.dest = split_address(ride.dest_add)
-            ride.orig = split_address(ride.origin_add)
-            if ride.driver:
-                if ride.driver.key().id() == user.key().id():
-                    ride.is_driver = True
+        if rides_user:
+            for ride in rides_user:
+                ride.dest = split_address(ride.dest_add)
+                ride.orig = split_address(ride.origin_add)
+                if ride.driver:
+                    if ride.driver.key().id() == user.key().id():
+                        ride.is_driver = True
+                    else:
+                        ride.is_driver = False
+                if user.key() in ride.passengers:
+                    ride.is_passenger = True
                 else:
-                    ride.is_driver = False
-            if user.key() in ride.passengers:
-                ride.is_passenger = True
-            else:
-                ride.is_passenger = False
+                    ride.is_passenger = False
 
         doRender(self, 'rides.html', {
             'rides_user': rides_user,
@@ -61,11 +65,83 @@ class RideHandler(BaseHandler):
 
         rides = Ride.all()
 
-        if data['circle']:
+        if data['circle'] != '':
             rides.filter('circle = ', data['circle'])
 
         results = json.dumps([r.to_dict() for r in rides])
         self.response.write(results)
+
+class EditRide(BaseHandler):
+    def get(self, ride_id):
+        self.auth()
+
+        user = self.current_user()
+
+        ride = Ride.get_by_id(int(ride_id))
+
+        if not ride or ride.driver == None:
+            self.redirect('/rides')
+            return None
+
+        properties = ['passengers_max', 'date', 'time', 'details']
+
+        ride_json = grab_json(ride, properties)
+
+        doRender(self, 'edit_ride.html', {
+            'user': user,
+            'ride': ride,
+            'ride_json': ride_json
+        })
+
+    def post(self, ride_id):
+        self.auth()
+
+        user = self.current_user()
+
+        ride = Ride.get_by_id(int(ride_id))
+
+        if not ride or ride.driver == None:
+             return self.json_resp(500, {
+                'error': 'Message'
+            })
+
+        json_str = self.request.body
+        data = json.loads(json_str)
+
+        ride_validator = Schema({
+            Required('passengers_max', default=1): Coerce(int),
+            Required('date'): unicode,
+            Required('time'): unicode,
+            'details': unicode
+        })
+
+        try:
+            data = ride_validator(data)
+        except MultipleInvalid as e:
+            print str(e)
+            self.response.set_status(500)
+            self.response.write(json.dumps({
+                'error': 'Invalid data'
+            }))
+            return None
+
+        ride.passengers_max = data['passengers_max']
+        # ride.date = data['date'].date
+        ride.time = data['time']
+        ride.details = data['details']
+
+        ride.put()
+
+        for p in ride.passengers:
+            push_noti('edited', p, ride.key())
+
+        self.response.write(json.dumps({
+            'message': 'Edited.'
+        }))
+
+    def Date(self, fmt='%Y-%m-%d'):
+        return lambda v: datetime.strptime(v, fmt)
+
 
 class GetRideHandler(BaseHandler):
     def post(self, ride_id):
@@ -78,13 +154,11 @@ class GetRideHandler(BaseHandler):
 
         ride = Ride.get_by_id(int(ride_id))
 
-        if not ride:
-            print 'error'
-
         if data['type'] == 'passenger':
             if data['action'] == 'leave':
                 if user.key() in ride.passengers:
-                    push_noti('pass_leave', ride.driver.key(), ride.key())
+                    if ride.driver:
+                        push_noti('pass_leave', ride.driver.key(), ride.key())
                     ride.passengers.remove(user.key())
                     resp = {
                         'strong': 'Left the ride!',
@@ -94,7 +168,8 @@ class GetRideHandler(BaseHandler):
             if data['action'] == 'join':
                 if user.key() not in ride.passengers:
                     if ride.passengers_total < ride.passengers_max:
-                        push_noti('pass_join', ride.driver.key(), ride.key())
+                        if ride.driver:
+                            push_noti('pass_join', ride.driver.key(), ride.key())
                         ride.passengers.append(user.key())
                         resp = {
                             'strong': 'Joined the ride!',
@@ -150,11 +225,9 @@ class GetRideHandler(BaseHandler):
 
         user = self.current_user()
         availible_seats = 0
+
         if ride.driver:
-            driver = db.get(ride.driver.key())
             availible_seats = ride.passengers_max - ride.passengers_total;
-        else:
-            driver = {}
 
         passengers = []
         for passenger in ride.passengers:
@@ -188,13 +261,9 @@ class GetRideHandler(BaseHandler):
         if ride:
             doRender(self, 'view_ride.html', {
                 'ride': ride,
-                'driver': driver,
                 'passengers': passengers,
                 'seats': availible_seats,
-                'circle': ride.circle,
-                'event': ride.event,
-                'user': user,
-                'comments': comments
+                'user': user
             })
         else:
             self.response.write('No ride found.')
@@ -258,13 +327,13 @@ class NewRideHandler(BaseHandler):
             ride.dest_lng = event.lng
             ride.event = event.key()
         else:
-            ride.dest_add = data['destination']['address']
-            ride.dest_lat = data['destination']['lat']
-            ride.dest_lng = data['destination']['lng']
+            ride.dest_add = data['dest']['address']
+            ride.dest_lat = data['dest']['lat']
+            ride.dest_lng = data['dest']['lng']
 
-        ride.origin_add = data['origin']['address']
-        ride.origin_lat = data['origin']['lat']
-        ride.origin_lng = data['origin']['lng']
+        ride.origin_add = data['orig']['address']
+        ride.origin_lat = data['orig']['lat']
+        ride.origin_lng = data['orig']['lng']
 
         ride.date = d_obj
         ride.time = data['time']
@@ -280,7 +349,12 @@ class NewRideHandler(BaseHandler):
         else:
             ride.passengers.append(user.key())
 
-        ride.circle = ""
+        if data['circle'] != '':
+            circle = Circle.get_by_id(int(data['circle']))
+            if circle:
+                ride.circle = circle.key()
+        else:
+            ride.circle = None
 
         ride_key = ride.put()
 

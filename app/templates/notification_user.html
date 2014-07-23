@@ -1,0 +1,96 @@
+{% extends "layout.html" %}
+
+{% block title %}Notification Preference{% endblock %}
+
+{% block head %}
+{% endblock %}
+
+{% block main %}
+<div data-notify="container"></div>
+<div class="panel panel-main">
+    <div class="panel-heading">Notification Preferences</div>
+    <div class="panel-body">
+        <form id='form'>
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    Set your preferences to recieve notifications for important events. These wi
+                    You are notified if:
+                    <ul>
+                        <li>You are the driver and a passenger leaves the ride.</li>
+                        <li>You are the driver and a passenger joins the ride.</li>
+                        <li>You are a passenger of a ride and a driver volunteers to drive.</li>
+                        <li>You are a passenger of a ride and a driver leaves the ride.</li>
+                    </ul>
+                    Notifications always appear on your <a href='/home'>home page</a>. These preferences 
+                </div>
+            </div>
+            <div class="form-group">
+                <label>How long prior to scheduled departue would you like to be notified?</label>
+                <select class='form-control' name='time'>
+                    <option value="0">No notifications</option>
+                    <option value="1">Within 24 hours</option>
+                    <option value="2">Within 48 days</option>
+                    <option value="7">Within 7 days</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>How to notify:</label>
+                <select class='form-control' name="type">
+                    <option value='email'>Email me</option>
+                </select>
+            </div>
+            <button type='submit' class='btn btn-default'>Update preferences</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% raw %}
+<script data-notify="template" type='text/x-handlebars-template'>
+    <div class="alert alert-{{type}} alert-dismissable">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        <strong>{{strong}}</strong> {{message}}
+    </div>
+</script>
+{% endraw %}
+<script type="text/javascript">
+    var form = document.querySelector('#form');
+
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        var form = e.target;
+        
+        var data = {};
+        data.type = form.type.value;
+        data.time = form.time.value;
+
+        var push = $.ajax({
+            type: 'POST',
+            url: window.location.pathname,
+            dataType: 'json',
+            contentType: 'application/json; charset=UTF-8',
+            data: JSON.stringify(data)
+        });
+
+        push.done(function (data) {
+            console.log(data)
+            notify({
+                type: 'success',
+                strong: 'Preferences edited!',
+                message: 'You have updated your preferences.'
+            });
+        });
+
+        push.fail(function (data, status) {
+            console.log(status)
+            notify({
+                type: 'danger',
+                strong: 'Whoops',
+                message: 'Something went wrong. Try again.'
+            });
+        });
+    });
+</script>
+{% endblock %}

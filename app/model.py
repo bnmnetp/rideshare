@@ -1,6 +1,5 @@
-from google.appengine.ext import db
+from google.appengine.ext import db, blobstore
 from google.appengine.api import users
-import logging
 
 class User(db.Model):
     auth_id = db.StringProperty()
@@ -8,9 +7,11 @@ class User(db.Model):
     updated = db.DateTimeProperty(auto_now=True)
     name = db.StringProperty(default='')
     email = db.EmailProperty()
-    phone = db.StringProperty()
+    phone = db.StringProperty(default='')
     circles = db.ListProperty(db.Key)
-    photo = db.Blob()
+    photo = db.StringProperty()
+    noti_time = db.IntegerProperty()
+    noti_type = db.StringProperty()
 
     def to_dict(self):
         resp = {}
@@ -22,11 +23,14 @@ class User(db.Model):
 class Circle(db.Model):
     name = db.StringProperty()
     description = db.StringProperty()
+    privacy = db.StringProperty()
+    color = db.StringProperty()
     def to_dict(self):
         d = {}
         d['id'] = Circle.key().id()
         d['name'] = Circle.name
         d['description'] = Circle.description
+        d['privacy'] = Circle.privacy
         return d
 
 class Event(db.Model):
@@ -39,6 +43,7 @@ class Event(db.Model):
     time = db.StringProperty()
     user = db.ReferenceProperty(User)
     details = db.TextProperty()
+    attending = db.ListProperty(db.Key)
 
     def to_dict(self):
         resp = {}
@@ -63,7 +68,7 @@ class Ride(db.Model):
     passengers = db.ListProperty(db.Key)
     contact = db.StringProperty()
     details = db.StringProperty()
-    circle = db.StringProperty()
+    circle = db.ReferenceProperty(Circle)
     event = db.ReferenceProperty(Event)
 
     def to_dict(self):
@@ -126,6 +131,20 @@ class Notification(db.Model):
         if self.ride:
             resp['ride'] = self.ride.to_dict()
         return resp
+
+class Invite(db.Model):
+    circle = db.ReferenceProperty(Circle)
+    email = db.StringProperty()
+    user = db.ReferenceProperty(
+        User,
+        required = False,
+        collection_name = 'to_user'
+    )
+    sender = db.ReferenceProperty(
+        User,
+        required = False,
+        collection_name = 'from_user'
+    )
 
 class ApplicationParameters(db.Model):
     apikey = db.StringProperty()

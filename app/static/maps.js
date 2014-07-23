@@ -11,6 +11,32 @@ function getParameterByName(name) {
 	}		
 }
 
+var get_geolocation = function (e) {
+	var target = e.target;
+	navigator.geolocation.getCurrentPosition(function (pos) {
+		map.geocode_latlng({
+			lat: pos.coords.latitude,
+			lng: pos.coords.longitude
+		});
+	});
+};
+
+var display_geolocation = function () {
+	var geo_btns = document.querySelectorAll('.geo_location');
+	for (var i = 0; i < geo_btns.length; i++) {
+		var btn = geo_btns[i];
+		btn.classList.remove('hidden');
+		btn.addEventListener('click', get_geolocation);
+	}
+};
+
+if ('geolocation' in navigator) {
+	console.log('Geolocation Availible');
+	display_geolocation();
+} else {
+	console.log('Geolocation Unavailible');
+}
+
 var icons = {
 	event: {
 		url: '/static/stargate.png',
@@ -73,6 +99,7 @@ var Forms = augment(Object, function () {
 		m.date = form.date.value;
 		m.time = form.time.value;
 		m.details = form.details.value;
+		m.circle = getParameterByName('circle');
 
 		var push = $.ajax({
 			type: 'POST',
@@ -110,6 +137,7 @@ var Forms = augment(Object, function () {
 		m.date = form.date.value;
 		m.time = form.time.value;
 		m.details = form.details.value;
+		m.circle = getParameterByName('circle');
 
 		var push = $.ajax({
 			type: 'POST',
@@ -139,18 +167,18 @@ var Forms = augment(Object, function () {
 
 	this.controller_event = function (e) {
 		e.preventDefault();
-		console.log(e);
 
 		var form  = e.target;
 
 		var m = {};
 		m.name = form.name.value;
-		m.address = map.marker_1.address;
-		m.lat = map.marker_1.lat;
-		m.lng = map.marker_1.lng;
+		m.address = map.marker_start.address;
+		m.lat = map.marker_start.lat;
+		m.lng = map.marker_start.lng;
 		m.date = form.date.value;
 		m.time = form.time.value;
 		m.details = form.details.value;
+		m.circle = getParameterByName('circle');
 
 		var push = $.ajax({
 			type: 'POST',
@@ -378,28 +406,40 @@ var Map = augment(Object, function () {
 
 		this.markers = [];
 
-		this.marker_1 = {};
-		this.marker_2 = {};
+		this.marker_start = {};
+		this.marker_dest = {};
 
-		this.create_new_marker = true;
+		this.create_new_marker = false;
 
 		this.create_markers();
 
-		this.search_form = document.querySelector('#search_form');
-		this.search_form.addEventListener('submit', function (e) {
-			e.preventDefault();
-			var address = this.search_form.address.value;
-			this.geocoder.geocode({
-				address: address
-			}, this.disp_address.bind(this));
-		}.bind(this));
+		this.s_forms = document.querySelectorAll('[data-search]');
+		for (var i = 0; i < this.s_forms.length; i++) {
+			var current = this.s_forms[i];
+			current.addEventListener('submit', function (e) {
+				e.preventDefault();
+				var address = current.address.value;
+				this.geocoder.geocode({
+					address: address
+				}, this.extract_address.bind(this));
+			}.bind(this));
+		}
+
+		// this.search_form = document.querySelector('#search_form');
+		// this.search_form.addEventListener('submit', function (e) {
+		// 	e.preventDefault();
+		// 	var address = this.search_form.address.value;
+		// 	this.geocoder.geocode({
+		// 		address: address
+		// 	}, this.extract_address.bind(this));
+		// }.bind(this));
 		this.reset();
 
 		this.reset_btn = document.querySelector('[data-reset]');
 		this.reset_btn.addEventListener('click', function (e) {
 			this.reset();
 		}.bind(this));
-	}
+	};
 
 	this.reset = function () {
 		if (typeof flow != 'undefined') {
@@ -414,7 +454,7 @@ var Map = augment(Object, function () {
 			this.markers[i].setMap(null);
 		}
 		this.markers = [];
-	}
+	};
 
 	this.create_markers = function () {
 	    this.map = new google.maps.Map(document.querySelector('#map_canvas'), {
@@ -422,123 +462,128 @@ var Map = augment(Object, function () {
 	        center: new google.maps.LatLng(this.location.lat, this.location.lng),
 	        mapTypeId: google.maps.MapTypeId.ROADMAP,
 	        zoom: 10
-	    })
+	    });
 
 	    google.maps.event.addListener(this.map, 'click', this.get_address.bind(this))
 
-		this.marker = new google.maps.Marker({
-			position: this.location,
-			map: this.map
-		})
-		this.direction_service = new google.maps.DirectionsService();
-		this.direction_display = new google.maps.DirectionsRenderer({preserveViewport:false});
-
 		this.geocoder = new google.maps.Geocoder();
-	}
+	};
 
-	this.set_window = function (location, content) {
+	this.set_window = function (location, content, icon) {
 		if (this.create_new_marker) {
-			var LatLng = new google.maps.LatLng(location.k, location.A);
-			var dialog = new google.maps.InfoWindow({
-				position: LatLng,
-				content: content
-			});
+			var latlng = new google.maps.LatLng(location.lat, location.lng);
+			// var dialog = new google.maps.InfoWindow({
+			// 	position: latlng,
+			// 	content: content
+			// });
 			var marker = new google.maps.Marker({
-				position: LatLng,
+				position: latlng,
 				map: this.map,
-			})
+				icon: icons[icon]
+			});
+			this.map.panTo(latlng);
 			this.markers.push(marker);
-			google.maps.event.addListener(marker, 'click', function () {
-				dialog.open(this.map, marker)
-			})
-			google.maps.event.addListener(
-				dialog,
-				'closeclick'
-			);
+			// google.maps.event.addListener(marker, 'click', function () {
+			// 	dialog.open(this.map, marker)
+			// })
+			// google.maps.event.addListener(
+			// 	dialog,
+			// 	'closeclick'
+			// );
 			this.create_new_marker = false;
 		} else {
 			console.log('Cannot create new marker right now');
 		}
-	}
+	};
+
+	this.geocode_latlng = function (deta) {
+		console.log(deta);
+		var latlng = new google.maps.LatLng(deta.lat, deta.lng);
+		this.geocoder.geocode({
+			latLng: latlng
+		}, this.extract_address.bind(this));
+	};
 
 	this.get_address = function (e) {
-		this.latLng = e.latLng;
+		this.latlng = e.latLng;
 		this.geocoder.geocode({
-			latLng: this.latLng
-		}, this.disp_address.bind(this));
-	}
+			latLng: this.latlng
+		}, this.extract_address.bind(this));
+	};
 
-	this.disp_address = function (location) {
+	this.extract_address = function (location) {
+		console.log(location);
 		var point = location[0].geometry.location;
-		this.set_window(point, 'New Marker');
 
-		if (this.state == 'select_location') {
-			this.marker_1.lat = point.k;
-			this.marker_1.lng = point.A;
-			this.marker_1.address = location[0].formatted_address;
-			flow.change_slide('trip_type');
+		var details = {};
+		details.lat = point.lat();
+		details.lng = point.lng();
+		details.add = location[0].formatted_address;
+		details.point = point;
+		console.log(details);
+		this.disp_address(details);
+	};
+
+	this.disp_address = function (deta) {
+
+		if (this.state == 'event_location') {
+			this.set_window(deta, deta.add, 'person');
+			this.marker_start.lat = deta.lat;
+			this.marker_start.lng = deta.lng;
+			this.marker_start.address = deta.add;
+			flow.change_slide('event_details');
 		}
-		if (this.state == 'location_2') {
-			this.marker_2.lat = point.k;
-			this.marker_2.lng = point.A;
-			this.marker_2.address = location[0].formatted_address;
-
-			var location_2 = document.querySelector('[data-ride="loc_2"]');
-			var location_btn = document.querySelector('[data-ride="loc_btn"]');
-
-			location_2.textContent = this.marker_2.address;
-			location_btn.removeAttribute('disabled');
-		}
-		if (this.state == 'event_ride_location') {
-			this.current_ride.origin = {};
-			this.current_ride.origin.lat = point.k;
-			this.current_ride.origin.lng = point.A;
-			this.current_ride.origin.address = location[0].formatted_address;
-			this.indicator = this.state;
+		if (this.state == 'ride_location') {
+			this.set_window(deta, deta.add, 'success');
+			this.marker_start.lat = deta.lat;
+			this.marker_start.lng = deta.lng;
+			this.marker_start.address = deta.add;
+			this.create_new_marker = true;
 			flow.change_slide('select_type');
 		}
-	}
+		if (this.state == 'location_dest') {
+			this.set_window(deta, deta.add, 'error');
+			this.marker_dest.lat = deta.lat;
+			this.marker_dest.lng = deta.lng;
+			this.marker_dest.address = deta.add;
+
+			var loc_dest = document.querySelector('[data-ride="loc_dest"]');
+			var loc_btn = document.querySelector('[data-ride="loc_btn"]');
+
+			loc_dest.textContent = this.marker_dest.address;
+			loc_btn.classList.remove('hidden');
+		}
+		if (this.state == 'event_ride_location') {
+			this.set_window(deta, deta.add, 'success');
+			this.marker_start.lat = deta.lat;
+			this.marker_start.lng = deta.lng;
+			this.marker_start.address = deta.add;
+			flow.change_slide('select_type');
+		}
+	};
 
 	this.special_action = function (route, btn) {
-		// Set location #1
-		if (route == 'location_1') {
+		if (route == 'select_location') {
+			this.create_new_marker = false;
+			flow.change_slide(route);
+		} else if (route == 'location_dest') {
 			if (btn.dataset.ride == 'driver') {
 				this.current_ride.driver = true;
 			} else if (btn.dataset.ride == 'passenger') {
 				this.current_ride.driver = false;
-			} else { }
-			if (this.indicator == 'event_ride_location') {
+			}
+			if (this.indicator == 'event_ride') {
 				if (this.current_ride.driver == true) {
 					flow.change_slide('driver_details');
 				} else if (this.current_ride.driver == false) {
 					flow.change_slide('passenger_details');
 				}
 			} else {
-				console.log(route)
-				var location = document.querySelector('[data-ride="loc_1"]');
-				location.textContent = this.marker_1.address;
 				flow.change_slide(route);
 			}
-		} else if (route == 'location_2') {
-			// Set location_type when selecting location #2
-			var location_type_form = document.querySelector('[data-ride="loc_1_type"]');
-			var location_type_disp = document.querySelector('[data-ride="loc_2_type"]');
-			var text;
-			this.marker_1.location_type = location_type_form.value;
-			if (this.marker_1.location_type == 'destination') {
-				this.current_ride.destination = this.marker_1;
-				this.marker_2.location_type = 'origin';
-				text = 'destination';
-			} else if (this.marker_1.location_type == 'origin') {
-				this.current_ride.origin = this.marker_1;
-				this.marker_2.location_type = 'destination';
-				text = 'starting point';
-			}
-			location_type_disp.textContent = text;
-			this.create_new_marker = true;
-			flow.change_slide(route);
 		} else if (route == 'details') {
-			this.current_ride[this.marker_2.location_type] = this.marker_2;
+			this.current_ride['origin'] = this.marker_start;
+			this.current_ride['dest'] = this.marker_dest;
 			if (this.current_ride.driver == true) {
 				flow.change_slide('driver_details')
 			} else {
@@ -573,11 +618,15 @@ var Map = augment(Object, function () {
 			flow.change_slide('join_ride');
 		} else if (route == 'event_ride_location') {
 			this.current_ride.event = btn.dataset.id;
+			this.indicator = 'event_ride';
+			flow.change_slide(route);
+		} else if (route == 'event_location' || route == 'ride_location') {
+			this.reset();
 			flow.change_slide(route);
 		} else {
 			flow.change_slide(route);
 		}
-	}
+	};
 });
 
 var map = new Map();

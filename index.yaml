@@ -45,19 +45,3 @@ indexes:
   - name: user
   - name: date
     direction: desc
-
-- kind: Event
-  properties:
-  - name: circle
-  - name: ToD
-
-- kind: Ride
-  properties:
-  - name: circle
-  - name: ToD
-
-- kind: Ride
-  properties:
-  - name: circle
-  - name: event
-  - name: ToD
