@@ -23,11 +23,8 @@
 					</li>
 				</ul>
 				<hr>
-				{% if user.key() in event.attending %}
-					<button class='btn btn-primary'>Join Event</button>
-				{% else %}
-					<button class='btn btn-danger'>Leave Event</button>
-				{% endif %}
+				<button class='btn btn-primary'>I need a ride to this event</button>
+				<button class='btn btn-primary'>I can offer a ride to this event</button>
 			</div>
 		</div>
 	</div>
@@ -44,7 +41,7 @@
 </div>
 
 <div class="row">
-	<div class="col-md-7">
+	<div class="col-md-12">
 		<div class="panel panel-main">
 			<div class="panel-heading">Rides going to Event</div>
 			<div class="panel-body panel-no">
@@ -74,31 +71,6 @@
 				    <div class="panel-message">
 				        There are not rides going to this event. Create one by visiting <a href="/map">the map</a>.
 				    </div>
-				{% endif %}
-			</div>
-		</div>
-	</div>
-	<div class="col-md-5">
-		<div class="panel panel-main">
-			<div class="panel-heading">Attending</div>
-			<div class="panel-body panel-no">
-				{% if attending %}
-					{% for user in attending %}
-						<div class="list">
-							<div class="ctx">
-								<i class="fa fa-user"></i>
-							</div>
-							<div class="info">
-								<div class="title">
-									<a href="/user/{{user.key().id()}}">{{user.name}}</a>
-								</div>
-							</div>
-						</div>
-					{% endfor %}
-				{% else %}
-					<div class="panel-message">
-						Nobody is attending yet.
-					</div>
 				{% endif %}
 			</div>
 		</div>

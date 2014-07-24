@@ -45,3 +45,13 @@ indexes:
   - name: user
   - name: date
     direction: desc
+
+- kind: Ride
+  properties:
+  - name: driver
+  - name: date
+
+- kind: Ride
+  properties:
+  - name: passengers
+  - name: date

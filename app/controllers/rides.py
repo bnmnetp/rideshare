@@ -93,6 +93,8 @@ class FilterRides(BaseHandler):
             rides.filter('driver != ', None)
         if data['filter'] == 'user_passenger':
             rides.filter('passengers =', user.key())
+        if data['filter'] == 'user_driver':
+            rides.filter('driver =', user.key())
         if data['filter'] == 'current':
             today = date.today()
             rides.filter('date >=', today)
@@ -266,7 +268,7 @@ class GetRideHandler(BaseHandler):
         user = self.current_user()
         availible_seats = 0
 
-        if ride.driver:
+        if ride.driver and ride.passengers_max:
             availible_seats = ride.passengers_max - ride.passengers_total;
 
         passengers = []
