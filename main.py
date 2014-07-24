@@ -172,6 +172,7 @@ app = webapp2.WSGIApplication([
     ('/join_ride', RideJoinHandler),
     ("/newride", NewRideHandler),
     ('/home', HomeHandler),
+    ('/filter', FilterRides),
     # end rides
 
     # controllers/users.py

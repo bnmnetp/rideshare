@@ -16,8 +16,10 @@ class RideHandler(BaseHandler):
         self.auth()
         user = self.current_user()
 
-        rides_user_1 = Ride.all().filter('passengers =', user.key()).fetch(100)
-        rides_user_2 = Ride.all().filter('driver = ', user.key()).fetch(100)
+        today = date.today()
+
+        rides_user_1 = Ride.all().filter('passengers =', user.key()).filter('date >=', today).fetch(100)
+        rides_user_2 = Ride.all().filter('driver = ', user.key()).filter('date >=', today).fetch(100)
 
         rides_user = rides_user_1 + rides_user_2
 
@@ -65,6 +67,9 @@ class RideHandler(BaseHandler):
 
         rides = Ride.all()
 
+        today = date.today()
+        rides.filter('date >=', today)
+
         if data['circle'] != '':
             rides.filter('circle = ', data['circle'])
 
@@ -77,7 +82,7 @@ class FilterRides(BaseHandler):
 
         user = self.current_user()
 
-        json_str = self.request_body
+        json_str = self.request.body
         data = json.loads(json_str)
 
         rides = Ride.all()
@@ -87,19 +92,23 @@ class FilterRides(BaseHandler):
         if data['filter'] == 'driver':
             rides.filter('driver != ', None)
         if data['filter'] == 'user_passenger':
-            rides.filter('passengers in', user.key())
+            rides.filter('passengers =', user.key())
         if data['filter'] == 'current':
             today = date.today()
             rides.filter('date >=', today)
         if data['filter'] == 'past':
             print 'test'
 
+        results = []
         for ride in rides:
-            ride.dest = split_address(ride.dest_add)
-            ride.orig = split_address(ride.origin_add)
+            d = {}
+            d['dest'] = split_address(ride.dest_add)
+            d['orig'] = split_address(ride.origin_add)
+            d['id'] = ride.key().id()
+            d['date'] = str(ride.date)
+            results.append(d)
 
-        results = json.dumps([r.to_dict() for r in rides])
-        self.response.write(results)
+        self.response.write(json.dumps(results))
 
 
 class EditRide(BaseHandler):

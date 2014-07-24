@@ -15,10 +15,12 @@
 <div class="row">
     <div class="col-md-4">
         <h4>Filter Rides</h4>
+        Rides that:
         <ul class='menu'>
             <li data-filter='no_driver'>Need a Driver</li>
             <li data-filter='driver'>Have a Driver</li>
         </ul>
+        Rides where:
         <ul class="menu">
             <li data-filter='user_passenger'>I'm a passenger</li>
             <li data-filter='user_driver'>I'm a driver</li>
@@ -62,21 +64,15 @@
         </div>
         <div class="info">
             <div class="title">
-                <a href='/ride/{{ride.key().id()}}'>
-                    {{ride.orig}} to {{ride.dest}}
+                <a href='/ride/{{id}}'>
+                    {{orig}} to {{dest}}
                 </a>
             </div>
             <div class="sub">
-                {% if ride.is_driver %}
-                <div class="deta">
-                    <span class="label label-success">Driver</span>
+                <div class='deta'>
+                    <i class='fa fa-calendar'></i>
+                    {{date}}
                 </div>
-                {% endif %}
-                {% if ride.is_passenger %}
-                <div class="deta">
-                    <span class="label label-success">Passenger</span>
-                </div>
-                {% endif %}
             </div>
         </div>
     </div>
@@ -93,6 +89,7 @@
 <script type="text/javascript">
 var flow = new Flow('my_rides');
 var filter = new Filter();
+filter.action('past');
 </script>
 
 {% endblock %}

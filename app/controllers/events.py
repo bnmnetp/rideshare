@@ -76,9 +76,11 @@ class EventHandler(BaseHandler):
 
         user = self.current_user()
 
-        events_user = Event.all().filter('circle IN', user.circles).fetch(100)
+        today = date.today()
 
-        events_all = Event.all().fetch(100)
+        events_user = Event.all().filter('circle IN', user.circles).filter('date >=', today).fetch(100)
+
+        events_all = Event.all().filter('date >=', today).fetch(100)
 
         doRender(self, 'events.html', {
             'events_user': events_user,
@@ -91,6 +93,9 @@ class EventHandler(BaseHandler):
         data = json.loads(json_str)
 
         events = Event.all()
+
+        today = date.today()
+        events.filter('date >=', today)
 
         if data['circle'] != '':
             events.filter('circle = ',  data['circle'])

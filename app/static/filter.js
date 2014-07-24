@@ -3,6 +3,9 @@ var Filter = augment(Object, function () {
 		this.container = document.querySelector('[data-container="filter"]');
 		this.source = document.querySelector('[data-template="ride"]').innerHTML;
 		this.template = Handlebars.compile(this.source);
+
+		this.filters = document.querySelectorAll('[data-filter]');
+
 		document.body.addEventListener('click', function (e) {
 			var target = e.target;
 
@@ -13,9 +16,10 @@ var Filter = augment(Object, function () {
 	};
 
 	this.action = function (filter) {
+		this.active(filter);
 		var fetch = $.ajax({
 			type: 'POST',
-			url: '/rides',
+			url: '/filter',
 			dataType: 'json',
 			contentType: 'application/json; charset=UTF-8',
 			data: JSON.stringify({
@@ -36,10 +40,24 @@ var Filter = augment(Object, function () {
 		});
 	};
 
+	this.active = function (filter) {
+		for (var i = 0; i < this.filters.length; i++) {
+			var cur = this.filters[i];
+			if (cur.dataset.filter == filter) {
+				cur.classList.add('active');
+			} else {
+				cur.classList.remove('active');
+			}
+		}
+	};
+
 	this.display_results = function (data) {
+		while (this.container.hasChildNodes()) {
+			this.container.removeChild(this.container.childNodes[0])
+		}
 		for (var i = 0; i < data.length; i++) {
 			var d = data[i];
-
+			console.log(d);
 			var html = this.template(d);
 			this.container.insertAdjacentHTML('beforeend', html);
 		}
