@@ -58,7 +58,7 @@
         <div id="map_canvas"></div>
     </div>
 
-    <div class="col-md-4 map_con" id='col_dialog' data-route='select_location'>
+    <div class="col-md-4 map_con" data-route='path'>
         To get started, <b>click on a marker to get details</b> or
         <ul class="menu">
             <li data-next='new_event'>Create a new Event</li>
@@ -67,7 +67,7 @@
         </ul>
     </div>
 
-    <div class="col-md-4" data-route='location_selection'>
+    <div class="col-md-4" data-route='select_orig'>
         
     </div>
 
@@ -113,7 +113,7 @@
         </form>
     </div>
 
-    <div class="col-md-4" data-route='location_dest'>
+    <div class="col-md-4" data-route='select_dest'>
         <form>
             <p class="lead">
                 Select the Destination
@@ -176,10 +176,6 @@
         <p>This is a safety agreement that you have agreed to follow. This is important.</p>
         <button class='btn btn-primary' data-next='true'>Agree & Continue</button>
     </div>
-
-    <div class="col-md-4" data-route="join_ride">
-        
-    </div>
 </div>
 {% endblock %}
 
@@ -187,9 +183,9 @@
 
 {% raw %}
 
-<script data-template='select_location' type='text/x-handlebars-template'>
+<script data-template='select_orig' type='text/x-handlebars-template'>
     <div class="locsec">
-        <h1>Select the {{type}} location</h1>
+        <h1>Select the starting location</h1>
         <div class="form-group">
             <label>Origin:
                 <span data-location='text'>None</span>
@@ -232,7 +228,7 @@
     <div class="entry">
         <strong>{{secondary}} Location:</strong> {{secondary_add}}
     </div>
-    <button class='btn btn-primary' data-next='join_ride' data-id='{{id}}'>Join this ride</button>
+    <a class='btn btn-primary' href='/ride/{{id}}'>View more details</a>
 </script>
 
 <script data-template='popup-event' type="text/x-handlebars-template">
@@ -270,23 +266,22 @@
 <script src='//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/js/bootstrap.min.js' type="text/javascript"></script>
 
 <script type="text/javascript">
-var flow = new Flow('select_location', paths);
-flow.set_handler(map);
+    var flow = new Flow('path', paths);
+    flow.set_handler(map);
 
-$('.date-select').datepicker();
+    $('.date-select').datepicker();
 
-/* Toggle Help */
-var help = {};
-help.btn = document.querySelector('[data-help="toggle"]');
-help.container = document.querySelector('[data-help="container"]');
+    /* Toggle Help */
+    var help = {};
+    help.btn = document.querySelector('[data-help="toggle"]');
+    help.container = document.querySelector('[data-help="container"]');
 
-help.btn.addEventListener('click', function (e) {
-    var target = e.target;
+    help.btn.addEventListener('click', function (e) {
+        var target = e.target;
 
-    help.container.classList.toggle('hidden');
-});
-/* End */
-
+        help.container.classList.toggle('hidden');
+    });
+    /* End */
 </script>
 
 {% endblock %}

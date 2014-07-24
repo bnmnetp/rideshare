@@ -71,6 +71,37 @@ class RideHandler(BaseHandler):
         results = json.dumps([r.to_dict() for r in rides])
         self.response.write(results)
 
+class FilterRides(BaseHandler):
+    def post(self):
+        self.auth()
+
+        user = self.current_user()
+
+        json_str = self.request_body
+        data = json.loads(json_str)
+
+        rides = Ride.all()
+
+        if data['filter'] == 'no_driver':
+            rides.filter('driver = ', None)
+        if data['filter'] == 'driver':
+            rides.filter('driver != ', None)
+        if data['filter'] == 'user_passenger':
+            rides.filter('passengers in', user.key())
+        if data['filter'] == 'current':
+            today = date.today()
+            rides.filter('date >=', today)
+        if data['filter'] == 'past':
+            print 'test'
+
+        for ride in rides:
+            ride.dest = split_address(ride.dest_add)
+            ride.orig = split_address(ride.origin_add)
+
+        results = json.dumps([r.to_dict() for r in rides])
+        self.response.write(results)
+
+
 class EditRide(BaseHandler):
     def get(self, ride_id):
         self.auth()

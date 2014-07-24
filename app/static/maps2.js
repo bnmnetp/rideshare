@@ -106,7 +106,10 @@ var Forms = augment(Object, function () {
 		console.log(e);
 
 		var form  = e.target;
-		var m = map.new_ride;
+		var m = {};
+
+		m.orig = map.start;
+		m.dest = map.end;
 
 		m.max_passengers = form.max_passengers.value;
 		m.date = form.date.value;
@@ -146,7 +149,10 @@ var Forms = augment(Object, function () {
 		console.log(e);
 
 		var form  = e.target;
-		var m = map.new_ride;
+		var m = {};
+
+		m.orig = map.start;
+		m.dest = map.end;
 
 		m.date = form.date.value;
 		m.time = form.time.value;
@@ -187,9 +193,9 @@ var Forms = augment(Object, function () {
 
 		var m = {};
 		m.name = form.name.value;
-		m.address = map.new_event.loc.address;
-		m.lat = map.new_event.loc.lat;
-		m.lng = map.new_event.loc.lng;
+		m.address = map.start.address;
+		m.lat = map.start.lat;
+		m.lng = map.start.lng;
 		m.date = form.date.value;
 		m.time = form.time.value;
 		m.details = form.details.value;
@@ -395,30 +401,30 @@ var Markers = augment(Object, function () {
 
 var paths = {
 	new_event: [
-		'location_selection',
+		'select_orig',
 		'event_details'
 	],
 	new_ride: [
-		'location_selection',
-		'location_dest',
+		'select_orig',
+		'select_dest',
 		'passenger_details'
 	],
 	new_trip: [
-		'location_selection',
-		'location_dest',
+		'select_orig',
+		'select_dest',
 		'safety',
 		'driver_details'
 	],
 	ride_to_event: [
-		'location_selection',
+		'select_orig',
 		'passenger_details'
 	],
 	trip_to_event: [
-		'location_selection',
+		'select_orig',
 		'safety',
 		'driver_details'
 	]
-}
+};
 
 var Map = augment(Object, function () {
 	this.constructor = function () {
@@ -433,8 +439,9 @@ var Map = augment(Object, function () {
 		this.map;
 		this.geocoder;
 
+		this.state = '';
+
 		this.last = false;
-		this.state = 'select_location';
 		this.indicator = '';
 		this.new_ride = {};
 		this.new_event = {};
@@ -467,8 +474,6 @@ var Map = augment(Object, function () {
 
 	this.reset = function () {
 		if (typeof flow != 'undefined') {
-			this.last = false;
-			this.state = 'select_location';
 			flow.reset();
 		}
 
@@ -515,7 +520,6 @@ var Map = augment(Object, function () {
 	};
 
 	this.geocode_latlng = function (deta) {
-		console.log(deta);
 		var latlng = new google.maps.LatLng(deta.lat, deta.lng);
 		this.geocoder.geocode({
 			latLng: latlng
@@ -541,12 +545,12 @@ var Map = augment(Object, function () {
 
 	this.disp_address = function (deta) {
 		console.log(this.state);
-		if (this.state == 'location_selection') {
-			if (flow.path_history.contains('create_ride')) {
+		if (this.state == 'select_orig') {
+			if (flow.history.contains('create_ride')) {
 				this.set_window(deta, 'success');
-			} else if (flow.path_history.contains('create_event')) {
+			} else if (flow.history.contains('create_event')) {
 				this.set_window(deta, 'person');
-			} else if (flow.path_history.contains('ride_to_event')) {
+			} else if (flow.history.contains('ride_to_event')) {
 				this.set_window(deta, 'error');
 			}
 			this.start = {
@@ -558,10 +562,10 @@ var Map = augment(Object, function () {
 			var select_text = document.querySelector('[data-location="text"]');
 			var select_btn = document.querySelector('[data-location="btn"]');
 
-			select_text.textContent = set.address;
+			select_text.textContent = this.start.address;
 			select_btn.classList.remove('hidden');
 		}
-		if (this.state == 'location_dest') {
+		if (this.state == 'select_dest') {
 			this.set_window(deta, 'error');
 			this.end = {
 				lat: deta.lat,
@@ -572,60 +576,33 @@ var Map = augment(Object, function () {
 			var loc_dest = document.querySelector('[data-ride="loc_dest"]');
 			var loc_btn = document.querySelector('[data-ride="loc_btn"]');
 
-			loc_dest.textContent = this.new_ride.dest.address;
+			loc_dest.textContent = this.end.address;
 			loc_btn.classList.remove('hidden');
 		}
 	};
 
-	this.special_action = function (btn) {
-		if (this.state == 'select_location') {
+	this.special_action = function (from, to, opts) {
+		if (to == 'select_location') {
 			this.create_new_marker = false;
 		}
-		if (this.state == 'join_ride') {
-			var id = btn.dataset.id;
-			var container = document.querySelector('[data-route="join_ride"]');
-			var source = document.querySelector('[data-template="join_ride"]').innerHTML;
-			var template = Handlebars.compile(source);
-			var ride;
-			// Find specific ride by ID
-			for (var i = 0; i < this.rides.length; i++) {
-				if (this.rides[i].id = id) {
-					ride = this.rides[i];
-				}
-			}
-			var html = template({
-				origin: ride.origin_add,
-				dest: ride.dest_add,
-				date: ride.date,
-				time: ride.time,
-				driver: ride.driver,
-				driver_name: ride.driver_name,
-				contact: ride.contact,
-				id: ride.id
-			});
-			while (container.firstChild) {
-				container.removeChild(container.firstChild)
-			}
-			container.insertAdjacentHTML('beforeend', html);
-		}
-		if (this.state == 'ride_to_event') {
+		if (to == 'ride_to_event') {
 			this.new_ride.event = btn.dataset.id;
 		}
-		if (flow.path_history.last() == 'location_selection') {
+		if (to == 'select_orig') {
 			this.create_new_marker = true;
-			var container = document.querySelector('[data-route="location_selection"]');
-			var source = document.querySelector('[data-template="select_location"]').innerHTML;
+			var container = document.querySelector('[data-route="select_orig"]');
+			var source = document.querySelector('[data-template="select_orig"]').innerHTML;
 			var template = Handlebars.compile(source);
 
 			var html = template({
-				type: 'test'
+				type: 'starting'
 			});
 			while (container.firstChild) {
 				container.removeChild(container.firstChild)
 			}
 			container.insertAdjacentHTML('beforeend', html);
 		}
-		if (flow.path_history.last() == 'location_dest') {
+		if (to == 'location_dest') {
 			this.create_new_marker = true;
 		}
 	};

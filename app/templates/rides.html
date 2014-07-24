@@ -12,90 +12,33 @@
         Create a ride by visiting the <a href='/map'>map page</a>.
     </div>
 </div>
-<ul class="ntabs">
-    <li data-next="my_rides">
-        My Rides
-    </li>
-    <li data-next="all_rides">
-        All Rides
-    </li>
-</ul>
-<div data-route='my_rides'>
-    <div class="panel panel-main">
-        <div class="panel-heading">My Rides</div>
-        <div class="panel-body panel-no">
-        {% if rides_user %}
-        {% for ride in rides_user %}
-            <div class="list">
-                <div class="ctx">
-                    <i class="fa fa-car"></i>
-                </div>
-                <div class="info">
-                    <div class="title">
-                        <a href='/ride/{{ride.key().id()}}'>
-                            {{ride.orig}} to {{ride.dest}}
-                        </a>
-                    </div>
-                    <div class="sub">
-                        {% if ride.is_driver %}
-                        <div class="deta">
-                            <span class="label label-success">Driver</span>
-                        </div>
-                        {% endif %}
-                        {% if ride.is_passenger %}
-                        <div class="deta">
-                            <span class="label label-success">Passenger</span>
-                        </div>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-        {% endfor %}
-        {% else %}
-        <div class="panel-message">
-            You are not signed up for any rides currently.
-        </div>
-        {% endif %}
-        </div>
+<div class="row">
+    <div class="col-md-4">
+        <h4>Filter Rides</h4>
+        <ul class='menu'>
+            <li data-filter='no_driver'>Need a Driver</li>
+            <li data-filter='driver'>Have a Driver</li>
+        </ul>
+        <ul class="menu">
+            <li data-filter='user_passenger'>I'm a passenger</li>
+            <li data-filter='user_driver'>I'm a driver</li>
+        </ul>
+        <ul class="menu">
+            <li data-filter='current'>Current rides</li>
+            <li data-filter='past'>Past & Current rides</li>
+        </ul>
+        <!-- <ul class="menu">
+            <li data-filter='rides'>Only rides</li>
+            <li data-filter='events'>Only events</li>
+            <li data-filter='trips'>All trips</li>
+        </ul> -->
     </div>
-</div>
+    <div class="col-md-8">
+        <div class="panel panel-main">
+            <div class="panel-heading">Results</div>
+            <div class="panel-body panel-no" data-container='filter'>
 
-<div data-route='all_rides'>
-    <div class="panel panel-main">
-        <div class="panel-heading">All Rides</div>
-        <div class="panel-body panel-no">
-        {% if rides_all %}
-        {% for ride in rides_all %}
-            <div class="list">
-                <div class="ctx">
-                    <i class="fa fa-car"></i>
-                </div>
-                <div class="info">
-                    <div class="title">
-                        <a href='/ride/{{ride.key().id()}}'>
-                            {{ride.orig}} to {{ride.dest}}
-                        </a>
-                    </div>
-                    <div class="sub">
-                        {% if ride.is_driver %}
-                        <div class="deta">
-                            <span class="label label-success">Driver</span>
-                        </div>
-                        {% endif %}
-                        {% if ride.is_passenger %}
-                        <div class="deta">
-                            <span class="label label-success">Passenger</span>
-                        </div>
-                        {% endif %}
-                    </div>
-                </div>
             </div>
-        {% endfor %}
-        {% else %}
-        <div class="panel-message">
-            No rides have been created.
-        </div>
-        {% endif %}
         </div>
     </div>
 </div>
@@ -112,15 +55,44 @@
     </div>
 </script>
 
+<script data-template='ride' type='text/x-handlebars-template'>
+    <div class="list">
+        <div class="ctx">
+            <i class="fa fa-car"></i>
+        </div>
+        <div class="info">
+            <div class="title">
+                <a href='/ride/{{ride.key().id()}}'>
+                    {{ride.orig}} to {{ride.dest}}
+                </a>
+            </div>
+            <div class="sub">
+                {% if ride.is_driver %}
+                <div class="deta">
+                    <span class="label label-success">Driver</span>
+                </div>
+                {% endif %}
+                {% if ride.is_passenger %}
+                <div class="deta">
+                    <span class="label label-success">Passenger</span>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</script>
+
 {% endraw %}
 
 <script src="static/augment.js" type="text/javascript"></script>
 <script src="static/flow.js" type="text/javascript"></script>
+<script src="static/filter.js" type='text/javascript'></script>
 <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
 
 
 <script type="text/javascript">
 var flow = new Flow('my_rides');
+var filter = new Filter();
 </script>
 
 {% endblock %}
