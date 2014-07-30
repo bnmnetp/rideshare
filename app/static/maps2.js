@@ -91,13 +91,6 @@ var Forms = augment(Object, function () {
 
 		this.send_event = document.querySelector('[data-send="event"]');
 		this.send_event.addEventListener('submit', this.controller_event.bind(this));
-
-		document.body.addEventListener('click', function (e) {
-			var target = e.target;
-			if (target.dataset.join) {
-				this.controller_join.apply(this, [e]);
-			}
-		}.bind(this));
 	}
 
 	this.controller_ride = function (e) {
@@ -223,40 +216,6 @@ var Forms = augment(Object, function () {
 				type: 'danger',
 				strong: 'Sorry!',
 				message: 'The event was not created. Please try again.'
-			});
-		});
-	}
-
-	this.controller_join = function (e) {
-		e.preventDefault();
-		var target = e.target;
-		var data = target.dataset.join.split(':');
-
-		var push = $.ajax({
-			type: 'POST',
-			url: '/join_ride',
-			dataType: 'json',
-			contentType: 'application/json; charset=UTF-8',
-			data: JSON.stringify({
-				type: data[0],
-				id: data[1]
-			})
-		});
-
-		push.done(function (data) {
-			flow.view_slide('path');
-			notify({
-				type: 'success',
-				strong: 'You joined the ride!',
-				message: 'We sent you a confirmation email.'
-			});
-		});
-
-		push.fail(function (data, status) {
-			notify({
-				type: 'danger',
-				strong: 'Sorry!',
-				message: 'You did not join the ride. Please try again.'
 			});
 		});
 	}

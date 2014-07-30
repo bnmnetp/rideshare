@@ -331,41 +331,6 @@ class GetRideHandler(BaseHandler):
             })
         else:
             self.response.write('No ride found.')
-
-class RideJoinHandler(BaseHandler):
-    def post(self):
-        json_str = self.request.body
-        data = json.loads(json_str)
-
-        user = self.current_user()
-
-        ride = Ride.get_by_id(int(data['id']))
-
-        if ride:
-            # Possible input for data['type']: ['passenger', 'driver']
-            if data['type'] == 'passenger':
-                ride.passengers.append(user.key())
-            elif data['type'] == 'driver':
-                ride.passengers_max = 1
-                ride.has_driver = True
-                ride.driver = user.key()
-                # Replace
-                ride.driver_name = user.name
-
-            ride.put()
-
-            response = {
-                'message': 'Ride added'
-            }
-            self.response.write(json.dumps(response))
-
-        else:
-            self.response.status_int(500)
-            response = {
-                'message': 'Ride not found!',
-                'error': True
-            }
-            self.response.write(json.dumps(response))
     
 class NewRideHandler(BaseHandler):
     def post(self):
@@ -382,17 +347,9 @@ class NewRideHandler(BaseHandler):
 
         # Refer to model.py for structure of data
         # class Ride
-        if 'event' in data:
-            event = Event.get_by_id(int(data['event']))
-            ride.dest_add = event.address
-            ride.dest_lat = event.lat
-            ride.dest_lng = event.lng
-            ride.event = event.key()
-        else:
-            ride.dest_add = data['dest']['address']
-            ride.dest_lat = data['dest']['lat']
-            ride.dest_lng = data['dest']['lng']
-
+        ride.dest_add = data['dest']['address']
+        ride.dest_lat = data['dest']['lat']
+        ride.dest_lng = data['dest']['lng']
         ride.origin_add = data['orig']['address']
         ride.origin_lat = data['orig']['lat']
         ride.origin_lng = data['orig']['lng']
@@ -426,3 +383,16 @@ class NewRideHandler(BaseHandler):
             'message': 'Ride added!'
         }
         self.response.write(json.dumps(response))
+
+class EventDriver(BaseHandler):
+    def post(self, event_id):
+
+class EventPass(BaseHandler):
+    def post(self, event_id):
+
+        if 'event' in data:
+            event = Event.get_by_id(int(data['event']))
+            ride.dest_add = event.address
+            ride.dest_lat = event.lat
+            ride.dest_lng = event.lng
+            ride.event = event.key()

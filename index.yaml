@@ -12,39 +12,14 @@ indexes:
 
 - kind: Comment
   properties:
-  - name: circle
-  - name: date
-    direction: desc
-
-- kind: Comment
-  properties:
-  - name: coment
-  - name: date
-    direction: desc
-
-- kind: Comment
-  properties:
   - name: event
   - name: date
     direction: desc
 
-- kind: Comment
+- kind: Event
   properties:
-  - name: profile
+  - name: circle
   - name: date
-    direction: desc
-
-- kind: Comment
-  properties:
-  - name: ride
-  - name: date
-    direction: desc
-
-- kind: Comment
-  properties:
-  - name: user
-  - name: date
-    direction: desc
 
 - kind: Ride
   properties:
