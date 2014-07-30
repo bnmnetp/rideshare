@@ -169,6 +169,7 @@ app = webapp2.WSGIApplication([
     ('/rides', RideHandler),
     ('/ride/(\d+)', GetRideHandler),
     ('/ride/(\d+)/edit', EditRide),
+    ('/ride/(\d+)/driver', JoinDriver),
     ('/join_ride', RideJoinHandler),
     ("/newride", NewRideHandler),
     ('/home', HomeHandler),

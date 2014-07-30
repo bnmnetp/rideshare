@@ -184,6 +184,30 @@ class EditRide(BaseHandler):
     def Date(self, fmt='%Y-%m-%d'):
         return lambda v: datetime.strptime(v, fmt)
 
+class JoinDriver(BaseHandler):
+    def post(self, ride_id):
+        self.auth()
+        json_str = self.request.body
+        data = json.loads(json_str)
+
+        user = self.current_user()
+
+        ride = Ride.get_by_id(int(ride_id))
+
+        ride.passengers_max = int(data['max_passengers'])
+        ride.has_driver = True
+        ride.driver = user.key()
+        ride.time = data['time']
+        ride.details = data['details']
+        ride.put()
+
+        for passenger in ride.passengers:
+            push_noti('driver_join', passenger, ride.key())
+
+        resp = {
+            'message': 'Success.'
+        }
+        self.response.write(json.dumps(resp))
 
 class GetRideHandler(BaseHandler):
     def post(self, ride_id):
@@ -209,7 +233,7 @@ class GetRideHandler(BaseHandler):
                     self.response.write(json.dumps(resp))
             if data['action'] == 'join':
                 if user.key() not in ride.passengers:
-                    if ride.passengers_total < ride.passengers_max:
+                    if len(ride.passengers) < ride.passengers_max:
                         if ride.driver:
                             push_noti('pass_join', ride.driver.key(), ride.key())
                         ride.passengers.append(user.key())
@@ -269,7 +293,7 @@ class GetRideHandler(BaseHandler):
         availible_seats = 0
 
         if ride.driver and ride.passengers_max:
-            availible_seats = ride.passengers_max - ride.passengers_total;
+            availible_seats = ride.passengers_max - len(ride.passengers)
 
         passengers = []
         for passenger in ride.passengers:
@@ -325,7 +349,6 @@ class RideJoinHandler(BaseHandler):
                 ride.passengers.append(user.key())
             elif data['type'] == 'driver':
                 ride.passengers_max = 1
-                ride.passengers_total = 0
                 ride.has_driver = True
                 ride.driver = user.key()
                 # Replace
@@ -383,7 +406,6 @@ class NewRideHandler(BaseHandler):
 
         if data['driver'] == True:
             ride.passengers_max = int(data['max_passengers'])
-            ride.passengers_total = 0
             ride.driver = user.key()
             ride.has_driver = data['driver']
             ride.driver_name = "Replace"

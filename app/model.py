@@ -54,7 +54,6 @@ class Event(db.Model):
 
 class Ride(db.Model):
     passengers_max = db.IntegerProperty()
-    passengers_total = db.IntegerProperty()
     has_driver = db.BooleanProperty()
     driver = db.ReferenceProperty(User)
     origin_add = db.StringProperty()
