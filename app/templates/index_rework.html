@@ -68,7 +68,38 @@
     </div>
 
     <div class="col-md-4" data-route='select_orig'>
-        
+        <div class="locsec">
+            <h1>Select the starting location</h1>
+            <div class="form-group">
+                <label>Origin:
+                    <span data-location='text'>None</span>
+                </label>
+            </div>
+            <button class="btn btn-primary hidden" data-next="true" type='button' data-location="btn">
+                Next
+            </button>
+            <p>Use one of the following options:</p>
+            <ul>
+                <li>
+                    <h2>Point & Click</h2>
+                    Select a location by clicking on the map
+                </li>
+                <li data-geolocation='container' class='hidden'>
+                    <h2>Geolocation</h2>
+                    <button data-geolocation='btn' class='btn btn-primary'>Use your current location.</button>
+                </li>
+                <li>
+                    <h2>Search</h2>
+                    <form data-search>
+                        <div class="form-group">
+                            <label>Enter an address, city, or state:</label>
+                            <input type="text" class="form-control" name="address">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Search</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
     </div>
 
     <div class="col-md-4" data-route='event_details'>
@@ -182,41 +213,6 @@
 {% block scripts %}
 
 {% raw %}
-
-<script data-template='select_orig' type='text/x-handlebars-template'>
-    <div class="locsec">
-        <h1>Select the starting location</h1>
-        <div class="form-group">
-            <label>Origin:
-                <span data-location='text'>None</span>
-            </label>
-        </div>
-        <button class="btn btn-primary hidden" data-next="true" type='button' data-location="btn">
-            Next
-        </button>
-        <p>Use one of the following options:</p>
-        <ul>
-            <li>
-                <h2>Point & Click</h2>
-                Select a location by clicking on the map
-            </li>
-            <li>
-                <h2>Geolocation</h2>
-                <button class='geo_location btn btn-primary'>Use your current location.</button>
-            </li>
-            <li>
-                <h2>Search</h2>
-                <form data-search>
-                    <div class="form-group">
-                        <label>Enter an address, city, or state:</label>
-                        <input type="text" class="form-control" name="address">
-                    </div>
-                    <button type="submit" class="btn btn-primary">Search</button>
-                </form>
-            </li>
-        </ul>
-    </div>
-</script>
 
 <script data-template='popup' type="text/x-handlebars-template">
     <div class="entry">

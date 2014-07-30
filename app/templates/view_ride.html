@@ -126,15 +126,15 @@
     </div>
 </div>
 
-<div class="modal fade" id="join_driver" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="join_driver" tabindex="-1" role="dialog" aria-aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title">Drive this ride</h4>
-            </div>
-            <div class="modal-body">
-                <!-- <form data-send="ride"> -->
+        <form data-send="driver">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">Drive this ride</h4>
+                </div>
+                <div class="modal-body">
                     <div class="form-group">
                         <label>Max Passengers</label>
                         <select class="form-control" name='max_passengers'>
@@ -156,15 +156,15 @@
                         <label>Additional Details</label>
                         <input class="form-control" type="text" placeholder="Details" name='details'>
                     </div>
-                    <!-- <button class="btn btn-primary" type='submit'>
-                        Be the Driver
-                    </button>
-                </form> -->
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            </div>
-        </div><!-- /.modal-content -->
+                </div>
+                <button class="btn btn-primary" type='submit'>
+                    Be the Driver
+                </button>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </form>
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 {% endblock %}
@@ -185,51 +185,85 @@
 </script>
 {% endraw %}
 <script type="text/javascript">
-var comment = new Comment({
-    type: 'ride',
-    id: {{ride.key().id()}},
-    container: '[data-comment="container"]'
-});
-
-var orig_icon = {
-    url: '/static/carGreen.png',
-    anchor: new google.maps.Point(20, 20),
-    size: new google.maps.Size(30, 40)
-};
-var orig_latlng = new google.maps.LatLng({{ride.origin_lat}}, {{ride.origin_lng}});
-
-var dest_icon = {
-    url: '/static/carRed.png',
-    anchor: new google.maps.Point(20, 20),
-    size: new google.maps.Size(30, 40)
-};
-var dest_latlng = new google.maps.LatLng({{ride.dest_lat}}, {{ride.dest_lng}});
-
-var direction_render = new google.maps.DirectionsRenderer();
-var direction_service = new google.maps.DirectionsService();
-
-var map = new google.maps.Map(document.querySelector('#map_event'), {
-    draggableCursor: 'crosshair',
-    center: new google.maps.LatLng({{ride.origin_lat}}, {{ride.origin_lng}}),
-    mapTypeId: google.maps.MapTypeId.ROADMAP,
-    zoom: 7
-});
-direction_render.setMap(map);
-
-function calc_route () {
-    var request = {
-        origin: orig_latlng,
-        destination: dest_latlng,
-        travelMode: google.maps.TravelMode.DRIVING
-    };
-    direction_service.route(request, function (result, status) {
-        if (status == google.maps.DirectionsStatus.OK) {
-            direction_render.setDirections(result);
-        }
+    var comment = new Comment({
+        type: 'ride',
+        id: {{ride.key().id()}},
+        container: '[data-comment="container"]'
     });
-};
-calc_route();
 
+    /* Context Map */
+    // var orig_icon = {
+    //     url: '/static/carGreen.png',
+    //     anchor: new google.maps.Point(20, 20),
+    //     size: new google.maps.Size(30, 40)
+    // };
+    var orig_latlng = new google.maps.LatLng({{ride.origin_lat}}, {{ride.origin_lng}});
+
+    // var dest_icon = {
+    //     url: '/static/carRed.png',
+    //     anchor: new google.maps.Point(20, 20),
+    //     size: new google.maps.Size(30, 40)
+    // };
+    var dest_latlng = new google.maps.LatLng({{ride.dest_lat}}, {{ride.dest_lng}});
+
+    var direction_render = new google.maps.DirectionsRenderer();
+    var direction_service = new google.maps.DirectionsService();
+
+    var map = new google.maps.Map(document.querySelector('#map_event'), {
+        draggableCursor: 'crosshair',
+        center: new google.maps.LatLng({{ride.origin_lat}}, {{ride.origin_lng}}),
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        zoom: 7
+    });
+    direction_render.setMap(map);
+
+    function calc_route () {
+        var request = {
+            origin: orig_latlng,
+            destination: dest_latlng,
+            travelMode: google.maps.TravelMode.DRIVING
+        };
+        direction_service.route(request, function (result, status) {
+            if (status == google.maps.DirectionsStatus.OK) {
+                direction_render.setDirections(result);
+            }
+        });
+    };
+    calc_route();
+    /* End */
+
+    var form = document.querySelector('[data-send="driver"]');
+
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        var form = e.target;
+
+        var data = {};
+        data.max_passengers = form.max_passengers.value;
+        data.time = form.time.value;
+        data.details = form.details.value;
+
+        var push = $.ajax({
+            type: 'POST',
+            url: '/ride/{{ride.key().id()}}/driver',
+            dataType: 'json',
+            contentType: 'application/json; charset=UTF-8',
+            data: JSON.stringify(data)
+        });
+
+        push.done(function (data) {
+            document.location.reload(true);
+        });
+
+        push.fail(function (data, status) {
+            notify({
+                type: 'danger',
+                strong: 'Oops',
+                message: 'Refresh and try again'
+            });
+        });
+    });
 
 </script>
 {% endblock %}

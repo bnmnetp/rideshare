@@ -35,12 +35,11 @@ var get_geolocation = function (e) {
 };
 
 var display_geolocation = function () {
-	var geo_btns = document.querySelectorAll('.geo_location');
-	for (var i = 0; i < geo_btns.length; i++) {
-		var btn = geo_btns[i];
-		btn.classList.remove('hidden');
-		btn.addEventListener('click', get_geolocation);
-	}
+	var geo_container = document.querySelector('[data-geolocation="container"]');
+	geo_container.classList.remove('hidden');
+
+	var geo_btn = document.querySelector('[data-geolocation="container"]');
+	geo_btn.addEventListener('click', get_geolocation);
 };
 
 if ('geolocation' in navigator) {
@@ -127,7 +126,7 @@ var Forms = augment(Object, function () {
 		});
 
 		push.done(function (data) {
-			flow.change_slide('select_location');
+			flow.view_slide('select_location');
 			notify({
 				type: 'success',
 				strong: 'You created a new ride!',
@@ -169,7 +168,7 @@ var Forms = augment(Object, function () {
 		});
 
 		push.done(function (data) {
-			flow.change_slide('select_location');
+			flow.view_slide('select_location');
 			notify({
 				type: 'success',
 				strong: 'You asked for a ride!',
@@ -210,7 +209,7 @@ var Forms = augment(Object, function () {
 		});
 
 		push.done(function (data) {
-			flow.change_slide('select_location');
+			flow.view_slide('select_location');
 			notify({
 				type: 'success',
 				strong: 'Event created!',
@@ -244,7 +243,7 @@ var Forms = augment(Object, function () {
 		});
 
 		push.done(function (data) {
-			flow.change_slide('select_location');
+			flow.view_slide('select_location');
 			notify({
 				type: 'success',
 				strong: 'You joined the ride!',
@@ -520,6 +519,7 @@ var Map = augment(Object, function () {
 	};
 
 	this.geocode_latlng = function (deta) {
+		console.log('Activated')
 		var latlng = new google.maps.LatLng(deta.lat, deta.lng);
 		this.geocoder.geocode({
 			latLng: latlng
@@ -590,17 +590,7 @@ var Map = augment(Object, function () {
 		}
 		if (to == 'select_orig') {
 			this.create_new_marker = true;
-			var container = document.querySelector('[data-route="select_orig"]');
-			var source = document.querySelector('[data-template="select_orig"]').innerHTML;
-			var template = Handlebars.compile(source);
 
-			var html = template({
-				type: 'starting'
-			});
-			while (container.firstChild) {
-				container.removeChild(container.firstChild)
-			}
-			container.insertAdjacentHTML('beforeend', html);
 		}
 		if (to == 'location_dest') {
 			this.create_new_marker = true;
