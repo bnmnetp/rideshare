@@ -25,8 +25,8 @@
             Key
         </div>
         <div class="key">
-            <img src="/static/carRed.png" />
-            Destination
+            <img src="/static/person.png" />
+            Event
         </div>
         <div class="key">
             <img src="/static/start.png" />
@@ -34,7 +34,7 @@
         </div>
         <div class="key">
             <img src="/static/end.png" />
-            Event
+            Destination
         </div>
         <div class="btn-group pull-right">
             <button class='btn btn-primary' data-reset>
@@ -197,6 +197,14 @@
                 <label>Additional Details</label>
                 <input class="form-control" type="text" placeholder="Details" name='details'>
             </div>
+            <div class="form-group">
+                <label>Does this event recur?</label>
+                <select name="recurring" class="form-control">
+                    <option value="false">Never</option>
+                    <option value="daily">Daily</option>
+                    <option value="weekly">Weekly</option>
+                </select>
+            </div>
             <button class="btn btn-primary"  type='submit'>
                 Create Ride
             </button>
@@ -240,9 +248,9 @@
     <a class='btn btn-primary' href='/event/{{id}}'>
         View Event
     </a>
-    <button class='btn btn-primary' data-next='ride_to_event' data-id='{{id}}'>
+    <a href='/event/{{id}}' class='btn btn-primary'>
         Create a ride to this event.
-    </button>
+    </a>
     <p class="help-block">View the event to look for rides / set up rides.</p>
 </script>
 

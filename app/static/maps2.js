@@ -116,6 +116,7 @@ var Forms = augment(Object, function () {
 		m.details = form.details.value;
 		m.circle = getParameterByName('circle');
 		m.driver = true;
+		m.recurring = form.recurring.value;
 
 		var push = $.ajax({
 			type: 'POST',
@@ -126,7 +127,7 @@ var Forms = augment(Object, function () {
 		});
 
 		push.done(function (data) {
-			flow.view_slide('select_location');
+			flow.view_slide('path');
 			notify({
 				type: 'success',
 				strong: 'You created a new ride!',
@@ -168,7 +169,7 @@ var Forms = augment(Object, function () {
 		});
 
 		push.done(function (data) {
-			flow.view_slide('select_location');
+			flow.view_slide('path');
 			notify({
 				type: 'success',
 				strong: 'You asked for a ride!',
@@ -209,7 +210,7 @@ var Forms = augment(Object, function () {
 		});
 
 		push.done(function (data) {
-			flow.view_slide('select_location');
+			flow.view_slide('path');
 			notify({
 				type: 'success',
 				strong: 'Event created!',
@@ -243,7 +244,7 @@ var Forms = augment(Object, function () {
 		});
 
 		push.done(function (data) {
-			flow.view_slide('select_location');
+			flow.view_slide('path');
 			notify({
 				type: 'success',
 				strong: 'You joined the ride!',

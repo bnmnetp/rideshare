@@ -3,7 +3,6 @@ from app.model import *
 from google.appengine.ext import db
 import datetime
 from datetime import date
-import datetime
 import json
 from app.base_handler import BaseHandler
 from app.common.notification import push_noti
@@ -111,7 +110,6 @@ class FilterRides(BaseHandler):
             results.append(d)
 
         self.response.write(json.dumps(results))
-
 
 class EditRide(BaseHandler):
     def get(self, ride_id):
@@ -353,7 +351,6 @@ class RideJoinHandler(BaseHandler):
                 ride.driver = user.key()
                 # Replace
                 ride.driver_name = user.name
-                ride.contact = user.email
 
             ride.put()
 
@@ -408,8 +405,10 @@ class NewRideHandler(BaseHandler):
             ride.passengers_max = int(data['max_passengers'])
             ride.driver = user.key()
             ride.has_driver = data['driver']
-            ride.driver_name = "Replace"
-            ride.contact = "Replace"
+            if ride.recurring == 'false' or ride.recurring == 'none':
+                ride.recurring = None
+            else:
+                ride.recurring = data['recurring']
         else:
             ride.passengers.append(user.key())
 
