@@ -150,6 +150,7 @@ class DetailHandler(BaseHandler):
         self.auth()
         user = self.current_user()
 
+        user.name = data['name']
         user.email = data['email']
         user.phone = data['phone']
 
