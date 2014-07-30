@@ -261,24 +261,6 @@ class GetRideHandler(BaseHandler):
                         'message': 'You are no longer the driver.'
                     }
                     self.response.write(json.dumps(resp))
-            if data['action'] == 'join':
-                if not ride.has_driver:
-                    for passenger in ride.passengers:
-                        push_noti('driver_join', passenger, ride.key())
-                    ride.has_driver = True
-                    ride.driver = user.key()
-                    resp = {
-                        'strong': 'Joined the ride!',
-                        'message': 'You are the driver of this ride.'
-                    }
-                    self.response.write(json.dumps(resp))
-                else:
-                    self.response.set_status(500)
-                    resp = {
-                        'strong': 'This ride already has a driver',
-                        'message': 'Thanks for your offer.'
-                    }
-                    self.response.write(json.dumps(resp))
             ride.put()
 
 
@@ -353,7 +335,6 @@ class NewRideHandler(BaseHandler):
         ride.origin_add = data['orig']['address']
         ride.origin_lat = data['orig']['lat']
         ride.origin_lng = data['orig']['lng']
-
         ride.date = d_obj
         ride.time = data['time']
         ride.passengers = []
