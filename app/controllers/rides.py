@@ -7,7 +7,7 @@ import json
 from app.base_handler import BaseHandler
 from app.common.notification import push_noti
 from app.common.voluptuous import *
-import urllib2
+import urllib, urllib2
 
 class RideHandler(BaseHandler):
     def get(self):
@@ -378,15 +378,23 @@ class EventDriver(BaseHandler):
 
         ride = Ride()
 
-        gmaps = GoogleMaps("AIzaSyB15X6ti6tDQUQKjwPCI2zi3XFfxZW3MGM")
-        lat, lng = gmaps.address_to_latlng(data['address'])
+        address = urllib.quote(data['address'])
+        url = "http://maps.googleapis.com/maps/api/geocode/json?address=%s" % address
+
+        response = urllib2.urlopen(url)
+        json_geocode = json.loads(response.read())
+
+        if not json_geocode['status'] == 'OK':
+            return self.json_resp(500, {
+                'message': 'Address not found'
+            })
 
         ride.dest_add = event.address
         ride.dest_lat = event.lat
         ride.dest_lng = event.lng
-        ride.origin_add = data['address']
-        ride.origin_lat = lat
-        ride.origin_lng = lng
+        ride.origin_add = json_geocode['results'][0]['formatted_address']
+        ride.origin_lat = json_geocode['results'][0]['geometry']['location']['lat']
+        ride.origin_lng = json_geocode['results'][0]['geometry']['location']['lng']
         ride.passengers_max = int(data['max_passengers'])
         ride.driver = user.key()
         ride.time = data['time']
@@ -416,18 +424,25 @@ class EventPass(BaseHandler):
 
         event = Event.get_by_id(int(event_id))
 
-        gmaps = GoogleMaps("AIzaSyB15X6ti6tDQUQKjwPCI2zi3XFfxZW3MGM")
-        results = gmaps.geocode(data['address'])
-        print results
+        address = urllib.quote(data['address'])
+        url = "http://maps.googleapis.com/maps/api/geocode/json?address=%s" % address
+
+        response = urllib2.urlopen(url)
+        json_geocode = json.loads(response.read())
+
+        if not json_geocode['status'] == 'OK':
+            return self.json_resp(500, {
+                'message': 'Address not found'
+            })
 
         ride = Ride()
 
         ride.dest_add = event.address
         ride.dest_lat = event.lat
         ride.dest_lng = event.lng
-        ride.origin_add = ['address']
-        ride.origin_lat = lat
-        ride.origin_lng = lng
+        ride.origin_add = json_geocode['results'][0]['formatted_address']
+        ride.origin_lat = json_geocode['results'][0]['geometry']['location']['lat']
+        ride.origin_lng = json_geocode['results'][0]['geometry']['location']['lng']
         ride.time = data['time']
         ride.event = event.key()
 

@@ -22,7 +22,7 @@ class GetEventHandler(BaseHandler):
         for ride in rides:
             ride.orig = split_address(ride.origin_add)
             ride.dest = split_address(ride.dest_add)
-            if user.key() == ride.driver.key():
+            if ride.driver and user.key() == ride.driver.key():
                 ride.is_driver = True
             else:
                 ride.is_driver = False
