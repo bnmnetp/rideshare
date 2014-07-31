@@ -7,6 +7,7 @@ import json
 from app.base_handler import BaseHandler
 from app.common.notification import push_noti
 from app.common.voluptuous import *
+from app.common.googlemaps import GoogleMaps
 
 class RideHandler(BaseHandler):
     def get(self):
@@ -367,13 +368,79 @@ class NewRideHandler(BaseHandler):
 
 class EventDriver(BaseHandler):
     def post(self, event_id):
+        self.auth()
+        json_str = self.request.body
+        data = json.loads(json_str)
+
+        user = self.current_user()
+
+        event = Event.get_by_id(int(event_id))
+
+        ride = Ride()
+
+        gmaps = GoogleMaps("AIzaSyB15X6ti6tDQUQKjwPCI2zi3XFfxZW3MGM")
+        lat, lng = gmaps.address_to_latlng(data['address'])
+
+        ride.dest_add = event.address
+        ride.dest_lat = event.lat
+        ride.dest_lng = event.lng
+        ride.origin_add = data['address']
+        ride.origin_lat = lat
+        ride.origin_lng = lng
+        ride.passengers_max = int(data['max_passengers'])
+        ride.driver = user.key()
+        ride.time = data['time']
+        ride.passengers = []
+        ride.event = event.key()
+
+        # Creates date object from Month/Day/Year format
+        d_arr = data['date'].split('/')
+        d_obj = datetime.date(int(d_arr[2]), int(d_arr[0]), int(d_arr[1]))
+        ride.date = d_obj
+
+        ride.put()
+
+        response = {
+            'message': 'Ride added!',
+            'id': ride.key().id()
+        }
+        self.response.write(json.dumps(response))
 
 class EventPass(BaseHandler):
     def post(self, event_id):
+        self.auth()
+        json_str = self.request.body
+        data = json.loads(json_str)
 
-        if 'event' in data:
-            event = Event.get_by_id(int(data['event']))
-            ride.dest_add = event.address
-            ride.dest_lat = event.lat
-            ride.dest_lng = event.lng
-            ride.event = event.key()
+        user = self.current_user()
+
+        event = Event.get_by_id(int(event_id))
+
+        gmaps = GoogleMaps("AIzaSyB15X6ti6tDQUQKjwPCI2zi3XFfxZW3MGM")
+        lat, lng = gmaps.address_to_latlng(data['address'])
+
+        ride = Ride()
+
+        ride.dest_add = event.address
+        ride.dest_lat = event.lat
+        ride.dest_lng = event.lng
+        ride.origin_add = ['address']
+        ride.origin_lat = lat
+        ride.origin_lng = lng
+        ride.time = data['time']
+        ride.event = event.key()
+
+        ride.passengers.append(user.key())
+
+        # Creates date object from Month/Day/Year format
+        d_arr = data['date'].split('/')
+        d_obj = datetime.date(int(d_arr[2]), int(d_arr[0]), int(d_arr[1]))
+        ride.date = d_obj
+
+        ride.put()
+
+        response = {
+            'message': 'Ride added!',
+            'id': ride.key().id()
+        }
+        self.response.write(json.dumps(response))

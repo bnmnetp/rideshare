@@ -3,9 +3,11 @@
 {% block title %}Event{% endblock %}
 
 {% block head %}
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/3.0.0/css/bootstrap-datetimepicker.min.css">
 {% endblock %}
 
 {% block main %}
+<div data-notify="container"></div>
 <div class="row">
 	<div class="col-md-6">
 		<div class="panel panel-main">
@@ -88,15 +90,25 @@
                 <div class="modal-body">
                 	<div class="form-group">
                 		<label>Starting address</label>
-                		<input class="form-control" type="text" placeholder="address" name='Address'>
+                		<input class="form-control" type="text" placeholder="Address" name='address'>
                 	</div>
 		            <div class="form-group">
 		                <label>Date</label>
-		                <input class="form-control date-select" type="text" placeholder="Date" name='date'>
+		                <div class='input-group date' data-date data-date-format="YYYY/MM/DD">
+							<input class="form-control" type="text" placeholder="Date" name='date'>
+							<span class="input-group-addon">
+								<i class="fa fa-time"></i>
+                    		</span>
+		                </div>
 		            </div>
 		            <div class="form-group">
 		                <label>Time</label>
-		                <input class="form-control" type="text" placeholder="Time" name='time'>
+		                <div class="input-group date" data-time>
+		                	<input class="form-control" type="text" placeholder="Time" name='time'>
+		                	<span class="input-group-addon">
+		                		<i class="fa fa-calendar"></i>
+                    		</span>
+		                </div>
 		            </div>
 		            <div class="form-group">
 		                <label>Additional Details</label>
@@ -125,7 +137,7 @@
                 <div class="modal-body">
                 	<div class="form-group">
                 		<label>Starting address</label>
-                		<input class="form-control" type="text" placeholder="address" name='Address'>
+                		<input class="form-control" type="text" placeholder="Address" name='address'>
                 	</div>
 		            <div class="form-group">
 		                <label>Max Passengers</label>
@@ -142,11 +154,21 @@
 		            </div>
 		            <div class="form-group">
 		                <label>Date</label>
-		                <input class="form-control date-select" type="text" placeholder="Date" name='date'>
+		                <div class='input-group date' data-date data-date-format="YYYY/MM/DD">
+							<input class="form-control" type="text" placeholder="Date" name='date'>
+							<span class="input-group-addon">
+								<i class="fa fa-time"></i>
+                    		</span>
+		                </div>
 		            </div>
 		            <div class="form-group">
 		                <label>Time</label>
-		                <input class="form-control" type="text" placeholder="Time" name='time'>
+		                <div class="input-group date" data-time>
+		                	<input class="form-control" type="text" placeholder="Time" name='time'>
+		                	<span class="input-group-addon">
+		                		<i class="fa fa-calendar"></i>
+                    		</span>
+		                </div>
 		            </div>
 		            <div class="form-group">
 		                <label>Additional Details</label>
@@ -182,10 +204,10 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB15X6ti6tDQUQKjwPCI2zi3XFfxZW3MGM&sensor=false" type="text/javascript"></script>
-<script src="/static/augment.js" type="text/javascript"></script>
-<script type="text/javascript" src='/static/comment.js'></script>
-<script src='//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.0/js/bootstrap.js' type="text/javascript"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB15X6ti6tDQUQKjwPCI2zi3XFfxZW3MGM&sensor=false"></script>
+<script src='/static/comment.js'></script>
+<script src='//cdnjs.cloudflare.com/ajax/libs/moment.js/2.7.0/moment.min.js'></script>
+<script src='//cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/3.0.0/js/bootstrap-datetimepicker.min.js'></script>
 {% include 'comment.html' %}
 {% raw %}
 <script data-notify="template" type='text/x-handlebars-template'>
@@ -196,54 +218,74 @@
 </script>
 {% endraw %}
 <script type="text/javascript">
-var comment = new Comment({
-    type: 'event',
-    id: {{event.key().id()}},
-    container: '[data-comment="container"]'
-});
 
-/* Map */
-var position = new google.maps.LatLng({{event.lat}}, {{event.lng}});
+    $('[data-date]').datetimepicker({
+        icons: {
+            date: "fa fa-calendar"
+        },
+        pickTime: false
+    });
 
-var icon = {
-	url: '/static/person.png',
-	anchor: new google.maps.Point(20, 20),
-	size: new google.maps.Size(30, 40)
-};
+    $('[data-time]').datetimepicker({
+        icons: {
+            time: "fa fa-clock-o",
+            date: "fa fa-calendar",
+            up: "fa fa-arrow-up",
+            down: "fa fa-arrow-down"
+        },
+        pickDate: false
+    });
 
-var map = new google.maps.Map(document.querySelector('#map_event'), {
-    draggableCursor: 'crosshair',
-    center: position,
-    mapTypeId: google.maps.MapTypeId.ROADMAP,
-    zoom: 10
-});
+	var comment = new Comment({
+	    type: 'event',
+	    id: {{event.key().id()}},
+	    container: '[data-comment="container"]'
+	});
 
-var event_marker = new google.maps.Marker({
-	position: position,
-	map: map,
-	icon: icon
-});
+	/* Map */
+	var position = new google.maps.LatLng({{event.lat}}, {{event.lng}});
 
-var info_window = new google.maps.InfoWindow({
-	content: 'Event Location'
-});
+	var icon = {
+		url: '/static/person.png',
+		anchor: new google.maps.Point(20, 20),
+		size: new google.maps.Size(30, 40)
+	};
 
-google.maps.event.addListener(event_marker, 'click', function () {
-	info_window.open(map, event_marker);
-});
-/* End */
+	var map = new google.maps.Map(document.querySelector('#map_event'), {
+	    draggableCursor: 'crosshair',
+	    center: position,
+	    mapTypeId: google.maps.MapTypeId.ROADMAP,
+	    zoom: 10
+	});
+
+	var event_marker = new google.maps.Marker({
+		position: position,
+		map: map,
+		icon: icon
+	});
+
+	var info_window = new google.maps.InfoWindow({
+		content: 'Event Location'
+	});
+
+	google.maps.event.addListener(event_marker, 'click', function () {
+		info_window.open(map, event_marker);
+	});
+	/* End */
 
     var form_driver = document.querySelector('[data-send="driver"]');
 
-    form.addEventListener('submit', function (e) {
+    form_driver.addEventListener('submit', function (e) {
         e.preventDefault();
 
         var form = e.target;
 
         var data = {};
         data.max_passengers = form.max_passengers.value;
+        data.date = form.date.value;
         data.time = form.time.value;
         data.details = form.details.value;
+        data.address = form.address.value;
 
         var push = $.ajax({
             type: 'POST',
@@ -268,15 +310,16 @@ google.maps.event.addListener(event_marker, 'click', function () {
 
     var form_pass = document.querySelector('[data-send="pass"]');
 
-    form.addEventListener('submit', function (e) {
+    form_pass.addEventListener('submit', function (e) {
         e.preventDefault();
 
         var form = e.target;
 
         var data = {};
-        data.max_passengers = form.max_passengers.value;
         data.time = form.time.value;
+        data.date = form.date.value;
         data.details = form.details.value;
+        data.address = form.address.value;
 
         var push = $.ajax({
             type: 'POST',
@@ -298,6 +341,5 @@ google.maps.event.addListener(event_marker, 'click', function () {
             });
         });
     });
-
 </script>
 {% endblock %}

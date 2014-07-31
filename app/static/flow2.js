@@ -50,7 +50,7 @@ var Flow = augment(Object, function () {
 		this.change_slide(opts);
 	}
 
-	this.change_slide = function (opts = {}) {
+	this.change_slide = function (opts) {
 		var route;
 		if ('next' in opts) {
 			route = opts.next;
