@@ -7,7 +7,7 @@ import json
 from app.base_handler import BaseHandler
 from app.common.notification import push_noti
 from app.common.voluptuous import *
-from app.common.googlemaps import GoogleMaps
+import urllib2
 
 class RideHandler(BaseHandler):
     def get(self):
@@ -417,7 +417,8 @@ class EventPass(BaseHandler):
         event = Event.get_by_id(int(event_id))
 
         gmaps = GoogleMaps("AIzaSyB15X6ti6tDQUQKjwPCI2zi3XFfxZW3MGM")
-        lat, lng = gmaps.address_to_latlng(data['address'])
+        results = gmaps.geocode(data['address'])
+        print results
 
         ride = Ride()
 

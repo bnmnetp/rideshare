@@ -383,7 +383,7 @@ template {
 }
 
 /* Switch */
-.switch {
+.toggle {
     display: inline-block;
     float: right;
     width: 80px;
@@ -399,10 +399,10 @@ template {
     margin-right: 20px;
 }
 
-.switch .true,
-.switch .true_padding,
-.switch .false,
-.switch .false_padding {
+.toggle .true,
+.toggle .true_padding,
+.toggle .false,
+.toggle .false_padding {
     cursor: pointer;
     line-height: 30px;
     color: #FFFFFF;
@@ -413,7 +413,7 @@ template {
     transition-delay: .1s;
 }
 
-.switch .true, .switch .false {
+.toggle .true, .toggle .false {
     font-size: 10px;
     text-align: center;
     background: rgba(43,108,179,1);
@@ -426,29 +426,29 @@ template {
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2b6cb3', endColorstr='#044b8f', GradientType=0 );
 }
 
-.switch[data-switch='true'] .true,
-.switch[data-switch='false'] .false {
+.toggle[data-toggle='true'] .true,
+.toggle[data-toggle='false'] .false {
     left: 40px;
 }
 
-.switch[data-switch='true'] .true_padding,
-.switch[data-switch='false'] .false {
+.toggle[data-toggle='true'] .true_padding,
+.toggle[data-toggle='false'] .false {
     left: 0px;
 }
 
-.switch[data-switch='true'] .false {
+.toggle[data-toggle='true'] .false {
     left: -80px;
 }
 
-.switch[data-switch='true'] .false {
+.toggle[data-toggle='true'] .false {
     left: -40px;
 }
 
-.switch[data-switch='false'] .true {
+.toggle[data-toggle='false'] .true {
     left: 120px;
 }
 
-.switch[data-switch='false'] .true_padding {
+.toggle[data-toggle='false'] .true_padding {
     left: 80px;
 }
 /* End */
