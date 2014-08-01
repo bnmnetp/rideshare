@@ -177,10 +177,7 @@ app = webapp2.WSGIApplication([
     ("/newride", NewRideHandler),
     ('/home', HomeHandler),
     ('/filter', FilterRides),
-
-    ('/event/(\d+)/driver', EventDriver),
-    ('/event/(\d+)/pass', EventPass),
-    ('/event/(\d+)/(\d+)', RideEvent),
+    ('/event/(\d+)/(\w+)', RideEvent),
     # end rides
 
     # controllers/users.py

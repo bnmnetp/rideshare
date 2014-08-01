@@ -401,7 +401,8 @@ class RideEvent(BaseHandler):
         json_str = self.request.body
         data = json.loads(json_str)
 
-        if not type == 'passenger' or not type == 'driver':
+        if not (type == 'passenger' or type == 'driver'):
+            print type
             return self.json_resp(500, {
                 'message': 'Invalid type'
             })
@@ -411,6 +412,7 @@ class RideEvent(BaseHandler):
         ride_validator = Schema({
             'passengers_max': Coerce(int),
             Required('date'): create_date(),
+            Required('address'): unicode,
             'time': unicode,
             'details': unicode,
             'driver': bool,
