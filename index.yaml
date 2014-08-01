@@ -18,6 +18,12 @@ indexes:
 
 - kind: Comment
   properties:
+  - name: profile
+  - name: date
+    direction: desc
+
+- kind: Comment
+  properties:
   - name: ride
   - name: date
     direction: desc

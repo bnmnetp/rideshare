@@ -40,36 +40,6 @@ class GetEventHandler(BaseHandler):
             'user': user
         })
 
-class JoinEvent(BaseHandler):
-    def post(self, event_id):
-        self.auth()
-
-        user = self.current_user()
-
-        event = Event.get_by_id(int(circle_id))
-
-        if not circle:
-            self.redirect('/')
-            return None
-
-        json_str = self.request.body
-        data = json.loads(json_str)
-
-        if data['type'] == 'join':
-            message = 'Joined the event.'
-            if user.key() not in event.attending:
-                event.attending.append(user.key())
-        elif data['type'] == 'leave':
-            message = 'Left the event.'
-            if user.key() in event.attending:
-                event.attending.remove(user.key())
-
-        event.put()
-
-        self.response.write(json.dumps({
-            'message': message
-        }))
-
 class EventHandler(BaseHandler):
     def get(self):
         self.auth()
