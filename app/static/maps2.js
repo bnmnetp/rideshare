@@ -24,7 +24,6 @@ if (!Array.prototype.contains) {
 }
 
 var get_geolocation = function (e) {
-	console.log('Geo Called')
 	var target = e.target;
 	navigator.geolocation.getCurrentPosition(function (pos) {
 		map.geocode_latlng({
@@ -95,7 +94,6 @@ var Forms = augment(Object, function () {
 
 	this.controller_ride = function (e) {
 		e.preventDefault();
-		console.log(e);
 
 		var form  = e.target;
 		var m = {};
@@ -139,7 +137,6 @@ var Forms = augment(Object, function () {
 
 	this.controller_pass = function (e) {
 		e.preventDefault();
-		console.log(e);
 
 		var form  = e.target;
 		var m = {};
@@ -373,15 +370,6 @@ var paths = {
 		'select_dest',
 		'safety',
 		'driver_details'
-	],
-	ride_to_event: [
-		'select_orig',
-		'passenger_details'
-	],
-	trip_to_event: [
-		'select_orig',
-		'safety',
-		'driver_details'
 	]
 };
 
@@ -399,11 +387,6 @@ var Map = augment(Object, function () {
 		this.geocoder;
 
 		this.state = '';
-
-		this.last = false;
-		this.indicator = '';
-		this.new_ride = {};
-		this.new_event = {};
 
 		this.markers = [];
 
@@ -437,8 +420,6 @@ var Map = augment(Object, function () {
 		}
 
 		this.create_new_marker = true;
-		
-		this.indicator = '';
 
 		for (var i = 0; i < this.markers.length; i++) {
 			this.markers[i].setMap(null);
@@ -479,7 +460,6 @@ var Map = augment(Object, function () {
 	};
 
 	this.geocode_latlng = function (deta) {
-		console.log('Activated')
 		var latlng = new google.maps.LatLng(deta.lat, deta.lng);
 		this.geocoder.geocode({
 			latLng: latlng
@@ -506,12 +486,10 @@ var Map = augment(Object, function () {
 	this.disp_address = function (deta) {
 		console.log(this.state);
 		if (this.state == 'select_orig') {
-			if (flow.history.contains('create_ride')) {
+			if (flow.history.contains('new_ride') || flow.history.contains('new_trip')) {
 				this.set_window(deta, 'success');
-			} else if (flow.history.contains('create_event')) {
+			} else if (flow.history.contains('new_event')) {
 				this.set_window(deta, 'person');
-			} else if (flow.history.contains('ride_to_event')) {
-				this.set_window(deta, 'error');
 			}
 			this.start = {
 				lat: deta.lat,
@@ -542,17 +520,13 @@ var Map = augment(Object, function () {
 	};
 
 	this.special_action = function (from, to, opts) {
-		if (to == 'select_location') {
+		if (to == 'path') {
 			this.create_new_marker = false;
-		}
-		if (to == 'ride_to_event') {
-			this.new_ride.event = btn.dataset.id;
 		}
 		if (to == 'select_orig') {
 			this.create_new_marker = true;
-
 		}
-		if (to == 'location_dest') {
+		if (to == 'select_dest') {
 			this.create_new_marker = true;
 		}
 	};
