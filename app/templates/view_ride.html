@@ -46,7 +46,7 @@
                         </li>
                     {% endif %}
                     <li>
-                        <b>Other passengers:</b>
+                        <b>Passengers:</b>
                         {% if passengers %}
                             {% for p in passengers %}
                                 <div class='chip'>
@@ -230,7 +230,7 @@
         var form = e.target;
 
         var data = {};
-        data.max_passengers = form.max_passengers.value;
+        data.passengers_max = form.max_passengers.value;
         data.time = form.time.value;
         data.details = form.details.value;
 

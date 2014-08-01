@@ -6,6 +6,7 @@ import datetime
 from datetime import date
 import json
 from app.base_handler import BaseHandler
+from app.common.voluptuous import *
 
 class GetEventHandler(BaseHandler):
     def get(self, id):
@@ -83,25 +84,23 @@ class NewEventHandler(BaseHandler):
 
         event_validator = Schema({
             Required('name'): unicode,
-            Required('lat'): unicode,
-            Required('lng'): unicode,
+            Required('lat'): float,
+            Required('lng'): float,
             Required('address'): unicode,
-            Required('date'): Date(),
+            Required('date'): create_date(),
             'time': unicode,
-            'details': unicode
+            'details': unicode,
+            'circle': unicode
         })
 
         try:
             data = event_validator(data)
         except MultipleInvalid as e:
+            print str(e)
             return self.json_resp(500, {
                 'error': True,
                 'message': 'Invalid data'
             })
-
-        # Creates date object from Month/Day/Year format
-        # d_arr = data['date'].split('/')
-        # d_obj = datetime.date(int(d_arr[2]), int(d_arr[0]), int(d_arr[1]))
 
         # Refer to model.py for structure of data
         # class Event
@@ -109,7 +108,7 @@ class NewEventHandler(BaseHandler):
         event.lat = data['lat']
         event.lng = data['lng']
         event.address = data['address']
-        event.date = d_obj
+        event.date = data['date']
         event.time = data['time']
         event.details = data['details']
         event.user = user.key()

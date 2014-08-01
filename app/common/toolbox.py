@@ -10,7 +10,7 @@ env = jinja2.Environment(
     autoescape=True
 )
 
-def doRender(handler, name = 'map.html', value = {}):
+def doRender(handler, name = 'home.html', value = {}):
 	value['community'] = db.Query(Community).get()
 
 	b = BaseHandler()
@@ -34,5 +34,6 @@ def grab_json(obj, prop):
 			resp[p] = str(getattr(obj, p))
 	return resp
 
+# returns date obj from format
 def create_date(fmt='%m/%d/%Y'):
-	return lambda v: datetime.strptime(v, fmt)
+	return lambda v: datetime.strptime(v, fmt).date()

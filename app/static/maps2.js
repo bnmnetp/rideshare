@@ -103,7 +103,7 @@ var Forms = augment(Object, function () {
 		m.orig = map.start;
 		m.dest = map.end;
 
-		m.max_passengers = form.max_passengers.value;
+		m.passengers_max = form.max_passengers.value;
 		m.date = form.date.value;
 		m.time = form.time.value;
 		m.details = form.details.value;

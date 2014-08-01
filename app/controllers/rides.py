@@ -1,4 +1,4 @@
-from app.common.toolbox import doRender, split_address, grab_json
+from app.common.toolbox import doRender, split_address, grab_json, create_date
 from app.model import *
 from google.appengine.ext import db
 import datetime
@@ -151,7 +151,7 @@ class EditRide(BaseHandler):
 
         ride_validator = Schema({
             Required('passengers_max', default=1): Coerce(int),
-            Required('date'): unicode,
+            Required('date'): create_date(),
             Required('time'): unicode,
             'details': unicode
         })
@@ -160,11 +160,12 @@ class EditRide(BaseHandler):
             data = ride_validator(data)
         except MultipleInvalid as e:
             return self.json_resp(500, {
-                'error': 'Invalid data'
+                'error': True,
+                'message': 'Invalid data'
             })
 
         ride.passengers_max = data['passengers_max']
-        # ride.date = data['date'].date
+        ride.date = data['date']
         ride.time = data['time']
         ride.details = data['details']
 
@@ -177,9 +178,6 @@ class EditRide(BaseHandler):
             'message': 'Edited.'
         }))
 
-    def Date(self, fmt='%Y-%m-%d'):
-        return lambda v: datetime.strptime(v, fmt)
-
 class JoinDriver(BaseHandler):
     def post(self, ride_id):
         self.auth()
@@ -188,10 +186,25 @@ class JoinDriver(BaseHandler):
 
         user = self.current_user()
 
+        ride_validator = Schema({
+            Required('passengers_max', default=1): Coerce(int),
+            Required('date'): create_date(),
+            'time': unicode,
+            'details': unicode
+        })
+
+        try:
+            data = ride_validator(data)
+        except MultipleInvalid as e:
+            print str(e)
+            return self.json_resp(500, {
+                'error': True,
+                'message': 'Invalid data'
+            })
+
         ride = Ride.get_by_id(int(ride_id))
 
-        ride.passengers_max = int(data['max_passengers'])
-        ride.has_driver = True
+        ride.passengers_max = int(data['passengers_max'])
         ride.driver = user.key()
         ride.time = data['time']
         ride.details = data['details']
@@ -249,10 +262,9 @@ class GetRideHandler(BaseHandler):
             ride.put()
         if data['type'] == 'driver':
             if data['action'] == 'leave':
-                if ride.has_driver:
+                if ride.driver:
                     for passenger in ride.passengers:
                         push_noti('driver_leave', passenger, ride.key())
-                    ride.has_driver = False
                     ride.driver = None
                     resp = {
                         'strong': 'Left the ride!',
@@ -278,7 +290,7 @@ class GetRideHandler(BaseHandler):
             passengers.append(User.get(passenger))
 
         # For view conditionals
-        if ride.has_driver:
+        if ride.driver:
             if ride.driver.key().id() == user.key().id():
                 ride.is_driver = True
                 ride.need_driver = False
@@ -300,8 +312,6 @@ class GetRideHandler(BaseHandler):
             ride.can_pass = False
         # End view conditionals
 
-        comments = Comment.all().filter('ride = ', ride.key()).order('-date')
-
         if ride:
             doRender(self, 'view_ride.html', {
                 'ride': ride,
@@ -319,9 +329,34 @@ class NewRideHandler(BaseHandler):
         json_str = self.request.body
         data = json.loads(json_str)
 
-        # Creates date object from Month/Day/Year format
-        d_arr = data['date'].split('/')
-        d_obj = datetime.date(int(d_arr[2]), int(d_arr[0]), int(d_arr[1]))
+        ride_validator = Schema({
+            'passengers_max': Coerce(int),
+            Required('date'): create_date(),
+            'time': unicode,
+            'details': unicode,
+            'driver': bool,
+            Required('dest'): {
+                'lat': float,
+                'lng': float,
+                'address': unicode
+            },
+            Required('orig'): {
+                'lat': float,
+                'lng': float,
+                'address': unicode
+            },
+            'recurring': unicode,
+            'circle': unicode
+        })
+
+        try:
+            data = ride_validator(data)
+        except MultipleInvalid as e:
+            print str(e)
+            return self.json_resp(500, {
+                'error': True,
+                'message': 'Invalid data'
+            })
 
         user = self.current_user()
 
@@ -333,14 +368,13 @@ class NewRideHandler(BaseHandler):
         ride.origin_add = data['orig']['address']
         ride.origin_lat = data['orig']['lat']
         ride.origin_lng = data['orig']['lng']
-        ride.date = d_obj
+        ride.date = data['date']
         ride.time = data['time']
         ride.passengers = []
 
         if data['driver'] == True:
-            ride.passengers_max = int(data['max_passengers'])
+            ride.passengers_max = int(data['passengers_max'])
             ride.driver = user.key()
-            ride.has_driver = data['driver']
             if ride.recurring == 'false' or ride.recurring == 'none':
                 ride.recurring = None
             else:
@@ -357,11 +391,9 @@ class NewRideHandler(BaseHandler):
 
         ride_key = ride.put()
 
-        # self.send_email()
-        response = {
+        return self.json_resp(200, {
             'message': 'Ride added!'
-        }
-        self.response.write(json.dumps(response))
+        })
 
 class EventDriver(BaseHandler):
     def post(self, event_id):
