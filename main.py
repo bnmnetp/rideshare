@@ -180,6 +180,7 @@ app = webapp2.WSGIApplication([
 
     ('/event/(\d+)/driver', EventDriver),
     ('/event/(\d+)/pass', EventPass),
+    ('/event/(\d+)/(\d+)', RideEvent),
     # end rides
 
     # controllers/users.py

@@ -278,7 +278,7 @@
         var form = e.target;
 
         var data = {};
-        data.max_passengers = form.max_passengers.value;
+        data.passengers_max = form.max_passengers.value;
         data.date = form.date.value;
         data.time = form.time.value;
         data.details = form.details.value;
@@ -320,7 +320,7 @@
 
         var push = $.ajax({
             type: 'POST',
-            url: '/event/{{event.key().id()}}/pass',
+            url: '/event/{{event.key().id()}}/passenger',
             dataType: 'json',
             contentType: 'application/json; charset=UTF-8',
             data: JSON.stringify(data)

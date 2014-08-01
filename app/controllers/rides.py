@@ -395,13 +395,36 @@ class NewRideHandler(BaseHandler):
             'message': 'Ride added!'
         })
 
-class EventDriver(BaseHandler):
-    def post(self, event_id):
+class RideEvent(BaseHandler):
+    def post(self, event_id, type):
         self.auth()
         json_str = self.request.body
         data = json.loads(json_str)
 
+        if not type == 'passenger' or not type == 'driver':
+            return self.json_resp(500, {
+                'message': 'Invalid type'
+            })
+
         user = self.current_user()
+
+        ride_validator = Schema({
+            'passengers_max': Coerce(int),
+            Required('date'): create_date(),
+            'time': unicode,
+            'details': unicode,
+            'driver': bool,
+            'circle': unicode
+        })
+
+        try:
+            data = ride_validator(data)
+        except MultipleInvalid as e:
+            print str(e)
+            return self.json_resp(500, {
+                'error': True,
+                'message': 'Invalid data'
+            })
 
         event = Event.get_by_id(int(event_id))
 
@@ -424,63 +447,17 @@ class EventDriver(BaseHandler):
         ride.origin_add = json_geocode['results'][0]['formatted_address']
         ride.origin_lat = json_geocode['results'][0]['geometry']['location']['lat']
         ride.origin_lng = json_geocode['results'][0]['geometry']['location']['lng']
-        ride.passengers_max = int(data['max_passengers'])
-        ride.driver = user.key()
+        ride.date = data['date']
         ride.time = data['time']
-        ride.passengers = []
+        
         ride.event = event.key()
 
-        # Creates date object from Month/Day/Year format
-        d_arr = data['date'].split('/')
-        d_obj = datetime.date(int(d_arr[2]), int(d_arr[0]), int(d_arr[1]))
-        ride.date = d_obj
-
-        ride.put()
-
-        response = {
-            'message': 'Ride added!',
-            'id': ride.key().id()
-        }
-        self.response.write(json.dumps(response))
-
-class EventPass(BaseHandler):
-    def post(self, event_id):
-        self.auth()
-        json_str = self.request.body
-        data = json.loads(json_str)
-
-        user = self.current_user()
-
-        event = Event.get_by_id(int(event_id))
-
-        address = urllib.quote(data['address'])
-        url = "http://maps.googleapis.com/maps/api/geocode/json?address=%s" % address
-
-        response = urllib2.urlopen(url)
-        json_geocode = json.loads(response.read())
-
-        if not json_geocode['status'] == 'OK':
-            return self.json_resp(500, {
-                'message': 'Address not found'
-            })
-
-        ride = Ride()
-
-        ride.dest_add = event.address
-        ride.dest_lat = event.lat
-        ride.dest_lng = event.lng
-        ride.origin_add = json_geocode['results'][0]['formatted_address']
-        ride.origin_lat = json_geocode['results'][0]['geometry']['location']['lat']
-        ride.origin_lng = json_geocode['results'][0]['geometry']['location']['lng']
-        ride.time = data['time']
-        ride.event = event.key()
-
-        ride.passengers.append(user.key())
-
-        # Creates date object from Month/Day/Year format
-        d_arr = data['date'].split('/')
-        d_obj = datetime.date(int(d_arr[2]), int(d_arr[0]), int(d_arr[1]))
-        ride.date = d_obj
+        if type == 'driver':
+            ride.passengers_max = int(data['max_passengers'])
+            ride.driver = user.key()
+            ride.passengers = []
+        elif type == 'passenger':
+            ride.passengers.append(user.key())
 
         ride.put()
 
