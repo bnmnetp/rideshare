@@ -159,12 +159,9 @@ class EditRide(BaseHandler):
         try:
             data = ride_validator(data)
         except MultipleInvalid as e:
-            print str(e)
-            self.response.set_status(500)
-            self.response.write(json.dumps({
+            return self.json_resp(500, {
                 'error': 'Invalid data'
-            }))
-            return None
+            })
 
         ride.passengers_max = data['passengers_max']
         # ride.date = data['date'].date

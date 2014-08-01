@@ -1,4 +1,4 @@
-from app.common.toolbox import doRender, split_address
+from app.common.toolbox import doRender, split_address, create_date
 from google.appengine.ext import db
 from app.model import *
 from google.appengine.api import mail
@@ -81,9 +81,27 @@ class NewEventHandler(BaseHandler):
 
         user = self.current_user()
 
+        event_validator = Schema({
+            Required('name'): unicode,
+            Required('lat'): unicode,
+            Required('lng'): unicode,
+            Required('address'): unicode,
+            Required('date'): Date(),
+            'time': unicode,
+            'details': unicode
+        })
+
+        try:
+            data = event_validator(data)
+        except MultipleInvalid as e:
+            return self.json_resp(500, {
+                'error': True,
+                'message': 'Invalid data'
+            })
+
         # Creates date object from Month/Day/Year format
-        d_arr = data['date'].split('/')
-        d_obj = datetime.date(int(d_arr[2]), int(d_arr[0]), int(d_arr[1]))
+        # d_arr = data['date'].split('/')
+        # d_obj = datetime.date(int(d_arr[2]), int(d_arr[0]), int(d_arr[1]))
 
         # Refer to model.py for structure of data
         # class Event

@@ -2,6 +2,7 @@ import os.path
 import jinja2
 from app.model import *
 from app.base_handler import BaseHandler
+from datetime import datetime
 
 env = jinja2.Environment(
     loader=jinja2.PackageLoader('app', 'templates'),
@@ -32,3 +33,6 @@ def grab_json(obj, prop):
 		if p in obj._properties:
 			resp[p] = str(getattr(obj, p))
 	return resp
+
+def create_date(fmt='%m/%d/%Y'):
+	return lambda v: datetime.strptime(v, fmt)
