@@ -17,6 +17,49 @@ img {
     cursor: pointer;
 }
 
+.navbar {
+    padding: 0 15px 0 15px;
+}
+
+.navbar-collapse {
+    text-align: center;
+    display: block;
+    width: 100%;
+    padding: 0 15px 0 15px;
+}
+
+.navbar .center {
+    width: 400px;
+    margin: 0 auto;
+}
+
+/* Menu */
+.menu {
+    list-style: none;
+    margin: 0px 0px 20px 0px;
+    padding: 0;
+    border: 1px solid #9e9e9e;
+    color: #212121;
+    -webkit-box-shadow: 1px 1px 2px 0px rgba(66,66,66,1);
+    -moz-box-shadow: 1px 1px 2px 0px rgba(66,66,66,1);
+    box-shadow: 1px 1px 2px 0px rgba(66,66,66,1);
+}
+.menu li {
+    font-size: 16px;
+    line-height: 38px;
+    display: block;
+    font-weight: 200;
+    padding: 0px 0px 0px 15px;
+    cursor: pointer;
+}
+.menu li:hover {
+    background-color: #EEEEEE;
+}
+.menu li.active {
+    background-color: #e0e0e0;
+}
+/* End */
+
 /* Chip */
 .chip {
     background-color: #E7E7E7;
@@ -203,21 +246,29 @@ img {
     color: #757575;
 }
 
+.navbar-header {
+    height: 50px;
+    overflow: none;
+}
+
 .icon {
-    margin: 7px 0px 3px 0px;
-    padding-left: 15px;
-    height: 35px;
     display: inline-block;
+    height: 50px;
+    width: 50px;
+    vertical-align: top;
     float: left;
 }
 
 .navbar-brand {
     display: inline-block;
-    line-height: 30px;
-    padding: 10px;
-    padding-left: 20px;
+    height: 35px;
+    line-height: 50px;
     font-weight: 500;
     font-size: 16px;
+    padding: 0px 10px 0px 15px;
+    margin: 0px;
+    vertical-align: top;
+    float: left;
 }
 
 .marker {
@@ -225,6 +276,7 @@ img {
     color: white;
     fill: white;
     stroke: white;
+    margin: 8px 0px 7px 0px;
 }
 
 .block {
@@ -347,7 +399,7 @@ template {
 }
 
 /* Switch */
-.switch {
+.toggle {
     display: inline-block;
     float: right;
     width: 80px;
@@ -363,10 +415,10 @@ template {
     margin-right: 20px;
 }
 
-.switch .true,
-.switch .true_padding,
-.switch .false,
-.switch .false_padding {
+.toggle .true,
+.toggle .true_padding,
+.toggle .false,
+.toggle .false_padding {
     cursor: pointer;
     line-height: 30px;
     color: #FFFFFF;
@@ -377,7 +429,7 @@ template {
     transition-delay: .1s;
 }
 
-.switch .true, .switch .false {
+.toggle .true, .toggle .false {
     font-size: 10px;
     text-align: center;
     background: rgba(43,108,179,1);
@@ -390,29 +442,29 @@ template {
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2b6cb3', endColorstr='#044b8f', GradientType=0 );
 }
 
-.switch[data-switch='true'] .true,
-.switch[data-switch='false'] .false {
+.toggle[data-toggle='true'] .true,
+.toggle[data-toggle='false'] .false {
     left: 40px;
 }
 
-.switch[data-switch='true'] .true_padding,
-.switch[data-switch='false'] .false {
+.toggle[data-toggle='true'] .true_padding,
+.toggle[data-toggle='false'] .false {
     left: 0px;
 }
 
-.switch[data-switch='true'] .false {
+.toggle[data-toggle='true'] .false {
     left: -80px;
 }
 
-.switch[data-switch='true'] .false {
+.toggle[data-toggle='true'] .false {
     left: -40px;
 }
 
-.switch[data-switch='false'] .true {
+.toggle[data-toggle='false'] .true {
     left: 120px;
 }
 
-.switch[data-switch='false'] .true_padding {
+.toggle[data-toggle='false'] .true_padding {
     left: 80px;
 }
 /* End */
@@ -490,52 +542,6 @@ template {
     }
 }
 
-/*.tt-query,
-.tt-hint {
-    width: 396px;
-    height: 30px;
-    padding: 8px 12px;
-    font-size: 24px;
-    line-height: 30px;
-    border: 2px solid #ccc;
-    border-radius: 8px;
-    outline: none;
-}
-
-.tt-query {
-    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-}
-
-.tt-hint {
-    color: #999
-}
-
-.tt-dropdown-menu {
-    width: 422px;
-    margin-top: 12px;
-    padding: 8px 0;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    border-radius: 8px;
-    box-shadow: 0 5px 10px rgba(0,0,0,.2);
-}
-
-.tt-suggestion {
-    padding: 3px 20px;
-    font-size: 18px;
-    line-height: 24px;
-}
-
-.tt-suggestion.tt-is-under-cursor {
-    color: #fff;
-    background-color: #0097cf;
-
-}
-
-.tt-suggestion p {
-    margin: 0;
-}*/
 .twitter-typeahead {
     vertical-align: top;
 }

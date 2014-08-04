@@ -54,8 +54,6 @@ class Event(db.Model):
 
 class Ride(db.Model):
     passengers_max = db.IntegerProperty()
-    passengers_total = db.IntegerProperty()
-    has_driver = db.BooleanProperty()
     driver = db.ReferenceProperty(User)
     origin_add = db.StringProperty()
     origin_lat = db.FloatProperty()
@@ -66,10 +64,10 @@ class Ride(db.Model):
     date = db.DateProperty()
     time = db.StringProperty()
     passengers = db.ListProperty(db.Key)
-    contact = db.StringProperty()
     details = db.StringProperty()
     circle = db.ReferenceProperty(Circle)
     event = db.ReferenceProperty(Event)
+    recurring = db.StringProperty()
 
     def to_dict(self):
         resp = {}

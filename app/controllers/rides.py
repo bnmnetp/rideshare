@@ -1,13 +1,13 @@
-from app.common.toolbox import doRender, split_address, grab_json
+from app.common.toolbox import doRender, split_address, grab_json, create_date
 from app.model import *
 from google.appengine.ext import db
 import datetime
 from datetime import date
-import datetime
 import json
 from app.base_handler import BaseHandler
 from app.common.notification import push_noti
 from app.common.voluptuous import *
+import urllib, urllib2
 
 class RideHandler(BaseHandler):
     def get(self):
@@ -16,8 +16,10 @@ class RideHandler(BaseHandler):
         self.auth()
         user = self.current_user()
 
-        rides_user_1 = Ride.all().filter('passengers =', user.key()).fetch(100)
-        rides_user_2 = Ride.all().filter('driver = ', user.key()).fetch(100)
+        today = date.today()
+
+        rides_user_1 = Ride.all().filter('passengers =', user.key()).filter('date >=', today).fetch(100)
+        rides_user_2 = Ride.all().filter('driver = ', user.key()).filter('date >=', today).fetch(100)
 
         rides_user = rides_user_1 + rides_user_2
 
@@ -65,11 +67,50 @@ class RideHandler(BaseHandler):
 
         rides = Ride.all()
 
+        today = date.today()
+        rides.filter('date >=', today)
+
         if data['circle'] != '':
             rides.filter('circle = ', data['circle'])
 
         results = json.dumps([r.to_dict() for r in rides])
         self.response.write(results)
+
+class FilterRides(BaseHandler):
+    def post(self):
+        self.auth()
+
+        user = self.current_user()
+
+        json_str = self.request.body
+        data = json.loads(json_str)
+
+        rides = Ride.all()
+
+        if data['filter'] == 'no_driver':
+            rides.filter('driver = ', None)
+        if data['filter'] == 'driver':
+            rides.filter('driver != ', None)
+        if data['filter'] == 'user_passenger':
+            rides.filter('passengers =', user.key())
+        if data['filter'] == 'user_driver':
+            rides.filter('driver =', user.key())
+        if data['filter'] == 'current':
+            today = date.today()
+            rides.filter('date >=', today)
+        if data['filter'] == 'past':
+            print 'test'
+
+        results = []
+        for ride in rides:
+            d = {}
+            d['dest'] = split_address(ride.dest_add)
+            d['orig'] = split_address(ride.origin_add)
+            d['id'] = ride.key().id()
+            d['date'] = str(ride.date)
+            results.append(d)
+
+        self.response.write(json.dumps(results))
 
 class EditRide(BaseHandler):
     def get(self, ride_id):
@@ -110,7 +151,7 @@ class EditRide(BaseHandler):
 
         ride_validator = Schema({
             Required('passengers_max', default=1): Coerce(int),
-            Required('date'): unicode,
+            Required('date'): create_date(),
             Required('time'): unicode,
             'details': unicode
         })
@@ -118,15 +159,13 @@ class EditRide(BaseHandler):
         try:
             data = ride_validator(data)
         except MultipleInvalid as e:
-            print str(e)
-            self.response.set_status(500)
-            self.response.write(json.dumps({
-                'error': 'Invalid data'
-            }))
-            return None
+            return self.json_resp(500, {
+                'error': True,
+                'message': str(e)
+            })
 
         ride.passengers_max = data['passengers_max']
-        # ride.date = data['date'].date
+        ride.date = data['date']
         ride.time = data['time']
         ride.details = data['details']
 
@@ -139,9 +178,45 @@ class EditRide(BaseHandler):
             'message': 'Edited.'
         }))
 
-    def Date(self, fmt='%Y-%m-%d'):
-        return lambda v: datetime.strptime(v, fmt)
+class JoinDriver(BaseHandler):
+    def post(self, ride_id):
+        self.auth()
+        json_str = self.request.body
+        data = json.loads(json_str)
 
+        user = self.current_user()
+
+        ride_validator = Schema({
+            Required('passengers_max', default=1): Coerce(int),
+            Required('date'): create_date(),
+            'time': unicode,
+            'details': unicode
+        })
+
+        try:
+            data = ride_validator(data)
+        except MultipleInvalid as e:
+            print str(e)
+            return self.json_resp(500, {
+                'error': True,
+                'message': 'Invalid data'
+            })
+
+        ride = Ride.get_by_id(int(ride_id))
+
+        ride.passengers_max = int(data['passengers_max'])
+        ride.driver = user.key()
+        ride.time = data['time']
+        ride.details = data['details']
+        ride.put()
+
+        for passenger in ride.passengers:
+            push_noti('driver_join', passenger, ride.key())
+
+        resp = {
+            'message': 'Success.'
+        }
+        self.response.write(json.dumps(resp))
 
 class GetRideHandler(BaseHandler):
     def post(self, ride_id):
@@ -167,7 +242,7 @@ class GetRideHandler(BaseHandler):
                     self.response.write(json.dumps(resp))
             if data['action'] == 'join':
                 if user.key() not in ride.passengers:
-                    if ride.passengers_total < ride.passengers_max:
+                    if len(ride.passengers) < ride.passengers_max:
                         if ride.driver:
                             push_noti('pass_join', ride.driver.key(), ride.key())
                         ride.passengers.append(user.key())
@@ -187,32 +262,13 @@ class GetRideHandler(BaseHandler):
             ride.put()
         if data['type'] == 'driver':
             if data['action'] == 'leave':
-                if ride.has_driver:
+                if ride.driver:
                     for passenger in ride.passengers:
                         push_noti('driver_leave', passenger, ride.key())
-                    ride.has_driver = False
                     ride.driver = None
                     resp = {
                         'strong': 'Left the ride!',
                         'message': 'You are no longer the driver.'
-                    }
-                    self.response.write(json.dumps(resp))
-            if data['action'] == 'join':
-                if not ride.has_driver:
-                    for passenger in ride.passengers:
-                        push_noti('driver_join', passenger, ride.key())
-                    ride.has_driver = True
-                    ride.driver = user.key()
-                    resp = {
-                        'strong': 'Joined the ride!',
-                        'message': 'You are the driver of this ride.'
-                    }
-                    self.response.write(json.dumps(resp))
-                else:
-                    self.response.set_status(500)
-                    resp = {
-                        'strong': 'This ride already has a driver',
-                        'message': 'Thanks for your offer.'
                     }
                     self.response.write(json.dumps(resp))
             ride.put()
@@ -226,15 +282,15 @@ class GetRideHandler(BaseHandler):
         user = self.current_user()
         availible_seats = 0
 
-        if ride.driver:
-            availible_seats = ride.passengers_max - ride.passengers_total;
+        if ride.driver and ride.passengers_max:
+            availible_seats = ride.passengers_max - len(ride.passengers)
 
         passengers = []
         for passenger in ride.passengers:
             passengers.append(User.get(passenger))
 
         # For view conditionals
-        if ride.has_driver:
+        if ride.driver:
             if ride.driver.key().id() == user.key().id():
                 ride.is_driver = True
                 ride.need_driver = False
@@ -256,8 +312,6 @@ class GetRideHandler(BaseHandler):
             ride.can_pass = False
         # End view conditionals
 
-        comments = Comment.all().filter('ride = ', ride.key()).order('-date')
-
         if ride:
             doRender(self, 'view_ride.html', {
                 'ride': ride,
@@ -267,43 +321,6 @@ class GetRideHandler(BaseHandler):
             })
         else:
             self.response.write('No ride found.')
-
-class RideJoinHandler(BaseHandler):
-    def post(self):
-        json_str = self.request.body
-        data = json.loads(json_str)
-
-        user = self.current_user()
-
-        ride = Ride.get_by_id(int(data['id']))
-
-        if ride:
-            # Possible input for data['type']: ['passenger', 'driver']
-            if data['type'] == 'passenger':
-                ride.passengers.append(user.key())
-            elif data['type'] == 'driver':
-                ride.passengers_max = 1
-                ride.passengers_total = 0
-                ride.has_driver = True
-                ride.driver = user.key()
-                # Replace
-                ride.driver_name = user.name
-                ride.contact = user.email
-
-            ride.put()
-
-            response = {
-                'message': 'Ride added'
-            }
-            self.response.write(json.dumps(response))
-
-        else:
-            self.response.status_int(500)
-            response = {
-                'message': 'Ride not found!',
-                'error': True
-            }
-            self.response.write(json.dumps(response))
     
 class NewRideHandler(BaseHandler):
     def post(self):
@@ -312,40 +329,56 @@ class NewRideHandler(BaseHandler):
         json_str = self.request.body
         data = json.loads(json_str)
 
-        # Creates date object from Month/Day/Year format
-        d_arr = data['date'].split('/')
-        d_obj = datetime.date(int(d_arr[2]), int(d_arr[0]), int(d_arr[1]))
+        ride_validator = Schema({
+            'passengers_max': Coerce(int),
+            Required('date'): create_date(),
+            'time': unicode,
+            'details': unicode,
+            'driver': bool,
+            Required('dest'): {
+                'lat': float,
+                'lng': float,
+                'address': unicode
+            },
+            Required('orig'): {
+                'lat': float,
+                'lng': float,
+                'address': unicode
+            },
+            'recurring': unicode,
+            'circle': unicode
+        })
+
+        try:
+            data = ride_validator(data)
+        except MultipleInvalid as e:
+            print str(e)
+            return self.json_resp(500, {
+                'error': True,
+                'message': 'Invalid data'
+            })
 
         user = self.current_user()
 
         # Refer to model.py for structure of data
         # class Ride
-        if 'event' in data:
-            event = Event.get_by_id(int(data['event']))
-            ride.dest_add = event.address
-            ride.dest_lat = event.lat
-            ride.dest_lng = event.lng
-            ride.event = event.key()
-        else:
-            ride.dest_add = data['dest']['address']
-            ride.dest_lat = data['dest']['lat']
-            ride.dest_lng = data['dest']['lng']
-
+        ride.dest_add = data['dest']['address']
+        ride.dest_lat = data['dest']['lat']
+        ride.dest_lng = data['dest']['lng']
         ride.origin_add = data['orig']['address']
         ride.origin_lat = data['orig']['lat']
         ride.origin_lng = data['orig']['lng']
-
-        ride.date = d_obj
+        ride.date = data['date']
         ride.time = data['time']
         ride.passengers = []
 
         if data['driver'] == True:
-            ride.passengers_max = int(data['max_passengers'])
-            ride.passengers_total = 0
+            ride.passengers_max = int(data['passengers_max'])
             ride.driver = user.key()
-            ride.has_driver = data['driver']
-            ride.driver_name = "Replace"
-            ride.contact = "Replace"
+            if ride.recurring == 'false' or ride.recurring == 'none':
+                ride.recurring = None
+            else:
+                ride.recurring = data['recurring']
         else:
             ride.passengers.append(user.key())
 
@@ -358,8 +391,80 @@ class NewRideHandler(BaseHandler):
 
         ride_key = ride.put()
 
-        # self.send_email()
-        response = {
+        return self.json_resp(200, {
             'message': 'Ride added!'
+        })
+
+class RideEvent(BaseHandler):
+    def post(self, event_id, type):
+        self.auth()
+        json_str = self.request.body
+        data = json.loads(json_str)
+
+        if not (type == 'passenger' or type == 'driver'):
+            print type
+            return self.json_resp(500, {
+                'message': 'Invalid type'
+            })
+
+        user = self.current_user()
+
+        ride_validator = Schema({
+            'passengers_max': Coerce(int),
+            Required('date'): create_date(),
+            Required('address'): unicode,
+            'time': unicode,
+            'details': unicode,
+            'driver': bool,
+            'circle': unicode
+        })
+
+        try:
+            data = ride_validator(data)
+        except MultipleInvalid as e:
+            print str(e)
+            return self.json_resp(500, {
+                'error': True,
+                'message': 'Invalid data'
+            })
+
+        event = Event.get_by_id(int(event_id))
+
+        ride = Ride()
+
+        address = urllib.quote(data['address'])
+        url = "http://maps.googleapis.com/maps/api/geocode/json?address=%s" % address
+
+        response = urllib2.urlopen(url)
+        json_geocode = json.loads(response.read())
+
+        if not json_geocode['status'] == 'OK':
+            return self.json_resp(500, {
+                'message': 'Address not found'
+            })
+
+        ride.dest_add = event.address
+        ride.dest_lat = event.lat
+        ride.dest_lng = event.lng
+        ride.origin_add = json_geocode['results'][0]['formatted_address']
+        ride.origin_lat = json_geocode['results'][0]['geometry']['location']['lat']
+        ride.origin_lng = json_geocode['results'][0]['geometry']['location']['lng']
+        ride.date = data['date']
+        ride.time = data['time']
+        
+        ride.event = event.key()
+
+        if type == 'driver':
+            ride.passengers_max = int(data['passengers_max'])
+            ride.driver = user.key()
+            ride.passengers = []
+        elif type == 'passenger':
+            ride.passengers.append(user.key())
+
+        ride.put()
+
+        response = {
+            'message': 'Ride added!',
+            'id': ride.key().id()
         }
         self.response.write(json.dumps(response))

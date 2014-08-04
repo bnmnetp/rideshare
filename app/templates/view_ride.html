@@ -6,7 +6,16 @@
 {% endblock %}
 
 {% block main %}
-<div data-notify="container"></div>
+<div data-notify="container">
+    
+</div>
+{% if ride.need_driver %}
+    <div class="panel panel-default">
+        <div class="panel-body">
+            This ride does not have a driver yet.
+        </div>
+    </div>
+{% endif %}
 <div class="row">
     <div class="col-md-6">
         <div class="panel panel-main">
@@ -37,7 +46,7 @@
                         </li>
                     {% endif %}
                     <li>
-                        <b>Other passengers:</b>
+                        <b>Passengers:</b>
                         {% if passengers %}
                             {% for p in passengers %}
                                 <div class='chip'>
@@ -68,41 +77,23 @@
                 <hr>
                 <div class="options">
                     {% if ride.is_driver %}
-                    <a href="/ride/{{ride.key().id()}}/edit" class='btn btn-primary'>Edit ride details</a>
-                    {% endif %}
-                    {% if ride.is_driver %}
-                    <div>
-                    {% else %}
-                    <div class="hidden">
-                    {% endif %}
+                        <a href="/ride/{{ride.key().id()}}/edit" class='btn btn-primary'>Edit ride details</a>
                         <p class="help-block">You are currently the driver.</p>
                         <button class='btn btn-danger' data-driver='leave'>Leave ride</button>
-                    </div>
+                    {% endif %}
 
                     {% if ride.need_driver %}
-                    <div>
-                    {% else %}
-                    <div class="hidden">
+                         <button class='btn btn-success' data-toggle='modal' data-target='#join_driver'>Be the driver</button>
                     {% endif %}
-                         <button class='btn btn-success' data-driver='join'>Be the driver</button>
-                    </div>
 
                     {% if ride.is_pass %}
-                    <div>
-                    {% else %}
-                    <div class="hidden">
-                    {% endif %}
                         <p class="help-block">You are currently a passenger.</p>
                         <button class='btn btn-danger' data-passenger='leave'>Leave ride</button>
-                    </div>
+                    {% endif %}
 
                     {% if ride.can_pass %}
-                    <div>
-                    {% else %}
-                    <div class="hidden">
-                    {% endif %}
                         <button class='btn btn-success' data-passenger='join'>Join as Passenger</button>
-                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -134,6 +125,48 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="join_driver" tabindex="-1" role="dialog" aria-aria-hidden="true">
+    <div class="modal-dialog">
+        <form data-send="driver">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">Drive this ride</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Max Passengers</label>
+                        <select class="form-control" name='max_passengers'>
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                            <option>6</option>
+                            <option>7</option>
+                            <option>8</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Time</label>
+                        <input class="form-control" type="text" placeholder="Time" name='time'>
+                    </div>
+                    <div class="form-group">
+                        <label>Additional Details</label>
+                        <input class="form-control" type="text" placeholder="Details" name='details'>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" type='submit'>
+                        Be the Driver
+                    </button>
+                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </form>
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 {% endblock %}
 
 {% block scripts %}
@@ -141,6 +174,7 @@
 <script src="/static/augment.js" type="text/javascript"></script>
 <script type="text/javascript" src='/static/comment.js'></script>
 <script type='text/javascript' src='/static/ride_handler.js'></script>
+<script src='//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.0/js/bootstrap.js' type="text/javascript"></script>
 {% include 'comment.html' %}
 {% raw %}
 <script data-notify="template" type='text/x-handlebars-template'>
@@ -151,63 +185,75 @@
 </script>
 {% endraw %}
 <script type="text/javascript">
-var comment = new Comment({
-    type: 'ride',
-    id: {{ride.key().id()}},
-    container: '[data-comment="container"]'
-});
-
-var orig_icon = {
-    url: '/static/carGreen.png',
-    anchor: new google.maps.Point(20, 20),
-    size: new google.maps.Size(30, 40)
-};
-var orig_latlng = new google.maps.LatLng({{ride.origin_lat}}, {{ride.origin_lng}});
-
-var dest_icon = {
-    url: '/static/carRed.png',
-    anchor: new google.maps.Point(20, 20),
-    size: new google.maps.Size(30, 40)
-};
-var dest_latlng = new google.maps.LatLng({{ride.dest_lat}}, {{ride.dest_lng}});
-
-var direction_render = new google.maps.DirectionsRenderer();
-var direction_service = new google.maps.DirectionsService();
-
-var map = new google.maps.Map(document.querySelector('#map_event'), {
-    draggableCursor: 'crosshair',
-    center: new google.maps.LatLng({{ride.origin_lat}}, {{ride.origin_lng}}),
-    mapTypeId: google.maps.MapTypeId.ROADMAP,
-    zoom: 7
-});
-direction_render.setMap(map);
-
-// var orig_marker = new google.maps.Marker({
-//     position: orig_latlng,
-//     map: map,
-//     icon: orig_icon
-// });
-
-// var dest_marker = new google.maps.Marker({
-//     position: dest_latlng,
-//     map: map,
-//     icon: dest_icon
-// });
-
-function calc_route () {
-    var request = {
-        origin: orig_latlng,
-        destination: dest_latlng,
-        travelMode: google.maps.TravelMode.DRIVING
-    };
-    direction_service.route(request, function (result, status) {
-        if (status == google.maps.DirectionsStatus.OK) {
-            direction_render.setDirections(result);
-        }
+    var comment = new Comment({
+        type: 'ride',
+        id: {{ride.key().id()}},
+        container: '[data-comment="container"]'
     });
-};
-calc_route();
 
+    /* Context Map */
+    var orig_latlng = new google.maps.LatLng({{ride.origin_lat}}, {{ride.origin_lng}});
+
+    var dest_latlng = new google.maps.LatLng({{ride.dest_lat}}, {{ride.dest_lng}});
+
+    var direction_render = new google.maps.DirectionsRenderer();
+    var direction_service = new google.maps.DirectionsService();
+
+    var map = new google.maps.Map(document.querySelector('#map_event'), {
+        draggableCursor: 'crosshair',
+        center: new google.maps.LatLng({{ride.origin_lat}}, {{ride.origin_lng}}),
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        zoom: 7
+    });
+    direction_render.setMap(map);
+
+    function calc_route () {
+        var request = {
+            origin: orig_latlng,
+            destination: dest_latlng,
+            travelMode: google.maps.TravelMode.DRIVING
+        };
+        direction_service.route(request, function (result, status) {
+            if (status == google.maps.DirectionsStatus.OK) {
+                direction_render.setDirections(result);
+            }
+        });
+    };
+    calc_route();
+    /* End */
+
+    var form = document.querySelector('[data-send="driver"]');
+
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        var form = e.target;
+
+        var data = {};
+        data.passengers_max = form.max_passengers.value;
+        data.time = form.time.value;
+        data.details = form.details.value;
+
+        var push = $.ajax({
+            type: 'POST',
+            url: '/ride/{{ride.key().id()}}/driver',
+            dataType: 'json',
+            contentType: 'application/json; charset=UTF-8',
+            data: JSON.stringify(data)
+        });
+
+        push.done(function (data) {
+            document.location.reload(true);
+        });
+
+        push.fail(function (data, status) {
+            notify({
+                type: 'danger',
+                strong: 'Oops',
+                message: 'Refresh and try again'
+            });
+        });
+    });
 
 </script>
 {% endblock %}

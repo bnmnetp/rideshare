@@ -73,10 +73,13 @@ class MapHandler(BaseHandler):
 
 class LoginHandler(BaseHandler):
     def get(self):
-        redirect = self.request.get('redirect', default_value='')
-        doRender(self, 'loginPage.html', {
-            'redirect': redirect
-        })
+        if self.current_user():
+            self.redirect('/home')
+        else:
+            redirect = self.request.get('redirect', default_value='')
+            doRender(self, 'loginPage.html', {
+                'redirect': redirect
+            })
 
 class HomeHandler(BaseHandler):
     def get(self):
@@ -150,6 +153,7 @@ class DetailHandler(BaseHandler):
         self.auth()
         user = self.current_user()
 
+        user.name = data['name']
         user.email = data['email']
         user.phone = data['phone']
 
@@ -169,9 +173,11 @@ app = webapp2.WSGIApplication([
     ('/rides', RideHandler),
     ('/ride/(\d+)', GetRideHandler),
     ('/ride/(\d+)/edit', EditRide),
-    ('/join_ride', RideJoinHandler),
+    ('/ride/(\d+)/driver', JoinDriver),
     ("/newride", NewRideHandler),
     ('/home', HomeHandler),
+    ('/filter', FilterRides),
+    ('/event/(\d+)/(\w+)', RideEvent),
     # end rides
 
     # controllers/users.py
@@ -208,7 +214,6 @@ app = webapp2.WSGIApplication([
 
     # controllers/events.py
     ('/event/(\d+)', GetEventHandler),
-    ('/event/(\d+)/join', JoinEvent),
     ('/events', EventHandler),
     ('/newevent', NewEventHandler),
     # end events

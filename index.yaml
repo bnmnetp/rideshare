@@ -18,12 +18,6 @@ indexes:
 
 - kind: Comment
   properties:
-  - name: coment
-  - name: date
-    direction: desc
-
-- kind: Comment
-  properties:
   - name: event
   - name: date
     direction: desc
@@ -40,8 +34,17 @@ indexes:
   - name: date
     direction: desc
 
-- kind: Comment
+- kind: Event
   properties:
-  - name: user
+  - name: circle
   - name: date
-    direction: desc
+
+- kind: Ride
+  properties:
+  - name: driver
+  - name: date
+
+- kind: Ride
+  properties:
+  - name: passengers
+  - name: date

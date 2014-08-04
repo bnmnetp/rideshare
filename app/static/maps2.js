@@ -11,11 +11,17 @@ function getParameterByName(name) {
 	}		
 }
 
-if (!Array.prototype.last){
+if (!Array.prototype.last) {
     Array.prototype.last = function () {
         return this[this.length - 1];
     };
 };
+
+if (!Array.prototype.contains) {
+	Array.prototype.contains = function (str) {
+		return this.indexOf(str) > -1;
+	}
+}
 
 var get_geolocation = function (e) {
 	var target = e.target;
@@ -28,12 +34,11 @@ var get_geolocation = function (e) {
 };
 
 var display_geolocation = function () {
-	var geo_btns = document.querySelectorAll('.geo_location');
-	for (var i = 0; i < geo_btns.length; i++) {
-		var btn = geo_btns[i];
-		btn.classList.remove('hidden');
-		btn.addEventListener('click', get_geolocation);
-	}
+	var geo_container = document.querySelector('[data-geolocation="container"]');
+	geo_container.classList.remove('hidden');
+
+	var geo_btn = document.querySelector('[data-geolocation="container"]');
+	geo_btn.addEventListener('click', get_geolocation);
 };
 
 if ('geolocation' in navigator) {
@@ -54,12 +59,12 @@ var icons = {
 		size: new google.maps.Size(22, 20)
 	},
 	error: {
-		url: '/static/carRed.png',
+		url: '/static/end.png',
 		anchor: new google.maps.Point(20, 20),
 		size: new google.maps.Size(30, 40)
 	},
 	success: {
-		url: '/static/carGreen.png',
+		url: '/static/start.png',
 		anchor: new google.maps.Point(20, 20),
 		size: new google.maps.Size(30, 40)
 	},
@@ -85,28 +90,24 @@ var Forms = augment(Object, function () {
 
 		this.send_event = document.querySelector('[data-send="event"]');
 		this.send_event.addEventListener('submit', this.controller_event.bind(this));
-
-		document.body.addEventListener('click', function (e) {
-			var target = e.target;
-			if (target.dataset.join) {
-				this.controller_join.apply(this, [e]);
-			}
-		}.bind(this));
 	}
 
 	this.controller_ride = function (e) {
 		e.preventDefault();
-		console.log(e);
 
 		var form  = e.target;
-		var m = map.new_ride;
+		var m = {};
 
-		m.max_passengers = form.max_passengers.value;
+		m.orig = map.start;
+		m.dest = map.end;
+
+		m.passengers_max = form.max_passengers.value;
 		m.date = form.date.value;
 		m.time = form.time.value;
 		m.details = form.details.value;
 		m.circle = getParameterByName('circle');
 		m.driver = true;
+		m.recurring = form.recurring.value;
 
 		var push = $.ajax({
 			type: 'POST',
@@ -117,7 +118,7 @@ var Forms = augment(Object, function () {
 		});
 
 		push.done(function (data) {
-			flow.change_slide('select_location');
+			flow.view_slide('path');
 			notify({
 				type: 'success',
 				strong: 'You created a new ride!',
@@ -136,10 +137,12 @@ var Forms = augment(Object, function () {
 
 	this.controller_pass = function (e) {
 		e.preventDefault();
-		console.log(e);
 
 		var form  = e.target;
-		var m = map.new_ride;
+		var m = {};
+
+		m.orig = map.start;
+		m.dest = map.end;
 
 		m.date = form.date.value;
 		m.time = form.time.value;
@@ -156,7 +159,7 @@ var Forms = augment(Object, function () {
 		});
 
 		push.done(function (data) {
-			flow.change_slide('select_location');
+			flow.view_slide('path');
 			notify({
 				type: 'success',
 				strong: 'You asked for a ride!',
@@ -180,9 +183,9 @@ var Forms = augment(Object, function () {
 
 		var m = {};
 		m.name = form.name.value;
-		m.address = map.new_event.loc.address;
-		m.lat = map.new_event.loc.lat;
-		m.lng = map.new_event.loc.lng;
+		m.address = map.start.address;
+		m.lat = map.start.lat;
+		m.lng = map.start.lng;
 		m.date = form.date.value;
 		m.time = form.time.value;
 		m.details = form.details.value;
@@ -197,7 +200,7 @@ var Forms = augment(Object, function () {
 		});
 
 		push.done(function (data) {
-			flow.change_slide('select_location');
+			flow.view_slide('path');
 			notify({
 				type: 'success',
 				strong: 'Event created!',
@@ -210,40 +213,6 @@ var Forms = augment(Object, function () {
 				type: 'danger',
 				strong: 'Sorry!',
 				message: 'The event was not created. Please try again.'
-			});
-		});
-	}
-
-	this.controller_join = function (e) {
-		e.preventDefault();
-		var target = e.target;
-		var data = target.dataset.join.split(':');
-
-		var push = $.ajax({
-			type: 'POST',
-			url: '/join_ride',
-			dataType: 'json',
-			contentType: 'application/json; charset=UTF-8',
-			data: JSON.stringify({
-				type: data[0],
-				id: data[1]
-			})
-		});
-
-		push.done(function (data) {
-			flow.change_slide('select_location');
-			notify({
-				type: 'success',
-				strong: 'You joined the ride!',
-				message: 'We sent you a confirmation email.'
-			});
-		});
-
-		push.fail(function (data, status) {
-			notify({
-				type: 'danger',
-				strong: 'Sorry!',
-				message: 'You did not join the ride. Please try again.'
 			});
 		});
 	}
@@ -268,10 +237,6 @@ var Markers = augment(Object, function () {
 			}
 		}.bind(this));
 
-		this.req_events.fail(function (message, status) {
-
-		}.bind(this));
-
 		this.req_rides = $.ajax({
 			type: 'POST',
 			url: '/rides',
@@ -287,10 +252,6 @@ var Markers = augment(Object, function () {
 			for (var i = 0; i < map.rides.length; i++) {
 				this.add_ride(i);
 			}
-		}.bind(this));
-
-		this.req_rides.fail(function (message, status) {
-
 		}.bind(this));
 	}
 
@@ -395,41 +356,20 @@ var Markers = augment(Object, function () {
 });
 
 var paths = {
-	create_event: [
-		'location_selection',
+	new_event: [
+		'select_orig',
 		'event_details'
 	],
-	create_ride: [
-		'select_type',
-		{
-			driver: [
-				'location_selection',
-				'location_dest',
-				'safety',
-				'driver_details'
-			],
-			passenger: [
-				'location_selection',
-				'location_dest',
-				'passenger_details'
-			]
-		}
+	new_ride: [
+		'select_orig',
+		'select_dest',
+		'passenger_details'
 	],
-	ride_to_event: [
-		'location_selection',
-		'select_type',
-		{
-			driver: [
-				'safety',
-				'driver_details'
-			],
-			passenger: [
-				'passenger_details'
-			]
-		}
-	],
-	join_ride: [
-		'join_ride'
+	new_trip: [
+		'select_orig',
+		'select_dest',
+		'safety',
+		'driver_details'
 	]
 };
 
@@ -446,11 +386,7 @@ var Map = augment(Object, function () {
 		this.map;
 		this.geocoder;
 
-		this.last = false;
-		this.state = 'select_location';
-		this.indicator = '';
-		this.new_ride = {};
-		this.new_event = {};
+		this.state = '';
 
 		this.markers = [];
 
@@ -480,14 +416,10 @@ var Map = augment(Object, function () {
 
 	this.reset = function () {
 		if (typeof flow != 'undefined') {
-			this.last = false;
-			this.state = 'select_location';
 			flow.reset();
 		}
 
 		this.create_new_marker = true;
-		
-		this.indicator = '';
 
 		for (var i = 0; i < this.markers.length; i++) {
 			this.markers[i].setMap(null);
@@ -528,7 +460,6 @@ var Map = augment(Object, function () {
 	};
 
 	this.geocode_latlng = function (deta) {
-		console.log(deta);
 		var latlng = new google.maps.LatLng(deta.lat, deta.lng);
 		this.geocoder.geocode({
 			latLng: latlng
@@ -554,97 +485,48 @@ var Map = augment(Object, function () {
 
 	this.disp_address = function (deta) {
 		console.log(this.state);
-		if (this.state == 'location_selection') {
-			console.log('selection')
-			var set = {};
-			if (flow.path_history.indexOf('create_ride') > -1) {
+		if (this.state == 'select_orig') {
+			if (flow.history.contains('new_ride') || flow.history.contains('new_trip')) {
 				this.set_window(deta, 'success');
-				this.new_ride.orig = {};
-				set = this.new_ride.orig;
-			} else if (flow.path_history.indexOf('create_event') > -1) {
+			} else if (flow.history.contains('new_event')) {
 				this.set_window(deta, 'person');
-				this.new_event.loc = {};
-				set = this.new_event.loc;
-			} else if (flow.path_history.indexOf('ride_to_event') > -1) {
-				this.set_window(deta, 'error');
-				this.new_ride.dest = {};
-				set = this.new_ride.dest;
 			}
-			set.lat = deta.lat;
-			set.lng = deta.lng;
-			set.address = deta.add;
+			this.start = {
+				lat: deta.lat,
+				lng: deta.lng,
+				address: deta.add
+			};
 
 			var select_text = document.querySelector('[data-location="text"]');
 			var select_btn = document.querySelector('[data-location="btn"]');
 
-			select_text.textContent = set.address;
+			select_text.textContent = this.start.address;
 			select_btn.classList.remove('hidden');
 		}
-		if (this.state == 'location_dest') {
-			console.log('destination')
+		if (this.state == 'select_dest') {
 			this.set_window(deta, 'error');
-			this.new_ride.dest = {};
-			this.new_ride.dest.lat = deta.lat;
-			this.new_ride.dest.lng = deta.lng;
-			this.new_ride.dest.address = deta.add;
+			this.end = {
+				lat: deta.lat,
+				lng: deta.lng,
+				address: deta.add
+			};
 
 			var loc_dest = document.querySelector('[data-ride="loc_dest"]');
 			var loc_btn = document.querySelector('[data-ride="loc_btn"]');
 
-			loc_dest.textContent = this.new_ride.dest.address;
+			loc_dest.textContent = this.end.address;
 			loc_btn.classList.remove('hidden');
 		}
 	};
 
-	this.special_action = function (btn) {
-		if (this.state == 'select_location') {
+	this.special_action = function (from, to, opts) {
+		if (to == 'path') {
 			this.create_new_marker = false;
 		}
-		if (this.state == 'join_ride') {
-			var id = btn.dataset.id;
-			var container = document.querySelector('[data-route="join_ride"]');
-			var source = document.querySelector('[data-template="join_ride"]').innerHTML;
-			var template = Handlebars.compile(source);
-			var ride;
-			// Find specific ride by ID
-			for (var i = 0; i < this.rides.length; i++) {
-				if (this.rides[i].id = id) {
-					ride = this.rides[i];
-				}
-			}
-			var html = template({
-				origin: ride.origin_add,
-				dest: ride.dest_add,
-				date: ride.date,
-				time: ride.time,
-				driver: ride.driver,
-				driver_name: ride.driver_name,
-				contact: ride.contact,
-				id: ride.id
-			});
-			while (container.firstChild) {
-				container.removeChild(container.firstChild)
-			}
-			container.insertAdjacentHTML('beforeend', html);
-		}
-		if (this.state == 'ride_to_event') {
-			this.new_ride.event = btn.dataset.id;
-		}
-		if (flow.path_history.last() == 'location_selection') {
+		if (to == 'select_orig') {
 			this.create_new_marker = true;
-			var container = document.querySelector('[data-route="location_selection"]');
-			var source = document.querySelector('[data-template="select_location"]').innerHTML;
-			var template = Handlebars.compile(source);
-
-			var html = template({
-				type: 'test'
-			});
-			while (container.firstChild) {
-				container.removeChild(container.firstChild)
-			}
-			container.insertAdjacentHTML('beforeend', html);
 		}
-		if (flow.path_history.last() == 'location_dest') {
+		if (to == 'select_dest') {
 			this.create_new_marker = true;
 		}
 	};

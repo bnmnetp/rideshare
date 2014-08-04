@@ -1,4 +1,4 @@
-from app.common.toolbox import doRender, split_address
+from app.common.toolbox import doRender, split_address, create_date
 from google.appengine.ext import db
 from app.model import *
 from google.appengine.api import mail
@@ -6,6 +6,7 @@ import datetime
 from datetime import date
 import json
 from app.base_handler import BaseHandler
+from app.common.voluptuous import *
 
 class GetEventHandler(BaseHandler):
     def get(self, id):
@@ -22,7 +23,7 @@ class GetEventHandler(BaseHandler):
         for ride in rides:
             ride.orig = split_address(ride.origin_add)
             ride.dest = split_address(ride.dest_add)
-            if user.key() == ride.driver.key():
+            if ride.driver and user.key() == ride.driver.key():
                 ride.is_driver = True
             else:
                 ride.is_driver = False
@@ -40,45 +41,17 @@ class GetEventHandler(BaseHandler):
             'user': user
         })
 
-class JoinEvent(BaseHandler):
-    def post(self, event_id):
-        self.auth()
-
-        user = self.current_user()
-
-        event = Event.get_by_id(int(circle_id))
-
-        if not circle:
-            self.redirect('/')
-            return None
-
-        json_str = self.request.body
-        data = json.loads(json_str)
-
-        if data['type'] == 'join':
-            message = 'Joined the event.'
-            if user.key() not in event.attending:
-                event.attending.append(user.key())
-        elif data['type'] == 'leave':
-            message = 'Left the event.'
-            if user.key() in event.attending:
-                event.attending.remove(user.key())
-
-        event.put()
-
-        self.response.write(json.dumps({
-            'message': message
-        }))
-
 class EventHandler(BaseHandler):
     def get(self):
         self.auth()
 
         user = self.current_user()
 
-        events_user = Event.all().filter('circle IN', user.circles).fetch(100)
+        today = date.today()
 
-        events_all = Event.all().fetch(100)
+        events_user = Event.all().filter('circle IN', user.circles).filter('date >=', today).fetch(100)
+
+        events_all = Event.all().filter('date >=', today).fetch(100)
 
         doRender(self, 'events.html', {
             'events_user': events_user,
@@ -91,6 +64,9 @@ class EventHandler(BaseHandler):
         data = json.loads(json_str)
 
         events = Event.all()
+
+        today = date.today()
+        events.filter('date >=', today)
 
         if data['circle'] != '':
             events.filter('circle = ',  data['circle'])
@@ -106,9 +82,25 @@ class NewEventHandler(BaseHandler):
 
         user = self.current_user()
 
-        # Creates date object from Month/Day/Year format
-        d_arr = data['date'].split('/')
-        d_obj = datetime.date(int(d_arr[2]), int(d_arr[0]), int(d_arr[1]))
+        event_validator = Schema({
+            Required('name'): unicode,
+            Required('lat'): float,
+            Required('lng'): float,
+            Required('address'): unicode,
+            Required('date'): create_date(),
+            'time': unicode,
+            'details': unicode,
+            'circle': unicode
+        })
+
+        try:
+            data = event_validator(data)
+        except MultipleInvalid as e:
+            print str(e)
+            return self.json_resp(500, {
+                'error': True,
+                'message': 'Invalid data'
+            })
 
         # Refer to model.py for structure of data
         # class Event
@@ -116,7 +108,7 @@ class NewEventHandler(BaseHandler):
         event.lat = data['lat']
         event.lng = data['lng']
         event.address = data['address']
-        event.date = d_obj
+        event.date = data['date']
         event.time = data['time']
         event.details = data['details']
         event.user = user.key()

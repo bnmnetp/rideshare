@@ -1,0 +1,88 @@
+{% extends "layout.html" %}
+
+{% block title %}Join as Driver{% endblock %}
+
+{% block head %}
+{% endblock %}
+
+{% block main %}
+<div data-notify="container"></div>
+<div class="panel panel-main">
+	<div class="panel-heading">Ride details</div>
+	<div class="panel-body">
+		<ul class="information">
+			<li>
+				<b>Starting point:</b> {{ride.orig_add}}
+			</li>
+			<li>
+				<b>Destination by:</b> {{invite.sender.name}}
+			</li>
+            <li>
+                <b>Date:</b> {{ride.date}}
+            </li>
+		</ul>
+        <button class='btn btn-primary'>
+            Join as Driver
+        </button>
+	</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% raw %}
+<script data-notify="template" type='text/x-handlebars-template'>
+    <div class="alert alert-{{type}} alert-dismissable">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        <strong>{{strong}}</strong> {{{message}}}
+    </div>
+</script>
+{% endraw %}
+
+<script type="text/javascript">
+    var send_req = function (type, id) {
+        var push = $.ajax({
+            type: 'POST',
+            url: '/invites',
+            dataType: 'json',
+            contentType: 'application/json; charset=UTF-8',
+            data: JSON.stringify({
+                type: type,
+                id: id
+            })
+        });
+
+        push.done(function (data) {
+            if (data.redirect) {
+                document.location.href = '/circle/' + data.circle_id;
+            } else {
+                notify({
+                    type: 'success',
+                    strong: 'Success',
+                    message: 'You have declined the invite.'
+                });
+            }
+
+        });
+
+        push.fail(function (data, status) {
+            notify({
+                type: 'danger',
+                strong: 'Whoops',
+                message: 'Please refresh the page and try again.'
+            });
+        });
+    };
+
+    document.body.addEventListener('click', function (e) {
+        var target = e.target;
+
+        if (target.dataset.invite) {
+            if (target.dataset.invite == 'join') {
+                send_req('join', target.dataset.id);
+            } else if (target.dataset.invite == 'decline') {
+                send_req('decline', target.dataset.id);
+            }
+        }
+    });
+</script>
+{% endblock %}

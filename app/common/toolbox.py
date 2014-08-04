@@ -2,6 +2,7 @@ import os.path
 import jinja2
 from app.model import *
 from app.base_handler import BaseHandler
+from datetime import datetime
 
 env = jinja2.Environment(
     loader=jinja2.PackageLoader('app', 'templates'),
@@ -9,7 +10,7 @@ env = jinja2.Environment(
     autoescape=True
 )
 
-def doRender(handler, name = 'map.html', value = {}):
+def doRender(handler, name = 'home.html', value = {}):
 	value['community'] = db.Query(Community).get()
 
 	b = BaseHandler()
@@ -32,3 +33,7 @@ def grab_json(obj, prop):
 		if p in obj._properties:
 			resp[p] = str(getattr(obj, p))
 	return resp
+
+# returns date obj from format
+def create_date(fmt='%m/%d/%Y'):
+	return lambda v: datetime.strptime(v, fmt).date()

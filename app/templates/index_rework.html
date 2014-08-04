@@ -3,7 +3,7 @@
 {% block title %}Ride{% endblock %}
 
 {% block head %}
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB15X6ti6tDQUQKjwPCI2zi3XFfxZW3MGM&sensor=false" type="text/javascript"></script>
+<link rel="stylesheet" href="/static/datepicker.css">
 {% endblock %}
 
 {% block main %}
@@ -19,10 +19,22 @@
 
 <div class="panel panel-default padding">
     <div class="panel-body">
-        To get started, <b>click on a marker to get details</b> or
-        <div class="btn-group">
-            <button class='btn btn-default' data-next='create_event'>Create a new Event</button>
-            <button class='btn btn-default' data-next='create_ride'>Create a new Ride</button>
+        
+        <div class="key">
+            <i class='fa fa-key'></i>
+            Key
+        </div>
+        <div class="key">
+            <img src="/static/person.png" />
+            Event
+        </div>
+        <div class="key">
+            <img src="/static/start.png" />
+            Starting point
+        </div>
+        <div class="key">
+            <img src="/static/end.png" />
+            Destination
         </div>
         <div class="btn-group pull-right">
             <button class='btn btn-primary' data-reset>
@@ -34,23 +46,7 @@
                 Help
             </button>
         </div>
-        <hr>
-        <div class="key">
-            <i class='fa fa-key'></i>
-            Key
-        </div>
-        <div class="key">
-            <img src="/static/carRed.png" />
-            Destination
-        </div>
-        <div class="key">
-            <img src="/static/carGreen.png" />
-            Starting point
-        </div>
-        <div class="key">
-            <img src="/static/person.png" />
-            Event
-        </div>
+
     </div>
 </div>
 
@@ -62,12 +58,48 @@
         <div id="map_canvas"></div>
     </div>
 
-    <div class="col-md-4 map_con" id='col_dialog' data-route='select_location'>
-
+    <div class="col-md-4 map_con" data-route='path'>
+        To get started, <b>click on a marker to get details</b> or
+        <ul class="menu">
+            <li data-next='new_event'>Create a new Event</li>
+            <li data-next='new_ride'>Request a Ride</li>
+            <li data-next='new_trip'>Create a new Trip</li>
+        </ul>
     </div>
 
-    <div class="col-md-4" data-route='location_selection'>
-        
+    <div class="col-md-4" data-route='select_orig'>
+        <div class="locsec">
+            <h1>Select the starting location</h1>
+            <div class="form-group">
+                <label>Origin:
+                    <span data-location='text'>None</span>
+                </label>
+            </div>
+            <button class="btn btn-primary hidden" data-next="true" type='button' data-location="btn">
+                Next
+            </button>
+            <p>Use one of the following options:</p>
+            <ul>
+                <li>
+                    <h2>Point & Click</h2>
+                    Select a location by clicking on the map
+                </li>
+                <li data-geolocation='container' class='hidden'>
+                    <h2>Geolocation</h2>
+                    <button data-geolocation='btn' class='btn btn-primary'>Use your current location.</button>
+                </li>
+                <li>
+                    <h2>Search</h2>
+                    <form data-search>
+                        <div class="form-group">
+                            <label>Enter an address, city, or state:</label>
+                            <input type="text" class="form-control" name="address">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Search</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
     </div>
 
     <div class="col-md-4" data-route='event_details'>
@@ -78,45 +110,49 @@
             </div>
             <div class="form-group">
                 <label>Date</label>
-                <input class="form-control date-select" type="text" placeholder="Date" name='date'>
+                <div class='input-group date' data-datepicker data-date-format="MM/DD/YYYY">
+                    <input class="form-control" type="text" placeholder="Date" name='date'>
+                    <span class="input-group-addon">
+                        <i class="fa fa-calendar"></i>
+                    </span>
+                </div>
             </div>
             <div class="form-group">
                 <label>Time</label>
-                <input class="form-control" type="text" placeholder="Time" name='time'>
+                <div class="input-group date" data-time>
+                    <input class="form-control" type="text" placeholder="Time" name='time'>
+                    <span class="input-group-addon">
+                        <i class="fa fa-clock-o"></i>
+                    </span>
+                </div>
             </div>
             <div class="form-group">
                 <label>Details</label>
                 <input class="form-control" type="text" placeholder="Details" name='details'>
             </div>
-            <!-- <div class="form-group">
-                <label>Circle</label>
-                <select class="form-control" >
-                    <option>All</option>
-                </select>
-            </div> -->
             <button type='submit' class='btn btn-primary'>Create Event</button>
         </form>
-    </div>
-
-    <div class="col-md-4" data-route='select_type'>
-        <p>Do you need a ride or can you drive?</p>
-        <button class="btn btn-primary" data-next='location_dest' data-option='passenger'>
-            Need a Ride
-        </button>
-        <button class="btn btn-primary" data-next='location_dest' data-option='driver'>
-            Driving
-        </button>
     </div>
 
     <div class="col-md-4" data-route='passenger_details'>
         <form data-send="passenger">
             <div class="form-group">
                 <label>Date</label>
-                <input class="form-control date-select" type="text" placeholder="Date" name='date'>
+                <div class='input-group date' data-datepicker data-date-format="MM/DD/YYYY">
+                    <input class="form-control" type="text" placeholder="Date" name='date'>
+                    <span class="input-group-addon">
+                        <i class="fa fa-calendar"></i>
+                    </span>
+                </div>
             </div>
             <div class="form-group">
                 <label>Time</label>
-                <input class="form-control" type="text" placeholder="Time" name='time'>
+                <div class="input-group date" data-time>
+                    <input class="form-control" type="text" placeholder="Time" name='time'>
+                    <span class="input-group-addon">
+                        <i class="fa fa-clock-o"></i>
+                    </span>
+                </div>
             </div>
             <div class="form-group">
                 <label>Additional Details</label>
@@ -128,7 +164,7 @@
         </form>
     </div>
 
-    <div class="col-md-4" data-route='location_dest'>
+    <div class="col-md-4" data-route='select_dest'>
         <form>
             <p class="lead">
                 Select the Destination
@@ -171,15 +207,33 @@
             </div>
             <div class="form-group">
                 <label>Date</label>
-                <input class="form-control date-select" type="text" placeholder="Date" name='date'>
+                <div class='input-group date' data-datepicker data-date-format="MM/DD/YYYY">
+                    <input class="form-control" type="text" placeholder="Date" name='date'>
+                    <span class="input-group-addon">
+                        <i class="fa fa-calendar"></i>
+                    </span>
+                </div>
             </div>
             <div class="form-group">
                 <label>Time</label>
-                <input class="form-control" type="text" placeholder="Time" name='time'>
+                <div class="input-group date" data-time>
+                    <input class="form-control" type="text" placeholder="Time" name='time'>
+                    <span class="input-group-addon">
+                        <i class="fa fa-clock-o"></i>
+                    </span>
+                </div>
             </div>
             <div class="form-group">
                 <label>Additional Details</label>
                 <input class="form-control" type="text" placeholder="Details" name='details'>
+            </div>
+            <div class="form-group">
+                <label>Does this event recur?</label>
+                <select name="recurring" class="form-control">
+                    <option value="false">Never</option>
+                    <option value="daily">Daily</option>
+                    <option value="weekly">Weekly</option>
+                </select>
             </div>
             <button class="btn btn-primary"  type='submit'>
                 Create Ride
@@ -191,74 +245,12 @@
         <p>This is a safety agreement that you have agreed to follow. This is important.</p>
         <button class='btn btn-primary' data-next='true'>Agree & Continue</button>
     </div>
-
-    <div class="col-md-4" data-route="join_ride">
-        
-    </div>
 </div>
 {% endblock %}
 
 {% block scripts %}
 
 {% raw %}
-
-<script data-template='select_location' type='text/x-handlebars-template'>
-    <div class="locsec">
-        <h1>Select the {{type}} location</h1>
-        <p>Use one of the following options:</p>
-        <ul>
-            <li>
-                <h2>Point & Click</h2>
-                Select a location by clicking on the map
-            </li>
-            <li>
-                <h2>Geolocation</h2>
-                <button class='geo_location btn btn-primary'>Use your current location.</button>
-            </li>
-            <li>
-                <h2>Search</h2>
-                <form data-search>
-                    <div class="form-group">
-                        <label>Enter an address, city, or state:</label>
-                        <input type="text" class="form-control" name="address">
-                    </div>
-                    <button type="submit" class="btn btn-primary">Search</button>
-                </form>
-            </li>
-        </ul>
-        <hr>
-        Selected location: <span data-location='text'>None</span>
-        <button class="btn btn-primary hidden" data-next="true" type='button' data-location="btn">
-            Next
-        </button>
-    </div>
-</script>
-
-<script data-template='join_ride' type="text/x-handlebars-template">
-    <h1>Join a ride</h1>
-    <ul class="information">
-        <li>
-            <b>Origin:</b> {{origin}}
-        </li>
-        <li>
-            <b>Destination:</b> {{dest}}
-        </li>
-        <li>
-            <b>Date:</b> {{date}}
-        </li>
-        <li>
-            <b>Time:</b> {{time}}
-        </li>
-        <li>
-            <b>Driver:</b> {{driver}}
-        </li>
-
-    </ul>
-    <button class="btn btn-primary btn-large" data-join='passenger:{{id}}'>Join as Passenger</button>
-    {{#unless driver}}
-    <button class='btn btn-primary btn-large' data-join='driver:{{id}}'>Join as Driver</button>
-    {{/unless}}
-</script>
 
 <script data-template='popup' type="text/x-handlebars-template">
     <div class="entry">
@@ -270,7 +262,7 @@
     <div class="entry">
         <strong>{{secondary}} Location:</strong> {{secondary_add}}
     </div>
-    <button class='btn btn-primary' data-next='join_ride' data-id='{{id}}'>Join this ride</button>
+    <a class='btn btn-primary' href='/ride/{{id}}'>View more details</a>
 </script>
 
 <script data-template='popup-event' type="text/x-handlebars-template">
@@ -286,9 +278,9 @@
     <a class='btn btn-primary' href='/event/{{id}}'>
         View Event
     </a>
-    <button class='btn btn-primary' data-next='ride_to_event' data-id='{{id}}'>
+    <a href='/event/{{id}}' class='btn btn-primary'>
         Create a ride to this event.
-    </button>
+    </a>
     <p class="help-block">View the event to look for rides / set up rides.</p>
 </script>
 
@@ -300,31 +292,42 @@
 </script>
 
 {% endraw %}
-
-<script src="/static/augment.js" type="text/javascript"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB15X6ti6tDQUQKjwPCI2zi3XFfxZW3MGM&sensor=false" type="text/javascript"></script>
 <script src="/static/maps2.js" type="text/javascript"></script>
 <script src="/static/flow2.js" type="text/javascript"></script>
-<script type="text/javascript" src="/static/jquery_ui/jquery-ui-1.10.4.custom.js"></script>
-<script src='//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/js/bootstrap.min.js' type="text/javascript"></script>
+<script src='//cdnjs.cloudflare.com/ajax/libs/moment.js/2.7.0/moment.min.js'></script>
+<script src='//cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/3.0.0/js/bootstrap-datetimepicker.min.js'></script>
 
 <script type="text/javascript">
-var flow = new Flow('select_location', paths);
-flow.set_handler(map);
 
-$('.date-select').datepicker();
+    $('[data-datepicker]').datetimepicker({
+        pickTime: false
+    });
 
-/* Toggle Help */
-var help = {};
-help.btn = document.querySelector('[data-help="toggle"]');
-help.container = document.querySelector('[data-help="container"]');
+    $('[data-time]').datetimepicker({
+        icons: {
+            time: "fa fa-clock-o",
+            date: "fa fa-calendar",
+            up: "fa fa-arrow-up",
+            down: "fa fa-arrow-down"
+        },
+        pickDate: false
+    });
 
-help.btn.addEventListener('click', function (e) {
-    var target = e.target;
+    var flow = new Flow('path', paths);
+    flow.set_handler(map);
 
-    help.container.classList.toggle('hidden');
-});
-/* End */
+    /* Toggle Help */
+    var help = {};
+    help.btn = document.querySelector('[data-help="toggle"]');
+    help.container = document.querySelector('[data-help="container"]');
 
+    help.btn.addEventListener('click', function (e) {
+        var target = e.target;
+
+        help.container.classList.toggle('hidden');
+    });
+    /* End */
 </script>
 
 {% endblock %}
