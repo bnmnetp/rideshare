@@ -77,7 +77,6 @@ class GetCircleInvite(BaseHandler):
             'circle': circle
         })
 
-
 class CircleHandler(BaseHandler):
     def get(self):
         self.auth()
@@ -174,15 +173,20 @@ class NewCircleHandler(BaseHandler): # actual page
             "user": user
         })
 
+class ChangeCircle(BaseHandler):
+    def get(self, circle_id):
+        self.auth()
 
-class AddCircleHandler(BaseHandler): #add Circle Processing
-    def post(self):
-        aquery = db.Query(College)
-        mycollege = aquery.get()
-        circleName = self.request.get("name")
-        circleDesc = self.request.get("description")
-        newCircle = Circle()
-        newCircle.name = circleName
-        newCircle.description = circleDesc
-        newCircle.put()
-        self.redirect("/")
+        user = self.current_user()
+
+        if circle_id != '0':
+            circle = Circle.get_by_id(int(circle_id))
+        else:
+            circle = None
+
+        if not circle:
+            self.session['circle'] = None
+        else:
+            self.session['circle'] = circle.key().id()
+
+        self.redirect(self.request.referer)

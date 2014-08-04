@@ -61,11 +61,9 @@ class MapHandler(BaseHandler):
     def get(self):
         self.auth()
         user = self.current_user()
-        circle_id = self.request.get('circle')
-        if circle_id:
-            circle = Circle.get_by_id(int(circle_id))
-        else:
-            circle = None
+
+        circle = self.circle()
+
         doRender(self, 'index_rework.html', {
             'user': user,
             'circle': circle
@@ -197,8 +195,8 @@ app = webapp2.WSGIApplication([
     # controllers/circles.py
     ('/circle/(\d+)', GetCircleHandler),
     ('/circle/(\d+)/invite', GetCircleInvite),
-    ('/addCircle', AddCircleHandler),
-    ('/newCircle',NewCircleHandler),
+    ('/circle/(\d+)/change', ChangeCircle),
+    ('/newCircle', NewCircleHandler),
     ('/circles', CircleHandler),
     ('/join_circle', JoinCircle),
 

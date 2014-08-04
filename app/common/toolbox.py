@@ -21,7 +21,12 @@ def doRender(handler, name = 'home.html', value = {}):
 		value['alert_badge'] = Notification.all().filter('user = ', user.key()).count()
 		circle_keys = User.get_by_id(user.key().id()).circles
 		value['circle_list'] = Circle.all().filter('__key__ in', circle_keys)
-		print value['circle_list']
+
+		value['active_circle'] = None
+		if 'circle' in handler.session:
+			for v in value['circle_list']:
+				if v.key().id() == handler.session['circle']:
+					value['active_circle'] = v
 
 	template = env.get_template(name)
 	handler.response.write(template.render(value))

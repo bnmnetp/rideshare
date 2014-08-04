@@ -55,3 +55,14 @@ class BaseHandler(webapp2.RequestHandler):
         self.session_store = sessions.get_store(request=self.request)
         # Returns a session using the default cookie key.
         return self.session_store.get_session()
+
+    def circle(self):
+        if 'circle' in self.session:
+            if self.session['circle'] != None:
+                circle = Circle.get_by_id(int(self.session['circle']))
+            else:
+                circle = None
+        else:
+            circle = None
+
+        return circle
