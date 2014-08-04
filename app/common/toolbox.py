@@ -19,6 +19,9 @@ def doRender(handler, name = 'home.html', value = {}):
 	if user:
 		value['invite_badge'] = Invite.all().filter('user = ', user.key()).count()
 		value['alert_badge'] = Notification.all().filter('user = ', user.key()).count()
+		circle_keys = User.get_by_id(user.key().id()).circles
+		value['circle_list'] = Circle.all().filter('__key__ in', circle_keys)
+		print value['circle_list']
 
 	template = env.get_template(name)
 	handler.response.write(template.render(value))

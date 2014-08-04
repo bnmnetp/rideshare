@@ -37,10 +37,27 @@
 				</svg>
 			</div>
 			<a class="navbar-brand" href='/home'>
-				<!-- {{community.name}}  -->Ridecircles
+				Ridecircles
 			</a>
+			<div class="dropdown cla">
+				<a href="#" class='dropdown-toggle' data-toggle='dropdown' role='button'>
+					<i class="fa fa-circle-o"></i>
+					Public
+					<span class="caret"></span>
+				</a>
+				<ul class="dropdown-menu">
+					<li>
+						<a href="#">Public</a>
+					</li>
+					{% for circle in circle_list %}
+					<li>
+						<a href="#">{{circle.name}}</a>
+					</li>
+					{% endfor %}
+				</ul>
+			</div>
 		</div>
-		<div class="collapse navbar-collapse">
+		<div class="nav-center">
 			<ul class="nav navbar-nav center">
 				<li>
 					<a href="/home">Home</a>
@@ -60,44 +77,30 @@
 				<li>
 					<a href="/events">Events</a>
 				</li>
-			</ul>
-			<ul class="nav navbar-nav navbar-right">
-				<li class="dropdown">
-					<a href="#" class='dropdown-toggle' data-toggle='dropdown' role='button'>
-						View as:
-						<span class="caret"></span>
-					</a>
-					<ul class="dropdown-menu">
-						<li>
-							<a href="#">Circle #1</a>
-						</li>
-					</ul>
-				</li>
-				<li>
-					<a href="">Circle #1</a>
-				</li>
 				<li>
 					<a href="/invites">Invites</a>
 					{% if invite_badge %}
 						<span class="nbadge">{{invite_badge}}</span>
 					{% endif%}
 				</li>
-				{% if user is defined %}
-				<li>
-					<a href="/user">
-						<i class="fa fa-user"></i>
-					</a>
-				</li>
-				{% endif %}
-			    {% if user is defined %}
-			    <li>
-			        <a href="/logout">
-			        	Signout
-			        </a>
-			    </li>
-			    {% endif %}
 			</ul>
 		</div>
+		<ul class="nav navbar-nav nav-pin">
+			{% if user is defined %}
+			<li>
+				<a href="/user">
+					<i class="fa fa-user"></i>
+				</a>
+			</li>
+			{% endif %}
+		    {% if user is defined %}
+		    <li>
+		        <a href="/logout">
+		        	Signout
+		        </a>
+		    </li>
+		    {% endif %}
+		</ul>
 	</nav>
 	<nav class='subnav'>
 		
