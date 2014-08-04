@@ -17,6 +17,22 @@ img {
     cursor: pointer;
 }
 
+.navbar {
+    padding: 0 15px 0 15px;
+}
+
+.navbar-collapse {
+    text-align: center;
+    display: block;
+    width: 100%;
+    padding: 0 15px 0 15px;
+}
+
+.navbar .center {
+    width: 400px;
+    margin: 0 auto;
+}
+
 /* Menu */
 .menu {
     list-style: none;

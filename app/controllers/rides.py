@@ -161,7 +161,7 @@ class EditRide(BaseHandler):
         except MultipleInvalid as e:
             return self.json_resp(500, {
                 'error': True,
-                'message': 'Invalid data'
+                'message': str(e)
             })
 
         ride.passengers_max = data['passengers_max']
@@ -455,7 +455,7 @@ class RideEvent(BaseHandler):
         ride.event = event.key()
 
         if type == 'driver':
-            ride.passengers_max = int(data['max_passengers'])
+            ride.passengers_max = int(data['passengers_max'])
             ride.driver = user.key()
             ride.passengers = []
         elif type == 'passenger':

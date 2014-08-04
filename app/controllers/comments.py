@@ -43,7 +43,7 @@ class CommentHandler(BaseHandler):
         comment_validator = Schema({
             Required('comment'): unicode,
             Required('type'): comment_type(),
-            'id': int,
+            'id': long,
             'is_owner': bool
         })
 
@@ -53,7 +53,7 @@ class CommentHandler(BaseHandler):
             print str(e)
             return self.json_resp(500, {
                 'error': True,
-                'message': 'Invalid data'
+                'message': str(e)
             })
 
         d = datetime.date.today()
