@@ -92,7 +92,7 @@ class CircleHandler(BaseHandler):
             else:
                 circle.user = False
 
-        doRender(self, 'main.html', {
+        doRender(self, 'circles.html', {
             'circles': circles,
             'user': user,
             'invites': invites
