@@ -39,6 +39,7 @@
 			<a class="navbar-brand" href='/home'>
 				Ridecircles
 			</a>
+			{% if active_circle %}
 			<div class="dropdown cla">
 				<a href="#" class='dropdown-toggle' data-toggle='dropdown' role='button' id='tooltip-trial'>
 					<i class="fa fa-circle-o"></i>
@@ -60,8 +61,10 @@
 					{% endfor %}
 				</ul>
 			</div>
+			{% endif %}
 		</div>
 		<div class="nav-center">
+		{% if user is defined %}
 			<ul class="nav navbar-nav center">
 				<li>
 					<a href="/home">Home</a>
@@ -88,6 +91,7 @@
 					{% endif%}
 				</li>
 			</ul>
+		{% endif %}
 		</div>
 		<ul class="nav navbar-nav nav-pin">
 			{% if user is defined %}
@@ -96,8 +100,6 @@
 					<i class="fa fa-user"></i>
 				</a>
 			</li>
-			{% endif %}
-		    {% if user is defined %}
 		    <li>
 		        <a href="/logout">
 		        	Signout
