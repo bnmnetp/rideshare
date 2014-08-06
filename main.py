@@ -56,6 +56,10 @@ if aquery.count() == 0:
         lng = secrets.community['lng']
     )
     community.put()
+
+class Marketing(BaseHandler):
+    def get(self):
+        doRender(self, 'marketing/home.html')
     
 class MapHandler(BaseHandler):
     def get(self):
@@ -64,7 +68,7 @@ class MapHandler(BaseHandler):
 
         circle = self.circle()
 
-        doRender(self, 'index_rework.html', {
+        doRender(self, 'map.html', {
             'user': user,
             'circle': circle
         })
@@ -164,7 +168,8 @@ class DetailHandler(BaseHandler):
         self.response.write(json.dumps(resp))
 
 app = webapp2.WSGIApplication([
-    ('/', LoginHandler),
+    ('/', Marketing),
+    ('/login', LoginHandler),
     ('/map', MapHandler),
 
     # controllers/rides.py

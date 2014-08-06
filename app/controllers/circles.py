@@ -129,7 +129,7 @@ class CircleHandler(BaseHandler):
         circle.description = data['description']
         circle.privacy = data['privacy']
         circle.color = data['color']
-        circle.owner.append(user.key())
+        circle.admins.append(user.key())
 
         circle.put()
 

@@ -82,7 +82,7 @@
         <div class="panel-body panel-no">
         {% if circles %}
             {% for circle in circles %}
-            {% if circle.privacy == 'public' %}
+            
             <div class="list">
                 {% if circle.color %}
                 <div class="ctx" style='background-color:{{circle.color}};'>
@@ -94,6 +94,12 @@
                 <div class="info">
                     <div class="title">
                         {{circle.name}}
+                        {% if circle.privacy == 'private' %}
+                        <div class="pull-right">
+                            <button class="btn btn-success">Request to Join</button>
+                        </div>
+                        {% endif %}
+                        {% if circle.privacy == 'public' %}
                         {% if circle.user %}
                         <div class="toggle" data-id='{{circle.key().id()}}' data-switch='true'>
                         {% else %}
@@ -104,13 +110,13 @@
                             <div class="false_padding"></div>
                             <div class="false">Out</div>
                         </div>
+                        {% endif %}
                     </div>
                     <div class="sub">
                         {{circle.description}}
                     </div>
                 </div>
             </div>  
-            {% endif %}
             {% endfor %}
         {% else %}
             <div class="panel-message">

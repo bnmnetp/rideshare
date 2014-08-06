@@ -25,6 +25,9 @@
     <li data-next="events">
         Events
     </li>
+    <li data-next="members">
+        Members
+    </li>
     <li>
         <a href="/circle/{{circle.key().id()}}/invite">
             Invite
@@ -70,22 +73,32 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="panel panel-main">
-                <div class="panel-heading">Members of Circle</div>
-                <div class="panel-body">
-                    {% for member in members %}
-                        <div class="media">
-                            <a href="#" class='pull-left'>
-                                <img src="/user/photo/{{member.key().id()}}" style="width: 64px; height: 64px;" class="media-object" alt="64x64">
-                            </a>
-                            <div class="media-body">
-                                <h4>{{member.name}}</h4>
-                            </div>
+    </div>
+</div>
+<div data-route='members'>
+    <div class="panel panel-main">
+        <div class="panel-heading">Members of Circle</div>
+        <div class="panel-body">
+        {% for member in members %}
+            <div class="media">
+                <a href="#" class='pull-left'>
+                    <img src="/user/photo/{{member.key().id()}}" style="width: 64px; height: 64px;" class="media-object" alt="64x64">
+                </a>
+                <div class="media-body">
+                    <div class="pull-left">
+                        <h4>{{member.name}}</h4>
+                    </div>
+                    {% if is_admin %}
+                    <div class="pull-right">
+                        <div class="options">
+                            <button class='btn btn-success' data-promote='{{member.key().id()}}'>Promote to Admin</button>
+                            <button class='btn btn-danger' data-kick='{{member.key().id()}}'>Kick Member</button>
                         </div>
-                    {% endfor %}
+                    </div>
+                    {% endif %}
                 </div>
             </div>
+        {% endfor %}
         </div>
     </div>
 </div>
