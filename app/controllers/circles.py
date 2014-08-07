@@ -8,6 +8,35 @@ from app.common.voluptuous import *
 import json
 import re
 
+class EditCircle(BaseHandler):
+    def get(self, circle_id):
+        self.auth()
+
+        user = self.current_user()
+
+        circle = Circle.get_by_id(int(circle_id))
+
+        if not circle:
+            self.redirect('/circles')
+        
+        doRender(self, 'edit_circle.html', {
+            'user': user,
+            'circle': circle
+        })
+    def post (Self, circle_id):
+        self.auth()
+
+        user = self.current_user()
+
+        circle = Circle.get_by_id(int(circle_id))
+
+        if not circle:
+            self.resp_json(500, {
+                'message': 'Circle not found.'
+            })
+
+        print ''
+
 class GetCircleHandler(BaseHandler):
     def get(self, circle_id):
         self.auth()
