@@ -18,6 +18,7 @@ var Filter = augment(Object, function () {
 
 	this.action = function (filter) {
 		this.active(filter);
+		this.start_loading();
 		var fetch = $.ajax({
 			type: 'POST',
 			url: '/filter',
@@ -53,15 +54,35 @@ var Filter = augment(Object, function () {
 		}
 	};
 
-	this.display_results = function (data) {
+	this.clear_container = function () {
 		while (this.container.hasChildNodes()) {
 			this.container.removeChild(this.container.childNodes[0])
 		}
-		for (var i = 0; i < data.length; i++) {
-			var d = data[i];
-			console.log(d);
-			var html = this.template(d);
-			this.container.insertAdjacentHTML('beforeend', html);
+	}
+
+	this.display_results = function (data) {
+		this.clear_container();
+		if (data.length > 0) {
+			for (var i = 0; i < data.length; i++) {
+				var d = data[i];
+				console.log(d);
+				var html = this.template(d);
+				this.container.insertAdjacentHTML('beforeend', html);
+			}
+		} else {
+			this.container.insertAdjacentHTML(
+				'beforeend',
+				'<div class="panel-message">No rides match that criteria.</div>'
+			);
 		}
+	};
+
+	this.start_loading = function () {
+		this.clear_container();
+		var loading_html = '<div class="loading"><i class="fa fa-circle-o-notch fa-spin fa-5x"></i></div>';
+		this.container.insertAdjacentHTML(
+			'beforeend',
+			loading_html
+		)
 	};
 });
