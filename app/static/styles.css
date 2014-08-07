@@ -1,7 +1,7 @@
 body {
 	/*margin-bottom: 60px;*/
     overflow: auto;
-    padding-top: 70px;
+    padding-top: 120px;
     color: #262626;
 }
 
@@ -17,22 +17,37 @@ img {
     cursor: pointer;
 }
 
+/* Subnav */
+.subnav {
+    display: block;
+    background-color: #512DA8;
+    width: 100%;
+    overflow: auto;
+    top: 50px;
+    position: fixed;
+    text-align:center;
+}
+.subnav-center {
+    display:inline-block;
+    text-align:left;
+    float: none;
+}
+/* End */
+
 /* Nav */
 .navbar {
     padding: 0 15px 0 15px;
+    margin-bottom: 0px;
+}
+
+.nav-center-outer {
+    width: 100%;
+    min-height: 50px;
 }
 
 .nav-center {
-    text-align: center;
-    display: block;
-    width: 100%;
-    padding: 0 15px 0 15px;
-}
-
-.navbar .center {
-    width: 409px;
-    margin: 0 auto;
-    float: none;
+    width: 280px;
+    margin: 0px auto;
 }
 
 .nav-pin {
@@ -542,9 +557,6 @@ template {
     }
     .navbar .container {
         padding: 0px 15px 0px 15px;
-    }
-    .navbar {
-        margin-bottom: 0px;
     }
     .panel {
         margin-bottom: 0px;

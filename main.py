@@ -60,6 +60,10 @@ if aquery.count() == 0:
 class Marketing(BaseHandler):
     def get(self):
         doRender(self, 'marketing/home.html')
+
+class GetStarted(BaseHandler):
+    def get(self):
+        doRender(self, 'marketing/get_started.html')
     
 class MapHandler(BaseHandler):
     def get(self):
@@ -169,6 +173,7 @@ class DetailHandler(BaseHandler):
 
 app = webapp2.WSGIApplication([
     ('/', Marketing),
+    ('/get_started', GetStarted),
     ('/login', LoginHandler),
     ('/map', MapHandler),
 

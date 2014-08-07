@@ -14,80 +14,31 @@
         Create an event by visiting the <a href='/map'>map page</a>.
     </div>
 </div>
-<ul class="ntabs">
-    <li data-next="my_events">
-        My Events
-    </li>
-    <li data-next="all_events">
-        Public Events
-    </li>
-</ul>
-<div data-route='all_events'>
-    <div class="panel panel-default">
-        <div class="panel-body">
-            This is a list of all public events.
-        </div>
-    </div>
-    <div class="panel panel-main">
-        <div class="panel-heading">All Events</div>
-        <div class="panel-body panel-no">
-        {% if events_all %}
-            {% for event in events_all %}
-                <div class="list">
-                    <div class="ctx">
-                        <i class="fa fa-location-arrow"></i>
+<div class="panel panel-main">
+    <div class="panel-heading">Events</div>
+    <div class="panel-body panel-no">
+    {% if events_all %}
+        {% for event in events_all %}
+            <div class="list">
+                <div class="ctx">
+                    <i class="fa fa-location-arrow"></i>
+                </div>
+                <div class="info">
+                    <div class="title">
+                        <a href="/event/{{event.key().id()}}">{{event.name}}</a>
                     </div>
-                    <div class="info">
-                        <div class="title">
-                            <a href="/event/{{event.key().id()}}">{{event.name}}</a>
-                        </div>
-                        <div class="sub">
-                            <i class="fa fa-calendar"></i> {{event.date}}
-                            <i class="fa fa-location-arrow"></i> {{event.address}}
-                        </div>
+                    <div class="sub">
+                        <i class="fa fa-calendar"></i> {{event.date}}
+                        <i class="fa fa-location-arrow"></i> {{event.address}}
                     </div>
                 </div>
-            {% endfor %}
-        {% else %}
-            <div class="panel-message">
-                There are no events yet. Visit <a href="/map">the map</a> to create one.
             </div>
-        {% endif %}
+        {% endfor %}
+    {% else %}
+        <div class="panel-message">
+            There are no events yet. Visit <a href="/map">the map</a> to create one.
         </div>
-    </div>
-</div>
-<div data-route='my_events'>
-    <div class="panel panel-default">
-        <div class="panel-body">
-            This is a list of all the events in your circles.
-        </div>
-    </div>
-    <div class="panel panel-main">
-        <div class="panel-heading">My Events</div>
-        <div class="panel-body panel-no">
-        {% if events_user %}
-            {% for event in events_user %}
-                <div class="list">
-                    <div class="ctx">
-                        <i class="fa fa-location-arrow"></i>
-                    </div>
-                    <div class="info">
-                        <div class="title">
-                            <a href="/event/{{event.key().id()}}">{{event.name}}</a>
-                        </div>
-                        <div class="sub">
-                            <i class="fa fa-calendar"></i> {{event.date}}
-                            <i class="fa fa-location-arrow"></i> {{event.address}}
-                        </div>
-                    </div>
-                </div>
-            {% endfor %}
-        {% else %}
-            <div class="panel-message">
-                You are not connected to any events.
-            </div>
-        {% endif %}
-        </div>
+    {% endif %}
     </div>
 </div>
 {% endblock %}
@@ -95,58 +46,6 @@
 {% block scripts %}
 
 {% raw %}
-
-<script data-template='join_ride' type="text/x-handlebars-template">
-    <h1>Join a ride</h1>
-    <div class="entry">
-        <strong>Origin:</strong> {{origin}}
-    </div>
-    <div class="entry">
-        <strong>Destination:</strong> {{dest}}
-    </div>
-    <div class="entry">
-        <strong>Date:</strong> {{date}}
-    </div>
-    <div class="entry">
-        <strong>Time:</strong> {{time}}
-    </div>
-    <div class="entry">
-        <strong>Driver:</strong> {{driver_name}}
-    </div>
-    <div class="entry">
-        <strong>Driver contact:</strong> {{contact}}
-    </div>
-    <button class="btn btn-primary btn-large" data-join='passenger:{{id}}'>Join as Passenger</button>
-    {{#unless driver}}
-    <button class='btn btn-primary btn-large' data-join='driver:{{id}}'>Join as Driver</button>
-    {{/unless}}
-</script>
-
-<script data-template='event' type="text/x-handlebars-template">
-<hr>
-<h1>Events</h1>
-<table class='table'>
-    <tr>
-        <th>Name</th>
-        <th>Address</th>
-        <th>Date</th>
-        <th>Time</th>
-        <th>Options</th>
-    </tr>
-    {{#each events}}
-    <tr>
-        <td>{{name}}</td>
-        <td>{{address}}</td>
-        <td>{{date}}</td>
-        <td>{{time}}</td>
-        <td>
-            <button data-join='event:{{id}}' class='btn btn-primary'>Join Event</button>
-        </td>
-    </tr>
-    {{/each}}
-</table>
-</script>
-
 <script data-notify="template" type='text/x-handlebars-template'>
     <div class="alert alert-{{type}} alert-dismissable">
         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
@@ -155,14 +54,5 @@
 </script>
 
 {% endraw %}
-
-<script src="static/augment.js" type="text/javascript"></script>
-<script src="static/flow.js" type="text/javascript"></script>
-<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
-
-
-<script type="text/javascript">
-var flow = new Flow('all_events');
-</script>
 
 {% endblock %}

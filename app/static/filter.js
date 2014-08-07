@@ -1,8 +1,9 @@
 var Filter = augment(Object, function () {
-	this.constructor = function () {
+	this.constructor = function (circle) {
 		this.container = document.querySelector('[data-container="filter"]');
 		this.source = document.querySelector('[data-template="ride"]').innerHTML;
 		this.template = Handlebars.compile(this.source);
+		this.circle = circle;
 
 		this.filters = document.querySelectorAll('[data-filter]');
 
@@ -23,7 +24,8 @@ var Filter = augment(Object, function () {
 			dataType: 'json',
 			contentType: 'application/json; charset=UTF-8',
 			data: JSON.stringify({
-				filter: filter
+				filter: filter,
+				circle: circle
 			})
 		});
 

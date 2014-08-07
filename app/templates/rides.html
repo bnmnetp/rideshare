@@ -83,13 +83,17 @@
 <script src="static/augment.js" type="text/javascript"></script>
 <script src="static/flow.js" type="text/javascript"></script>
 <script src="static/filter.js" type='text/javascript'></script>
-<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
-
 
 <script type="text/javascript">
-var flow = new Flow('my_rides');
-var filter = new Filter();
-filter.action('past');
+    {% if active_circle == None %}
+        var circle = false;
+    {% else %}
+        var circle = {{active_circle.key().id()}}
+    {% endif %}
+
+    var flow = new Flow('my_rides');
+    var filter = new Filter(circle);
+    filter.action('past');
 </script>
 
 {% endblock %}

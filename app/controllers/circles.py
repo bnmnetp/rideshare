@@ -56,13 +56,19 @@ class GetCircleHandler(BaseHandler):
             else:
                 ride.is_passenger = False
 
+        if user.key() in circle.admins:
+            is_admin = True
+        else:
+            is_admin = False
+
         doRender(self, 'view_circle.html', {
             'circle': circle,
             'user': user,
             'members': members,
             'rides': rides,
             'events': events,
-            'invite': invite
+            'invite': invite,
+            'is_admin': is_admin
         })
 
 class GetCircleInvite(BaseHandler):

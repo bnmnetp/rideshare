@@ -49,12 +49,11 @@ class EventHandler(BaseHandler):
 
         today = date.today()
 
-        events_user = Event.all().filter('circle IN', user.circles).filter('date >=', today).fetch(100)
+        circle = self.circle()
 
-        events_all = Event.all().filter('date >=', today).fetch(100)
+        events_all = Event.all().filter('circle =', circle).filter('date >=', today).fetch(100)
 
         doRender(self, 'events.html', {
-            'events_user': events_user,
             'events_all': events_all,
             'user': user
         })
@@ -68,7 +67,7 @@ class EventHandler(BaseHandler):
         today = date.today()
         events.filter('date >=', today)
 
-        if data['circle'] != '':
+        if data['circle'] != False:
             events.filter('circle = ',  data['circle'])
 
         self.response.write(json.dumps([e.to_dict() for e in events]))
@@ -89,9 +88,8 @@ class NewEventHandler(BaseHandler):
             Required('address'): unicode,
             Required('date'): create_date(),
             'time': unicode,
-            'details': unicode,
-            'circle': unicode
-        })
+            'details': unicode
+        }, extra = True)
 
         try:
             data = event_validator(data)
@@ -113,7 +111,7 @@ class NewEventHandler(BaseHandler):
         event.details = data['details']
         event.user = user.key()
 
-        if data['circle'] != '':
+        if data['circle']:
             circle = Circle.get_by_id(int(data['circle']))
             if circle:
                 event.circle = circle.key()

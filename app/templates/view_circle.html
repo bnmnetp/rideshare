@@ -19,12 +19,6 @@
     <li data-next="details">
         Details
     </li>
-    <li data-next="rides">
-        Rides
-    </li>
-    <li data-next="events">
-        Events
-    </li>
     <li data-next="members">
         Members
     </li>
@@ -51,7 +45,9 @@
                 Add events for this circle
                 <i class='fa fa-plus'></i>
             </a>
-            <btn class="btn btn-primary">Edit Circle</btn>
+            {% if is_admin %}
+                <btn class="btn btn-primary">Manage Circle</btn>
+            {% endif %}
         </div>
     </div>
 
@@ -100,72 +96,6 @@
                 </div>
             </div>
         {% endfor %}
-        </div>
-    </div>
-</div>
-<div data-route='rides'>
-    <div class="panel panel-main">
-        <div class="panel-heading">Rides</div>
-        <div class="panel-body panel-no">
-        {% if rides %}
-            {% for ride in rides %}
-                <div class="list">
-                    <div class="ctx">
-                        <i class="fa fa-car"></i>
-                    </div>
-                    <div class="info">
-                        <div class="title">
-                            <a href='/ride/{{ride.key().id()}}'>
-                                {{ride.orig}} to {{ride.dest}}
-                            </a>
-                        </div>
-                        <div class="sub">
-                            {% if ride.is_driver %}
-                                <span class="label label-success">Driver</span>
-                            {% endif %}
-                            {% if ride.is_passenger %}
-                                <span class="label label-success">Passenger</span>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-            {% endfor %}
-        {% else %}
-        <div class="panel-message">
-            You are not signed up for any rides currently.
-        </div>
-        {% endif %}
-        </div>
-    </div>
-</div>
-<div data-route='events'>
-    <div class="panel panel-main">
-        <div class="panel-heading">Events</div>
-        <div class="panel-body panel-no">
-        {% if events %}
-            {% for event in events %}
-                <div class="list">
-                    <div class="ctx">
-                        <i class="fa fa-location-arrow"></i>
-                    </div>
-                    <div class="info">
-                        <div class="title">
-                            <a href='/event/{{event.key().id()}}'>
-                                {{event.name}}
-                            </a>
-                        </div>
-                        <div class="sub">
-                            <i class="fa fa-calendar"></i> {{event.date}}
-                            <i class="fa fa-location-arrow"></i> {{event.address}}
-                        </div>
-                    </div>
-                </div>
-            {% endfor %}
-        {% else %}
-            <div class="panel-message">
-                There are no events yet. Visit <a href="/map">the map</a> to create one.
-            </div>
-        {% endif %}
         </div>
     </div>
 </div>

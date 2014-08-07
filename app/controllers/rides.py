@@ -11,53 +11,10 @@ import urllib, urllib2
 
 class RideHandler(BaseHandler):
     def get(self):
-        # if driver.key().id() == user.key().id()
-        # if user.key().id() in ride.passengers
         self.auth()
         user = self.current_user()
 
-        today = date.today()
-
-        rides_user_1 = Ride.all().filter('passengers =', user.key()).filter('date >=', today).fetch(100)
-        rides_user_2 = Ride.all().filter('driver = ', user.key()).filter('date >=', today).fetch(100)
-
-        rides_user = rides_user_1 + rides_user_2
-
-        rides_all = Ride.all().fetch(100)
-
-        # Grabs the city and state from the addresses
-        # Comes in format: Address, City, State Zip
-        if rides_all:
-            for ride in rides_all:
-                ride.dest = split_address(ride.dest_add)
-                ride.orig = split_address(ride.origin_add)
-                if ride.driver:
-                    if ride.driver.key().id() == user.key().id():
-                        ride.is_driver = True
-                    else:
-                        ride.is_driver = False
-                if user.key() in ride.passengers:
-                    ride.is_passenger = True
-                else:
-                    ride.is_passenger = False
-
-        if rides_user:
-            for ride in rides_user:
-                ride.dest = split_address(ride.dest_add)
-                ride.orig = split_address(ride.origin_add)
-                if ride.driver:
-                    if ride.driver.key().id() == user.key().id():
-                        ride.is_driver = True
-                    else:
-                        ride.is_driver = False
-                if user.key() in ride.passengers:
-                    ride.is_passenger = True
-                else:
-                    ride.is_passenger = False
-
         doRender(self, 'rides.html', {
-            'rides_user': rides_user,
-            'rides_all': rides_all,
             'user': user
         })
 
@@ -70,7 +27,7 @@ class RideHandler(BaseHandler):
         today = date.today()
         rides.filter('date >=', today)
 
-        if data['circle'] != '':
+        if data['circle'] != False:
             rides.filter('circle = ', data['circle'])
 
         results = json.dumps([r.to_dict() for r in rides])
@@ -86,6 +43,9 @@ class FilterRides(BaseHandler):
         data = json.loads(json_str)
 
         rides = Ride.all()
+
+        if data['circle']:
+            rides.filter('circle =', data['circle'])
 
         if data['filter'] == 'no_driver':
             rides.filter('driver = ', None)

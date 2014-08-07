@@ -17,6 +17,11 @@ body {
     color: #311B92;
 }
 
+.getstarted .row {
+    border-bottom: 1px solid #333333;
+    padding: 40px;
+}
+
 p {
     font-size: 14px;
     line-height: 1.75;
