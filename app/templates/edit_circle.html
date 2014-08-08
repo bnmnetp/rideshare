@@ -30,6 +30,13 @@
                 <p class="help-block">Public circles are visible to everyone. Private groups are invite only.</p>
             </div>
             <div class="form-group">
+                <label>Who can create events?</label>
+                <select class='form-control' name='permission'>
+                    <option value="anyone">Anyone in circle</option>
+                    <option value="admins">Only admins</option>
+                </select>
+            </div>
+            <div class="form-group">
                 <label>Color</label>
                 <select class='form-control' name='color'>
                     <option value="#5677fc">Blue</option>
@@ -40,8 +47,7 @@
                 </select>
                 <p class="help-block">Select a color for your circles so users will be able to identify and distinguish it easier.</p>
             </div>
-            <button type='submit' class='btn btn-default'>Edit Circle</button>
-            <button type='button' class='btn btn-danger pull-right'>Delete Circle</button>
+            <button type='submit' class='btn btn-primary'>Edit Circle</button>
         </form>
     </div>
 </div>
@@ -49,7 +55,7 @@
 
 {% block scripts %}
 <script src="/static/augment.js"></script>
-<script src='/static/default.js'></script>
+<script src='/static/push.js'></script>
 {% raw %}
 <script data-notify="template" type='text/x-handlebars-template'>
     <div class="alert alert-{{type}} alert-dismissable">
@@ -60,41 +66,23 @@
 </script>
 {% endraw %}
 <script type="text/javascript">
-    var form = document.querySelector('#form');
+    var form = document.querySelector('[data-circle="edit"]');
 
-    var def = new Default(form, {{ride_json|safe}});
-
-    form.addEventListener('submit', function (e) {
-        e.preventDefault();
-
-        var form = e.target;
-
-        var data = {};
-        def.get_values(data);
-
-        var push = $.ajax({
-            type: 'POST',
-            url: window.location.pathname,
-            dataType: 'json',
-            contentType: 'application/json; charset=UTF-8',
-            data: JSON.stringify(data)
-        });
-
-        push.done(function (data) {
-            notify({
-                type: 'success',
-                strong: 'Ride edited!',
-                message: 'Your ride has been edited. All passengers have been notified.'
-            });
-        });
-
-        push.fail(function (data, status) {
+    var push = new SubmitForm({
+        form: form,
+        model: {{circle_json|safe}},
+        method: 'POST',
+        route: '/circle/{{circle.key().id()}}/edit',
+        done: function (data) {
+            document.location = '/circle/' + data.id;
+        },
+        fail: function (message, status) {
             notify({
                 type: 'danger',
-                strong: 'Ride not edited.',
-                message: 'Try again.'
+                strong: 'Sorry!',
+                message: 'The circle was not edited. Please try again.'
             });
-        });
+        }
     });
 </script>
 {% endblock %}

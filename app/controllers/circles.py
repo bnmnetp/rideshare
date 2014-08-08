@@ -1,4 +1,4 @@
-from app.common.toolbox import doRender, split_address
+from app.common.toolbox import doRender, split_address, grab_json
 from google.appengine.ext import db
 from app.model import *
 import datetime
@@ -18,12 +18,17 @@ class EditCircle(BaseHandler):
 
         if not circle:
             self.redirect('/circles')
+
+        properties = ['name', 'description', 'privacy', 'permission', 'color']
+
+        circle_json = grab_json(circle, properties)
         
         doRender(self, 'edit_circle.html', {
             'user': user,
-            'circle': circle
+            'circle': circle,
+            'circle_json': circle_json
         })
-    def post (Self, circle_id):
+    def post (self, circle_id):
         self.auth()
 
         user = self.current_user()
@@ -35,7 +40,40 @@ class EditCircle(BaseHandler):
                 'message': 'Circle not found.'
             })
 
-        print ''
+        circle_schema = Schema({
+            Required('name'): All(unicode, Length(min=3)),
+            Required('description', default=""): unicode,
+            Required('privacy', default="public"): unicode,
+            Required('color', default="#607d8b"): unicode,
+            Required('permission'): unicode
+        })
+
+        json_str = self.request.body
+        data = json.loads(json_str)
+
+        try:
+            circle_schema(data)
+        except MultipleInvalid as e:
+            print str(e)
+            self.response.set_status(500)
+            self.response.write(json.dumps({
+                    'error': str(e),
+                    'message': 'Data could not be validated'
+                }))
+            return None
+
+        circle.name = data['name']
+        circle.description = data['description']
+        circle.privacy = data['privacy']
+        circle.color = data['color']
+        circle.permission = data['permission']
+
+        circle.put()
+
+        self.response.write(json.dumps({
+            'message': 'Circle edited!',
+            'id': circle.key().id()
+        }))
 
 class GetCircleHandler(BaseHandler):
     def get(self, circle_id):
@@ -143,7 +181,8 @@ class CircleHandler(BaseHandler):
             Required('name'): All(unicode, Length(min=3)),
             Required('description', default=""): unicode,
             Required('privacy', default="public"): unicode,
-            Required('color', default="#607d8b"): unicode
+            Required('color', default="#607d8b"): unicode,
+            Required('permission'): unicode
         })
 
         json_str = self.request.body
@@ -155,7 +194,7 @@ class CircleHandler(BaseHandler):
             print str(e)
             self.response.set_status(500)
             self.response.write(json.dumps({
-                    'error': True,
+                    'error': str(e),
                     'message': 'Data could not be validated'
                 }))
             return None
@@ -164,6 +203,7 @@ class CircleHandler(BaseHandler):
         circle.description = data['description']
         circle.privacy = data['privacy']
         circle.color = data['color']
+        circle.permission = data['permission']
         circle.admins.append(user.key())
 
         circle.put()
@@ -173,7 +213,8 @@ class CircleHandler(BaseHandler):
         user.put()
 
         self.response.write(json.dumps({
-            'message': 'Circle created!'
+            'message': 'Circle created!',
+            'id': circle.key().id()
         }))
 
 class JoinCircle(BaseHandler):

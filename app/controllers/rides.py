@@ -239,6 +239,11 @@ class GetRideHandler(BaseHandler):
 
         ride = Ride.get_by_id(int(ride_id))
 
+        print 'BEFORE'
+        if not ride:
+            print 'ERROR'
+            return self.redirect('/rides')
+
         user = self.current_user()
         availible_seats = 0
 

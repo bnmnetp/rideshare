@@ -206,10 +206,10 @@ app = webapp2.WSGIApplication([
     ('/circle/(\d+)', GetCircleHandler),
     ('/circle/(\d+)/invite', GetCircleInvite),
     ('/circle/(\d+)/change', ChangeCircle),
+    ('/circle/(\d+)/edit', EditCircle),
     ('/newCircle', NewCircleHandler),
     ('/circles', CircleHandler),
     ('/join_circle', JoinCircle),
-
     # end circles
 
     # controllers/invites.py

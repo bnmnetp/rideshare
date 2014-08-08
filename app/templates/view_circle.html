@@ -46,7 +46,7 @@
                 <i class='fa fa-plus'></i>
             </a>
             {% if is_admin %}
-                <btn class="btn btn-primary">Manage Circle</btn>
+                <a class="btn btn-primary" href='/circle/{{circle.key().id()}}/edit'>Manage Circle</a>
             {% endif %}
         </div>
     </div>

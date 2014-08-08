@@ -1,5 +1,6 @@
 var Default = augment(Object, function () {
 	this.constructor = function (form, ctx) {
+		console.log(this);
 		this.arr = Object.keys(ctx);
 
 		for (var i = 0; i < this.arr.length; i++) {

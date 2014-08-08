@@ -65,7 +65,7 @@
 <script type="text/javascript">
     var form = document.querySelector('[data-circle="create"]');
 
-    var push = Push({
+    var push = new SubmitForm({
         form: form,
         model: {
             name: '',
@@ -76,16 +76,10 @@
         },
         method: 'POST',
         route: '/circles',
-        done: function (message) {
-            console.log("Test")
-            notify({
-                type: 'success',
-                strong: 'You created a new circle!',
-                message: 'Great job.'
-            });
+        done: function (data) {
+            document.location = '/circle/' + data.id;
         },
         fail: function (message, status) {
-            console.log("Test")
             notify({
                 type: 'danger',
                 strong: 'Sorry!',
@@ -93,45 +87,5 @@
             });
         }
     });
-
-    // var submit_handler = function (e) {
-    //     e.preventDefault();
-    //     var form = e.target;
-    //     var data = {};
-
-    //     data.name = form.name.value;
-    //     data.description = form.description.value;
-    //     data.privacy = form.privacy.value;
-    //     data.color = form.color.value;
-    //     data.permission = form.permission.value;                    
-
-    //     var req = $.ajax({
-    //         type: 'POST',
-    //         url: '/circles',
-    //         dataType: 'json',
-    //         contentType: 'application/json; charset=UTF-8',
-    //         data: JSON.stringify(data)
-    //     });
-
-    //     req.done(function (message) {
-    //         console.log("Test")
-    //         notify({
-    //             type: 'success',
-    //             strong: 'You created a new circle!',
-    //             message: 'Great job.'
-    //         });
-    //     });
-
-    //     req.fail(function (message, status) {
-    //         console.log("Test")
-    //         notify({
-    //             type: 'danger',
-    //             strong: 'Sorry!',
-    //             message: 'The circle was not created. Please try again.'
-    //         });
-    //     });
-    // }
-
-    // form.addEventListener('submit', submit_handler);
 </script>
 {% endblock %}

@@ -1,4 +1,4 @@
-var Push = augment(Object, function () {
+var SubmitForm = augment(Object, function () {
 
     this.constructor = function (obj) {
         this.form = obj.form;
@@ -10,10 +10,9 @@ var Push = augment(Object, function () {
 
         this.keys = Object.keys(this.model);
 
-        this.form.addEventListener('submit', function (e) {
-            e.preventDefault();
-            this.submit_form.apply(this, [e]);
-        }.bind(this), false);
+        this.set_defaults();
+
+        this.form.addEventListener('submit', this.submit_form.bind(this), false);
     };
 
     this.set_defaults = function () {
@@ -57,6 +56,6 @@ var Push = augment(Object, function () {
         req.done(this.done.bind(this));
 
         req.fail(this.fail.bind(this));
-    }.bind(this);
+    };
 
 });
