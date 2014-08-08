@@ -12,31 +12,33 @@
 <div class="panel panel-main">
     <div class="panel-heading">Edit Circle</div>
     <div class="panel-body">
-        <form id='form'>
+        <form data-circle='edit'>
+            <div class='form-group'>
+                <label>Name</label>
+                <input type='text' name='name' placeholder='Name' class='form-control'>
+            </div>
+            <div class='form-group'>
+                <label>Description</label>
+                <input type='text' name='description' placeholder='Description' class='form-control'>
+            </div>
             <div class="form-group">
-                <label>Max Passengers</label>
-                <select class="form-control" name='passengers_max'>
-                    <option value='1'>1</option>
-                    <option value='2'>2</option>
-                    <option value='3'>3</option>
-                    <option value='4'>4</option>
-                    <option value='5'>5</option>
-                    <option value='6'>6</option>
-                    <option value='7'>7</option>
-                    <option value='8'>8</option>
+                <label>Privacy</label>
+                <select class='form-control' name='privacy'>
+                    <option value="public">Public</option>
+                    <option value="private">Private</option>
                 </select>
+                <p class="help-block">Public circles are visible to everyone. Private groups are invite only.</p>
             </div>
             <div class="form-group">
-                <label>Date</label>
-                <input class="form-control date-select" type="text" placeholder="Date" name='date'>
-            </div>
-            <div class="form-group">
-                <label>Time</label>
-                <input class="form-control" type="text" placeholder="Time" name='time'>
-            </div>
-            <div class="form-group">
-                <label>Additional Details</label>
-                <input class="form-control" type="text" placeholder="Details" name='details'>
+                <label>Color</label>
+                <select class='form-control' name='color'>
+                    <option value="#5677fc">Blue</option>
+                    <option value="#ff9800">Orange</option>
+                    <option value="#259b24">Green</option>
+                    <option value="#e51c23">Red</option>
+                    <option value="#009688">Teal</option>
+                </select>
+                <p class="help-block">Select a color for your circles so users will be able to identify and distinguish it easier.</p>
             </div>
             <button type='submit' class='btn btn-default'>Edit Circle</button>
             <button type='button' class='btn btn-danger pull-right'>Delete Circle</button>

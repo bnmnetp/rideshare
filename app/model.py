@@ -26,6 +26,7 @@ class Circle(db.Model):
     privacy = db.StringProperty()
     color = db.StringProperty()
     admins = db.ListProperty(db.Key)
+    permission = db.StringProperty()
     def to_dict(self):
         d = {}
         d['id'] = Circle.key().id()
