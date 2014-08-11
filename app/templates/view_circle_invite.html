@@ -21,9 +21,12 @@
                 <form data-invite='email'>
                     <div class="form-group">
                         <label>Emails</label>
-                        <textarea name='emails' class='form-control'></textarea>
+                        <textarea name='emails' class='form-control' id='email_csv'></textarea>
                         <p class="help-block">Type emails seperated by commas</p>
-                        <p class="help-block">Not functional yet</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Load in a CSV file</label>
+                        <input type="file" id="load_csv">
                     </div>
                     <button type='submit' class='btn btn-primary'>Send Invites</button>
                 </form>
@@ -186,6 +189,26 @@ send_invites.addEventListener('click', function (e) {
         });
     });
 });
+
+var email_csv = document.querySelector('#email_csv');
+
+var load_text = function (e) {
+    var file = e.target.files[0];
+
+    var reader = new FileReader();
+
+    reader.onload = function (f) {
+        console.log(f);
+        var contents = f.target.result;
+        email_csv.value = contents;
+    };
+
+    reader.readAsText(file);
+};
+
+var csv_file = document.querySelector('#load_csv');
+
+csv_file.addEventListener('change', load_text);
 
 </script>
 {% endblock %}
