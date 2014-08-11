@@ -99,9 +99,9 @@ class SendInviteEmail(BaseHandler):
 
         circle = Circle.get_by_id(int(circle_id))
 
-        print data['emails']
+        csv_data = data['emails'].encode('utf-8')
 
-        email_list = csv.reader([data['emails']], skipinitialspace = True)
+        email_list = csv_data.split(',')
 
         email_regex = re.compile(r'[^@]+@[^@]+\.[^@]+')
         resp = {
@@ -126,7 +126,7 @@ class SendInviteEmail(BaseHandler):
 
             send_invite(email, {
                 'sender_name': user.name,
-                'circle_name': circle_name,
+                'circle_name': circle.name,
                 'invite_id': invite.key().id() 
             })
 
