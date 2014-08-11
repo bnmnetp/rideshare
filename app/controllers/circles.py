@@ -267,3 +267,67 @@ class ChangeCircle(BaseHandler):
             self.session['circle'] = circle.key().id()
 
         self.redirect(self.request.referer)
+
+class KickMember(BaseHandler):
+    def post(self, circle_id):
+        self.auth()
+
+        user = self.current_user()
+
+        circle = Circle.get_by_id(int(circle_id))
+
+        if not circle:
+            return self.json_resp(500, {
+                'message': 'Circle does not exist'
+            })
+
+        json_str = self.request.body
+        data = json.loads(json_str)
+
+        user = User.get_by_id(data['user'])
+
+        if not user:
+            return self.json_resp(500, {
+                'message': 'User does not exist'
+            })
+
+        if circle.key().id() in user.circles:
+            user.circles.remove(circle.key().id())
+
+        user.put()
+
+        return self.json_resp(200, {
+            'message': 'Member kicked'
+        })
+
+class PromoteMember(BaseHandler):
+    def post(self, circle_id):
+        self.auth()
+
+        user = self.current_user()
+
+        circle = Circle.get_by_id(int(circle_id))
+
+        if not circle:
+            return self.json_resp(500, {
+                'message': 'Circle does not exist'
+            })
+
+        json_str = self.request.body
+        data = json.loads(json_str)
+
+        user = User.get_by_id(data['user'])
+
+        if not user:
+            return self.json_resp(500, {
+                'message': 'User does not exist'
+            })
+
+        if user.key().id() in circle.admins:
+            circle.admins.remove(user.key().id())
+
+        circle.put()
+
+        return self.json_resp(200, {
+            'message': 'Member promoted'
+        })

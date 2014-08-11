@@ -40,23 +40,21 @@
 				Ridecircles
 			</a>
 		</div>
-		<ul class="nav navbar-nav">
-			<li>
-				<a href="/home">
-					<i class="fa fa-home"></i>
-					Dashboard
-				</a>
-				{% if alert_badge %}
-					<span class="nbadge">{{alert_badge}}</span>
-				{% endif%}
-			</li>
-		    <li>
-				<a href="/circles">Join Circles</a>
-			</li>
-		</ul>
-		<div class="nav-center-outer">
-		{% if user is defined %}
-			<ul class="nav navbar-nav nav-center">
+		<div class="collapse navbar-collapse">
+			{% if user is defined %}
+			<ul class="nav navbar-nav">
+				<li>
+					<a href="/home">
+						<i class="fa fa-home"></i>
+						Dashboard
+					</a>
+					{% if alert_badge %}
+						<span class="nbadge">{{alert_badge}}</span>
+					{% endif%}
+				</li>
+			    <li>
+					<a href="/circles">Join Circles</a>
+				</li>
 				<li>
 					<a href="#">
 						Viewing as:
@@ -88,29 +86,29 @@
 					{% endif %}
 				</li>
 			</ul>
-		{% endif %}
+			{% endif %}
+			<ul class="nav navbar-nav pull-right">
+				{% if user is defined %}
+				<li>
+					<a href="/invites">Invites</a>
+					{% if invite_badge %}
+						<span class="nbadge">{{invite_badge}}</span>
+					{% endif%}
+				</li>
+				<li>
+					<a href="/user">
+						<i class="fa fa-user"></i> 
+						{{user.name}}
+					</a>
+				</li>
+			    <li>
+			        <a href="/logout">
+			        	Signout
+			        </a>
+			    </li>
+			    {% endif %}
+			</ul>
 		</div>
-		<ul class="nav navbar-nav nav-pin">
-			{% if user is defined %}
-			<li>
-				<a href="/invites">Invites</a>
-				{% if invite_badge %}
-					<span class="nbadge">{{invite_badge}}</span>
-				{% endif%}
-			</li>
-			<li>
-				<a href="/user">
-					<i class="fa fa-user"></i> 
-					{{user.name}}
-				</a>
-			</li>
-		    <li>
-		        <a href="/logout">
-		        	Signout
-		        </a>
-		    </li>
-		    {% endif %}
-		</ul>
 	</nav>
 	<nav class='subnav navbar-default'>
 		<ul class="nav navbar-nav subnav-center">
