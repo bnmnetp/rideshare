@@ -94,9 +94,9 @@
                 <div class="info">
                     <div class="title">
                         {{circle.name}}
-                        {% if circle.privacy == 'private' %}
+                        {% if circle.privacy == 'private' and circle.user %}
                         <div class="pull-right">
-                            <button class="btn btn-success">Request to Join</button>
+                            <button class="btn btn-success" data-request='{{circle.key().id()}}'>Request to Join</button>
                         </div>
                         {% endif %}
                         {% if circle.privacy == 'public' %}
@@ -189,6 +189,38 @@
         var current = switchs[i];
         current.addEventListener('click', switcher);
     }
+
+    var send_request = function (id) {
+        var req = $.ajax({
+            type: 'POST',
+            url: '/circle/' + id + '/request',
+            dataType: 'json',
+            contentType: 'application/json; charset=UTF-8',
+            data: JSON.stringify(data)
+        });
+
+        req.done(function (data) {
+            notify({
+                type: 'success',
+                strong: 'Request sent!'
+            });
+        });
+
+        req.fail(function (data, status) {
+            notify({
+                type: 'danger',
+                strong: 'Refresh and try again!'
+            });
+        });
+    };
+
+    document.body.addEventListener('click', function (e) {
+        var target = e.target;
+
+        if (target.dataset.request) {
+            send_request(target.dataset.request);
+        }
+    });
 </script>
 
 {% endblock %}

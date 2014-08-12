@@ -22,6 +22,11 @@
     <li data-next="members">
         Members
     </li>
+    {% if is_admin and circle.privacy == 'private' %}
+    <li data-next='requests'>
+        Requests to Join
+    </li>
+    {% endif %}
     <li>
         <a href="/circle/{{circle.key().id()}}/invite">
             Invite

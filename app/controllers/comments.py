@@ -32,6 +32,8 @@ def comment_type():
     return f
 
 class CommentHandler(BaseHandler):
+    def get(self):
+        return self.redirect('/home')
     def post(self):
         self.auth()
 

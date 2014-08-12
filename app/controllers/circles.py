@@ -331,3 +331,24 @@ class PromoteMember(BaseHandler):
         return self.json_resp(200, {
             'message': 'Member promoted'
         })
+
+class RequestJoin(BaseHandler):
+    def post(self, circle_id):
+        self.auth()
+
+        user = self.current_user()
+
+        circle = Circle.get_by_id(int(circle_id))
+
+        if not circle:
+            return self.json_resp(500, {
+                'message': 'Circle does not exist'
+            })
+
+        circle.requests.append(user.key())
+
+        circle.put()
+
+        return self.json_resp(200, {
+            'message': 'Request sent'
+        })
