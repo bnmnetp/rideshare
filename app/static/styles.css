@@ -1,7 +1,7 @@
 body {
 	/*margin-bottom: 60px;*/
     overflow: auto;
-    padding-top: 70px;
+    padding-top: 120px;
     color: #262626;
 }
 
@@ -17,21 +17,110 @@ img {
     cursor: pointer;
 }
 
+.loading {
+    display: block;
+    height: 150px;
+    text-align: center;
+}
+
+.loading i {
+    line-height: 150px;
+}
+
+/* Subnav */
+.subnav {
+    display: block;
+    background-color: #512DA8;
+    width: 100%;
+    overflow: auto;
+    top: 50px;
+    position: fixed;
+    text-align:center;
+}
+.subnav-center {
+    display:inline-block;
+    text-align:left;
+    float: none;
+}
+/* End */
+
+/* Nav */
 .navbar {
     padding: 0 15px 0 15px;
+    margin-bottom: 0px;
 }
 
-.navbar-collapse {
-    text-align: center;
-    display: block;
+.nav-center-outer {
     width: 100%;
-    padding: 0 15px 0 15px;
+    min-height: 50px;
 }
 
-.navbar .center {
-    width: 400px;
-    margin: 0 auto;
+.nav-center {
+    width: 280px;
+    margin: 0px auto;
 }
+
+.nav-pin {
+    position: fixed;
+    top: 0;
+    right: 0px;
+}
+
+.navbar-header {
+    height: 50px;
+    overflow: none;
+}
+
+.navbar .icon {
+    display: inline-block;
+    height: 50px;
+    width: 50px;
+    vertical-align: top;
+    float: left;
+}
+
+.navbar .navbar-brand {
+    display: inline-block;
+    height: 35px;
+    line-height: 50px;
+    font-weight: 500;
+    font-size: 16px;
+    padding: 0px 10px 0px 15px;
+    margin: 0px;
+    vertical-align: top;
+    float: left;
+}
+
+.navbar .marker {
+    height: 35px;
+    color: white;
+    fill: white;
+    stroke: white;
+    margin: 8px 0px 7px 0px;
+}
+
+.navbar .cla {
+    height: 30px;
+    line-height: 20px;
+    display: inline-block;
+    background-color: #FFFFFF;
+    border-radius: 3px;
+    box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.2);
+    padding: 5px;
+    margin: 10px 0px 10px 10px;
+}
+
+.navbar .cla a {
+    color: #676767;
+    font-size: 13px;
+}
+
+.navbar .cla i {
+    color: #303F9F;
+    font-size: 16px;
+}
+
+/* End */
 
 /* Menu */
 .menu {
@@ -40,9 +129,9 @@ img {
     padding: 0;
     border: 1px solid #9e9e9e;
     color: #212121;
-    -webkit-box-shadow: 1px 1px 2px 0px rgba(66,66,66,1);
-    -moz-box-shadow: 1px 1px 2px 0px rgba(66,66,66,1);
-    box-shadow: 1px 1px 2px 0px rgba(66,66,66,1);
+    -webkit-box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+    -moz-box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
 }
 .menu li {
     font-size: 16px;
@@ -244,39 +333,6 @@ img {
 .information b {
     font-weight: 400;
     color: #757575;
-}
-
-.navbar-header {
-    height: 50px;
-    overflow: none;
-}
-
-.icon {
-    display: inline-block;
-    height: 50px;
-    width: 50px;
-    vertical-align: top;
-    float: left;
-}
-
-.navbar-brand {
-    display: inline-block;
-    height: 35px;
-    line-height: 50px;
-    font-weight: 500;
-    font-size: 16px;
-    padding: 0px 10px 0px 15px;
-    margin: 0px;
-    vertical-align: top;
-    float: left;
-}
-
-.marker {
-    height: 35px;
-    color: white;
-    fill: white;
-    stroke: white;
-    margin: 8px 0px 7px 0px;
 }
 
 .block {
@@ -511,9 +567,6 @@ template {
     }
     .navbar .container {
         padding: 0px 15px 0px 15px;
-    }
-    .navbar {
-        margin-bottom: 0px;
     }
     .panel {
         margin-bottom: 0px;

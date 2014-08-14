@@ -82,7 +82,7 @@
         <div class="panel-body panel-no">
         {% if circles %}
             {% for circle in circles %}
-            {% if circle.privacy == 'public' %}
+            
             <div class="list">
                 {% if circle.color %}
                 <div class="ctx" style='background-color:{{circle.color}};'>
@@ -94,6 +94,12 @@
                 <div class="info">
                     <div class="title">
                         {{circle.name}}
+                        {% if circle.privacy == 'private' and circle.user %}
+                        <div class="pull-right">
+                            <button class="btn btn-success" data-request='{{circle.key().id()}}'>Request to Join</button>
+                        </div>
+                        {% endif %}
+                        {% if circle.privacy == 'public' %}
                         {% if circle.user %}
                         <div class="toggle" data-id='{{circle.key().id()}}' data-switch='true'>
                         {% else %}
@@ -104,13 +110,13 @@
                             <div class="false_padding"></div>
                             <div class="false">Out</div>
                         </div>
+                        {% endif %}
                     </div>
                     <div class="sub">
                         {{circle.description}}
                     </div>
                 </div>
             </div>  
-            {% endif %}
             {% endfor %}
         {% else %}
             <div class="panel-message">
@@ -183,6 +189,38 @@
         var current = switchs[i];
         current.addEventListener('click', switcher);
     }
+
+    var send_request = function (id) {
+        var req = $.ajax({
+            type: 'POST',
+            url: '/circle/' + id + '/request',
+            dataType: 'json',
+            contentType: 'application/json; charset=UTF-8',
+            data: JSON.stringify(data)
+        });
+
+        req.done(function (data) {
+            notify({
+                type: 'success',
+                strong: 'Request sent!'
+            });
+        });
+
+        req.fail(function (data, status) {
+            notify({
+                type: 'danger',
+                strong: 'Refresh and try again!'
+            });
+        });
+    };
+
+    document.body.addEventListener('click', function (e) {
+        var target = e.target;
+
+        if (target.dataset.request) {
+            send_request(target.dataset.request);
+        }
+    });
 </script>
 
 {% endblock %}

@@ -12,7 +12,7 @@
 {% if circle %}
 <div class="panel panel-primary padding">
     <div class="panel-body">
-        You are currently viewing the events and rides for <a href='/circle/{{circle.key().id()}}'>{{circle.name}}</a> circle. Any rides or events created will only be visible to this circle. <a href='/map'>Exit circle view.</a>
+        You are currently viewing the events and rides for <a href='/circle/{{circle.key().id()}}'>{{circle.name}}</a> circle. Any rides or events created will only be visible to this circle. <a href='/circle/0/change'>Exit circle view.</a>
     </div>
 </div>
 {% endif %}
@@ -236,7 +236,7 @@
                 </select>
             </div>
             <button class="btn btn-primary"  type='submit'>
-                Create Ride
+                Create Trip
             </button>
         </form>
     </div>
@@ -292,6 +292,14 @@
 </script>
 
 {% endraw %}
+<script type="text/javascript">
+
+    {% if active_circle == None %}
+        var circle = false;
+    {% else %}
+        var circle = {{active_circle.key().id()}}
+    {% endif %}
+</script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB15X6ti6tDQUQKjwPCI2zi3XFfxZW3MGM&sensor=false" type="text/javascript"></script>
 <script src="/static/maps2.js" type="text/javascript"></script>
 <script src="/static/flow2.js" type="text/javascript"></script>

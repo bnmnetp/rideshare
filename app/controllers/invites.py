@@ -9,6 +9,7 @@ from app.common.voluptuous import *
 import json
 import re
 from app.common.email import send_invite
+import csv
 
 class ViewInvites(BaseHandler):
     def get(self):
@@ -98,15 +99,16 @@ class SendInviteEmail(BaseHandler):
 
         circle = Circle.get_by_id(int(circle_id))
 
-        print data['emails']
+        csv_data = data['emails'].encode('utf-8')
 
-        email_list = data['emails'].split(',')
+        email_list = csv_data.split(',')
 
         email_regex = re.compile(r'[^@]+@[^@]+\.[^@]+')
         resp = {
             'invalid': [],
             'valid': []
         }
+
         for email in email_list:
             if email_regex.match(email):
                 resp['valid'].append(email)
@@ -120,9 +122,11 @@ class SendInviteEmail(BaseHandler):
             invite.sender = user.key()
             invite.put()
 
+            print email
+
             send_invite(email, {
                 'sender_name': user.name,
-                'circle_name': circle_name,
+                'circle_name': circle.name,
                 'invite_id': invite.key().id() 
             })
 

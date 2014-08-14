@@ -1,16 +1,3 @@
-function getParameterByName(name) {
-	name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
-	var regexS = "[\\?&]" + name + "=([^&#]*)";
-	var regex = new RegExp(regexS);
-	var results = regex.exec(window.location.search);
-	if (results == null) {
-		return "";
-	}
-	else {
-		return decodeURIComponent(results[1].replace(/\+/g, " "));
-	}		
-}
-
 if (!Array.prototype.last) {
     Array.prototype.last = function () {
         return this[this.length - 1];
@@ -105,7 +92,7 @@ var Forms = augment(Object, function () {
 		m.date = form.date.value;
 		m.time = form.time.value;
 		m.details = form.details.value;
-		m.circle = getParameterByName('circle');
+		m.circle = circle;
 		m.driver = true;
 		m.recurring = form.recurring.value;
 
@@ -147,7 +134,7 @@ var Forms = augment(Object, function () {
 		m.date = form.date.value;
 		m.time = form.time.value;
 		m.details = form.details.value;
-		m.circle = getParameterByName('circle');
+		m.circle = circle;
 		m.driver = false;
 
 		var push = $.ajax({
@@ -189,7 +176,7 @@ var Forms = augment(Object, function () {
 		m.date = form.date.value;
 		m.time = form.time.value;
 		m.details = form.details.value;
-		m.circle = getParameterByName('circle');
+		m.circle = circle;
 
 		var push = $.ajax({
 			type: 'POST',
@@ -226,7 +213,7 @@ var Markers = augment(Object, function () {
 			dataType: 'json',
 			contentType: 'application/json; charset=UTF-8',
 			data: JSON.stringify({
-				circle: getParameterByName('circle')
+				circle: circle
 			})
 		});
 
@@ -243,7 +230,7 @@ var Markers = augment(Object, function () {
 			dataType: 'json',
 			contentType: 'application/json; charset=UTF-8',
 			data: JSON.stringify({
-				circle: getParameterByName('circle')
+				circle: circle
 			})
 		});
 

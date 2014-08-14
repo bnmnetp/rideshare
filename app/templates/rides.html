@@ -15,20 +15,20 @@
 <div class="row">
     <div class="col-md-4">
         <h4>Filter Rides</h4>
-        Rides that:
+        <h5>Rides that:</h5>
         <ul class='menu'>
             <li data-filter='no_driver'>Need a Driver</li>
             <li data-filter='driver'>Have a Driver</li>
         </ul>
-        Rides where:
+        <h5>Rides where:</h5>
         <ul class="menu">
             <li data-filter='user_passenger'>I'm a passenger</li>
             <li data-filter='user_driver'>I'm a driver</li>
         </ul>
-        <ul class="menu">
+        <!-- <ul class="menu">
             <li data-filter='current'>Current rides</li>
             <li data-filter='past'>Past & Current rides</li>
-        </ul>
+        </ul> -->
         <!-- <ul class="menu">
             <li data-filter='rides'>Only rides</li>
             <li data-filter='events'>Only events</li>
@@ -83,13 +83,17 @@
 <script src="static/augment.js" type="text/javascript"></script>
 <script src="static/flow.js" type="text/javascript"></script>
 <script src="static/filter.js" type='text/javascript'></script>
-<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
-
 
 <script type="text/javascript">
-var flow = new Flow('my_rides');
-var filter = new Filter();
-filter.action('past');
+    {% if active_circle == None %}
+        var circle = false;
+    {% else %}
+        var circle = {{active_circle.key().id()}}
+    {% endif %}
+
+    var flow = new Flow('my_rides');
+    var filter = new Filter(circle);
+    filter.action('past');
 </script>
 
 {% endblock %}

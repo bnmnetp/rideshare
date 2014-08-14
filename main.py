@@ -56,17 +56,23 @@ if aquery.count() == 0:
         lng = secrets.community['lng']
     )
     community.put()
+
+class Marketing(BaseHandler):
+    def get(self):
+        doRender(self, 'marketing/home.html')
+
+class GetStarted(BaseHandler):
+    def get(self):
+        doRender(self, 'marketing/get_started.html')
     
 class MapHandler(BaseHandler):
     def get(self):
         self.auth()
         user = self.current_user()
-        circle_id = self.request.get('circle')
-        if circle_id:
-            circle = Circle.get_by_id(int(circle_id))
-        else:
-            circle = None
-        doRender(self, 'index_rework.html', {
+
+        circle = self.circle()
+
+        doRender(self, 'map.html', {
             'user': user,
             'circle': circle
         })
@@ -166,7 +172,9 @@ class DetailHandler(BaseHandler):
         self.response.write(json.dumps(resp))
 
 app = webapp2.WSGIApplication([
-    ('/', LoginHandler),
+    ('/', Marketing),
+    ('/get_started', GetStarted),
+    ('/login', LoginHandler),
     ('/map', MapHandler),
 
     # controllers/rides.py
@@ -197,11 +205,14 @@ app = webapp2.WSGIApplication([
     # controllers/circles.py
     ('/circle/(\d+)', GetCircleHandler),
     ('/circle/(\d+)/invite', GetCircleInvite),
-    ('/addCircle', AddCircleHandler),
-    ('/newCircle',NewCircleHandler),
+    ('/circle/(\d+)/change', ChangeCircle),
+    ('/circle/(\d+)/edit', EditCircle),
+    ('/circle/(\d+)/kick', KickMember),
+    ('/circle/(\d+)/promote', PromoteMember),
+    ('/circle/(\d+)/request', RequestJoin),
+    ('/newCircle', NewCircleHandler),
     ('/circles', CircleHandler),
     ('/join_circle', JoinCircle),
-
     # end circles
 
     # controllers/invites.py
