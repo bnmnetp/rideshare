@@ -96,6 +96,8 @@ class GetCircleHandler(BaseHandler):
         # Grabs events
         events = Event.all().filter('circle = ', circle.key()).fetch(100)
 
+        requests = User.all().filter('__key__ in', circle.requests).fetch(100)
+
         if circle.key() in user.circles:
             has_permission = True
         else:

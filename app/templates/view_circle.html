@@ -29,7 +29,7 @@
     {% endif %}
     <li>
         <a href="/circle/{{circle.key().id()}}/invite">
-            Invite
+            Invite 
         </a>
     </li>
 </ul>
@@ -101,6 +101,34 @@
                 </div>
             </div>
         {% endfor %}
+        </div>
+    </div>
+</div>
+<div data-route='requests'>
+    <div class="panel panel-main">
+        <div class="panel-heading">
+            Requests to Join
+        </div>
+        <div class="panel-body">
+            {% for request in requests %}
+                <div class="media">
+                    <a href="#" class='pull-left'>
+                        <img src="/user/photo/{{member.key().id()}}" style="width: 64px; height: 64px;" class="media-object" alt="64x64">
+                    </a>
+                    <div class="media-body">
+                        <div class="pull-left">
+                            <h4>{{member.name}}</h4>
+                        </div>
+                        {% if is_admin %}
+                        <div class="pull-right">
+                            <div class="options">
+                                <button class='btn btn-success' data-accept='{{member.key().id()}}'>Accept to Circle</button>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
         </div>
     </div>
 </div>
