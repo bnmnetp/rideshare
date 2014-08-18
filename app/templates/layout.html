@@ -86,12 +86,6 @@
 			{% endif %}
 			<ul class="nav navbar-nav pull-right">
 				{% if user is defined %}
-			    <li>
-					<a href="/circles">Join Circles</a>
-				</li>
-				<li>
-					<a href="/newCircle">Create Circles</a>
-				</li>
 				<li>
 					<a href="/invites">Invites</a>
 					{% if invite_badge %}
@@ -113,27 +107,7 @@
 			</ul>
 		</div>
 	</nav>
-	<!-- <nav class='subnav navbar-default'>
-		<ul class="nav navbar-nav subnav-center">
-			{% if (active_circle is defined) and active_circle != None %}
-			<li>
-				<a href="/circle/{{active_circle.key().id()}}">
-					{{active_circle.name}}
-				</a>
-			</li>
-			{% endif %}
-		    <li>
-				<a href="/map">Map</a>
-			</li>
-			<li>
-				<a href="/rides">Rides</a>
-			</li>
-			<li>
-				<a href="/events">Events</a>
-			</li>
-		</ul>
-	</nav> -->
-
+	{% if user is defined %}
 	<div id="page-wrapper" class='active'>
 	<div id="sidebar-wrapper">
 		<ul class="sidebar">
@@ -146,7 +120,7 @@
 			<li class="sidebar-title"><span>NAVIGATION</span></li>
 			{% if (active_circle is defined) and active_circle != None %}
 			<li class="sidebar-list">
-			  <a href="/circle/{{active_circle.key().id()}}">{{active_circle.name}} <span class="menu-icon fa fa-map-marker"></span></a>
+			  <a href="/circle/{{active_circle.key().id()}}">{{active_circle.name}} <span class="menu-icon fa fa-circle-o"></span></a>
 			</li>
 			{% endif %}
 			<li class="sidebar-list">
@@ -160,28 +134,15 @@
 			</li>
 			<li class="sidebar-title separator"><span>QUICK LINKS</span></li>
 			<li class="sidebar-list">
-			  <a href="#" target="_blank">Forums <span class="menu-icon fa fa-external-link"></span></a>
+			  <a href="/circles">Join Circles <span class="menu-icon fa fa-plus-square-o"></span></a>
+			</li>
+			<li class="sidebar-list">
+			  <a href="/newCircle">Create Circles <span class="menu-icon fa fa-plus"></span></a>
 			</li>
 		</ul>
-		<div class="sidebar-footer">
-			<div class="col-xs-4">
-			  <a href="https://github.com/Ehesp/Responsive-Dashboard" target="_blank">
-			    Github
-			  </a>
-			</div>
-			<div class="col-xs-4">
-			  <a href="#" target="_blank">
-			    About
-			  </a>
-			</div>
-			<div class="col-xs-4">
-			  <a href="#">
-			    Support
-			  </a>
-			</div>
-		</div>
 	</div>
 	</div>
+	{% endif %}
     
 
 	<div class="container">

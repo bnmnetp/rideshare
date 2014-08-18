@@ -22,7 +22,7 @@
                     <div class="form-group">
                         <label>Emails</label>
                         <textarea name='emails' class='form-control' id='email_csv'></textarea>
-                        <p class="help-block">Type emails seperated by commas</p>
+                        <p class="help-block">Enter emails seperated by commas</p>
                     </div>
                     <div class="form-group">
                         <label>Load in a CSV file</label>
@@ -44,6 +44,13 @@
             </div>
         </div>
 
+    </div>
+</div>
+<div class="panel panel-main">
+    <div class="panel-heading">Invite by Link</div>
+    <div class="panel-body">
+        <p class='lead'>Share this link to invite your friends to this circle:</p>
+        <input type="text" class='form-control' value='domain.us/circle/{{circle.key().id()}}/invite'>
     </div>
 </div>
 {% endblock %}

@@ -140,6 +140,10 @@ class GetCircleHandler(BaseHandler):
             'is_admin': is_admin
         })
 
+class CircleInvited(BaseHandler):
+    def get(self, circle_id):
+        print ''
+
 class GetCircleInvite(BaseHandler):
     def get(self, circle_id):
         self.auth()
@@ -149,7 +153,8 @@ class GetCircleInvite(BaseHandler):
         user = self.current_user()
 
         doRender(self, 'view_circle_invite.html', {
-            'circle': circle
+            'circle': circle,
+            'user': user
         })
 
 class CircleHandler(BaseHandler):
