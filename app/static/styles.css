@@ -1,8 +1,12 @@
 body {
 	/*margin-bottom: 60px;*/
     overflow: auto;
-    padding-top: 120px;
+    padding-top: 70px;
     color: #262626;
+}
+
+.container {
+    padding-left: 100px;
 }
 
 #output img {
@@ -680,14 +684,14 @@ margin: 0;
 /* Sidebar title text colour */
 /*#627cb7*/
 #sidebar-wrapper {
-  background: #30426a;
-
-margin-left: -150px;
-left: -30px;
-width: 250px;
-position: fixed;
-height: 100%;
-z-index: 999;
+    background: #30426a;
+    top: 50px;
+    margin-left: -150px;
+    left: -30px;
+    width: 250px;
+    position: fixed;
+    height: 100%;
+    z-index: 999;
 }
 #page-wrapper.active #sidebar-wrapper {
   left: 150px;

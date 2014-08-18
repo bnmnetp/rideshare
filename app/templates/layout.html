@@ -86,7 +86,6 @@
 			{% endif %}
 			<ul class="nav navbar-nav pull-right">
 				{% if user is defined %}
-
 			    <li>
 					<a href="/circles">Join Circles</a>
 				</li>
@@ -138,21 +137,26 @@
 	<div id="page-wrapper" class='active'>
 	<div id="sidebar-wrapper">
 		<ul class="sidebar">
-			<li class="sidebar-main">
+			<!-- <li class="sidebar-main">
 			  <a href="#">
 			    Dashboard
 			    <span class="menu-icon fa fa-home"></span>
 			  </a>
-			</li>
+			</li> -->
 			<li class="sidebar-title"><span>NAVIGATION</span></li>
+			{% if (active_circle is defined) and active_circle != None %}
 			<li class="sidebar-list">
-			  <a href="#">Dashboard <span class="menu-icon fa fa-tachometer"></span></a>
+			  <a href="/circle/{{active_circle.key().id()}}">{{active_circle.name}} <span class="menu-icon fa fa-map-marker"></span></a>
+			</li>
+			{% endif %}
+			<li class="sidebar-list">
+			  <a href="/map">Map <span class="menu-icon fa fa-map-marker"></span></a>
 			</li>
 			<li class="sidebar-list">
-			  <a href="#">Servers <span class="menu-icon fa fa-tasks"></span></a>
+			  <a href="/rides">Rides <span class="menu-icon fa fa-car"></span></a>
 			</li>
 			<li class="sidebar-list">
-			  <a href="#">Settings <span class="menu-icon fa fa-cogs"></span></a>
+			  <a href="/events">Events <span class="menu-icon fa fa-calendar"></span></a>
 			</li>
 			<li class="sidebar-title separator"><span>QUICK LINKS</span></li>
 			<li class="sidebar-list">
