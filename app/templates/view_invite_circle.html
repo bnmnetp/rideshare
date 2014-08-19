@@ -5,26 +5,39 @@
 {% block head %}
 {% endblock %}
 
+{% block wide %}
+    <div class='splash'>
+        <div class="container">
+            <div class="intro-text">
+                <div class="intro-heading">You're invited to Ridecircles.</div>
+                <a href="#services" class="page-scroll btn btn-xl">Tell Me More</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
 {% block main %}
 <div data-notify="container"></div>
 <div class="panel panel-main">
-	<div class="panel-heading">Invite details</div>
-	<div class="panel-body">
-		<ul class="information">
-			<li>
-				<b>Circle:</b> {{invite.circle.name}}
-			</li>
-			<li>
-				<b>Invited by:</b> {{invite.sender.name}}
-			</li>
-		</ul>
-        <button data-invite='join' data-id='{{invite.key().id()}}' class='btn btn-primary'>
-            Join Circle
-        </button>
-        <button data-invite='decline' data-id='{{invite.key().id()}}' class='btn btn-danger'>
-            Decline Invite
-        </button>
-	</div>
+    <div class="panel-heading">Circle Invite</div>
+    <div class="panel-body no">
+    </div>
+</div>
+<div class="panel panel-main">
+    <div class="panel-heading">Why Ridecircles?</div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-6">
+                <span class="fa-stack fa-4x">
+                    <i class="fa fa-circle fa-stack-2x text-primary"></i>
+                    <i class="fa fa-star fa-stack-1x fa-inverse"></i>
+                </span>
+            </div>
+            <div class="col-md-6">
+                <h2>Ridecircles are convenient</h2>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
 
