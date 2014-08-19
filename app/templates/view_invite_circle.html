@@ -10,7 +10,6 @@
         <div class="container">
             <div class="intro-text">
                 <div class="intro-heading">You're invited to Ridecircles.</div>
-                <a href="#services" class="page-scroll btn btn-xl">Tell Me More</a>
             </div>
         </div>
     </div>
@@ -20,7 +19,16 @@
 <div data-notify="container"></div>
 <div class="panel panel-main">
     <div class="panel-heading">Circle Invite</div>
-    <div class="panel-body no">
+    <div class="panel-body">
+        <ul class="information">
+            <li>
+                <b>Circle:</b> {{circle.name}}
+            </li>
+            <li>
+                <b>Description:</b> {{circle.description}}
+            </li>
+        </ul>
+        <button class='btn btn-primary btn-lg'>Join Circle</button>
     </div>
 </div>
 <div class="panel panel-main">
@@ -28,13 +36,14 @@
     <div class="panel-body">
         <div class="row">
             <div class="col-md-6">
-                <span class="fa-stack fa-4x">
-                    <i class="fa fa-circle fa-stack-2x text-primary"></i>
-                    <i class="fa fa-star fa-stack-1x fa-inverse"></i>
-                </span>
+                <h4>Ridecircles are reliable</h4>
+                <h5>Know the driver</h5>
+                <p>You know the people in your circles so you can trust who is driving you around.</p>
             </div>
             <div class="col-md-6">
-                <h2>Ridecircles are convenient</h2>
+                <h4>Ridecircles are convenient</h4>
+                <h5>Find rides easy</h5>
+                <p>Friends in your circle are likely going to the same place.</p>
             </div>
         </div>
     </div>

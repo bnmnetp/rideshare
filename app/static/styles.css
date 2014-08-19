@@ -686,10 +686,12 @@ margin: 0;
     -moz-background-size: cover;
     background-size: cover;
     -o-background-size: cover;
+    height: 450px;
+    margin-bottom: 20px;
 }
 
 .splash .intro-text {
-    padding-top: 100px;
+    padding-top: 50px;
     padding-bottom: 50px;
 }
 
@@ -713,7 +715,7 @@ margin: 0;
 
 @media(min-width:768px) {
     .splash .intro-text {
-        padding-top: 300px;
+        padding-top: 150px;
         padding-bottom: 200px;
     }
 
