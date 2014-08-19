@@ -44,10 +44,6 @@
 			{% if user is defined %}
 			<ul class="nav navbar-nav">
 				<li>
-					<a href="/home">
-						<i class="fa fa-home"></i>
-						Dashboard
-					</a>
 					{% if alert_badge %}
 						<span class="nbadge">{{alert_badge}}</span>
 					{% endif%}
@@ -108,16 +104,15 @@
 		</div>
 	</nav>
 	{% if user is defined %}
-	<div id="page-wrapper" class='active'>
 	<div id="sidebar-wrapper">
 		<ul class="sidebar">
-			<!-- <li class="sidebar-main">
+			<li class="sidebar-main">
 			  <a href="#">
 			    Dashboard
 			    <span class="menu-icon fa fa-home"></span>
 			  </a>
-			</li> -->
-			<li class="sidebar-title"><span>NAVIGATION</span></li>
+			</li>
+			<li class="sidebar-title separator"><span>NAVIGATION</span></li>
 			{% if (active_circle is defined) and active_circle != None %}
 			<li class="sidebar-list">
 			  <a href="/circle/{{active_circle.key().id()}}">{{active_circle.name}} <span class="menu-icon fa fa-circle-o"></span></a>
@@ -140,7 +135,6 @@
 			  <a href="/newCircle">Create Circles <span class="menu-icon fa fa-plus"></span></a>
 			</li>
 		</ul>
-	</div>
 	</div>
 	{% endif %}
     
