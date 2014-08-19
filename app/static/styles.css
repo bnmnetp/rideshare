@@ -1,8 +1,12 @@
 body {
 	/*margin-bottom: 60px;*/
     overflow: auto;
-    padding-top: 120px;
+    padding-top: 70px;
     color: #262626;
+}
+
+.container {
+    padding-left: 100px;
 }
 
 #output img {
@@ -667,4 +671,199 @@ margin: 0;
 
 [data-invite='output'] {
     padding-bottom: 10px;
+}
+
+/* Header */
+
+.splash {
+    text-align: center;
+    color: #fff;
+    background-attachment: scroll;
+    background-image: url(dash.png);
+    background-position: center center;
+    background-repeat: none;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    background-size: cover;
+    -o-background-size: cover;
+    height: 450px;
+    margin-bottom: 20px;
+}
+
+.splash .intro-text {
+    padding-top: 50px;
+    padding-bottom: 50px;
+}
+
+.splash .intro-text .intro-lead-in {
+    margin-bottom: 25px;
+    font-family: "Droid Serif","Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 22px;
+    font-style: italic;
+    line-height: 22px;
+}
+
+.splash .intro-text .intro-heading {
+    margin-bottom: 25px;
+    text-transform: uppercase;
+    font-family: Montserrat,"Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 50px;
+    font-weight: 700;
+    line-height: 50px;
+    text-shadow: 0px 1px 3px rgba(0, 0, 0, 0.4), 0px 0px 30px rgba(0, 0, 0, 0.075);
+}
+
+@media(min-width:768px) {
+    .splash .intro-text {
+        padding-top: 150px;
+        padding-bottom: 200px;
+    }
+
+    .splash .intro-text .intro-lead-in {
+        margin-bottom: 25px;
+        font-family: "Droid Serif","Helvetica Neue",Helvetica,Arial,sans-serif;
+        font-size: 40px;
+        font-style: italic;
+        line-height: 40px;
+    }
+
+    .splash .intro-text .intro-heading {
+        margin-bottom: 50px;
+        text-transform: uppercase;
+        font-family: Montserrat,"Helvetica Neue",Helvetica,Arial,sans-serif;
+        font-size: 75px;
+        font-weight: 700;
+        line-height: 75px;
+    }
+}
+
+/* End Header */
+
+/**
+ * Sidebar
+ */
+/* #592727 RED */
+/* #2f5927 GREEN */
+/* #30426a BLUE (default)*/
+/* Sidebar background color */
+/* Sidebar header and footer color */
+/* Sidebar title text colour */
+/*#627cb7*/
+#sidebar-wrapper {
+    background: #30426a;
+    top: 50px;
+    margin-left: -150px;
+    left: -30px;
+    width: 250px;
+    position: fixed;
+    height: 100%;
+    z-index: 999;
+}
+#page-wrapper.active #sidebar-wrapper {
+  left: 150px;
+}
+
+ul.sidebar .sidebar-main a,
+.sidebar-footer,
+ul.sidebar .sidebar-list a:hover,
+#page-wrapper:not(.active) ul.sidebar .sidebar-title.separator {
+  /* Sidebar header and footer color */
+  background: #2d3e63;
+}
+ul.sidebar {
+  position: absolute;
+  top: 0;
+  bottom: 45px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  text-indent: 20px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+ul.sidebar li a {
+  color: #fff;
+  display: block;
+  float: left;
+  text-decoration: none;
+  width: 250px;
+}
+ul.sidebar .sidebar-main {
+  height: 65px;
+}
+ul.sidebar .sidebar-main a {
+  font-size: 18px;
+  line-height: 60px;
+}
+ul.sidebar .sidebar-main .menu-icon {
+  float: right;
+  font-size: 18px;
+  padding-right: 28px;
+  line-height: 60px;
+}
+ul.sidebar .sidebar-title {
+  color: #738bc0;
+  font-size: 12px;
+  height: 35px;
+  line-height: 40px;
+  text-transform: uppercase;
+}
+ul.sidebar .sidebar-list {
+  height: 40px;
+}
+ul.sidebar .sidebar-list a {
+  text-indent: 25px;
+  font-size: 15px;
+  color: #b2bfdc;
+  line-height: 40px;
+}
+ul.sidebar .sidebar-list a:hover {
+  color: #fff;
+  border-left: 3px solid #e99d1a;
+  text-indent: 22px;
+}
+ul.sidebar .sidebar-list a:hover .menu-icon {
+  text-indent: 25px;
+}
+ul.sidebar .sidebar-list .menu-icon {
+  float: right;
+  padding-right: 29px;
+  line-height: 40px;
+  width: 70px;
+}
+#page-wrapper:not(.active) ul.sidebar {
+  bottom: 0;
+}
+#page-wrapper:not(.active) ul.sidebar .sidebar-title {
+  display: none;
+}
+#page-wrapper:not(.active) ul.sidebar .sidebar-title.separator {
+  display: block;
+  height: 2px;
+  margin: 13px 0;
+}
+#page-wrapper:not(.active) ul.sidebar .sidebar-list a:hover span {
+  border-left: 3px solid #e99d1a;
+  text-indent: 22px;
+}
+#page-wrapper:not(.active) .sidebar-footer {
+  display: none;
+}
+.sidebar-footer {
+  position: absolute;
+  height: 40px;
+  bottom: 0;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  text-align: center;
+}
+.sidebar-footer div a {
+  color: #b2bfdc;
+  font-size: 12px;
+  line-height: 43px;
+}
+.sidebar-footer div a:hover {
+  color: #ffffff;
+  text-decoration: none;
 }

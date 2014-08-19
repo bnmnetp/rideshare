@@ -51,7 +51,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="/">Ridecircles</a>
+                <a class="navbar-brand" href="/">Ridecircles.us</a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
@@ -61,16 +61,13 @@
                         <a href="#page-top"></a>
                     </li>
                     <li>
-                        <a class="page-scroll" href="#about">About</a>
-                    </li>
-                    <li>
-                        <a href="/get_started">Get Started</a>
+                        <a href="#why_ridecircles" class='.page-scroll'>What are Ridecircles?</a>
                     </li>
                     <li>
                         <a href="/login">Login</a>
                     </li>
                     <li>
-                        <a class="page-scroll" href="#contact">Register</a>
+                        <a href="/login">Register</a>
                     </li>
                 </ul>
             </div>
@@ -79,46 +76,20 @@
         <!-- /.container-fluid -->
     </nav>
 
-    <section id='get_started'>
-        <div class="container getstarted">
+    {% block main %}{% endblock %}
+
+    <!-- Clients Aside -->
+    <aside class="clients">
+        <div class="container">
             <div class="row">
-                <div class="col-md-6 text-center">
-                    <span class="fa-stack fa-4x">
-                        <i class="fa fa-circle fa-stack-2x text-primary"></i>
-                        <i class="fa fa-circle-thin fa-stack-1x fa-inverse"></i>
-                    </span>
-                </div>
-                <div class="col-md-6">
-                    <h2>Find a Circle</h2>
-                    <p>Create a circle for your needs or create a circle for your group.</p>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6 pull-right text-center">
-                    <span class="fa-stack fa-4x">
-                        <i class="fa fa-circle fa-stack-2x text-primary"></i>
-                        <i class="fa fa-car fa-stack-1x fa-inverse"></i>
-                    </span>
-                </div>
-                <div class="col-md-6 pull-left">
-                    <h2>Organize a Ride</h2>
-                    <p>Set up a ride for you and your group. Take off and have fun.</p>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6 text-center">
-                    <span class="fa-stack fa-4x">
-                        <i class="fa fa-circle fa-stack-2x text-primary"></i>
-                        <i class="fa fa-exclamation fa-stack-1x fa-inverse"></i>
-                    </span>
-                </div>
-                <div class="col-md-6">
-                    <h2>Be notified</h2>
-                    <p>You can set to be notified so you don't forget your ride.</p>
+                <div class="col-md-12">
+                    <a href="#">
+                        <img src="img/winndistrict.png" class="img-responsive img-centered" alt="">
+                    </a>
                 </div>
             </div>
         </div>
-    </section>
+    </aside>
 
     <footer>
         <div class="container">

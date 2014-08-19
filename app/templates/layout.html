@@ -15,7 +15,7 @@
 	{% endblock %}
 </head>
 <body>
-	<!--<div id="wrapper">-->
+
 	<nav class="navbar navbar-default navbar-fixed-top">
 		<div class="navbar-header">
 			<button type='button' class='navbar-toggle' data-toggle='collapse' data-target='.navbar-collapse'>
@@ -37,7 +37,7 @@
 				</svg>
 			</div>
 			<a class="navbar-brand" href='/home'>
-				Ridecircles
+				Ridecircles.us
 			</a>
 		</div>
 		<div class="collapse navbar-collapse">
@@ -51,9 +51,6 @@
 					{% if alert_badge %}
 						<span class="nbadge">{{alert_badge}}</span>
 					{% endif%}
-				</li>
-			    <li>
-					<a href="/circles">Join Circles</a>
 				</li>
 				<li>
 					<a href="#">
@@ -110,32 +107,48 @@
 			</ul>
 		</div>
 	</nav>
-	<nav class='subnav navbar-default'>
-		<ul class="nav navbar-nav subnav-center">
+	{% if user is defined %}
+	<div id="page-wrapper" class='active'>
+	<div id="sidebar-wrapper">
+		<ul class="sidebar">
+			<!-- <li class="sidebar-main">
+			  <a href="#">
+			    Dashboard
+			    <span class="menu-icon fa fa-home"></span>
+			  </a>
+			</li> -->
+			<li class="sidebar-title"><span>NAVIGATION</span></li>
 			{% if (active_circle is defined) and active_circle != None %}
-			<li>
-				<a href="/circle/{{active_circle.key().id()}}">
-					{{active_circle.name}}
-				</a>
+			<li class="sidebar-list">
+			  <a href="/circle/{{active_circle.key().id()}}">{{active_circle.name}} <span class="menu-icon fa fa-circle-o"></span></a>
 			</li>
 			{% endif %}
-		    <li>
-				<a href="/map">Map</a>
+			<li class="sidebar-list">
+			  <a href="/map">Map <span class="menu-icon fa fa-map-marker"></span></a>
 			</li>
-			<li>
-				<a href="/rides">Rides</a>
+			<li class="sidebar-list">
+			  <a href="/rides">Rides <span class="menu-icon fa fa-car"></span></a>
 			</li>
-			<li>
-				<a href="/events">Events</a>
+			<li class="sidebar-list">
+			  <a href="/events">Events <span class="menu-icon fa fa-calendar"></span></a>
+			</li>
+			<li class="sidebar-title separator"><span>QUICK LINKS</span></li>
+			<li class="sidebar-list">
+			  <a href="/circles">Join Circles <span class="menu-icon fa fa-plus-square-o"></span></a>
+			</li>
+			<li class="sidebar-list">
+			  <a href="/newCircle">Create Circles <span class="menu-icon fa fa-plus"></span></a>
 			</li>
 		</ul>
-	</nav>
+	</div>
+	</div>
+	{% endif %}
+    
 
+	{% block wide %}{% endblock %}
 	<div class="container">
 		{% block main %}{% endblock %}
 	</div>
-
-	<!-- </div> -->
 
 	<!-- <div id="footer">
 		<div class="container">

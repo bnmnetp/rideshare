@@ -1,0 +1,66 @@
+{% extends "layout.html" %}
+
+{% block title %}Invite to {{circle.name}}{% endblock %}
+
+{% block head %}
+{% endblock %}
+
+{% block wide %}
+    <div class='splash'>
+        <div class="container">
+            <div class="intro-text">
+                <div class="intro-heading">You're invited to Ridecircles.</div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block main %}
+<div data-notify="container"></div>
+<div class="panel panel-main">
+    <div class="panel-heading">Circle Invite</div>
+    <div class="panel-body">
+        <ul class="information">
+            <li>
+                <b>Circle:</b> {{circle.name}}
+            </li>
+            <li>
+                <b>Description:</b> {{circle.description}}
+            </li>
+        </ul>
+        <button class='btn btn-primary btn-lg'>Join Circle</button>
+    </div>
+</div>
+<div class="panel panel-main">
+    <div class="panel-heading">Why Ridecircles?</div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-6">
+                <h4>Ridecircles are reliable</h4>
+                <h5>Know the driver</h5>
+                <p>You know the people in your circles so you can trust who is driving you around.</p>
+            </div>
+            <div class="col-md-6">
+                <h4>Ridecircles are convenient</h4>
+                <h5>Find rides easy</h5>
+                <p>Friends in your circle are likely going to the same place.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/augment.js" type="text/javascript"></script>
+<script type="text/javascript" src='/static/comment.js'></script>
+{% include 'comment.html' %}
+{% raw %}
+<script data-notify="template" type='text/x-handlebars-template'>
+    <div class="alert alert-{{type}} alert-dismissable">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        <strong>{{strong}}</strong> {{{message}}}
+    </div>
+</script>
+{% endraw %}
+
+{% endblock %}

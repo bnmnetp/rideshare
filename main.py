@@ -116,12 +116,22 @@ class HomeHandler(BaseHandler):
         for noti in notis:
             noti.ride.orig = split_address(noti.ride.origin_add)
             noti.ride.dest = split_address(noti.ride.dest_add)
+
+
+        circles = Circle.all().fetch(100)
+
+        for circle in circles:
+            if circle.key() in user.circles:
+                circle.user = True
+            else:
+                circle.user = False
                     
 
         doRender(self, 'home.html', { 
             'user': user,
             'notis': notis,
-            'upcoming': upcoming
+            'upcoming': upcoming,
+            'circles': circles
         })
 
 class IncorrectHandler(BaseHandler):
@@ -205,6 +215,7 @@ app = webapp2.WSGIApplication([
     # controllers/circles.py
     ('/circle/(\d+)', GetCircleHandler),
     ('/circle/(\d+)/invite', GetCircleInvite),
+    ('/circle/(\d+)/invited', CircleInvited),
     ('/circle/(\d+)/change', ChangeCircle),
     ('/circle/(\d+)/edit', EditCircle),
     ('/circle/(\d+)/kick', KickMember),

@@ -7,70 +7,6 @@
 {% endblock %}
 
 {% block main %}
-<ul class="ntabs">
-    <li data-next="my_circles">
-        My Circles
-    </li>
-    <li data-next="all_circles">
-        All Circles
-    </li>
-    <li>
-        <a href="/invites">
-            Invites
-        </a>
-    </li>
-    <li>
-        <a href="/newCircle">
-            <i class='fa fa-plus-circle'></i>
-            Create Circle
-        </a>
-    </li>
-</ul>
-
-<div data-route='my_circles'>
-    <div class="panel panel-default">
-        <div class="panel-body">
-            This is a list of circles you have joined. To leave these circles, switch over to All Circles.
-        </div>
-    </div>
-    <div class="panel panel-main">
-        <div class="panel-heading">My Circles</div>
-        <div class='panel-body panel-no'>
-        {% if circles %}
-            {% for circle in circles %}
-                {% if circle.user %}
-                <div class="list" data-circle='{{circle.key().id()}}'>
-                {% else %}
-                <div class="list hidden" data-circle='{{circle.key().id()}}'>
-                {% endif %}    
-                    {% if circle.color %}
-                    <div class="ctx" style='background-color:{{circle.color}};'>
-                    {% else %}
-                    <div class="ctx">
-                    {% endif %}
-                        <i class='fa fa-circle-o'></i>
-                    </div>
-                    <div class="info">
-                        <div class="title">
-                            <a href='/circle/{{circle.key().id()}}'>{{circle.name}}</a>
-                        </div>
-                        <div class="sub">
-                            <a href='/map?circle={{circle.key().id()}}'>
-                                Add events for this circle
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            {% endfor %}
-        {% else %}
-            <div class="panel-message">
-                You have not joined any circles.
-            </div>
-        {% endif %}
-        </div>
-    </div>
-</div>
-
 <div data-route='all_circles'>
     <div class="panel panel-default">
         <div class="panel-body">
@@ -147,7 +83,7 @@
 <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
 
 <script type="text/javascript">
-    var flow = new Flow('my_circles');
+    var flow = new Flow('all_circles');
 
     var switcher = function (e) {
         var target = e.target;

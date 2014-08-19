@@ -96,6 +96,8 @@ class GetCircleHandler(BaseHandler):
         # Grabs events
         events = Event.all().filter('circle = ', circle.key()).fetch(100)
 
+        requests = User.all().filter('__key__ in', circle.requests).fetch(100)
+
         if circle.key() in user.circles:
             has_permission = True
         else:
@@ -138,6 +140,18 @@ class GetCircleHandler(BaseHandler):
             'is_admin': is_admin
         })
 
+class CircleInvited(BaseHandler):
+    def get(self, circle_id):
+        user = self.current_user()
+
+        circle = Circle.get_by_id(int(circle_id))
+
+        doRender(self, 'view_invite_circle.html', {
+            'user': user,
+            'circle': circle
+        })
+
+
 class GetCircleInvite(BaseHandler):
     def get(self, circle_id):
         self.auth()
@@ -147,7 +161,8 @@ class GetCircleInvite(BaseHandler):
         user = self.current_user()
 
         doRender(self, 'view_circle_invite.html', {
-            'circle': circle
+            'circle': circle,
+            'user': user
         })
 
 class CircleHandler(BaseHandler):
