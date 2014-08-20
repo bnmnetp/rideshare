@@ -25,7 +25,7 @@ class LoginHandler(BaseHandler):
             Required('password'): unicode
         })
 
-        user = User.filter('email_account = ', data['email']).get()
+        user = User.all().filter('email_account = ', data['email']).get()
 
         if not user:
             return self.json_resp(200, {

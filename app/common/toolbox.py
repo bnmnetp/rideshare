@@ -11,8 +11,6 @@ env = jinja2.Environment(
 )
 
 def doRender(handler, name = 'home.html', value = {}):
-	value['community'] = db.Query(Community).get()
-
 	b = BaseHandler()
 	user = b.current_user()
 

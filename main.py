@@ -28,8 +28,6 @@ from google.appengine.api import mail
 import jinja2
 from google.appengine.ext import db
 
-from app.pygeocoder import Geocoder
-
 import logging
 import urllib
 import random
@@ -46,17 +44,7 @@ from app.controllers.accounts import *
 
 from app.common.toolbox import doRender, split_address, grab_json
 
-# Creates Community entry on first run.
-aquery = db.Query(Community)
-if aquery.count() == 0:
-    #development site
-    community = Community(
-        name = secrets.community['name'],
-        address = secrets.community['address'],
-        lat = secrets.community['lat'],
-        lng = secrets.community['lng']
-    )
-    community.put()
+import csv
 
 class Marketing(BaseHandler):
     def get(self):
@@ -81,8 +69,6 @@ class MapHandler(BaseHandler):
 class HomeHandler(BaseHandler):
     def get(self):
         self.auth()
-        aquery = db.Query(Community)
-        community = aquery.get()
         user = self.current_user()
 
         notis = Notification.all().filter('user = ', user.key()).fetch(5)
@@ -144,7 +130,7 @@ class DetailHandler(BaseHandler):
         self.auth()
         user = self.current_user()
 
-        properties = ['name', 'email', 'phone']
+        properties = ['name', 'email', 'phone', 'zip']
 
         user_json = grab_json(user, properties)
 
@@ -163,6 +149,30 @@ class DetailHandler(BaseHandler):
         user.name = data['name']
         user.email = data['email']
         user.phone = data['phone']
+        user.zip = int(data['zip'])
+
+        circle_match = Circle.all().filter('zip =', data['zip']).get()
+
+        if circle_match:
+            user.circle.append(circle_match)
+        else:
+            zip_row = None
+            with open('app/common/zip_db.csv') as zip_db:
+                zip_data = csv.reader(zip_db, delimiter=',')
+                for row in zip_data:
+                    if data['zip'] in row:
+                        zip_row = row
+                        break
+            if zip_row:
+                city = zip_row[2]
+                circle = Circle()
+                circle.name = 'Open ' + city + ' Circle'
+                circle.description = 'An open circle for residents of ' + city + '.'
+                circle.permission = 'public'
+                circle.zip = data['zip']
+                circle.color = '#607d8b'
+                circle.put()
+                user.circle.append(circle)
 
         user.put()
 

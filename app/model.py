@@ -12,6 +12,7 @@ class User(db.Model):
     phone = db.StringProperty(default='')
     circles = db.ListProperty(db.Key)
     photo = db.StringProperty()
+    zip = db.IntegerProperty()
     noti_time = db.IntegerProperty()
     noti_type = db.StringProperty()
 
@@ -30,6 +31,8 @@ class Circle(db.Model):
     admins = db.ListProperty(db.Key)
     permission = db.StringProperty()
     requests = db.ListProperty(db.Key)
+    zip = db.IntegerProperty()
+
     def to_dict(self):
         d = {}
         d['id'] = Circle.key().id()
@@ -109,14 +112,6 @@ class Comment(db.Model):
             resp['user'] = self.user.to_dict()
         return resp
 
-class Community(db.Model):
-    name = db.StringProperty()
-    address = db.StringProperty()
-    lat = db.FloatProperty()
-    lng = db.FloatProperty()
-    # appId = db.StringProperty()
-    # appSecret = db.StringProperty()
-
 class Notification(db.Model):
     created = db.DateTimeProperty(auto_now_add=True)
     read = db.BooleanProperty()
@@ -148,8 +143,3 @@ class Invite(db.Model):
         required = False,
         collection_name = 'from_user'
     )
-
-class ApplicationParameters(db.Model):
-    apikey = db.StringProperty()
-    notifyEmailAddr = db.StringProperty()
-    fromEmailAddr = db.StringProperty()
