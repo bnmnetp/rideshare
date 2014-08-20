@@ -179,6 +179,7 @@ app = webapp2.WSGIApplication([
 
     # controllers/accounts.py
     ('/login', LoginHandler),
+    ('/register', RegisterHandler),
 
     # controllers/rides.py
     ('/rides', RideHandler),

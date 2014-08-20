@@ -3,6 +3,7 @@ from google.appengine.ext import db
 from app.base_handler import BaseHandler
 from app.common.voluptuous import *
 import json
+from app.model import *
 
 from app.common.encryption import bcrypt
 
@@ -59,6 +60,8 @@ class RegisterHandler(BaseHandler):
         user.email = data['email']
         user.password = hashed
         user.put()
+
+        self.session['user'] = user.key().id()
 
         return self.json_resp(200, {
             'message': 'Account created',
