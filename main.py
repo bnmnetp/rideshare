@@ -42,6 +42,7 @@ from app.controllers.comments import *
 from app.controllers.users import *
 from app.controllers.invites import *
 from app.controllers.alert import *
+from app.controllers.accounts import *
 
 from app.common.toolbox import doRender, split_address, grab_json
 
@@ -76,16 +77,6 @@ class MapHandler(BaseHandler):
             'user': user,
             'circle': circle
         })
-
-class LoginHandler(BaseHandler):
-    def get(self):
-        if self.current_user():
-            self.redirect('/home')
-        else:
-            redirect = self.request.get('redirect', default_value='')
-            doRender(self, 'loginPage.html', {
-                'redirect': redirect
-            })
 
 class HomeHandler(BaseHandler):
     def get(self):
@@ -184,8 +175,10 @@ class DetailHandler(BaseHandler):
 app = webapp2.WSGIApplication([
     ('/', Marketing),
     ('/get_started', GetStarted),
-    ('/login', LoginHandler),
     ('/map', MapHandler),
+
+    # controllers/accounts.py
+    ('/login', LoginHandler),
 
     # controllers/rides.py
     ('/rides', RideHandler),

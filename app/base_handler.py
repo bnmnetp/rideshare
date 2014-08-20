@@ -66,3 +66,14 @@ class BaseHandler(webapp2.RequestHandler):
             circle = None
 
         return circle
+
+    def login_redirect(self, user):
+        redirect = self.session.get('redirect')
+        redirect_str = '/home'
+        if redirect:
+            self.session['redirect'] = None
+            redirect_str = redirect
+        else:
+            if user.phone == None or user.email == None:
+                redirect_str = '/details'
+        return redirect_str

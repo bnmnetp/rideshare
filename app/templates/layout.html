@@ -107,32 +107,54 @@
 	<div id="sidebar-wrapper">
 		<ul class="sidebar">
 			<li class="sidebar-main">
-			  <a href="#">
-			    Dashboard
-			    <span class="menu-icon fa fa-home"></span>
-			  </a>
+				<a href="/home">
+					Dashboard
+					<span class="menu-icon fa fa-home"></span>
+				</a>
 			</li>
-			<li class="sidebar-title separator"><span>NAVIGATION</span></li>
+			<li class="sidebar-title separator">
+				<span>NAVIGATION</span>
+			</li>
 			{% if (active_circle is defined) and active_circle != None %}
 			<li class="sidebar-list">
-			  <a href="/circle/{{active_circle.key().id()}}">{{active_circle.name}} <span class="menu-icon fa fa-circle-o"></span></a>
+				<a href="/circle/{{active_circle.key().id()}}">
+					{{active_circle.name}}
+					<span class="menu-icon fa fa-circle-o"></span>
+				</a>
 			</li>
 			{% endif %}
 			<li class="sidebar-list">
-			  <a href="/map">Map <span class="menu-icon fa fa-map-marker"></span></a>
+				<a href="/map">
+					Map
+					<span class="menu-icon fa fa-map-marker"></span>
+				</a>
 			</li>
 			<li class="sidebar-list">
-			  <a href="/rides">Rides <span class="menu-icon fa fa-car"></span></a>
+				<a href="/rides">
+					Rides
+					<span class="menu-icon fa fa-car"></span>
+				</a>
 			</li>
 			<li class="sidebar-list">
-			  <a href="/events">Events <span class="menu-icon fa fa-calendar"></span></a>
+				<a href="/events">
+					Events
+					<span class="menu-icon fa fa-calendar"></span>
+				</a>
 			</li>
-			<li class="sidebar-title separator"><span>QUICK LINKS</span></li>
-			<li class="sidebar-list">
-			  <a href="/circles">Join Circles <span class="menu-icon fa fa-plus-square-o"></span></a>
+			<li class="sidebar-title separator">
+				<span>QUICK LINKS</span>
 			</li>
 			<li class="sidebar-list">
-			  <a href="/newCircle">Create Circles <span class="menu-icon fa fa-plus"></span></a>
+				<a href="/circles">
+					Join Circles
+					<span class="menu-icon fa fa-plus-square-o"></span>
+				</a>
+			</li>
+			<li class="sidebar-list">
+				<a href="/newCircle">
+					Create Circles
+					<span class="menu-icon fa fa-plus"></span>
+				</a>
 			</li>
 		</ul>
 	</div>
@@ -156,14 +178,14 @@
 	<script src="/static/notify.js"></script>
 	<script src="/static/augment.js"></script>
 	<script>
-	$('#tooltip-trial').tooltip({
-		placement: 'right',
-		title: 'Click to select',
-		delay: {
-			show: 100,
-			hide: 500
-		}
-	});
+		$('#tooltip-trial').tooltip({
+			placement: 'right',
+			title: 'Click to select',
+			delay: {
+				show: 100,
+				hide: 500
+			}
+		});
 	</script>
 	{% block scripts %}
 	{% endblock %}

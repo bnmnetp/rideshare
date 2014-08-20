@@ -3,6 +3,8 @@ from google.appengine.api import users
 
 class User(db.Model):
     auth_id = db.StringProperty()
+    email_account = db.EmailProperty()
+    password = db.StringProperty()
     created = db.DateTimeProperty(auto_now_add=True)
     updated = db.DateTimeProperty(auto_now=True)
     name = db.StringProperty(default='')
