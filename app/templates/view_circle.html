@@ -160,7 +160,7 @@ var flow = new Flow('details');
 var send_accept = function (id) {
     var req = $.ajax({
         type: 'POST',
-        url: '/circle/' + id + '/accept',
+        url: '/circle/{{circle.key().id()}}/accept',
         dataType: 'json',
         contentType: 'application/json; charset=UTF-8',
         data: JSON.stringify({
@@ -188,7 +188,7 @@ document.body.addEventListener('click', function (e) {
     var target = e.target;
 
     if (target.dataset.accept) {
-        send_request(target.dataset.accept);
+        send_accept(target.dataset.accept);
     }
 });
 /* End */

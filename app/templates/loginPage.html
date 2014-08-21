@@ -17,9 +17,14 @@
         </div>
     </div>
     {% endif %}
+    <div class="alert alert-info">
+        <strong>Heads up!</strong>
+        Sign in with your email or use a social tool below.
+    </div>
     <div class="panel panel-main">
         <div class="panel-heading">Sign In</div>
         <div class="panel-body">
+
             <form data-form='login'>
                 <div class="form-group">
                     <label>Email address</label>
@@ -49,7 +54,9 @@
             </div>
         </div>
     </div>
-    <button class="btn btn-primary btn-lg btn-block" data-toggle="modal" data-target="#register">Register</button>
+    <button class="btn btn-primary btn-lg btn-block" data-toggle="modal" data-target="#register">
+        <b>New to Ridecircles?</b> Sign up.
+    </button>
 </div>
 
 <div class="modal fade" id="register" tabindex="-1" role="dialog">
@@ -60,7 +67,7 @@
                     <span aria-hidden="true">&times;</span>
                     <span class="sr-only">Close</span>
                 </button>
-                <h4 class="modal-title">Register</h4>
+                <h4 class="modal-title">Sign Up</h4>
             </div>
             <div class="modal-body">
                 <form data-form='register'>
@@ -72,7 +79,7 @@
                         <label>Password</label>
                         <input type="password" class='form-control' placeholder='Password' name='password'>
                     </div>
-                    <button type="submit" class="btn btn-default">Register</button>
+                    <button type="submit" class="btn btn-default">Sign Up</button>
                 </form>
             </div>
             <!-- <div class="modal-footer">

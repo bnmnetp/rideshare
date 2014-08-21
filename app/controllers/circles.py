@@ -363,11 +363,15 @@ class RequestAccept(BaseHandler):
         json_str = self.request.body
         data = json.loads(json_str)
 
-        requester = Uset.get_by_id(int(data['user']))
+        requester = User.get_by_id(int(data['user']))
 
-        if circle.key() not in user.circles:
+        if circle.key() not in requester.circles:
             requester.circles.append(circle.key())
             requester.put()
+
+        if requester.key() in circle.requests:
+            circle.requests.remove(requester.key())
+            circle.put()
 
         return self.json_resp(200, {
             'message': 'Request accepted'
