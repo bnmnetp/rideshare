@@ -48,27 +48,20 @@
 						<span class="nbadge">{{alert_badge}}</span>
 					{% endif%}
 				</li>
+				{% if active_circle is defined and active_circle != None %}
 				<li>
 					<a href="#">
 						Viewing as:
 					</a>
 				</li>
 				<li>
-					{% if active_circle is defined %}
 					<div class="dropdown cla">
 						<a href="#" class='dropdown-toggle' data-toggle='dropdown' role='button' id='tooltip-trial'>
 							<i class="fa fa-circle-o"></i>
-							{% if active_circle == None %}
-								Public
-							{% else %}
 								{{active_circle.name}}
-							{% endif %}
 							<span class="caret"></span>
 						</a>
 						<ul class="dropdown-menu">
-							<li>
-								<a href="/circle/0/change">Public</a>
-							</li>
 							{% for circle in circle_list %}
 							<li>
 								<a href="/circle/{{circle.key().id()}}/change">{{circle.name}}</a>
@@ -76,8 +69,8 @@
 							{% endfor %}
 						</ul>
 					</div>
-					{% endif %}
 				</li>
+				{% endif %}
 			</ul>
 			{% endif %}
 			<ul class="nav navbar-nav pull-right">

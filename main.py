@@ -113,9 +113,7 @@ class HomeHandler(BaseHandler):
 
 class IncorrectHandler(BaseHandler):
     def get(self):
-        doRender(self, 'error.html', {
-            'error_message': "Page does not exist."
-        })
+        self.redirect('/')
 
 class HelpHandler(BaseHandler):
     def get(self):
@@ -269,12 +267,7 @@ app = webapp2.WSGIApplication([
     ('/email_test', email_test),
     ('/help', HelpHandler),
     ('/.*', IncorrectHandler)
-    ],
+],
     config = app_config,
-    debug = True)
-
-# This is actually the development one.
-# lutherrideshare.appspot key: ABQIAAAAg9WbCE_zwMIRW7jDFE_3ixS0LiYWImofzW4gd3oCqtkHKt0IaBT-STdq-gdH-mW2_ejMPXqxnfJjgw
-
-# This has the app id of ridesharebeta   and is also on ridesharebeta.appspot.com
-# rideshare.luther.edu key:  ABQIAAAAg9WbCE_zwMIRW7jDFE_3ixQ2JlMNfqnGb2qqWZtmZLchh1TSjRS0zuchuhlR8g4tlMGrjg34sNmyjQ
+    debug = True
+)

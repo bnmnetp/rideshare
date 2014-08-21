@@ -12,7 +12,8 @@ env = jinja2.Environment(
 
 def doRender(handler, name = 'home.html', value = {}):
 	b = BaseHandler()
-	user = b.current_user()
+	if b != None:
+		user = b.current_user()
 
 	value['active_circle'] = None
 

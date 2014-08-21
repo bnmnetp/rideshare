@@ -14,6 +14,7 @@ class BaseHandler(webapp2.RequestHandler):
                 return webapp2.redirect('/?redirect=' + self.request.path, False, True)
         else:
             return webapp2.redirect('/?redirect=' + self.request.path, False, True)
+
     def current_user(self):
         id = self.session.get('user')
         if id and id != None:
@@ -61,9 +62,15 @@ class BaseHandler(webapp2.RequestHandler):
             if self.session['circle'] != None:
                 circle = Circle.get_by_id(int(self.session['circle']))
             else:
-                circle = None
+                if self.current_user().circles:
+                    circle = self.current_user().circles[0]
+                else:
+                    circle = None
         else:
-            circle = None
+            if self.current_user().circles:
+                circle = self.current_user().circles[0]
+            else:
+                circle = None
 
         return circle
 
