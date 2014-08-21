@@ -23,10 +23,7 @@ def doRender(handler, name = 'home.html', value = {}):
 		circle_keys = User.get_by_id(user.key().id()).circles
 		value['circle_list'] = Circle.all().filter('__key__ in', circle_keys)
 
-		if 'circle' in handler.session:
-			for v in value['circle_list']:
-				if v.key().id() == handler.session['circle']:
-					value['active_circle'] = v
+		value['active_circle'] = b.circle()
 
 	template = env.get_template(name)
 	handler.response.write(template.render(value))

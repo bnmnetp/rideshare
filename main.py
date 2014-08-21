@@ -152,7 +152,7 @@ class DetailHandler(BaseHandler):
         circle_match = Circle.all().filter('zip =', data['zip']).get()
 
         if circle_match:
-            user.circle.append(circle_match)
+            user.circles.append(circle_match.key())
         else:
             zip_row = None
             with open('app/common/zip_db.csv') as zip_db:
@@ -167,10 +167,10 @@ class DetailHandler(BaseHandler):
                 circle.name = 'Open ' + city + ' Circle'
                 circle.description = 'An open circle for residents of ' + city + '.'
                 circle.permission = 'public'
-                circle.zip = data['zip']
+                circle.zip = int(data['zip'])
                 circle.color = '#607d8b'
                 circle.put()
-                user.circle.append(circle)
+                user.circles.append(circle.key())
 
         user.put()
 

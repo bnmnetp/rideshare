@@ -90,12 +90,6 @@ class GetCircleHandler(BaseHandler):
         # Grabs members
         members = User.all().filter('circles = ', circle.key()).fetch(100)
 
-        # Grabs rides
-        rides = Ride.all().filter('circle = ',  circle.key()).fetch(100)
-
-        # Grabs events
-        events = Event.all().filter('circle = ', circle.key()).fetch(100)
-
         requests = User.all().filter('__key__ in', circle.requests).fetch(100)
 
         if circle.key() in user.circles:
@@ -112,19 +106,6 @@ class GetCircleHandler(BaseHandler):
             self.redirect('/circles')
             return None
 
-        for ride in rides:
-            ride.dest = split_address(ride.dest_add)
-            ride.orig = split_address(ride.origin_add)
-            if ride.driver:
-                if ride.driver.key().id() == user.key().id():
-                    ride.is_driver = True
-                else:
-                    ride.is_driver = False
-            if user.key() in ride.passengers:
-                ride.is_passenger = True
-            else:
-                ride.is_passenger = False
-
         if user.key() in circle.admins:
             is_admin = True
         else:
@@ -134,10 +115,9 @@ class GetCircleHandler(BaseHandler):
             'circle': circle,
             'user': user,
             'members': members,
-            'rides': rides,
-            'events': events,
             'invite': invite,
-            'is_admin': is_admin
+            'is_admin': is_admin,
+            'requests': requests
         })
 
 class CircleInvited(BaseHandler):
@@ -170,9 +150,7 @@ class CircleHandler(BaseHandler):
         self.auth()
         user = self.current_user()
 
-        circles = Circle.all().fetch(100)
-
-        invites = Invite.all().filter('user = ', user.key())
+        circles = Circle.all().filter('privacy !=', 'invisible').fetch(100)
 
         for circle in circles:
             if circle.key() in user.circles:
@@ -182,8 +160,7 @@ class CircleHandler(BaseHandler):
 
         doRender(self, 'circles.html', {
             'circles': circles,
-            'user': user,
-            'invites': invites
+            'user': user
         })
     def post(self):
         self.auth()

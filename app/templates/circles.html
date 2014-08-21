@@ -30,10 +30,19 @@
                 <div class="info">
                     <div class="title">
                         {{circle.name}}
-                        {% if circle.privacy == 'private' and circle.user %}
-                        <div class="pull-right">
-                            <button class="btn btn-success" data-request='{{circle.key().id()}}'>Request to Join</button>
-                        </div>
+                        {% if circle.privacy == 'private'%}
+                            {% if not circle.user %}
+                            <div class="pull-right">
+                                <button class="btn btn-success" data-request='{{circle.key().id()}}'>Request to Join</button>
+                            </div>
+                            {% else %}
+                                <div class="toggle" data-id='{{circle.key().id()}}' data-toggle='true'>
+                                    <div class="true_padding"></div>
+                                    <div class="true">In</div>
+                                    <div class="false_padding"></div>
+                                    <div class="false">Out</div>
+                                </div>
+                            {% endif %}
                         {% endif %}
 
                         {% if circle.privacy == 'public' %}
@@ -81,8 +90,8 @@
 
 <script type="text/javascript">
     var switcher = function (e) {
-        console.log('err')
         var target = e.target;
+
         if (!target.hasAttribute('data-toggle')) {
             target = target.parentNode;
         }
