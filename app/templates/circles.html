@@ -35,17 +35,18 @@
                             <button class="btn btn-success" data-request='{{circle.key().id()}}'>Request to Join</button>
                         </div>
                         {% endif %}
+
                         {% if circle.privacy == 'public' %}
-                        {% if circle.user %}
-                        <div class="toggle" data-id='{{circle.key().id()}}' data-switch='true'>
-                        {% else %}
-                        <div class="toggle" data-id='{{circle.key().id()}}' data-switch='false'>
-                        {% endif %}
-                            <div class="true_padding"></div>
-                            <div class="true">In</div>
-                            <div class="false_padding"></div>
-                            <div class="false">Out</div>
-                        </div>
+                            {% if circle.user %}
+                            <div class="toggle" data-id='{{circle.key().id()}}' data-toggle='true'>
+                            {% else %}
+                            <div class="toggle" data-id='{{circle.key().id()}}' data-toggle='false'>
+                            {% endif %}
+                                <div class="true_padding"></div>
+                                <div class="true">In</div>
+                                <div class="false_padding"></div>
+                                <div class="false">Out</div>
+                            </div>
                         {% endif %}
                     </div>
                     <div class="sub">
@@ -78,34 +79,25 @@
 
 {% endraw %}
 
-<script src="static/augment.js" type="text/javascript"></script>
-<script src="static/flow.js" type="text/javascript"></script>
-<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
-
 <script type="text/javascript">
-    var flow = new Flow('all_circles');
-
     var switcher = function (e) {
+        console.log('err')
         var target = e.target;
-        if (!target.hasAttribute('data-switch')) {
+        if (!target.hasAttribute('data-toggle')) {
             target = target.parentNode;
         }
-        if (target.dataset.switch == 'true') {
-            target.dataset.switch = 'false';
+        if (target.dataset.toggle == 'true') {
+            target.dataset.toggle = 'false';
         } else {
-            target.dataset.switch = 'true';
+            target.dataset.toggle = 'true';
         }
 
-        var user_block = document.querySelector('[data-circle="' + target.dataset.id + '"]');
-
-        var data = {}
-        data.user = {{ user.key().id() }}
-        if (target.dataset.switch == 'true') {
+        var data = {};
+        data.user = {{ user.key().id() }};
+        if (target.dataset.toggle == 'true') {
             data.action = 'add';
-            user_block.classList.remove('hidden');
         } else {
             data.action = 'remove';
-            user_block.classList.add('hidden');
         }
         data.circle = target.dataset.id;
 
@@ -119,7 +111,7 @@
         });
     }
 
-    var switchs = document.querySelectorAll('.switch');
+    var switchs = document.querySelectorAll('.toggle');
 
     for (var i = 0; i < switchs.length; i++) {
         var current = switchs[i];
