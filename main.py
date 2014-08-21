@@ -94,7 +94,6 @@ class HomeHandler(BaseHandler):
             noti.ride.orig = split_address(noti.ride.origin_add)
             noti.ride.dest = split_address(noti.ride.dest_add)
 
-
         circles = Circle.all().fetch(100)
 
         for circle in circles:
@@ -102,7 +101,6 @@ class HomeHandler(BaseHandler):
                 circle.user = True
             else:
                 circle.user = False
-                    
 
         doRender(self, 'home.html', { 
             'user': user,

@@ -20,8 +20,8 @@ def doRender(handler, name = 'home.html', value = {}):
 	if user:
 		value['invite_badge'] = Invite.all().filter('user = ', user.key()).count()
 		value['alert_badge'] = Notification.all().filter('user = ', user.key()).count()
-		circle_keys = User.get_by_id(user.key().id()).circles
-		value['circle_list'] = Circle.all().filter('__key__ in', circle_keys)
+		circle_keys = user.circles
+		value['circle_list'] = Circle.all().filter('__key__ in', circle_keys).fetch(20)
 
 		value['active_circle'] = b.circle()
 

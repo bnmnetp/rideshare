@@ -183,8 +183,18 @@ var notify = function (opts) {
 	var alert_template = document.querySelector('[data-notify="template"]');
 	var alert_container = document.querySelector('[data-notify="container"]');
 
-	var source = alert_template.innerHTML;
+	if (!alert_container) {
+		var alert_container = document.querySelector('#main_container');
+	}
+
+	var source;
+	if (!alert_template) {
+		source = '<div class="alert alert-{{type}} alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong>{{strong}}</strong>{{message}}</div>';
+	} else {
+		source = alert_template.innerHTML;
+	}
+
 	var template = Handlebars.compile(source);
 	var html = template(opts);
-	alert_container.insertAdjacentHTML('beforeend', html);
+	alert_container.insertAdjacentHTML('afterbegin', html);
 }

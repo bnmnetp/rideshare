@@ -22,19 +22,6 @@ class BaseHandler(webapp2.RequestHandler):
         else:
             return None
 
-    def create_context(self):
-        cd = {}
-
-        if self.current_user:
-            cd['nickname'] = self.current_user.name
-            cd['public_link'] = self.current_user.public_link
-            cd['logout_url'] = "/auth/logout"
-            cd['isuser'] = True
-        else:
-            cd['login_url'] = "/auth/login"
-            cd['isuser'] = False
-        return cd
-
     def dispatch(self):
         # Get a session store for this request.
         self.session_store = sessions.get_store(request=self.request)
@@ -58,17 +45,22 @@ class BaseHandler(webapp2.RequestHandler):
         return self.session_store.get_session()
 
     def circle(self):
+        user = self.current_user()
         if 'circle' in self.session:
             if self.session['circle'] != None:
                 circle = Circle.get_by_id(int(self.session['circle']))
             else:
-                if self.current_user().circles:
-                    circle = self.current_user().circles[0]
+                if user.circles:
+                    circle_key = user.circles[0]
+                    circle = Circle.get(circle_key)
+                    self.session['circle'] = circle.key().id()
                 else:
                     circle = None
         else:
-            if self.current_user().circles:
-                circle = self.current_user().circles[0]
+            if user.circles:
+                circle_key = user.circles[0]
+                circle = Circle.get(circle_key)
+                self.session['circle'] = circle.key().id()
             else:
                 circle = None
 

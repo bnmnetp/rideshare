@@ -113,16 +113,16 @@
             {% for request in requests %}
                 <div class="media">
                     <a href="#" class='pull-left'>
-                        <img src="/user/photo/{{member.key().id()}}" style="width: 64px; height: 64px;" class="media-object" alt="64x64">
+                        <img src="/user/photo/{{request.key().id()}}" style="width: 64px; height: 64px;" class="media-object" alt="64x64">
                     </a>
                     <div class="media-body">
                         <div class="pull-left">
-                            <h4>{{member.name}}</h4>
+                            <h4>{{request.name}}</h4>
                         </div>
                         {% if is_admin %}
                         <div class="pull-right">
                             <div class="options">
-                                <button class='btn btn-success' data-accept='{{member.key().id()}}'>Accept to Circle</button>
+                                <button class='btn btn-success' data-accept='{{request.key().id()}}'>Accept to Circle</button>
                             </div>
                         </div>
                         {% endif %}

@@ -132,8 +132,7 @@
             type: 'POST',
             url: '/circle/' + id + '/request',
             dataType: 'json',
-            contentType: 'application/json; charset=UTF-8',
-            data: JSON.stringify(data)
+            contentType: 'application/json; charset=UTF-8'
         });
 
         req.done(function (data) {

@@ -248,10 +248,7 @@ class ChangeCircle(BaseHandler):
 
         user = self.current_user()
 
-        if circle_id != '0':
-            circle = Circle.get_by_id(int(circle_id))
-        else:
-            circle = None
+        circle = Circle.get_by_id(int(circle_id))
 
         if not circle:
             self.session['circle'] = None

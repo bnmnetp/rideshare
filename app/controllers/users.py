@@ -34,7 +34,10 @@ class GetUserHandler(BaseHandler):
 class GetImage(BaseHandler):
 	def get(self, user_id):
 		user = User.get_by_id(int(user_id))
-		self.redirect(images.get_serving_url(user.photo))
+		if user.photo:
+			self.redirect(images.get_serving_url(user.photo))
+		else:
+			self.redirect('/static/default_user.png')
 		# blobstore_handlers.BlobstoreDownloadHandler.send_blob(user.photo)
 
 class NotificationUserHandler(BaseHandler):
