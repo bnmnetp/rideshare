@@ -341,3 +341,34 @@ class RequestJoin(BaseHandler):
         return self.json_resp(200, {
             'message': 'Request sent'
         })
+
+class RequestAccept(BaseHandler):
+    def post(self, circle_id):
+        self.auth()
+
+        user = self.current_user()
+
+        circle = Circle.get_by_id(int(circle_id))
+
+        if user.key() not in circle.admins:
+            return self.json_resp(500, {
+                'message': 'You do not have permission for this.'
+            })
+
+        if not circle:
+            return self.json_resp(500, {
+                'message': 'Circle does not exist'
+            })
+
+        json_str = self.request.body
+        data = json.loads(json_str)
+
+        requester = Uset.get_by_id(int(data['user']))
+
+        if circle.key() not in user.circles:
+            requester.circles.append(circle.key())
+            requester.put()
+
+        return self.json_resp(200, {
+            'message': 'Request accepted'
+        })

@@ -155,5 +155,42 @@ var comment = new Comment({
     container: '[data-comment="container"]'
 });
 var flow = new Flow('details');
+
+/* Send Accepts */
+var send_accept = function (id) {
+    var req = $.ajax({
+        type: 'POST',
+        url: '/circle/' + id + '/accept',
+        dataType: 'json',
+        contentType: 'application/json; charset=UTF-8',
+        data: JSON.stringify({
+            'user': id
+        })
+    });
+
+    req.done(function (data) {
+        notify({
+            type: 'success',
+            strong: 'Member accept!'
+        });
+        document.location.reload(true);
+    });
+
+    req.fail(function (data, status) {
+        notify({
+            type: 'danger',
+            strong: 'Refresh and try again!'
+        });
+    });
+};
+
+document.body.addEventListener('click', function (e) {
+    var target = e.target;
+
+    if (target.dataset.accept) {
+        send_request(target.dataset.accept);
+    }
+});
+/* End */
 </script>
 {% endblock %}

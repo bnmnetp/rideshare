@@ -221,6 +221,7 @@ app = webapp2.WSGIApplication([
     ('/circle/(\d+)/kick', KickMember),
     ('/circle/(\d+)/promote', PromoteMember),
     ('/circle/(\d+)/request', RequestJoin),
+    ('/circle/(\d+)/accept', RequestAccept),
     ('/newCircle', NewCircleHandler),
     ('/circles', CircleHandler),
     ('/join_circle', JoinCircle),
