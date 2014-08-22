@@ -104,10 +104,20 @@
 	<div id="sidebar-wrapper">
 		<ul class="sidebar">
 			<li class="sidebar-main">
-				<a href="/home">
-					Personal Dashboard
-					<span class="menu-icon fa fa-home"></span>
+				<a href="#" data-cwitch='toggle'>
+					Active Circle
+					<span class="menu-icon fa fa-caret-down" data-cwitch='caret'></span>
 				</a>
+			</li>
+			<li class='cwitch-container' data-cwitch='container'>
+				<ul class='cwitch-list'>
+					<li>
+						<a href="#">Example</a>
+					</li>
+					<li>
+						<a href="#">Example #2</a>
+					</li>
+				</ul>
 			</li>
 			<li class="sidebar-title separator">
 				<span>NAVIGATION</span>
@@ -140,6 +150,12 @@
 			</li>
 			<li class="sidebar-title separator">
 				<span>QUICK LINKS</span>
+			</li>
+			<li class="sidebar-list">
+				<a href="/circles">
+					Personal Dashboard
+					<span class="menu-icon fa fa-home"></span>
+				</a>
 			</li>
 			<li class="sidebar-list">
 				<a href="/circles">
@@ -187,6 +203,18 @@
 			console.log(location.pathname.split("/")[1])
 			$('#sidebar-wrapper a[href^="/' + location.pathname.split("/")[1] + '"]').addClass('active');
 		});
+
+		var cwitch = {};
+		cwitch.container = document.querySelector('[data-cwitch="container"]');
+		cwitch.toggle = document.querySelector('[data-cwitch="toggle"]');
+		cwitch.caret = document.querySelector('[data-cwitch="caret"]');
+
+		cwitch.toggle.addEventListener('click', function (e) {
+			console.log('test');
+			cwitch.container.classList.toggle('active');
+			cwitch.caret.classList.toggle('fa-caret-down');
+			cwitch.caret.classList.toggle('fa-caret-up');
+		});	
 	</script>
 	{% block scripts %}
 	{% endblock %}

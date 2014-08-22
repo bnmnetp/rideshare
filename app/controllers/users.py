@@ -12,6 +12,8 @@ import json
 import base64
 import re
 
+import csv
+
 class GetUserHandler(BaseHandler):
 	def get(self, user_id):
 		current_user = self.current_user()
@@ -158,7 +160,6 @@ class DetailHandler(BaseHandler):
             'user_json': user_json
         })
     def post(self):
-        self.auth()
         json_str = self.request.body
         data = json.loads(json_str)
 
@@ -171,6 +172,16 @@ class DetailHandler(BaseHandler):
             Required('phone'): unicode,
             Required('name'): unicode
         })
+
+        try:
+        	detail_validator(data)
+        except MultipleInvalid as e:
+        	return self.json_resp(500, {
+        		'error': str(e),
+        		'message': 'Data could not be validated'
+        	})
+
+       	data['zip'] = int(data['zip'])
 
         user.name = data['name']
         user.email = data['email']
@@ -190,6 +201,7 @@ class DetailHandler(BaseHandler):
                         zip_row = row
                         break
             if zip_row:
+            	print 'Breakpoint'
                 city = zip_row[2]
                 circle = Circle()
                 circle.name = 'Open ' + city + ' Circle'
@@ -203,8 +215,6 @@ class DetailHandler(BaseHandler):
 
         user.put()
 
-        resp = {
-            'message': 'Information updated'
-        }
-
-        self.response.write(json.dumps(resp))
+        return self.json_resp(200, {
+        	'message': 'Information updated'
+        })

@@ -872,3 +872,31 @@ ul.sidebar .sidebar-list .menu-icon {
       text-indent: 22px;
     }
 }
+
+.cwitch-container {
+    height: 0px;
+    transition: height 0.5s linear;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.cwitch-container.active {
+    height: 200px;
+}
+
+ul.cwitch-list {
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding-left: 0px;
+}
+
+ul.cwitch-list li {
+    color: #b2bfdc;
+    display: block;
+    float: left;
+    text-decoration: none;
+    width: 250px;
+    text-indent: 25px;
+    font-size: 15px;
+    line-height: 40px;
+}

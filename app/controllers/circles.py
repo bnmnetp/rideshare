@@ -183,13 +183,10 @@ class CircleHandler(BaseHandler):
         try:
             circle_schema(data)
         except MultipleInvalid as e:
-            print str(e)
-            self.response.set_status(500)
-            self.response.write(json.dumps({
-                    'error': str(e),
-                    'message': 'Data could not be validated'
-                }))
-            return None
+            return self.json_resp(500, {
+                'error': str(e),
+                'message': 'Data could not be validated'
+            })
 
         circle.name = data['name']
         circle.description = data['description']
