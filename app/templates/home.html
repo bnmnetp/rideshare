@@ -61,13 +61,21 @@
                             </div>
                             <div class="info">
                                 <div class="title">
-                                    {{noti.text | safe}}
+                                    {{noti.message | safe}}
                                 </div>
                                 <div class="sub">
-                                    <a href="/ride/{{noti.ride.key().id()}}" class='btn btn-primary btn-xs'>
+                                    {% if noti.ride_details %}
+                                    <a href="/ride/{{noti.ride_details.key().id()}}" class='btn btn-primary btn-xs'>
                                         <i class="fa fa-automobile"></i>
                                         {{noti.ride.orig}} to {{noti.ride.dest}}
                                     </a>
+                                    {% endif %}
+                                    {% if noti.circle_details %}
+                                    <a href="/circle/{{noti.circle_details.key().id()}}" class='btn btn-primary btn-xs'>
+                                        <i class="fa fa-circle-o"></i>
+                                        {{noti.circle_details.name}}
+                                    </a>
+                                    {% endif %}
                                     <button class='btn btn-danger btn-xs' data-alert='{{noti.key().id()}}'>
                                         <i class="fa fa-times"></i>
                                         Dismiss

@@ -52,7 +52,7 @@
             </a>
             {% if is_admin %}
                 <a class="btn btn-primary" href='/circle/{{circle.key().id()}}/edit'>Manage Circle</a>
-                <button class='btn btn-primary'>Send message to all circle members</button>
+                <button class='btn btn-primary' data-toggle="modal" data-target="#send-message">Send message to all circle members</button>
             {% endif %}
         </div>
     </div>
@@ -80,21 +80,7 @@
             <div class="panel panel-main">
                 <div class="panel-heading">Notifications - Messages from {{circle.name}}</div>
                 <div class="panel-body">
-    <div class="media">
-        <a class="pull-left" href="#">
-            <img src="/user/photo/{{posting.id}}" style="width: 64px; height: 64px;" class="media-object img-circle" alt="64x64">
-        </a>
-        <div class="media-body">
-            <h4 class="media-heading">
-                <a href='/user/{{posting.id}}'>
-                    {{posting.name}}
-                </a>
-            </h4>
-            {{posting.message}}
-        </div>
-        <span class="label label-success">Posted on {{posting.date}}</span>
-    </div>
-    <hr>
+
                 </div>
             </div>
         </div>
@@ -159,7 +145,7 @@
 <div class="modal fade" id="send-message" tabindex="-1" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form data-form='register'>
+            <form data-form='message'>
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">
                     <span aria-hidden="true">&times;</span>

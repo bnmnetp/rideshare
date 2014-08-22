@@ -25,6 +25,7 @@ def doRender(handler, name = 'home.html', value = {}):
 
 		value['active_circle'] = b.circle()
 
+	value['current_page'] = handler.request.path
 	template = env.get_template(name)
 	handler.response.write(template.render(value))
 

@@ -1,4 +1,4 @@
-from app.common.toolbox import doRender, grab_json
+from app.common.toolbox import doRender, grab_json, split_address
 from google.appengine.ext import db
 from app.base_handler import BaseHandler
 from app.common.voluptuous import *
@@ -65,11 +65,15 @@ class HomeHandler(BaseHandler):
                 Your ride has been edited.
                 """
             elif noti.type == 'circle message':
-                noti.message == """
-                
-                ""
+                noti.message = noti.text
 
+            if noti.ride:
+                noti.ride_details = Ride.get(noti.ride)
+                noti.ride_details.orig = split_address(noti.ride_details.origin_add)
+                noti.ride_details.dest = split_address(noti.ride_details.dest_add)
 
+            if noti.circle:
+                noti.circle_details = Circle.get(noti.circle)
 
         doRender(self, 'home.html', { 
             'user': user,

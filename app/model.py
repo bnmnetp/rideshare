@@ -119,6 +119,7 @@ class Notification(db.Model):
     user = db.ReferenceProperty(User)
     ride = db.ReferenceProperty(Ride)
     circle = db.ReferenceProperty(Circle)
+    text = db.TextProperty()
 
     def to_dict(self):
         resp = {}

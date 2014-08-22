@@ -51,14 +51,18 @@
 				{% if active_circle is defined and active_circle != None %}
 				<li>
 					<a href="#">
-						Viewing as:
+						Viewing:
 					</a>
 				</li>
 				<li>
 					<div class="dropdown cla">
 						<a href="#" class='dropdown-toggle' data-toggle='dropdown' role='button' id='tooltip-trial'>
 							<i class="fa fa-circle-o"></i>
+							{% if current_page == '/home' %}
+								Dashboard
+							{% else %}
 								{{active_circle.name}}
+							{% endif %}
 							<span class="caret"></span>
 						</a>
 						<ul class="dropdown-menu">

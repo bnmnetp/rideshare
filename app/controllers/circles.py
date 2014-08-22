@@ -394,3 +394,20 @@ class CircleMessage(BaseHandler):
             return self.json_resp(500, {
                 'message': 'Circle does not exist'
             })
+
+        json_str = self.request.body
+        data = json.loads(json_str)
+
+        members = User.all().filter('circle =', circle.key()).fetch(100)
+
+        for member in members:
+            noti = Notification()
+            noti.user = user.key()
+            noti.circle = circle.key()
+            noti.type = 'circle_message'
+            noti.text = data['message']
+            noti.put()
+
+        return self.json_resp(200, {
+            'message': 'Message sent to all users'
+        })
