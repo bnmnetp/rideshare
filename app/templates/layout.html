@@ -48,33 +48,6 @@
 						<span class="nbadge">{{alert_badge}}</span>
 					{% endif%}
 				</li>
-				{% if active_circle is defined and active_circle != None %}
-				<li>
-					<a href="#">
-						Viewing:
-					</a>
-				</li>
-				<li>
-					<div class="dropdown cla">
-						<a href="#" class='dropdown-toggle' data-toggle='dropdown' role='button' id='tooltip-trial'>
-							<i class="fa fa-circle-o"></i>
-							{% if current_page == '/home' %}
-								Dashboard
-							{% else %}
-								{{active_circle.name}}
-							{% endif %}
-							<span class="caret"></span>
-						</a>
-						<ul class="dropdown-menu">
-							{% for circle in circle_list %}
-							<li>
-								<a href="/circle/{{circle.key().id()}}/change">{{circle.name}}</a>
-							</li>
-							{% endfor %}
-						</ul>
-					</div>
-				</li>
-				{% endif %}
 			</ul>
 			{% endif %}
 			<ul class="nav navbar-nav pull-right">
@@ -103,20 +76,24 @@
 	{% if user is defined %}
 	<div id="sidebar-wrapper">
 		<ul class="sidebar">
+			<li class="sidebar-title separator">
+				<span>SWITCH CIRCLES</span>
+			</li>
+			{% if active_circle is defined and active_circle != None %}
 			<li class="sidebar-main">
 				<a href="#" data-cwitch='toggle'>
-					Active Circle
+					{{active_circle.name}}
 					<span class="menu-icon fa fa-caret-down" data-cwitch='caret'></span>
 				</a>
 			</li>
+			{% endif %}
 			<li class='cwitch-container' data-cwitch='container'>
 				<ul class='cwitch-list'>
+					{% for circle in circle_list %}
 					<li>
-						<a href="#">Example</a>
+						<a href="/circle/{{circle.key().id()}}/change">{{circle.name}}</a>
 					</li>
-					<li>
-						<a href="#">Example #2</a>
-					</li>
+					{% endfor %}
 				</ul>
 			</li>
 			<li class="sidebar-title separator">
@@ -152,7 +129,7 @@
 				<span>QUICK LINKS</span>
 			</li>
 			<li class="sidebar-list">
-				<a href="/circles">
+				<a href="/home">
 					Personal Dashboard
 					<span class="menu-icon fa fa-home"></span>
 				</a>
