@@ -45,7 +45,7 @@
                             {% endif %}
                         {% endif %}
 
-                        {% if circle.privacy == 'public' %}
+                        {% if circle.privacy == 'public' or circle.privacy == None %}
                             {% if circle.user %}
                             <div class="toggle" data-id='{{circle.key().id()}}' data-toggle='true'>
                             {% else %}

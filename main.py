@@ -149,7 +149,7 @@ class DetailHandler(BaseHandler):
 
         circle_match = Circle.all().filter('zip =', data['zip']).get()
 
-        if circle_match:
+        if circle_match and circle_match.key() not in user.circles:
             user.circles.append(circle_match.key())
         else:
             zip_row = None

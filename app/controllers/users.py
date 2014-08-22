@@ -143,3 +143,68 @@ class UserHandler(BaseHandler):
 			'user': user,
 			'is_user': True
 		})
+
+class DetailHandler(BaseHandler):
+    def get(self):
+        self.auth()
+        user = self.current_user()
+
+        properties = ['name', 'email', 'phone', 'zip']
+
+        user_json = grab_json(user, properties)
+
+        doRender(self, 'details.html', {
+            'user': user,
+            'user_json': user_json
+        })
+    def post(self):
+        self.auth()
+        json_str = self.request.body
+        data = json.loads(json_str)
+
+        self.auth()
+        user = self.current_user()
+
+        detail_validator = Schema({
+            Required('zip'): Coerce(int),
+            Required('email'): unicode,
+            Required('phone'): unicode,
+            Required('name'): unicode
+        })
+
+        user.name = data['name']
+        user.email = data['email']
+        user.phone = data['phone']
+        user.zip = data['zip']
+
+        circle_match = Circle.all().filter('zip =', data['zip']).get()
+
+        if circle_match and circle_match.key() not in user.circles:
+            user.circles.append(circle_match.key())
+        else:
+            zip_row = None
+            with open('app/common/zip_db.csv') as zip_db:
+                zip_data = csv.reader(zip_db, delimiter=',')
+                for row in zip_data:
+                    if data['zip'] in row:
+                        zip_row = row
+                        break
+            if zip_row:
+                city = zip_row[2]
+                circle = Circle()
+                circle.name = 'Open ' + city + ' Circle'
+                circle.description = 'An open circle for residents of ' + city + '.'
+                circle.permission = 'public'
+                circle.zip = data['zip']
+                circle.color = '#607d8b'
+                circle.privacy = 'public'
+                circle.put()
+                user.circles.append(circle.key())
+
+        user.put()
+
+        resp = {
+            'message': 'Information updated'
+        }
+
+        self.response.write(json.dumps(resp))

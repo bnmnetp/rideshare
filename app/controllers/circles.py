@@ -255,7 +255,7 @@ class ChangeCircle(BaseHandler):
         else:
             self.session['circle'] = circle.key().id()
 
-        self.redirect(self.request.referer)
+        self.redirect('/circle/' + str(circle.key().id()))
 
 class KickMember(BaseHandler):
     def post(self, circle_id):

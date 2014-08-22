@@ -101,7 +101,7 @@
 		<ul class="sidebar">
 			<li class="sidebar-main">
 				<a href="/home">
-					Dashboard
+					Personal Dashboard
 					<span class="menu-icon fa fa-home"></span>
 				</a>
 			</li>
@@ -178,6 +178,10 @@
 				show: 100,
 				hide: 500
 			}
+		});
+		$(function () {
+			console.log(location.pathname.split("/")[1])
+			$('#sidebar-wrapper a[href^="/' + location.pathname.split("/")[1] + '"]').addClass('active');
 		});
 	</script>
 	{% block scripts %}

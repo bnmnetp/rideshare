@@ -187,7 +187,7 @@
                         </div>
                         <div class="info">
                             <div class="title">
-                                <a href='/circle/{{circle.key().id()}}'>{{circle.name}}</a>
+                                <a href='/circle/{{circle.key().id()}}/change'>{{circle.name}}</a>
                             </div>
                             <div class="sub">
                                 <a href='/circle/{{circle.key().id()}}/change'>
@@ -209,20 +209,6 @@
 {% endblock %}
 
 {% block scripts %}
-
-{% raw %}
-
-<script data-notify="template" type='text/x-handlebars-template'>
-    <div class="alert alert-{{type}} alert-dismissable">
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-        <strong>{{strong}}</strong> {{{message}}}
-    </div>
-</script>
-
-{% endraw %}
-
-<script src="static/augment.js" type="text/javascript"></script>
-
 <script type="text/javascript">
     var send_req = function (id) {
         var push = $.ajax({

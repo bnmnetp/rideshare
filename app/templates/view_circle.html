@@ -46,12 +46,13 @@
                     <b>Description:</b> {{circle.description}}
                 </li>
             </ul>
-            <a href='/map?circle={{circle.key().id()}}' class='btn btn-success btn-large'>
-                Add events for this circle
+            <a href='/map' class='btn btn-success btn-large'>
+                Add rides & events for this circle
                 <i class='fa fa-plus'></i>
             </a>
             {% if is_admin %}
                 <a class="btn btn-primary" href='/circle/{{circle.key().id()}}/edit'>Manage Circle</a>
+                <button class='btn btn-primary'>Send message to all members</button>
             {% endif %}
         </div>
     </div>
@@ -154,6 +155,7 @@ var comment = new Comment({
     id: {{circle.key().id()}},
     container: '[data-comment="container"]'
 });
+
 var flow = new Flow('details');
 
 /* Send Accepts */
