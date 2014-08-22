@@ -376,3 +376,21 @@ class RequestAccept(BaseHandler):
         return self.json_resp(200, {
             'message': 'Request accepted'
         })
+
+class CircleMessage(BaseHandler):
+    def post(self, circle_id):
+        self.auth()
+
+        user = self.current_user()
+
+        circle = Circle.get_by_id(int(circle_id))
+
+        if user.key() not in circle.admins:
+            return self.json_resp(500, {
+                'message': 'You do not have permission for this.'
+            })
+
+        if not circle:
+            return self.json_resp(500, {
+                'message': 'Circle does not exist'
+            })

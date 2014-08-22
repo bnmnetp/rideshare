@@ -4,10 +4,7 @@ from app.common.email import send_email
 
 from datetime import timedelta, datetime
 
-def push_noti(type, user_key, ride_key):
-	user = User.get(user_key)
-	ride = Ride.get(ride_key)
-
+def push_noti(type, user_key, ride_key = None, circle_key = None):
 	if type == 'driver_leave':
 		message = """
 		The driver has left this ride.
@@ -28,12 +25,13 @@ def push_noti(type, user_key, ride_key):
 		message = """
 		Your ride has been edited.
 		"""
-	noti = Notification()
-	noti.text = message
-	noti.ride = ride.key()
-	noti.user = user.key()
-	noti.put()
 
+	noti = Notification()
+	noti.ride = ride_key
+	noti.user = user_key
+	noti.circle = circle_key
+	noti.type = type
+	noti.put()
 
 	if user.noti_time != 0:
 		today = datetime.today().date()

@@ -115,9 +115,10 @@ class Comment(db.Model):
 class Notification(db.Model):
     created = db.DateTimeProperty(auto_now_add=True)
     read = db.BooleanProperty()
-    text = db.TextProperty()
+    type = db.StringProperty()
     user = db.ReferenceProperty(User)
     ride = db.ReferenceProperty(Ride)
+    circle = db.ReferenceProperty(Circle)
 
     def to_dict(self):
         resp = {}

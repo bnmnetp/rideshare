@@ -28,7 +28,7 @@ class LoginHandler(BaseHandler):
         user = User.all().filter('email_account = ', data['email']).get()
 
         if not user:
-            return self.json_resp(200, {
+            return self.json_resp(500, {
                 'message': 'Email/password is wrong.'
             })
 
