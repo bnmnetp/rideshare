@@ -32,7 +32,7 @@
                         {{circle.name}}
                         {% if circle.privacy == 'private'%}
                             {% if not circle.user %}
-                            <div class="pull-right">
+                            <div class="pull-right" style='margin-right:20px;'>
                                 <button class="btn btn-success" data-request='{{circle.key().id()}}'>Request to Join</button>
                             </div>
                             {% else %}

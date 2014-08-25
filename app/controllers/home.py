@@ -17,12 +17,13 @@ class HomeHandler(BaseHandler):
         today = datetime.date.today()
         upcoming = Ride.all().filter('date > ', today).fetch(20)
 
+        # Format data
         for up in upcoming:
-            up.dest_add = split_address(up.dest_add)
+            up.orig = split_address(up.orig_add)
+            up.dest = split_address(up.dest_add)
+            up.is_pass = False
             if user.key() in up.passengers:
                 up.is_pass = True
-            else:
-                up.is_pass = False
 
             up.is_driver = False
             if up.driver:
@@ -30,18 +31,6 @@ class HomeHandler(BaseHandler):
                     up.is_driver = True
 
             up.date_str = up.date.strftime('%B %dth, %Y')
-
-        for noti in notis:
-            noti.ride.orig = split_address(noti.ride.origin_add)
-            noti.ride.dest = split_address(noti.ride.dest_add)
-
-        circles = Circle.all().fetch(100)
-
-        for circle in circles:
-            if circle.key() in user.circles:
-                circle.user = True
-            else:
-                circle.user = False
 
         for noti in notis:
             if noti.type == 'driver_leave':
@@ -66,14 +55,34 @@ class HomeHandler(BaseHandler):
                 """
             elif noti.type == 'circle message':
                 noti.message = noti.text
+            noti.ride.orig = split_address(noti.ride.origin_add)
+            noti.ride.dest = split_address(noti.ride.dest_add)
 
-            if noti.ride:
-                noti.ride_details = Ride.get(noti.ride)
-                noti.ride_details.orig = split_address(noti.ride_details.origin_add)
-                noti.ride_details.dest = split_address(noti.ride_details.dest_add)
+        ride_alerts = []
+        for up in upcoming:
+            obj = {
+                'message': up.orig + ' to ' + up.dest,
+                'date': up.date_str,
+                'details': False,
+                'driver': up.is_driver,
+                'pass': up.is_pass,
+                'type': 'Reminder'
+            }
+            ride_alerts.append(obj)
 
-            if noti.circle:
-                noti.circle_details = Circle.get(noti.circle)
+        for noti in notis:
+            obj = {
+                'message': noti.message,
+                'date': 
+            }
+
+        circles = Circle.all().fetch(100)
+
+        for circle in circles:
+            if circle.key() in user.circles:
+                circle.user = True
+            else:
+                circle.user = False
 
         doRender(self, 'home.html', { 
             'user': user,

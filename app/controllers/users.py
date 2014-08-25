@@ -79,7 +79,7 @@ class EditUserHandler(BaseHandler):
 
 		user = self.current_user()
 
-		properties = ['name', 'email', 'phone']
+		properties = ['name', 'email', 'phone', 'zip']
 
 		user_json = grab_json(user, properties)
 
@@ -104,6 +104,7 @@ class EditUserHandler(BaseHandler):
 		user.name = data['name']
 		user.email = data['email']
 		user.phone = data['phone']
+		user.zip = data['zip']
 
 		if not user.key().id() == int(user_id):
 			self.redirect('/user/' + user_id)
@@ -189,7 +190,7 @@ class DetailHandler(BaseHandler):
         user.zip = data['zip']
 
         circle_match = Circle.all().filter('zip =', data['zip']).get()
-
+        print 'BREAKPOINTTT'
         if circle_match and circle_match.key() not in user.circles:
             user.circles.append(circle_match.key())
         else:
