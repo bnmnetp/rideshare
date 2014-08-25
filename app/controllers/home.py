@@ -19,7 +19,7 @@ class HomeHandler(BaseHandler):
 
         # Format data
         for up in upcoming:
-            up.orig = split_address(up.orig_add)
+            up.orig = split_address(up.origin_add)
             up.dest = split_address(up.dest_add)
             up.is_pass = False
             if user.key() in up.passengers:
@@ -58,23 +58,33 @@ class HomeHandler(BaseHandler):
             noti.ride.orig = split_address(noti.ride.origin_add)
             noti.ride.dest = split_address(noti.ride.dest_add)
 
+            noti.created_str = noti.created.strftime('%B %dth, %Y')
+
         ride_alerts = []
         for up in upcoming:
             obj = {
-                'message': up.orig + ' to ' + up.dest,
+                'message': '<a href="">' + up.orig + ' to ' + up.dest + '</a>',
                 'date': up.date_str,
                 'details': False,
                 'driver': up.is_driver,
                 'pass': up.is_pass,
-                'type': 'Reminder'
+                'type': 'Upcoming Ride'
             }
             ride_alerts.append(obj)
 
         for noti in notis:
             obj = {
                 'message': noti.message,
-                'date': 
+                'date': created_str,
+                'details': {
+                    'message': noti.ride.orig + ' to ' + noti.ride.dest,
+                    'id': noti.key().id()
+                },
+                'driver': False,
+                'pass': False,
+                'type': 'Notification'
             }
+            ride_alerts.append(obj)
 
         circles = Circle.all().fetch(100)
 
@@ -88,5 +98,6 @@ class HomeHandler(BaseHandler):
             'user': user,
             'notis': notis,
             'upcoming': upcoming,
-            'circles': circles
+            'circles': circles,
+            'ride_alerts': ride_alerts
         })

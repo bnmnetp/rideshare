@@ -76,17 +76,16 @@
 	{% if user is defined %}
 	<div id="sidebar-wrapper">
 		<ul class="sidebar">
+		{% if user.circles %}
 			<li class="sidebar-title separator">
 				<span>SWITCH CIRCLES</span>
 			</li>
-			{% if active_circle is defined and active_circle != None %}
 			<li class="sidebar-main">
 				<a href="#" data-cwitch='toggle'>
 					{{active_circle.name}}
 					<span class="menu-icon fa fa-caret-down" data-cwitch='caret'></span>
 				</a>
 			</li>
-			{% endif %}
 			<li class='cwitch-container' data-cwitch='container'>
 				<ul class='cwitch-list'>
 					{% for circle in circle_list %}
@@ -125,6 +124,7 @@
 					<span class="menu-icon fa fa-calendar"></span>
 				</a>
 			</li>
+		{% endif %}
 			<li class="sidebar-title separator">
 				<span>QUICK LINKS</span>
 			</li>

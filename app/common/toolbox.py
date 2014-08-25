@@ -22,8 +22,7 @@ def doRender(handler, name = 'home.html', value = {}):
 		value['alert_badge'] = Notification.all().filter('user = ', user.key()).count()
 		circle_keys = user.circles
 		value['circle_list'] = Circle.all().filter('__key__ in', circle_keys).fetch(20)
-
-		value['active_circle'] = b.circle()
+		value['active_circle'] = handler.circle()
 
 	value['current_page'] = handler.request.path
 	template = env.get_template(name)

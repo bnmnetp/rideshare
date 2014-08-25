@@ -28,7 +28,8 @@ class RideHandler(BaseHandler):
         rides.filter('date >=', today)
 
         if data['circle'] != False:
-            rides.filter('circle = ', data['circle'])
+            circle = Circle.get_by_id(int(data['circle']))
+            rides.filter('circle = ', circle.key())
 
         results = json.dumps([r.to_dict() for r in rides])
         self.response.write(results)
@@ -45,7 +46,8 @@ class FilterRides(BaseHandler):
         rides = Ride.all()
 
         if data['circle']:
-            rides.filter('circle =', data['circle'])
+            circle = Circle.get_by_id(int(data['circle']))
+            rides.filter('circle =', circle.key())
 
         if data['filter'] == 'no_driver':
             rides.filter('driver = ', None)
@@ -309,7 +311,7 @@ class NewRideHandler(BaseHandler):
                 'address': unicode
             },
             'recurring': unicode,
-            'circle': unicode
+            'circle': int
         })
 
         try:
@@ -352,7 +354,7 @@ class NewRideHandler(BaseHandler):
         else:
             ride.circle = None
 
-        ride_key = ride.put()
+        ride.put()
 
         return self.json_resp(200, {
             'message': 'Ride added!'

@@ -46,10 +46,9 @@ class BaseHandler(webapp2.RequestHandler):
 
     def circle(self):
         user = self.current_user()
-        if 'circle' in self.session:
-            if self.session['circle'] != None:
-                circle = Circle.get_by_id(int(self.session['circle']))
-            else:
+        if 'circle' in self.session and self.session['circle'] != None:
+            circle = Circle.get_by_id(int(self.session['circle']))
+            if not circle:
                 if user.circles:
                     circle_key = user.circles[0]
                     circle = Circle.get(circle_key)
@@ -63,7 +62,6 @@ class BaseHandler(webapp2.RequestHandler):
                 self.session['circle'] = circle.key().id()
             else:
                 circle = None
-
         return circle
 
     def login_redirect(self, user):

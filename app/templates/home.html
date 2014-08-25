@@ -47,39 +47,45 @@
     <div class="col-md-6">
         <div class="panel panel-main">
             <div class="panel-heading">
-                Ride Alers
+                Ride Alerts
                 <div class="pull-right">
                     <i class="fa fa-question" data-help='toggle'></i>
                 </div>
             </div>
             <div class="panel-body panel-no">
-                {% if notis %}
-                    {% for noti in notis %}
-                        <div class="list" data-parent='{{noti.key().id()}}'>
+                {% if ride_alerts %}
+                    {% for ra in ride_alerts %}
+                        <div class="list" data-parent=''>
                             <div class="ctx">
                                 <i class="fa fa-paper-plane"></i>
                             </div>
                             <div class="info">
                                 <div class="title">
-                                    {{noti.message | safe}}
+                                    {{ra.message | safe}}
                                 </div>
                                 <div class="sub">
-                                    {% if noti.ride_details %}
-                                    <a href="/ride/{{noti.ride_details.key().id()}}" class='btn btn-primary btn-xs'>
+                                    {% if ra.details %}
+                                    <a href="/ride/{{ra.details.id}}" class='btn btn-primary btn-xs'>
                                         <i class="fa fa-automobile"></i>
-                                        {{noti.ride.orig}} to {{noti.ride.dest}}
+                                        {{ra.details.message}}
                                     </a>
                                     {% endif %}
-                                    {% if noti.circle_details %}
-                                    <a href="/circle/{{noti.circle_details.key().id()}}" class='btn btn-primary btn-xs'>
+                                    {% if ra.circle %}
+                                    <a href="/circle/{{ra.circle.id}}" class='btn btn-primary btn-xs'>
                                         <i class="fa fa-circle-o"></i>
-                                        {{noti.circle_details.name}}
+                                        {{ra.circle.name}}
                                     </a>
                                     {% endif %}
-                                    <button class='btn btn-danger btn-xs' data-alert='{{noti.key().id()}}'>
+                                    <button class='btn btn-primary btn-xs'>
+                                        <i class="fa fa-calendar"></i> {{ra.date}}
+                                    </button>
+                                    <button class='btn btn-primary btn-xs'>
+                                        {{ra.type}}
+                                    </button>
+                                    <!-- <button class='btn btn-danger btn-xs' data-alert='' data-type='{{ra.type}}'>
                                         <i class="fa fa-times"></i>
                                         Dismiss
-                                    </button>
+                                    </button> -->
                                 </div>
                             </div>
                         </div>
