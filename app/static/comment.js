@@ -1,16 +1,16 @@
 var Comment = augment(Object, function () {
-	this.constructor = function (deta) {
-		this.form = document.querySelector("[data-comment='form']");
-		this.container = document.querySelector(deta.container);
+    this.constructor = function (deta) {
+        this.form = document.querySelector("[data-comment='form']");
+        this.container = document.querySelector(deta.container);
         this.source = document.querySelector('[data-comment="template"]').innerHTML;
         this.template = Handlebars.compile(this.source);
 
-		this.deta = deta;
+        this.deta = deta;
 
         this.get_comments(deta);
 
-	    this.form.addEventListener('submit', this.submit.bind(this))
-	}
+        this.form.addEventListener('submit', this.submit.bind(this))
+    }
 
     this.add_comment = function (deta) {
         var html = this.template(deta);
@@ -40,7 +40,7 @@ var Comment = augment(Object, function () {
         }
     }
 
-	this.submit = function (e) {
+    this.submit = function (e) {
         e.preventDefault();
         var req = $.ajax({
             type: 'POST',
@@ -63,5 +63,5 @@ var Comment = augment(Object, function () {
 
             console.log('Error');
         }.bind(this));
-	}
+    }
 })
