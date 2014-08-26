@@ -311,16 +311,15 @@ class NewRideHandler(BaseHandler):
                 'address': unicode
             },
             'recurring': unicode,
-            'circle': int
+            'circle': Coerce(long)
         })
 
         try:
             data = ride_validator(data)
         except MultipleInvalid as e:
-            print str(e)
             return self.json_resp(500, {
                 'error': True,
-                'message': 'Invalid data'
+                'message': str(e)
             })
 
         user = self.current_user()

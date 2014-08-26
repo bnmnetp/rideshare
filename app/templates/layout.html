@@ -52,16 +52,16 @@
 			{% endif %}
 			<ul class="nav navbar-nav pull-right">
 				{% if user is defined %}
-				<li>
+				<!-- <li>
 					<a href="/invites">Invites</a>
 					{% if invite_badge %}
 						<span class="nbadge">{{invite_badge}}</span>
 					{% endif%}
-				</li>
+				</li> -->
 				<li>
 					<a href="/user">
 						<i class="fa fa-user"></i> 
-						{{user.name}}
+						My Profile
 					</a>
 				</li>
 			    <li>

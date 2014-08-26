@@ -93,6 +93,11 @@ class GetCircleHandler(BaseHandler):
 
         requests = User.all().filter('__key__ in', circle.requests).fetch(100)
 
+        notis = Notification.all().filter('circle = ', circle.key()).filter('type = ', 'circle_message').fetch(100)
+
+        for noti in notis:
+            noti.date_str = noti.created.strftime('%B %dth, %Y')
+
         if circle.key() in user.circles:
             has_permission = True
         else:
@@ -118,7 +123,8 @@ class GetCircleHandler(BaseHandler):
             'members': members,
             'invite': invite,
             'is_admin': is_admin,
-            'requests': requests
+            'requests': requests,
+            'notis': notis
         })
 
 class CircleInvited(BaseHandler):
@@ -338,8 +344,8 @@ class RequestJoin(BaseHandler):
 
         for admin in circle.admins:
             noti = Notification()
-            noti.type = 'Request'
-            noti.user = admin.key()
+            noti.type = 'request'
+            noti.user = admin
             noti.circle = circle.key()
             noti.put()
 
@@ -403,11 +409,19 @@ class CircleMessage(BaseHandler):
         json_str = self.request.body
         data = json.loads(json_str)
 
-        members = User.all().filter('circle =', circle.key()).fetch(100)
+        members = User.all().filter('circle = ', circle.key()).fetch(100)
 
         for member in members:
             noti = Notification()
             noti.user = user.key()
+            noti.circle = circle.key()
+            noti.type = 'circle_message'
+            noti.text = data['message']
+            noti.put()
+
+        for admin in circle.admins:
+            noti = Notification()
+            noti.user = admin
             noti.circle = circle.key()
             noti.type = 'circle_message'
             noti.text = data['message']

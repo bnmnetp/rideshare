@@ -115,10 +115,29 @@
                             </div>
                             <div class="info">
                                 <div class="title">
-                                    <a href="/ride/{{up.key().id()}}">Ride to {{up.dest_add}}</a>
+                                    {{sn.message}}
                                 </div>
                                 <div class="sub">
-                                    <i class="fa fa-calendar"></i> {{up.date_str}}
+                                    <button class='btn btn-primary btn-xs'>
+                                        <i class="fa fa-calendar"></i> {{sn.date}}
+                                    </button>
+                                    {% if sn.circle %}
+                                    <a href="/circle/{{sn.circle.id}}" class='btn btn-primary btn-xs'>
+                                        <i class="fa fa-circle-o"></i>
+                                        {{sn.circle.name}}
+                                    </a>
+                                    {% endif %}
+                                    {% if sn.invited_by %}
+                                    <a href="/circle/{{sn.invited_by.id}}" class='btn btn-primary btn-xs'>
+                                        <i class="fa fa-circle-o"></i>
+                                        {{sn.invited_by.name}}
+                                    </a>
+                                    {% endif %}
+                                    {% if sn.type %}
+                                    <button class='btn btn-primary btn-xs'>
+                                        {{sn.type}}
+                                    </button>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>

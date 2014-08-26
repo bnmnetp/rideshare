@@ -12,10 +12,17 @@ class HomeHandler(BaseHandler):
         self.auth()
         user = self.current_user()
 
-        notis = Notification.all().filter('user = ', user.key()).fetch(10)
+        notis = Notification.all().filter('user = ', user.key()).fetch(100)
+
+        invites = Invite.all().filter('user = ', user.key()).fetch(100)
 
         today = datetime.date.today()
-        upcoming = Ride.all().filter('date > ', today).fetch(20)
+        upcoming_pass = Ride.all().filter('date > ', today).filter('passengers =', user.key()).fetch(20)
+        upcoming_drive = Ride.all().filter('date > ', today).filter('driver =', user.key()).fetch(20)
+        upcoming = upcoming_pass + upcoming_drive
+
+        site_notifications = []
+        ride_alerts = []
 
         # Format data
         for up in upcoming:
@@ -31,6 +38,21 @@ class HomeHandler(BaseHandler):
                     up.is_driver = True
 
             up.date_str = up.date.strftime('%B %dth, %Y')
+
+        for up in upcoming:
+            obj = {
+                'message': '<a href="/ride/' + str(up.key().id()) + '">' + up.orig + ' to ' + up.dest + '</a>',
+                'date': up.date_str,
+                'details': False,
+                'driver': up.is_driver,
+                'pass': up.is_pass,
+                'type': 'Upcoming Ride',
+                'circle': {
+                    'name': up.circle.name,
+                    'id': up.circle.key().id()
+                }
+            }
+            ride_alerts.append(obj)
 
         for noti in notis:
             if noti.type == 'driver_leave':
@@ -53,44 +75,60 @@ class HomeHandler(BaseHandler):
                 noti.message = """
                 Your ride has been edited.
                 """
-            elif noti.type == 'Request':
+            elif noti.type == 'request':
                 noti.message = 'A person has requested to join this circle.'
-            elif noti.type == 'circle message':
+            elif noti.type == 'circle_message':
                 noti.message = noti.text
-            noti.ride.orig = split_address(noti.ride.origin_add)
-            noti.ride.dest = split_address(noti.ride.dest_add)
+            if noti.ride:
+                noti.ride.orig = split_address(noti.ride.origin_add)
+                noti.ride.dest = split_address(noti.ride.dest_add)
 
             noti.created_str = noti.created.strftime('%B %dth, %Y')
 
-        ride_alerts = []
-        for up in upcoming:
+        for invite in invites:
             obj = {
-                'message': '<a href="">' + up.orig + ' to ' + up.dest + '</a>',
-                'date': up.date_str,
-                'details': False,
-                'driver': up.is_driver,
-                'pass': up.is_pass,
-                'type': 'Upcoming Ride',
+                'message': """
+                    You have been invited to <a href='/circle/%s'>%s circle</a>.
+                """ % (invite.circle.key().id(), invite.circle.name),
                 'circle': {
-                    'name': up.circle.name,
-                    'id': up.circle.key().id()
+                    'name': invite.circle.name,
+                    'id': invite.circle.key().id()
+                },
+                'invited_by': {
+                    'name': invite.sender.name,
+                    'id': invite.sender.key().id()
                 }
             }
-            ride_alerts.append(obj)
 
         for noti in notis:
-            obj = {
-                'message': noti.message,
-                'date': noti.created_str,
-                'details': {
-                    'message': noti.ride.orig + ' to ' + noti.ride.dest,
-                    'id': noti.key().id()
-                },
-                'driver': False,
-                'pass': False,
-                'type': 'Notification'
-            }
-            ride_alerts.append(obj)
+            if noti.type in ['request', 'circle_message']:
+                mtype = None
+                if noti.type == 'circle_message':
+                    mtype = 'Message from Admin'
+                obj = {
+                    'message': noti.message,
+                    'date': noti.created_str,
+                    'circle': {
+                        'name': noti.circle.name,
+                        'id': noti.circle.key().id()
+                    },
+                    'type': mtype
+                }
+
+                site_notifications.append(obj)
+            else:
+                obj = {
+                    'message': noti.message,
+                    'date': noti.created_str,
+                    'details': {
+                        'message': noti.ride.orig + ' to ' + noti.ride.dest,
+                        'id': noti.key().id()
+                    },
+                    'driver': False,
+                    'pass': False,
+                    'type': 'Notification'
+                }
+                ride_alerts.append(obj)
 
         circles = Circle.all().fetch(100)
 
@@ -100,10 +138,10 @@ class HomeHandler(BaseHandler):
             else:
                 circle.user = False
 
+        print site_notifications
         doRender(self, 'home.html', { 
             'user': user,
-            'notis': notis,
-            'upcoming': upcoming,
             'circles': circles,
-            'ride_alerts': ride_alerts
+            'ride_alerts': ride_alerts,
+            'site_notis': site_notifications
         })

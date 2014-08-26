@@ -80,7 +80,29 @@
             <div class="panel panel-main">
                 <div class="panel-heading">Notifications - Messages from {{circle.name}}</div>
                 <div class="panel-body">
-
+                    {% if notis %}
+                        {% for noti in notis %}
+                            <div class="list">
+                                <div class="ctx">
+                                    <i class="fa fa-envelope-o"></i>
+                                </div>
+                                <div class="info">
+                                    <div class="title">
+                                        {{noti.text}}
+                                    </div>
+                                    <div class="sub">
+                                        <button class='btn btn-primary btn-xs'>
+                                            <i class="fa fa-calendar"></i> {{noti.date_str}}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="panel-message">
+                            You do not have any upcoming events.
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
