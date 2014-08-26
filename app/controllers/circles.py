@@ -5,6 +5,7 @@ import datetime
 from datetime import date
 from app.base_handler import BaseHandler
 from app.common.voluptuous import *
+from app.common.notification import push_noti
 import json
 import re
 
@@ -334,6 +335,13 @@ class RequestJoin(BaseHandler):
         circle.requests.append(user.key())
 
         circle.put()
+
+        for admin in circle.admins:
+            noti = Notification()
+            noti.type = 'Request'
+            noti.user = admin.key()
+            noti.circle = circle.key()
+            noti.put()
 
         return self.json_resp(200, {
             'message': 'Request sent'

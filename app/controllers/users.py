@@ -15,137 +15,137 @@ import re
 import csv
 
 class GetUserHandler(BaseHandler):
-	def get(self, user_id):
-		current_user = self.current_user()
+    def get(self, user_id):
+        current_user = self.current_user()
 
-		self.auth()
-		user = User.get_by_id(int(user_id))
+        self.auth()
+        user = User.get_by_id(int(user_id))
 
-		user.created_str = user.created.strftime('%B %dth, %Y')
+        user.created_str = user.created.strftime('%B %dth, %Y')
 
-		if user_id == current_user.key().id():
-			is_user = True
-		else:
-			is_user = False
+        if user_id == current_user.key().id():
+            is_user = True
+        else:
+            is_user = False
 
-		doRender(self, 'view_user.html', {
-			'user': user,
-			'is_user': is_user
-		})
+        doRender(self, 'view_user.html', {
+            'user': user,
+            'is_user': is_user
+        })
 
 class GetImage(BaseHandler):
-	def get(self, user_id):
-		user = User.get_by_id(int(user_id))
-		if user.photo:
-			self.redirect(images.get_serving_url(user.photo))
-		else:
-			self.redirect('/static/default_user.png')
-		# blobstore_handlers.BlobstoreDownloadHandler.send_blob(user.photo)
+    def get(self, user_id):
+        user = User.get_by_id(int(user_id))
+        if user.photo:
+            self.redirect(images.get_serving_url(user.photo))
+        else:
+            self.redirect('/static/default_user.png')
+        # blobstore_handlers.BlobstoreDownloadHandler.send_blob(user.photo)
 
 class NotificationUserHandler(BaseHandler):
-	def get(self, user_id):
-		self.auth()
-		user = self.current_user()
+    def get(self, user_id):
+        self.auth()
+        user = self.current_user()
 
-		doRender(self, 'notification_user.html', {
-			'user': user
-		})
+        doRender(self, 'notification_user.html', {
+            'user': user
+        })
 
-	def post(self, user_id):
-		self.auth()
+    def post(self, user_id):
+        self.auth()
 
-		json_str = self.request.body
-		data = json.loads(json_str)
+        json_str = self.request.body
+        data = json.loads(json_str)
 
-		user = self.current_user()
+        user = self.current_user()
 
-		if not user.key().id() == int(user_id):
-			self.redirect('/user/' + user_id)
-			return None
-		else:
-			user.noti_type = data['type']
-			user.noti_time = int(data['time'])
-			user.put()
+        if not user.key().id() == int(user_id):
+            self.redirect('/user/' + user_id)
+            return None
+        else:
+            user.noti_type = data['type']
+            user.noti_time = int(data['time'])
+            user.put()
 
-			resp = {
-				'message': 'Updated!'
-			}
+            resp = {
+                'message': 'Updated!'
+            }
 
-			self.response.write(json.dumps(resp))
+            self.response.write(json.dumps(resp))
 
 class EditUserHandler(BaseHandler):
-	def get(self, user_id):
-		self.auth()
+    def get(self, user_id):
+        self.auth()
 
-		user = self.current_user()
+        user = self.current_user()
 
-		properties = ['name', 'email', 'phone', 'zip']
+        properties = ['name', 'email', 'phone', 'zip']
 
-		user_json = grab_json(user, properties)
+        user_json = grab_json(user, properties)
 
-		if not user.key().id() == int(user_id):
-			self.redirect('/user/' + user_id)
-			return None
-		else:
-			doRender(self, 'edit_user.html', {
-				'user': user,
-				'user_json': user_json
-			})
+        if not user.key().id() == int(user_id):
+            self.redirect('/user/' + user_id)
+            return None
+        else:
+            doRender(self, 'edit_user.html', {
+                'user': user,
+                'user_json': user_json
+            })
 
-	def post(self, user_id):
-		data_pattern = re.compile('data:image/(png|jpeg);base64,(.*)$')
+    def post(self, user_id):
+        data_pattern = re.compile('data:image/(png|jpeg);base64,(.*)$')
 
-		json_str = self.request.body
-		data = json.loads(json_str)
+        json_str = self.request.body
+        data = json.loads(json_str)
 
-		self.auth()
+        self.auth()
 
-		user = self.current_user()
-		user.name = data['name']
-		user.email = data['email']
-		user.phone = data['phone']
-		user.zip = data['zip']
+        user = self.current_user()
+        user.name = data['name']
+        user.email = data['email']
+        user.phone = data['phone']
+        user.zip = data['zip']
 
-		if not user.key().id() == int(user_id):
-			self.redirect('/user/' + user_id)
-			return None
-		else:
-			if 'photo' in data and len(data['photo']) > 0:
-				d64 = re.search(r'base64,(.*)', data['photo']).group(1)
-				decoded = d64.decode('base64')
+        if not user.key().id() == int(user_id):
+            self.redirect('/user/' + user_id)
+            return None
+        else:
+            if 'photo' in data and len(data['photo']) > 0:
+                d64 = re.search(r'base64,(.*)', data['photo']).group(1)
+                decoded = d64.decode('base64')
 
-				# decoded = data['photo'].decode('base64')
+                # decoded = data['photo'].decode('base64')
 
-				file_name = files.blobstore.create(mime_type='image/png')
+                file_name = files.blobstore.create(mime_type='image/png')
 
-				with files.open(file_name, 'a') as f:
-					f.write(decoded)
+                with files.open(file_name, 'a') as f:
+                    f.write(decoded)
 
-				files.finalize(file_name)
+                files.finalize(file_name)
 
-				key = files.blobstore.get_blob_key(file_name)
-				user.photo = str(key)
-				print key
+                key = files.blobstore.get_blob_key(file_name)
+                user.photo = str(key)
+                print key
 
-		user.put()
+        user.put()
 
-		resp = {
-			'message': 'Edited!'
-		}
+        resp = {
+            'message': 'Edited!'
+        }
 
-		self.response.write(json.dumps(resp))
+        self.response.write(json.dumps(resp))
 
 class UserHandler(BaseHandler):
-	def get(self):
-		self.auth()
-		user = self.current_user()
+    def get(self):
+        self.auth()
+        user = self.current_user()
 
-		user.created_str = user.created.strftime('%B %dth, %Y')
+        user.created_str = user.created.strftime('%B %dth, %Y')
 
-		doRender(self, 'view_user.html', {
-			'user': user,
-			'is_user': True
-		})
+        doRender(self, 'view_user.html', {
+            'user': user,
+            'is_user': True
+        })
 
 class DetailHandler(BaseHandler):
     def get(self):
@@ -175,14 +175,15 @@ class DetailHandler(BaseHandler):
         })
 
         try:
-        	detail_validator(data)
+            detail_validator(data)
         except MultipleInvalid as e:
-        	return self.json_resp(500, {
-        		'error': str(e),
-        		'message': 'Data could not be validated'
-        	})
+            return self.json_resp(500, {
+                'error': str(e),
+                'message': 'Data could not be validated'
+            })
 
-       	data['zip'] = int(data['zip'])
+        # All DB entry uses INT
+        data['zip'] = int(data['zip'])
 
         user.name = data['name']
         user.email = data['email']
@@ -190,19 +191,19 @@ class DetailHandler(BaseHandler):
         user.zip = data['zip']
 
         circle_match = Circle.all().filter('zip =', data['zip']).get()
-        print 'BREAKPOINTTT'
-        if circle_match and circle_match.key() not in user.circles:
+
+        if circle_match != None and circle_match.key() not in user.circles:
             user.circles.append(circle_match.key())
         else:
             zip_row = None
-            with open('app/common/zip_db.csv') as zip_db:
+            with open('./app/common/zip_db.csv') as zip_db:
                 zip_data = csv.reader(zip_db, delimiter=',')
                 for row in zip_data:
-                    if data['zip'] in row:
+                    # Must use string to search
+                    if str(data['zip']) in row:
                         zip_row = row
                         break
             if zip_row:
-            	print 'Breakpoint'
                 city = zip_row[2]
                 circle = Circle()
                 circle.name = 'Open ' + city + ' Circle'
@@ -217,5 +218,5 @@ class DetailHandler(BaseHandler):
         user.put()
 
         return self.json_resp(200, {
-        	'message': 'Information updated'
+            'message': 'Information updated'
         })

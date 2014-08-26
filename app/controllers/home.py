@@ -53,6 +53,8 @@ class HomeHandler(BaseHandler):
                 noti.message = """
                 Your ride has been edited.
                 """
+            elif noti.type == 'Request':
+                noti.message = 'A person has requested to join this circle.'
             elif noti.type == 'circle message':
                 noti.message = noti.text
             noti.ride.orig = split_address(noti.ride.origin_add)
@@ -68,14 +70,18 @@ class HomeHandler(BaseHandler):
                 'details': False,
                 'driver': up.is_driver,
                 'pass': up.is_pass,
-                'type': 'Upcoming Ride'
+                'type': 'Upcoming Ride',
+                'circle': {
+                    'name': up.circle.name,
+                    'id': up.circle.key().id()
+                }
             }
             ride_alerts.append(obj)
 
         for noti in notis:
             obj = {
                 'message': noti.message,
-                'date': created_str,
+                'date': noti.created_str,
                 'details': {
                     'message': noti.ride.orig + ' to ' + noti.ride.dest,
                     'id': noti.key().id()
