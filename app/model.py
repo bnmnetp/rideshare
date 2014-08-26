@@ -8,7 +8,7 @@ class User(db.Model):
     created = db.DateTimeProperty(auto_now_add=True)
     updated = db.DateTimeProperty(auto_now=True)
     name = db.StringProperty(default='')
-    email = db.EmailProperty()
+    email = db.StringProperty(default='')
     phone = db.StringProperty(default='')
     circles = db.ListProperty(db.Key)
     photo = db.StringProperty()

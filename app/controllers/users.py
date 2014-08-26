@@ -98,6 +98,22 @@ class EditUserHandler(BaseHandler):
         json_str = self.request.body
         data = json.loads(json_str)
 
+        user_validator = Schema({
+            Required('zip'): Coerce(int),
+            Required('email'): unicode,
+            Required('phone'): unicode,
+            Required('name'): unicode,
+            'photo': unicode
+        })
+
+        try:
+            data = user_validator(data)
+        except MultipleInvalid as e:
+            return self.json_resp(500, {
+                'error': str(e),
+                'message': 'Data could not be validated'
+            })
+
         self.auth()
 
         user = self.current_user()
