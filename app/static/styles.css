@@ -1,8 +1,9 @@
 body {
     /*margin-bottom: 60px;*/
     overflow: auto;
-    padding-top: 70px;
+    padding-top: 20px;
     color: #262626;
+    background-color: #F3F3F3;
 }
 
 .container {
@@ -305,6 +306,21 @@ img {
 
 .nav-sub {
     margin-bottom: 15px;
+}
+
+.panel {
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.05);
+    background-color: #FFFFFF;
+}
+
+.panel-body.md {
+    height: 250px;
+    overflow-y: auto;
+}
+
+.panel-body.lg {
+    height: 400px;
+    overflow-y: auto; 
 }
 
 .panel-no {
@@ -768,7 +784,7 @@ template {
 /*#627cb7*/
 #sidebar-wrapper {
     background: #30426a;
-    top: 50px;
+    top: 0px;
     margin-left: -150px;
     left: -30px;
     width: 250px;
@@ -776,6 +792,24 @@ template {
     height: 100%;
     z-index: 999;
     left: 150px;
+}
+
+.splash-icon {
+    height: 140px;
+    width: 250px;
+    /*position: fixed;*/
+    background: url('/static/wheel.svg') no-repeat scroll 50% 50% / 80px auto #3F51B5;
+    left: 0px;
+    top: 0px;
+    transform: translateZ(0px);
+}
+
+.splash-icon h1 {
+    padding: 0 0 0 10px;
+    margin: 0;
+    color: #FFFFFF;
+    font-size: 48px;
+    letter-spacing: -0.04em;
 }
 
 ul.sidebar .sidebar-main a,
@@ -787,9 +821,9 @@ ul.sidebar .sidebar-list a.active,
     background: #2d3e63;
 }
 ul.sidebar {
-    position: absolute;
-    top: 0;
-    bottom: 45px;
+    /*position: absolute;*/
+    /*top: 0;*/
+    /*bottom: 45px;*/
     padding: 0;
     margin: 0;
     list-style: none;
