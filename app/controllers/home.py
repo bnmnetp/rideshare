@@ -122,7 +122,7 @@ class HomeHandler(BaseHandler):
                     'date': noti.created_str,
                     'details': {
                         'message': noti.ride.orig + ' to ' + noti.ride.dest,
-                        'id': noti.key().id()
+                        'id': noti.ride.key().id()
                     },
                     'driver': False,
                     'pass': False,

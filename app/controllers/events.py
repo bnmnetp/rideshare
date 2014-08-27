@@ -68,7 +68,8 @@ class EventHandler(BaseHandler):
         events.filter('date >=', today)
 
         if data['circle'] != False:
-            events.filter('circle = ',  data['circle'])
+            circle = Circle.get_by_id(int(data['circle']))
+            events.filter('circle = ',  circle.key())
 
         self.response.write(json.dumps([e.to_dict() for e in events]))
 

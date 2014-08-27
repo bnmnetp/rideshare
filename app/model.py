@@ -51,7 +51,6 @@ class Event(db.Model):
     time = db.StringProperty()
     user = db.ReferenceProperty(User)
     details = db.TextProperty()
-    attending = db.ListProperty(db.Key)
 
     def to_dict(self):
         resp = {}

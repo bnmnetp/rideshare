@@ -38,6 +38,8 @@ img {
     line-height: 150px;
 }
 
+
+
 /* Subnav */
 .subnav {
     display: block;
@@ -233,10 +235,19 @@ img {
     font-size: 15px;
     line-height: 28px;
     color: #616161;
+    padding: 3px;
 }
 
 .list .sub i {
     padding: 0px 3px;
+}
+
+.tag {
+    display: inline-block;
+    border-radius: 3px;
+    border: 1px solid #000;
+    font-size: 12px;
+    padding: 1px 5px;
 }
 
 /* End */
@@ -812,7 +823,7 @@ template {
     letter-spacing: -0.04em;
 }
 
-ul.sidebar .sidebar-main a,
+/*ul.sidebar .sidebar-main a,*/
 .sidebar-footer,
 ul.sidebar .sidebar-list a:hover,
 ul.sidebar .sidebar-list a.active,
@@ -820,6 +831,12 @@ ul.sidebar .sidebar-list a.active,
     /* Sidebar header and footer color */
     background: #2d3e63;
 }
+
+ul.sidebar .sidebar-main a {
+    border-top: 1px solid #172951;
+    border-bottom: 1px solid #172951;
+}
+
 ul.sidebar {
     /*position: absolute;*/
     /*top: 0;*/

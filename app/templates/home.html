@@ -47,7 +47,7 @@
     <div class="col-md-6">
         <div class="panel panel-main">
             <div class="panel-heading">
-                Ride Alerts
+                Ride Notifications
                 <div class="pull-right">
                     <i class="fa fa-question" data-help='toggle'></i>
                 </div>
@@ -65,23 +65,23 @@
                                 </div>
                                 <div class="sub">
                                     {% if ra.details %}
-                                    <a href="/ride/{{ra.details.id}}" class='btn btn-primary btn-xs'>
+                                    <a href="/ride/{{ra.details.id}}" class='btn btn-primary btn-sm'>
                                         <i class="fa fa-automobile"></i>
                                         {{ra.details.message}}
                                     </a>
                                     {% endif %}
                                     {% if ra.circle %}
-                                    <a href="/circle/{{ra.circle.id}}" class='btn btn-primary btn-xs'>
+                                    <a href="/circle/{{ra.circle.id}}" class='btn btn-primary btn-sm'>
                                         <i class="fa fa-circle-o"></i>
                                         {{ra.circle.name}}
                                     </a>
                                     {% endif %}
-                                    <button class='btn btn-primary btn-xs'>
+                                    <div class="tag">
                                         <i class="fa fa-calendar"></i> {{ra.date}}
-                                    </button>
-                                    <button class='btn btn-primary btn-xs'>
+                                    </div>
+                                    <div class="tag">
                                         {{ra.type}}
-                                    </button>
+                                    </div>
                                     <!-- <button class='btn btn-danger btn-xs' data-alert='' data-type='{{ra.type}}'>
                                         <i class="fa fa-times"></i>
                                         Dismiss
@@ -126,47 +126,48 @@
     <div class="col-md-6">
         <div class="panel panel-main">
             <div class="panel-heading">
-                Site Notifications
+                Circle Notifications
                 <div class="pull-right">
                     <i class="fa fa-question" data-help='toggle'></i>
                 </div>
             </div>
             <div class="panel-body panel-no">
                 {% if site_notis %}
-                    {% for sn in site_notis %}
-                        <div class="list">
-                            <div class="ctx">
-                                <i class="fa fa-envelope-o"></i>
+                {% for sn in site_notis %}
+                    <div class="list">
+                        <div class="ctx">
+                            <i class="fa fa-envelope-o"></i>
+                        </div>
+                        <div class="info">
+                            <div class="title">
+                                {{sn.message}}
                             </div>
-                            <div class="info">
-                                <div class="title">
-                                    {{sn.message}}
+                            <div class="sub">
+                                {% if sn.circle %}
+                                <a href="/circle/{{sn.circle.id}}" class='btn btn-primary btn-sm'>
+                                    <i class="fa fa-circle-o"></i>
+                                    {{sn.circle.name}}
+                                </a>
+                                {% endif %}
+                                {% if sn.invited_by %}
+                                <a href="/circle/{{sn.invited_by.id}}" class='btn btn-primary btn-sm'>
+                                    <i class="fa fa-circle-o"></i>
+                                    {{sn.invited_by.name}}
+                                </a>
+                                {% endif %}
+                                <div class="tag">
+                                    <i class="fa fa-calendar"></i>
+                                    {{sn.date}}
                                 </div>
-                                <div class="sub">
-                                    <button class='btn btn-primary btn-xs'>
-                                        <i class="fa fa-calendar"></i> {{sn.date}}
-                                    </button>
-                                    {% if sn.circle %}
-                                    <a href="/circle/{{sn.circle.id}}" class='btn btn-primary btn-xs'>
-                                        <i class="fa fa-circle-o"></i>
-                                        {{sn.circle.name}}
-                                    </a>
-                                    {% endif %}
-                                    {% if sn.invited_by %}
-                                    <a href="/circle/{{sn.invited_by.id}}" class='btn btn-primary btn-xs'>
-                                        <i class="fa fa-circle-o"></i>
-                                        {{sn.invited_by.name}}
-                                    </a>
-                                    {% endif %}
-                                    {% if sn.type %}
-                                    <button class='btn btn-primary btn-xs'>
-                                        {{sn.type}}
-                                    </button>
-                                    {% endif %}
+                                {% if sn.type %}
+                                <div class="tag">
+                                    {{sn.type}}
                                 </div>
+                                {% endif %}
                             </div>
                         </div>
-                    {% endfor %}
+                    </div>
+                {% endfor %}
                 {% else %}
                     <div class="panel-message">
                         You do not have any upcoming events.

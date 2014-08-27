@@ -16,136 +16,160 @@
 </div>
 {% endif %}
 
-<div class="row">
-    <div class="col-md-6">
-        <div class="panel panel-main">
-            <div class="panel-heading">Circle details</div>
-            <div class="panel-body">
-                <ul class='information'>
-                    <li>
-                        <b>Name:</b> {{circle.name}}
-                    </li>
-                    <li>
-                        <b>Description:</b> {{circle.description}}
-                    </li>
-                </ul>
-                <a href='/map' class='btn btn-success btn-large'>
-                    Add rides & events for this circle
-                    <i class='fa fa-plus'></i>
-                </a>
-                <a href="/circle/{{circle.key().id()}}/invite" class='btn btn-primary btn-large'>
-                    Invite
-                </a>
-                {% if is_admin %}
-                    <a class="btn btn-primary" href='/circle/{{circle.key().id()}}/edit'>Manage Circle</a>
-                    <button class='btn btn-primary' data-toggle="modal" data-target="#send-message">Send message to all circle members</button>
-                {% endif %}
+<ul class="ntabs">
+    <li data-view='details'>
+        Details
+    </li>
+    <li data-view='members'>
+        Members
+    </li>
+    {% if is_admin and circle.privacy == 'private' %}
+    <li data-view='requests'>
+        Requests to Join
+    </li>
+    {% endif %}
+</ul>
+
+<div data-route="details">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="panel panel-main">
+                <div class="panel-heading">Circle details</div>
+                <div class="panel-body">
+                    <ul class='information'>
+                        <li>
+                            <b>Name:</b> {{circle.name}}
+                        </li>
+                        <li>
+                            <b>Description:</b> {{circle.description}}
+                        </li>
+                    </ul>
+                    <a href='/map' class='btn btn-success btn-large'>
+                        Add rides & events for this circle
+                        <i class='fa fa-plus'></i>
+                    </a>
+                    <a href="/circle/{{circle.key().id()}}/invite" class='btn btn-primary btn-large'>
+                        Invite
+                    </a>
+                    {% if is_admin %}
+                        <a class="btn btn-primary" href='/circle/{{circle.key().id()}}/edit'>Manage Circle</a>
+                        <button class='btn btn-primary' data-toggle="modal" data-target="#send-message">Send message to all circle members</button>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="panel panel-main">
+                <div class="panel-heading">Comments</div>
+                <div class="panel-body" data-comment='container'>
+                    <form data-comment='form' autocomplete='off'>
+                        <div class="form-group">
+                            <label>Comment</label>
+                            <textarea class='form-control' rows='3' name='comment'></textarea>
+                        </div>
+                        <button type='submit' class='btn btn-primary'>
+                            Post Comment
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
-        <div class="panel panel-main">
-            <div class="panel-heading">Comments</div>
-            <div class="panel-body" data-comment='container'>
-                <form data-comment='form' autocomplete='off'>
-                    <div class="form-group">
-                        <label>Comment</label>
-                        <textarea class='form-control' rows='3' name='comment'></textarea>
-                    </div>
-                    <button type='submit' class='btn btn-primary'>
-                        Post Comment
-                    </button>
-                </form>
+        <div class="col-md-6">
+
+            <div class="panel panel-main">
+                <div class="panel-heading">Notifications - Messages from {{circle.name}}</div>
+                <div class="panel-body">
+                    {% if notis %}
+                        {% for noti in notis %}
+                            <div class="list">
+                                <div class="ctx">
+                                    <i class="fa fa-envelope-o"></i>
+                                </div>
+                                <div class="info">
+                                    <div class="title">
+                                        {{noti.text}}
+                                    </div>
+                                    <div class="sub">
+                                        <button class='btn btn-primary btn-xs'>
+                                            <i class="fa fa-calendar"></i> {{noti.date_str}}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="panel-message">
+                            You do not have any upcoming events.
+                        </div>
+                    {% endif %}
+                </div>
             </div>
+            
         </div>
     </div>
-    <div class="col-md-6">
-        <div class="panel panel-main">
-            <div class="panel-heading">Members of Circle</div>
-            <div class="panel-body">
-            {% for member in members %}
+</div>
+
+<div data-route="members">
+    <div class="panel panel-main">
+        <div class="panel-heading">Members of Circle</div>
+        <div class="panel-body">
+        {% for member in members %}
+            <div class="media">
+                <a href="#" class='pull-left'>
+                    <img src="/user/photo/{{member.key().id()}}" style="width: 64px; height: 64px;" class="media-object" alt="64x64">
+                </a>
+                <div class="media-body">
+                    <div class="pull-left">
+                        <h4>{{member.name}}</h4>
+                    </div>
+                    {% if is_admin %}
+                    <div class="pull-right">
+                        <div class="options">
+                            <button class='btn btn-success' data-promote='{{member.key().id()}}'>Promote to Admin</button>
+                            <button class='btn btn-danger' data-kick='{{member.key().id()}}'>Kick Member</button>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+</div>
+
+<div data-route="requests">
+    {% if circle.privacy == 'private' and is_admin%}
+    <div class="panel panel-main">
+        <div class="panel-heading">
+            Requests to Join
+        </div>
+        <div class="panel-body panel-no">
+            {% if requests %}
+            {% for request in requests %}
                 <div class="media">
                     <a href="#" class='pull-left'>
-                        <img src="/user/photo/{{member.key().id()}}" style="width: 64px; height: 64px;" class="media-object" alt="64x64">
+                        <img src="/user/photo/{{request.key().id()}}" style="width: 64px; height: 64px;" class="media-object" alt="64x64">
                     </a>
                     <div class="media-body">
                         <div class="pull-left">
-                            <h4>{{member.name}}</h4>
+                            <h4>{{request.name}}</h4>
                         </div>
                         {% if is_admin %}
                         <div class="pull-right">
                             <div class="options">
-                                <button class='btn btn-success' data-promote='{{member.key().id()}}'>Promote to Admin</button>
-                                <button class='btn btn-danger' data-kick='{{member.key().id()}}'>Kick Member</button>
+                                <button class='btn btn-success' data-accept='{{request.key().id()}}'>Accept to Circle</button>
                             </div>
                         </div>
                         {% endif %}
                     </div>
                 </div>
             {% endfor %}
+            {% else %}
+            <div class="panel-message">
+                There are no requests yet.
             </div>
+            {% endif %}
         </div>
-        <div class="panel panel-main">
-            <div class="panel-heading">Notifications - Messages from {{circle.name}}</div>
-            <div class="panel-body">
-                {% if notis %}
-                    {% for noti in notis %}
-                        <div class="list">
-                            <div class="ctx">
-                                <i class="fa fa-envelope-o"></i>
-                            </div>
-                            <div class="info">
-                                <div class="title">
-                                    {{noti.text}}
-                                </div>
-                                <div class="sub">
-                                    <button class='btn btn-primary btn-xs'>
-                                        <i class="fa fa-calendar"></i> {{noti.date_str}}
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-                {% else %}
-                    <div class="panel-message">
-                        You do not have any upcoming events.
-                    </div>
-                {% endif %}
-            </div>
-        </div>
-        {% if circle.privacy == 'private' and is_admin%}
-        <div class="panel panel-main">
-            <div class="panel-heading">
-                Requests to Join
-            </div>
-            <div class="panel-body panel-no">
-                {% if requests %}
-                {% for request in requests %}
-                    <div class="media">
-                        <a href="#" class='pull-left'>
-                            <img src="/user/photo/{{request.key().id()}}" style="width: 64px; height: 64px;" class="media-object" alt="64x64">
-                        </a>
-                        <div class="media-body">
-                            <div class="pull-left">
-                                <h4>{{request.name}}</h4>
-                            </div>
-                            {% if is_admin %}
-                            <div class="pull-right">
-                                <div class="options">
-                                    <button class='btn btn-success' data-accept='{{request.key().id()}}'>Accept to Circle</button>
-                                </div>
-                            </div>
-                            {% endif %}
-                        </div>
-                    </div>
-                {% endfor %}
-                {% else %}
-                <div class="panel-message">
-                    There are no requests yet.
-                </div>
-                {% endif %}
-            </div>
-        </div>
-        {% endif %}
     </div>
+    {% endif %}
 </div>
 
 <div class="modal fade" id="send-message" tabindex="-1" role="dialog">
@@ -178,6 +202,7 @@
 {% block scripts %}
 <script src='/static/push.js'></script>
 <script src='/static/comment.js'></script>
+<script src='/static/flow.js'></script>
 
 {% include 'comment.html' %}
 {% raw %}
@@ -194,6 +219,8 @@ var comment = new Comment({
     id: {{circle.key().id()}},
     container: '[data-comment="container"]'
 });
+
+var flow = new Flow('details');
 
 /* Send Accepts */
 var send_accept = function (id) {
