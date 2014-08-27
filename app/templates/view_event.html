@@ -65,7 +65,7 @@
 						</div>
 						<div class="info">
 							<div class="title">
-								<a href="/ride/{{ride.key().id()}}">{{ride.orig}} to {{ride.dest}}</a>
+								<a href="/ride/{{ride.key().id()}}">Offered by {{ride.driver.name}} from {{ride.orig}} to {{ride.dest}}</a>
 							</div>
 							<div class="sub">
 								<div class="tag">
@@ -80,6 +80,12 @@
 										<i class="fa fa-automobile"></i> Passenger
 									</div>
 								{% endif %}
+								<div class="tag">
+									{{ride.passengers_max}} Seats Offered
+								</div>
+								<div class="tag">
+									{{ride.seats_availible}} Seats Availible
+								</div>
 							</div>
 						</div>
 					</div>

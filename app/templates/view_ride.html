@@ -92,7 +92,7 @@
                     {% endif %}
 
                     {% if ride.can_pass %}
-                        <button class='btn btn-success' data-passenger='join'>Join as Passenger</button>
+                        <button class='btn btn-success' data-toggle='modal' data-target='#join_passenger'>Join as Passenger</button>
                     {% endif %}
                 </div>
             </div>
@@ -167,14 +167,55 @@
         </form>
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
+<div class="modal fade" id="join_passenger" tabindex="-1" role="dialog" aria-aria-hidden="true">
+    <div class="modal-dialog">
+        <form data-send="passenger">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">Join as Passenger</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Claim Seats</label>
+                        <select class="form-control" name='seats_claimed'>
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                            <option>6</option>
+                            <option>7</option>
+                            <option>8</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Message</label>
+                        <textarea name="message" class="form-control"></textarea>
+                        <div class="help-block">
+                            Write a short message to the driver of the ride to let them know who you are claiming seats for.
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" type='submit'>
+                        Join as Passenger
+                    </button>
+                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </form>
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 {% endblock %}
 
 {% block scripts %}
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB15X6ti6tDQUQKjwPCI2zi3XFfxZW3MGM&sensor=false" type="text/javascript"></script>
-<script src="/static/augment.js" type="text/javascript"></script>
-<script type="text/javascript" src='/static/comment.js'></script>
-<script type='text/javascript' src='/static/ride_handler.js'></script>
-<script src='//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.0/js/bootstrap.js' type="text/javascript"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB15X6ti6tDQUQKjwPCI2zi3XFfxZW3MGM&sensor=false"></script>
+<script src="/static/push.js"></script>
+<script src='/static/comment.js'></script>
+<script src='/static/ride_handler.js'></script>
+<script src='//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.0/js/bootstrap.js'></script>
 {% include 'comment.html' %}
 {% raw %}
 <script data-notify="template" type='text/x-handlebars-template'>
@@ -222,37 +263,48 @@
     calc_route();
     /* End */
 
-    var form = document.querySelector('[data-send="driver"]');
+    var driver_form = document.querySelector('[data-send="driver"]');
 
-    form.addEventListener('submit', function (e) {
-        e.preventDefault();
-
-        var form = e.target;
-
-        var data = {};
-        data.passengers_max = form.max_passengers.value;
-        data.time = form.time.value;
-        data.details = form.details.value;
-
-        var push = $.ajax({
-            type: 'POST',
-            url: '/ride/{{ride.key().id()}}/driver',
-            dataType: 'json',
-            contentType: 'application/json; charset=UTF-8',
-            data: JSON.stringify(data)
-        });
-
-        push.done(function (data) {
+    var be_driver = new SubmitForm({
+        form: driver_form,
+        model: {
+            details: '',
+            time: '',
+            max_passengers: ''
+        },
+        method: 'POST',
+        route: '/ride/{{ride.key().id()}}/driver',
+        done: function (data) {
             document.location.reload(true);
-        });
-
-        push.fail(function (data, status) {
+        },
+        fail: function (data, status) {
             notify({
                 type: 'danger',
                 strong: 'Oops',
                 message: 'Refresh and try again'
             });
-        });
+        }
+    });
+
+    var passenger_form = document.querySelector('[data-send="passenger"]');
+    var be_passenger = new SubmitForm({
+        form: passenger_form,
+        model: {
+            seats_claimed: '',
+            message: ''
+        },
+        method: 'POST',
+        route: '/ride/{{ride.key().id()}}/passenger',
+        done: function (data) {
+            document.location.reload(true);
+        },
+        fail: function (data, status) {
+            notify({
+                type: 'danger',
+                strong: 'Oops',
+                message: 'Refresh and try again'
+            });
+        }
     });
 
 </script>

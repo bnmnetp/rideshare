@@ -47,11 +47,12 @@ class HomeHandler(BaseHandler):
                 'driver': up.is_driver,
                 'pass': up.is_pass,
                 'type': 'Upcoming Ride',
-                'circle': {
+            }
+            if up.circle:
+                obj['circle'] = {
                     'name': up.circle.name,
                     'id': up.circle.key().id()
                 }
-            }
             ride_alerts.append(obj)
 
         for noti in notis:

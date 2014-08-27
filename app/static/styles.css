@@ -823,6 +823,12 @@ template {
     letter-spacing: -0.04em;
 }
 
+.splash-icon a {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
 /*ul.sidebar .sidebar-main a,*/
 .sidebar-footer,
 ul.sidebar .sidebar-list a:hover,

@@ -144,3 +144,9 @@ class Invite(db.Model):
         required = False,
         collection_name = 'from_user'
     )
+
+class Passenger(db.Model):
+    ride = db.ReferenceProperty(Ride)
+    user = db.ReferenceProperty(User)
+    seats = db.IntegerProperty()
+    message = db.TextProperty()

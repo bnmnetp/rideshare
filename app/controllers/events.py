@@ -32,6 +32,8 @@ class GetEventHandler(BaseHandler):
             else:
                 ride.is_passenger = False
 
+            ride.seats_availible = ride.passengers_max - len(ride.passengers)
+
         comments = Comment.all().filter('event = ', event.key()).order('-date')
 
         doRender(self, 'view_event.html', {
