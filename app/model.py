@@ -70,7 +70,6 @@ class Ride(db.Model):
     dest_lng = db.FloatProperty()
     date = db.DateProperty()
     time = db.StringProperty()
-    passengers = db.ListProperty(db.Key)
     details = db.StringProperty()
     circle = db.ReferenceProperty(Circle)
     event = db.ReferenceProperty(Event)
@@ -84,6 +83,21 @@ class Ride(db.Model):
         if self.event != None: 
             resp['event'] = self.event.to_dict()
         return resp
+
+    @property
+    def passengers(self):
+        passengers = Passenger.all().filter('ride =', self.key()).fetch(None)
+        return passengers
+
+    def passenger_remove(self, key):
+
+    @property
+    def passengers_total(self):
+        passengers = self.passengers()
+        total = 0
+        for p in passengers:
+            total += p.seats
+        return tota
 
 class Comment(db.Model):
     user = db.ReferenceProperty(
