@@ -21,6 +21,9 @@ class HomeHandler(BaseHandler):
         upcoming_drive = Ride.all().filter('date > ', today).filter('driver =', user.key()).fetch(20)
         upcoming = upcoming_pass + upcoming_drive
 
+        rides_driving = Ride.all().filter('driver =', user.key()).fetch(None)
+        passenger_joined = Passenger.all().filter('ride in', rides_driving).fetch(None)
+
         site_notifications = []
         ride_alerts = []
 
@@ -101,6 +104,26 @@ class HomeHandler(BaseHandler):
                 }
             }
 
+        for p in passenger_joined:
+            if p.ride:
+                p.ride.orig = split_address(p.ride.origin_add)
+                p.ride.dest = split_address(p.ride.dest_add)
+
+            obj = {
+                'message': """
+                %s has joined this ride.
+                """ % (p.user.name),
+                'submessage': p.message,
+                'date': p.created.strftime('%B %dth, %Y'),
+                'details': {
+                    'message': p.ride.orig + ' to ' + p.ride.dest,
+                    'id': p.ride.key().id()
+                },
+                'type': 'Notification'
+            }
+
+            ride_alerts.append(obj)
+
         for noti in notis:
             if noti.type in ['request', 'circle_message']:
                 mtype = None
@@ -139,7 +162,9 @@ class HomeHandler(BaseHandler):
             else:
                 circle.user = False
 
-        print site_notifications
+        ride_alerts.sort(key=lambda x:x['date'])
+        site_notifications.sort(key=lambda x:x['date'])
+
         doRender(self, 'home.html', { 
             'user': user,
             'circles': circles,

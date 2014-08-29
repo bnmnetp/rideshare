@@ -165,6 +165,7 @@ class Invite(db.Model):
     )
 
 class Passenger(db.Model):
+    created = db.DateTimeProperty(auto_now_add=True)
     ride = db.ReferenceProperty(Ride)
     user = db.ReferenceProperty(User)
     seats = db.IntegerProperty()
