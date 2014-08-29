@@ -32,7 +32,7 @@
                         <b>Date:</b> {{ride.date}}
                     </li>
                     <li>
-                        <b>Time:</b> {{ride.time}}
+                        <b>Departure Time:</b> {{ride.time}}
                     </li>
                     {% if ride.driver %}
                         <li>
@@ -50,11 +50,12 @@
                         {% if passengers %}
                             {% for p in passengers %}
                                 <div class='chip'>
-                                    <div class="ind">
+                                    <div class="pull-left">
                                         <i class="fa fa-user"></i>
+                                        <a href='/user/{{p.user.key().id()}}'>{{p.user.name}}</a>
                                     </div>
-                                    <div class="name">
-                                        <a href='/user/{{p.key().id()}}'>{{p.name}}</a>
+                                    <div class="pull-right">
+                                        Has {{p.seats}} Seats
                                     </div>
                                 </div>
                             {% endfor %}
@@ -180,14 +181,9 @@
                     <div class="form-group">
                         <label>Claim Seats</label>
                         <select class="form-control" name='seats_claimed'>
-                            <option>1</option>
-                            <option>2</option>
-                            <option>3</option>
-                            <option>4</option>
-                            <option>5</option>
-                            <option>6</option>
-                            <option>7</option>
-                            <option>8</option>
+                        {% for n in range(1, seats + 1) %}
+                            <option>{{n}}</option>
+                        {% endfor %}
                         </select>
                     </div>
                     <div class="form-group">

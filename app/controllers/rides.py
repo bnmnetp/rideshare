@@ -206,8 +206,7 @@ class JoinPassenger(BaseHandler):
 
         all_passengers = ride.passengers
 
-
-        if (ride.passengers_total + seats_claimed) > ride.passengers_max:
+        if (ride.passengers_total + data['seats_claimed']) > ride.passengers_max:
             return self.json_resp(500, {
                 'error': True,
                 'message': 'There are not enough seats for you.'
@@ -224,7 +223,7 @@ class JoinPassenger(BaseHandler):
             'message': 'You have been added to this ride.'
         })
 
-class GetRideHandler(BaseHandler):
+class GetRide(BaseHandler):
     def post(self, ride_id):
         self.auth()
 
@@ -237,7 +236,8 @@ class GetRideHandler(BaseHandler):
 
         if data['type'] == 'passenger':
             if data['action'] == 'leave':
-                passenger = Passenger.all().filter('user =', user.key).fetch(None)
+                passenger = Passenger.all().filter('ride =', ride.key()).filter('user =', user.key()).get()
+                passenger.delete()
                 if passenger:
                     if ride.driver:
                         push_noti('pass_leave', ride.driver.key(), ride.key())
@@ -270,7 +270,7 @@ class GetRideHandler(BaseHandler):
             return self.redirect('/rides')
 
         user = self.current_user()
-        availible_seats = 0
+        availible_seats = 8
 
         if ride.driver and ride.passengers_max:
             availible_seats = ride.passengers_max - ride.passengers_total
@@ -289,7 +289,7 @@ class GetRideHandler(BaseHandler):
             ride.is_driver = False
             ride.need_driver = True
 
-        if user.key() in ride.passengers:
+        if ride.is_passenger(user.key()):
             ride.is_pass = True
             ride.can_pass = False
         elif not ride.is_driver:

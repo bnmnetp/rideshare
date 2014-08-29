@@ -84,20 +84,25 @@ class Ride(db.Model):
             resp['event'] = self.event.to_dict()
         return resp
 
+    def is_passenger(self, user_key):
+        passenger = Passenger.all().filter('ride =', self.key()).filter('user =', user_key).get()
+        if passenger != None:
+            return True
+        else:
+            return False
+
     @property
     def passengers(self):
         passengers = Passenger.all().filter('ride =', self.key()).fetch(None)
         return passengers
 
-    def passenger_remove(self, key):
-
     @property
     def passengers_total(self):
-        passengers = self.passengers()
+        passengers = self.passengers
         total = 0
         for p in passengers:
             total += p.seats
-        return tota
+        return total
 
 class Comment(db.Model):
     user = db.ReferenceProperty(

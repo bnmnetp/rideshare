@@ -84,7 +84,7 @@ app = webapp2.WSGIApplication([
 
     # controllers/rides.py
     ('/rides', RideHandler),
-    ('/ride/(\d+)', GetRideHandler),
+    ('/ride/(\d+)', GetRide),
     ('/ride/(\d+)/edit', EditRide),
     ('/ride/(\d+)/driver', JoinDriver),
     ('/ride/(\d+)/passenger', JoinPassenger),
@@ -146,7 +146,7 @@ app = webapp2.WSGIApplication([
         name='auth_callback'
     ),
     webapp2.Route(
-        '/logout',
+        '/signout',
         handler='app.auth_handler.AuthHandler:logout',
         name='logout'
     ),

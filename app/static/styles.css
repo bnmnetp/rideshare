@@ -165,27 +165,13 @@ img {
 /* Chip */
 .chip {
     background-color: #E7E7E7;
-    color: #7F7F7F;
+    color: #424250;
     border-radius: 10px;
     font-size: 18px;
     line-height: 32px;
-    height: 32px;
     margin: 3px 0px 3px 0px;
-
-}
-.chip .ind {
-    border-radius: 4px;
-    color: #424242;
-    font-size: 24px;
-    line-height: 32px;
-    vertical-align: top;
-    display: inline-block;
-    margin-left: 10px;
-    margin-right: 2px;
-
-}
-.chip .name {
-    display: inline-block;
+    padding: 5px 10px;
+    overflow: auto;
 }
 /* End Chip */
 
@@ -597,7 +583,7 @@ template {
 
 @media (max-width: 768px) {
     body {
-        padding-top: 50px;
+        padding-top: 0px;
     }
     .container {
         padding: 0px;
@@ -910,6 +896,9 @@ ul.sidebar .sidebar-list .menu-icon {
 
 
 @media (max-width: 768px) {
+    .splash-icon {
+        display: none;
+    }
     #sidebar-wrapper {
         left: -30px;
     }
