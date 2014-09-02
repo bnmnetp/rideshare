@@ -1,0 +1,102 @@
+{% extends "layout.html" %}
+
+{% block title %}Members{% endblock %}
+
+{% block head %}
+{% endblock %}
+
+{% block main %}
+<div data-notify="container">
+    
+</div>
+    {% if circle.privacy == 'private' and is_admin %}
+    <div class="panel panel-main">
+        <div class="panel-heading">
+            Requests to Join
+        </div>
+        <div class="panel-body panel-no">
+            {% if requests %}
+            {% for request in requests %}
+                <div class="media">
+                    <a href="#" class='pull-left'>
+                        <img src="/user/photo/{{request.key().id()}}" style="width: 64px; height: 64px;" class="media-object" alt="64x64">
+                    </a>
+                    <div class="media-body">
+                        <div class="pull-left">
+                            <h4>{{request.name}}</h4>
+                        </div>
+                        {% if is_admin %}
+                        <div class="pull-right">
+                            <div class="options">
+                                <button class='btn btn-success' data-accept='{{request.key().id()}}'>Accept to Circle</button>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+            {% else %}
+            <div class="panel-message">
+                There are no requests yet.
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script src='/static/push.js'></script>
+
+{% raw %}
+<script data-notify="template" type='text/x-handlebars-template'>
+    <div class="alert alert-{{type}} alert-dismissable">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        <strong>{{strong}}</strong> {{message}}
+    </div>
+</script>
+
+{% endraw %}
+
+<script>
+        /* Send Accepts */
+    var send_accept = function (id) {
+        var req = $.ajax({
+            type: 'POST',
+            url: '/circle/{{circle.key().id()}}/accept',
+            dataType: 'json',
+            contentType: 'application/json; charset=UTF-8',
+            data: JSON.stringify({
+                'user': id
+            })
+        });
+
+        req.done(function (data) {
+            notify({
+                type: 'success',
+                strong: 'Member accept!'
+            });
+            document.location.reload(true);
+        });
+
+        req.fail(function (data, status) {
+            notify({
+                type: 'danger',
+                strong: 'Refresh and try again!'
+            });
+        });
+    };
+
+    document.body.addEventListener('click', function (e) {
+        var target = e.target;
+
+        if (target.dataset.accept) {
+            send_accept(target.dataset.accept);
+        }
+    });
+    /* End */
+</script>
+
+{% endblock %}
+
+

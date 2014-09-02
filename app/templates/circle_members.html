@@ -1,0 +1,95 @@
+{% extends "layout.html" %}
+
+{% block title %}Members{% endblock %}
+
+{% block head %}
+{% endblock %}
+
+{% block main %}
+<div data-notify="container">
+    
+</div>
+<div class="panel panel-main">
+    <div class="panel-heading">Members of Circle</div>
+    <div class="panel-body">
+    {% for member in members %}
+        <div class="media">
+            <a href="#" class='pull-left'>
+                <img src="/user/photo/{{member.key().id()}}" style="width: 64px; height: 64px;" class="media-object" alt="64x64">
+            </a>
+            <div class="media-body">
+                <div class="pull-left">
+                    <h4>{{member.name}}</h4>
+                </div>
+                {% if is_admin %}
+                <div class="pull-right">
+                    <div class="options">
+                        {% if not member.key() in circle.admins %}
+                            <button class='btn btn-success' data-promote='{{member.key().id()}}'>Promote to Admin</button>
+                        {% endif %}
+                        <button class='btn btn-danger' data-kick='{{member.key().id()}}'>Kick Member</button>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src='/static/push.js'></script>
+
+{% raw %}
+<script data-notify="template" type='text/x-handlebars-template'>
+    <div class="alert alert-{{type}} alert-dismissable">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        <strong>{{strong}}</strong> {{message}}
+    </div>
+</script>
+
+{% endraw %}
+
+<script>
+    /* Send Accepts */
+    var send_accept = function (id) {
+        var req = $.ajax({
+            type: 'POST',
+            url: '/circle/{{circle.key().id()}}/accept',
+            dataType: 'json',
+            contentType: 'application/json; charset=UTF-8',
+            data: JSON.stringify({
+                'user': id
+            })
+        });
+
+        req.done(function (data) {
+            notify({
+                type: 'success',
+                strong: 'Member accept!'
+            });
+            document.location.reload(true);
+        });
+
+        req.fail(function (data, status) {
+            notify({
+                type: 'danger',
+                strong: 'Refresh and try again!'
+            });
+        });
+    };
+
+    document.body.addEventListener('click', function (e) {
+        var target = e.target;
+
+        if (target.dataset.accept) {
+            send_accept(target.dataset.accept);
+        }
+    });
+    /* End */
+</script>
+
+{% endblock %}
+
+

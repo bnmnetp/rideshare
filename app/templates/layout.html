@@ -63,6 +63,20 @@
 					<span class="menu-icon fa fa-car"></span>
 				</a>
 			</li>
+			<li class='sidebar-list'>
+				<a href="/members">
+					Members
+					<span class='menu-icon fa fa-users'></span>
+				</a>
+			</li>
+			{% if active_circle is defined and active_circle.privacy == 'private' and is_admin %}
+			<li class='sidebar-list'>
+				<a href="/requests">
+					Requests
+					<span class='menu-icon fa fa-fire'></span>
+				</a>
+			</li>
+			{% endif %}
 			<!-- <li class="sidebar-list">
 				<a href="/events">
 					Events
@@ -132,13 +146,13 @@
 			var page_long = location.pathname;
 			$('#sidebar-wrapper a[href="' + page_long + '"]').addClass('active');
 
-			var circle_switcher = document.querySelector('[data-cwitch="li"]');
+			var circle2_switcher = document.querySelector('[data-cwitch="li"]');
 			switch (page_short) {
 				case 'home':
 				case 'user':
 				case 'circles':
 				case 'newCircle':
-					circle_switcher.classList.add('inactive');
+					circle2_switcher.classList.add('inactive');
 					break;
 			}
 		});

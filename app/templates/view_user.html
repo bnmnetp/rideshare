@@ -12,9 +12,7 @@
     <div class="panel-body">
         <div class="row">
             <div class="col-md-3">
-                {% if user.photo %}
-                    <img src="/user/photo/{{user.key().id()}}" class='img-rounded'>
-                {% endif %}
+                <img src="/user/photo/{{user.key().id()}}" class='img-rounded'>
                 <h1>{{user.name}}</h1>
                 <p class="lead">{{user.email}}</p>
             </div>

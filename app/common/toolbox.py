@@ -24,6 +24,9 @@ def doRender(handler, name = 'home.html', value = {}):
 		circle_keys = user.circles
 		value['circle_list'] = Circle.all().filter('__key__ in', circle_keys).fetch(20)
 		value['active_circle'] = handler.circle()
+		if value['active_circle']:
+			if user.key() in value['active_circle'].admins:
+				value['is_admin'] = True
 
 	value['current_page'] = handler.request.path
 	template = env.get_template(name)

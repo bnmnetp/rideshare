@@ -12,17 +12,17 @@ class HomeHandler(BaseHandler):
         self.auth()
         user = self.current_user()
 
-        notis = Notification.all().filter('user = ', user.key()).fetch(100)
+        notis = Notification.all().filter('user = ', user.key()).fetch(10)
 
-        invites = Invite.all().filter('user = ', user.key()).fetch(100)
+        invites = Invite.all().filter('user = ', user.key()).fetch(10)
 
         today = datetime.date.today()
-        upcoming_pass = Ride.all().filter('date > ', today).filter('passengers =', user.key()).fetch(20)
-        upcoming_drive = Ride.all().filter('date > ', today).filter('driver =', user.key()).fetch(20)
+        upcoming_pass = Ride.all().filter('date > ', today).filter('passengers =', user.key()).fetch(10)
+        upcoming_drive = Ride.all().filter('date > ', today).filter('driver =', user.key()).fetch(10)
         upcoming = upcoming_pass + upcoming_drive
 
-        rides_driving = Ride.all().filter('driver =', user.key()).fetch(None)
-        passenger_joined = Passenger.all().filter('ride in', rides_driving).fetch(None)
+        rides_driving = Ride.all().filter('driver =', user.key()).fetch(10)
+        passenger_joined = Passenger.all().filter('ride in', rides_driving).fetch(10)
 
         site_notifications = []
         ride_alerts = []
@@ -34,20 +34,22 @@ class HomeHandler(BaseHandler):
             up.is_pass = False
             if user.key() in up.passengers:
                 up.is_pass = True
+                up.type = "You are Passenger"
 
             up.is_driver = False
             if up.driver:
                 if user.key() == up.driver.key():
                     up.is_driver = True
+                    up.type = "You are Driver"
 
         for up in upcoming:
             obj = {
-                'message': 'Upcoming Ride: <a href="/ride/' + str(up.key().id()) + '">' + up.orig + ' to ' + up.dest + '</a>',
+                'message': '<strong>' + up.type + '</strong>: <a href="/ride/' + str(up.key().id()) + '">' + up.orig + ' to ' + up.dest + '</a>',
                 'date': up.date_str,
                 'details': False,
                 'driver': up.is_driver,
                 'pass': up.is_pass,
-                'type': 'You are driving'
+                'type': 'Upcoming Ride'
             }
             if up.circle:
                 obj['circle'] = {
@@ -112,7 +114,7 @@ class HomeHandler(BaseHandler):
                 <a href='/user/%s'>%s</a> has joined this ride.
                 """ % (p.user.key().id(), p.user.name),
                 'submessage': p.message,
-                'date': p.created.strftime('%B %dth, %Y'),
+                'date': None,
                 'details': {
                     'message': p.ride.orig + ' to ' + p.ride.dest,
                     'id': p.ride.key().id()
@@ -141,7 +143,7 @@ class HomeHandler(BaseHandler):
             else:
                 obj = {
                     'message': noti.message,
-                    'date': noti.created_str,
+                    'date': None,
                     'details': {
                         'message': noti.ride.orig + ' to ' + noti.ride.dest,
                         'id': noti.ride.key().id()
@@ -160,8 +162,8 @@ class HomeHandler(BaseHandler):
             else:
                 circle.user = False
 
-        ride_alerts.sort(key=lambda x:x['date'])
-        site_notifications.sort(key=lambda x:x['date'])
+        # ride_alerts.sort(key=lambda x:x['date'])
+        # site_notifications.sort(key=lambda x:x['date'])
 
         doRender(self, 'home.html', { 
             'user': user,

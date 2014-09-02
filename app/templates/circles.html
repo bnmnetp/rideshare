@@ -111,12 +111,17 @@
         data.circle = target.dataset.id;
 
         
-        var req = $.ajax({
+        var join = $.ajax({
             type: 'POST',
             url: '/join_circle',
             dataType: 'json',
             contentType: 'application/json; charset=UTF-8',
             data: JSON.stringify(data)
+        });
+
+        join.done(function (data) {
+            console.log('reload plz?')
+            document.location.reload(true);
         });
     }
 
@@ -140,6 +145,7 @@
                 type: 'success',
                 strong: 'Request sent!'
             });
+
         });
 
         req.fail(function (data, status) {

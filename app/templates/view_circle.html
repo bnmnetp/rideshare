@@ -16,20 +16,6 @@
 </div>
 {% endif %}
 
-<ul class="ntabs">
-    <li data-view='details'>
-        Details
-    </li>
-    <li data-view='members'>
-        Members
-    </li>
-    {% if is_admin and circle.privacy == 'private' %}
-    <li data-view='requests'>
-        Requests to Join
-    </li>
-    {% endif %}
-</ul>
-
 <div data-route="details">
     <div class="row">
         <div class="col-md-6">
@@ -139,71 +125,6 @@
     </div>
 </div>
 
-<div data-route="members">
-    <div class="panel panel-main">
-        <div class="panel-heading">Members of Circle</div>
-        <div class="panel-body">
-        {% for member in members %}
-            <div class="media">
-                <a href="#" class='pull-left'>
-                    <img src="/user/photo/{{member.key().id()}}" style="width: 64px; height: 64px;" class="media-object" alt="64x64">
-                </a>
-                <div class="media-body">
-                    <div class="pull-left">
-                        <h4>{{member.name}}</h4>
-                    </div>
-                    {% if is_admin %}
-                    <div class="pull-right">
-                        <div class="options">
-                            <button class='btn btn-success' data-promote='{{member.key().id()}}'>Promote to Admin</button>
-                            <button class='btn btn-danger' data-kick='{{member.key().id()}}'>Kick Member</button>
-                        </div>
-                    </div>
-                    {% endif %}
-                </div>
-            </div>
-        {% endfor %}
-        </div>
-    </div>
-</div>
-
-<div data-route="requests">
-    {% if circle.privacy == 'private' and is_admin%}
-    <div class="panel panel-main">
-        <div class="panel-heading">
-            Requests to Join
-        </div>
-        <div class="panel-body panel-no">
-            {% if requests %}
-            {% for request in requests %}
-                <div class="media">
-                    <a href="#" class='pull-left'>
-                        <img src="/user/photo/{{request.key().id()}}" style="width: 64px; height: 64px;" class="media-object" alt="64x64">
-                    </a>
-                    <div class="media-body">
-                        <div class="pull-left">
-                            <h4>{{request.name}}</h4>
-                        </div>
-                        {% if is_admin %}
-                        <div class="pull-right">
-                            <div class="options">
-                                <button class='btn btn-success' data-accept='{{request.key().id()}}'>Accept to Circle</button>
-                            </div>
-                        </div>
-                        {% endif %}
-                    </div>
-                </div>
-            {% endfor %}
-            {% else %}
-            <div class="panel-message">
-                There are no requests yet.
-            </div>
-            {% endif %}
-        </div>
-    </div>
-    {% endif %}
-</div>
-
 <div class="modal fade" id="send-message" tabindex="-1" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -232,9 +153,7 @@
 {% endblock %}
 
 {% block scripts %}
-<script src='/static/push.js'></script>
 <script src='/static/comment.js'></script>
-<script src='/static/flow.js'></script>
 
 {% include 'comment.html' %}
 {% raw %}
@@ -251,67 +170,5 @@ var comment = new Comment({
     id: {{circle.key().id()}},
     container: '[data-comment="container"]'
 });
-
-var flow = new Flow('details');
-
-/* Send Accepts */
-var send_accept = function (id) {
-    var req = $.ajax({
-        type: 'POST',
-        url: '/circle/{{circle.key().id()}}/accept',
-        dataType: 'json',
-        contentType: 'application/json; charset=UTF-8',
-        data: JSON.stringify({
-            'user': id
-        })
-    });
-
-    req.done(function (data) {
-        notify({
-            type: 'success',
-            strong: 'Member accept!'
-        });
-        document.location.reload(true);
-    });
-
-    req.fail(function (data, status) {
-        notify({
-            type: 'danger',
-            strong: 'Refresh and try again!'
-        });
-    });
-};
-
-document.body.addEventListener('click', function (e) {
-    var target = e.target;
-
-    if (target.dataset.accept) {
-        send_accept(target.dataset.accept);
-    }
-});
-
-    var send_message = new SubmitForm({
-        form: document.querySelector('[data-form="message"]'),
-        model: {
-            message: ''
-        },
-        method: 'POST',
-        route: '/circle/{{circle.key().id()}}/message',
-        done: function (data) {
-            notify({
-                type: 'success',
-                strong: 'Message sent!',
-                message: 'Your group has been notified.'
-            });
-        },
-        fail: function (message, status) {
-            notify({
-                type: 'danger',
-                strong: 'Oh no!',
-                message: 'Something went wrong. Try again.'
-            });
-        }
-    });
-/* End */
 </script>
 {% endblock %}

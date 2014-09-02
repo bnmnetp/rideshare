@@ -12,10 +12,10 @@
     <div class="col-md-4">
         <ul class='list-group'>
             <a href="#q1" data-toggle='tab' class='list-group-item active'>
-                What is an alert?
+                What is a ride alert?
             </a>
             <a href="#q2" data-toggle='tab' class='list-group-item'>
-                What is a notification?
+                What is a circle notification?
             </a>
             <a href="#q3" data-toggle='tab' class='list-group-item'>
                 Can I be emailed when I recieve an alert?
@@ -27,15 +27,16 @@
             <div class="tab-pane active" id="q1">
                 Alerts are important messages regarding rides you are connected to. You will be alerted if:
 
-                If you are a passenger and the driver of the ride leaves.
-                If you are a passenger and the ride gets a driver.
-                If you are a driver and a passenger joins your ride.
-                If you are a driver and a passenger leaves your ride.
+                If a person leaves or joins a ride you are connected to.
+                When you have an upcoming ride in the next few days.
 
                 These alerts will always be shown on your home page but you can also receive these messages through email. Set your preferences by visiting your profile page.
             </div>
             <div class="tab-pane" id="q2">
-                Notifications are reminders about upcoming rides. Notifications are shown on your home page.
+                Circle notifications are news about circles you belond to. You will be notified if:
+
+                A circle admin sends the group a message.
+                If someone requests to join your circle.
             </div>
             <div class="tab-pane" id="q3">
                 Yes! Visit your notification preference page.
@@ -47,7 +48,7 @@
     <div class="col-md-6">
         <div class="panel panel-main">
             <div class="panel-heading">
-                Ride Notifications
+                Ride Alert
                 <div class="pull-right">
                     <i class="fa fa-question" data-help='toggle'></i>
                 </div>
@@ -81,9 +82,11 @@
                                         {{ra.circle.name}}
                                     </a>
                                     {% endif %}
+                                    {% if ra.date %}
                                     <div class="tag">
                                         <i class="fa fa-calendar"></i> {{ra.date}}
                                     </div>
+                                    {% endif %}
                                     <div class="tag">
                                         {{ra.type}}
                                     </div>
@@ -170,10 +173,12 @@
                                     {{sn.invited_by.name}}
                                 </a>
                                 {% endif %}
+                                {% if sn.date %}
                                 <div class="tag">
                                     <i class="fa fa-calendar"></i>
                                     {{sn.date}}
                                 </div>
+                                {% endif %}
                                 {% if sn.type %}
                                 <div class="tag">
                                     {{sn.type}}

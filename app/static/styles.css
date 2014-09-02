@@ -865,13 +865,13 @@ ul.sidebar .sidebar-main a {
 }
 
 ul.sidebar .inactive {
-    height: 40px;
+    height: 50px;
 }
 
 ul.sidebar .inactive a {
     color: #b2bfdc;
     font-size: 14px;
-    line-height: 40px;
+    line-height: 45px;
 }
 
 ul.sidebar .sidebar-main .menu-icon {
@@ -882,10 +882,7 @@ ul.sidebar .sidebar-main .menu-icon {
 }
 
 ul.sidebar .inactive .menu-icon {
-  float: right;
-  font-size: 18px;
-  padding-right: 28px;
-  line-height: 40px;
+  line-height: 45px;
 }
 
 ul.sidebar .sidebar-title {
@@ -952,6 +949,7 @@ ul.sidebar .sidebar-list .menu-icon {
     transition: height 0.5s linear;
     overflow-x: hidden;
     overflow-y: auto;
+    display: block;
 }
 
 .cwitch-container.active {
@@ -959,15 +957,15 @@ ul.sidebar .sidebar-list .menu-icon {
 }
 
 ul.cwitch-list {
-    overflow-x: hidden;
-    overflow-y: auto;
+    overflow: auto;
     padding-left: 0px;
+    height: 200px;
+    width: 250px;
 }
 
 ul.cwitch-list li {
     color: #b2bfdc;
     display: block;
-    float: left;
     text-decoration: none;
     width: 250px;
     text-indent: 25px;
