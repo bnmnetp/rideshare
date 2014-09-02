@@ -88,9 +88,9 @@
                                         {{noti.text}}
                                     </div>
                                     <div class="sub">
-                                        <button class='btn btn-primary btn-xs'>
+                                        <div class="tag">
                                             <i class="fa fa-calendar"></i> {{noti.date_str}}
-                                        </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -102,7 +102,39 @@
                     {% endif %}
                 </div>
             </div>
-            
+            <div class="panel panel-main">
+                <div class="panel-heading">Events</div>
+                <div class="panel-body panel-no">
+                {% if events_all %}
+                    {% for event in events_all %}
+                        <div class="list">
+                            <div class="ctx">
+                                <i class="fa fa-location-arrow"></i>
+                            </div>
+                            <div class="info">
+                                <div class="title">
+                                    <a href="/event/{{event.key().id()}}">{{event.name}}</a>
+                                </div>
+                                <div class="sub">
+                                    <div class="tag">
+                                        <i class="fa fa-calendar"></i>
+                                        {{event.date}}
+                                    </div>
+                                    <div class="tag">
+                                        <i class="fa fa-location-arrow"></i>
+                                        {{event.address}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="panel-message">
+                        There are no events yet. Visit <a href="/map">the map</a> to create one.
+                    </div>
+                {% endif %}
+                </div>
+            </div>
         </div>
     </div>
 </div>

@@ -28,8 +28,14 @@
                         <a href="/event/{{event.key().id()}}">{{event.name}}</a>
                     </div>
                     <div class="sub">
-                        <i class="fa fa-calendar"></i> {{event.date}}
-                        <i class="fa fa-location-arrow"></i> {{event.address}}
+                        <div class="tag">
+                            <i class="fa fa-calendar"></i>
+                            {{event.date}}
+                        </div>
+                        <div class="tag">
+                            <i class="fa fa-location-arrow"></i>
+                            {{event.address}}
+                        </div>
                     </div>
                 </div>
             </div>

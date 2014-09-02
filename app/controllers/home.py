@@ -40,16 +40,14 @@ class HomeHandler(BaseHandler):
                 if user.key() == up.driver.key():
                     up.is_driver = True
 
-            up.date_str = up.date.strftime('%B %dth, %Y')
-
         for up in upcoming:
             obj = {
-                'message': '<a href="/ride/' + str(up.key().id()) + '">' + up.orig + ' to ' + up.dest + '</a>',
+                'message': 'Upcoming Ride: <a href="/ride/' + str(up.key().id()) + '">' + up.orig + ' to ' + up.dest + '</a>',
                 'date': up.date_str,
                 'details': False,
                 'driver': up.is_driver,
                 'pass': up.is_pass,
-                'type': 'Upcoming Ride',
+                'type': 'You are driving'
             }
             if up.circle:
                 obj['circle'] = {
@@ -111,8 +109,8 @@ class HomeHandler(BaseHandler):
 
             obj = {
                 'message': """
-                %s has joined this ride.
-                """ % (p.user.name),
+                <a href='/user/%s'>%s</a> has joined this ride.
+                """ % (p.user.key().id(), p.user.name),
                 'submessage': p.message,
                 'date': p.created.strftime('%B %dth, %Y'),
                 'details': {

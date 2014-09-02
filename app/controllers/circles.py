@@ -117,6 +117,10 @@ class GetCircleHandler(BaseHandler):
         else:
             is_admin = False
 
+        today = date.today()
+
+        events_all = Event.all().filter('circle =', circle).filter('date >=', today).fetch(None)
+
         doRender(self, 'view_circle.html', {
             'circle': circle,
             'user': user,
@@ -124,7 +128,8 @@ class GetCircleHandler(BaseHandler):
             'invite': invite,
             'is_admin': is_admin,
             'requests': requests,
-            'notis': notis
+            'notis': notis,
+            'events_all': events_all
         })
 
 class CircleInvited(BaseHandler):

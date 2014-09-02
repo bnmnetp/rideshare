@@ -75,6 +75,16 @@ class Ride(db.Model):
     event = db.ReferenceProperty(Event)
     recurring = db.StringProperty()
 
+    # @property
+    # def orig(self):
+
+    # @property
+    # def dest(self):
+
+    @property
+    def date_str(self):
+        return self.date.strftime('%B %dth, %Y')
+
     def to_dict(self):
         resp = {}
         for p in Ride._properties:

@@ -23,9 +23,9 @@
 		<ul class="sidebar">
 		{% if user.circles %}
 			<li class="sidebar-title separator first">
-				<span>SWITCH CIRCLES</span>
+				<span>ACTIVE CIRCLE (Click to switch)</span>
 			</li>
-			<li class="sidebar-main">
+			<li class="sidebar-main" data-cwitch='li'>
 				<a href="#" data-cwitch='toggle'>
 					{{active_circle.name}}
 					<span class="menu-icon fa fa-caret-down" data-cwitch='caret'></span>
@@ -63,12 +63,12 @@
 					<span class="menu-icon fa fa-car"></span>
 				</a>
 			</li>
-			<li class="sidebar-list">
+			<!-- <li class="sidebar-list">
 				<a href="/events">
 					Events
 					<span class="menu-icon fa fa-calendar"></span>
 				</a>
-			</li>
+			</li> -->
 		{% endif %}
 			<li class="sidebar-title separator">
 				<span>QUICK LINKS</span>
@@ -128,8 +128,19 @@
 			}
 		});
 		$(function () {
-			console.log(location.pathname.split("/")[1])
-			$('#sidebar-wrapper a[href^="/' + location.pathname.split("/")[1] + '"]').addClass('active');
+			var page_short = location.pathname.split("/")[1];
+			var page_long = location.pathname;
+			$('#sidebar-wrapper a[href="' + page_long + '"]').addClass('active');
+
+			var circle_switcher = document.querySelector('[data-cwitch="li"]');
+			switch (page_short) {
+				case 'home':
+				case 'user':
+				case 'circles':
+				case 'newCircle':
+					circle_switcher.classList.add('inactive');
+					break;
+			}
 		});
 
 		var cwitch = {};

@@ -53,7 +53,7 @@ class EventHandler(BaseHandler):
 
         circle = self.circle()
 
-        events_all = Event.all().filter('circle =', circle).filter('date >=', today).fetch(100)
+        events_all = Event.all().filter('circle =', circle).filter('date >=', today).fetch(None)
 
         doRender(self, 'events.html', {
             'events_all': events_all,

@@ -191,15 +191,12 @@ class DetailHandler(BaseHandler):
         })
 
         try:
-            detail_validator(data)
+            data = detail_validator(data)
         except MultipleInvalid as e:
             return self.json_resp(500, {
                 'error': str(e),
                 'message': 'Data could not be validated'
             })
-
-        # All DB entry uses INT
-        data['zip'] = int(data['zip'])
 
         user.name = data['name']
         user.email = data['email']

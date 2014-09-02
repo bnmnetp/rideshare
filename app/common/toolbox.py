@@ -7,7 +7,8 @@ from datetime import datetime
 env = jinja2.Environment(
     loader=jinja2.PackageLoader('app', 'templates'),
     extensions=['jinja2.ext.autoescape'],
-    autoescape=True
+    autoescape=True,
+    trim_blocks=True
 )
 
 def doRender(handler, name = 'home.html', value = {}):

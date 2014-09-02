@@ -228,6 +228,12 @@ img {
     padding: 0px 3px;
 }
 
+.list blockquote {
+    padding: 10px 20px;
+    margin: 0px 0px 5px;
+    font-size: 14px;
+}
+
 .tag {
     display: inline-block;
     border-radius: 3px;
@@ -840,6 +846,7 @@ ul.sidebar {
     overflow-x: hidden;
     overflow-y: auto;
 }
+
 ul.sidebar li a {
     color: #fff;
     display: block;
@@ -847,19 +854,40 @@ ul.sidebar li a {
     text-decoration: none;
     width: 250px;
 }
+
 ul.sidebar .sidebar-main {
   height: 65px;
 }
+
 ul.sidebar .sidebar-main a {
   font-size: 18px;
   line-height: 60px;
 }
+
+ul.sidebar .inactive {
+    height: 40px;
+}
+
+ul.sidebar .inactive a {
+    color: #b2bfdc;
+    font-size: 14px;
+    line-height: 40px;
+}
+
 ul.sidebar .sidebar-main .menu-icon {
   float: right;
   font-size: 18px;
   padding-right: 28px;
   line-height: 60px;
 }
+
+ul.sidebar .inactive .menu-icon {
+  float: right;
+  font-size: 18px;
+  padding-right: 28px;
+  line-height: 40px;
+}
+
 ul.sidebar .sidebar-title {
   color: #738bc0;
   font-size: 12px;

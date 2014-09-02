@@ -62,6 +62,11 @@
                             <div class="info">
                                 <div class="title">
                                     {{ra.message | safe}}
+                                    {% if ra.submessage %}
+                                    <blockquote>
+                                        {{ra.submessage}}
+                                    </blockquote>
+                                    {% endif %}
                                 </div>
                                 <div class="sub">
                                     {% if ra.details %}
