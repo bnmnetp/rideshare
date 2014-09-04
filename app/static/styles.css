@@ -885,6 +885,11 @@ ul.sidebar .inactive .menu-icon {
   line-height: 45px;
 }
 
+ul.sidebar .menu-switch {
+    border-left: 1px solid #172951;
+    padding-left: 8px;
+}
+
 ul.sidebar .sidebar-title {
   color: #738bc0;
   font-size: 12px;

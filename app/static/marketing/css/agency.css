@@ -22,6 +22,14 @@ body {
     padding: 40px;
 }
 
+.split-image {
+    max-height: 200px;
+    max-width: 200px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 p {
     font-size: 14px;
     line-height: 1.75;
@@ -327,7 +335,7 @@ header .intro-text .intro-heading {
 }
 
 section {
-    padding: 100px 0;
+    padding: 75px 0;
 }
 
 section h2.section-heading {
@@ -347,7 +355,7 @@ section h3.section-subheading {
 
 @media(min-width:768px) {
     section {
-        padding: 150px 0;
+        padding: 75px 0;
     }
 }
 
