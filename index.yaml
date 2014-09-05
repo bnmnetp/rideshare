@@ -56,5 +56,10 @@ indexes:
 
 - kind: Ride
   properties:
+  - name: event
+  - name: driver
+
+- kind: Ride
+  properties:
   - name: passengers
   - name: date

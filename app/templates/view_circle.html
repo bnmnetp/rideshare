@@ -16,33 +16,22 @@
 </div>
 {% endif %}
 
+<div class="circle-hero">
+    <h1 class='big'>{{circle.name}}</h1>
+    <h4>{{circle.description}}</h4>
+    {% if is_admin %}
+        <a class="btn btn-primary" href='/circle/{{circle.key().id()}}/edit'>Manage Circle</a>
+        <button class='btn btn-primary' data-toggle="modal" data-target="#send-message">Send message to all circle members</button>
+    {% endif %}
+    <a href='/map' class='btn btn-success btn-large'>
+        Add rides & events for this circle
+        <i class='fa fa-plus'></i>
+    </a>
+</div>
+
 <div data-route="details">
     <div class="row">
         <div class="col-md-6">
-            <div class="panel panel-main">
-                <div class="panel-heading">Circle details</div>
-                <div class="panel-body">
-                    <ul class='information'>
-                        <li>
-                            <b>Name:</b> {{circle.name}}
-                        </li>
-                        <li>
-                            <b>Description:</b> {{circle.description}}
-                        </li>
-                    </ul>
-                    <a href='/map' class='btn btn-success btn-large'>
-                        Add rides & events for this circle
-                        <i class='fa fa-plus'></i>
-                    </a>
-                    <a href="/circle/{{circle.key().id()}}/invite" class='btn btn-primary btn-large'>
-                        Invite
-                    </a>
-                    {% if is_admin %}
-                        <a class="btn btn-primary" href='/circle/{{circle.key().id()}}/edit'>Manage Circle</a>
-                        <button class='btn btn-primary' data-toggle="modal" data-target="#send-message">Send message to all circle members</button>
-                    {% endif %}
-                </div>
-            </div>
             <div class="panel panel-main">
                 <div class="panel-heading">Comments</div>
                 <div class="panel-body" data-comment='container'>
@@ -88,7 +77,7 @@
                     {% endif %}
                 </div>
             </div>
-            <div class="panel panel-main">
+            <!-- <div class="panel panel-main">
                 <div class="panel-heading">Events</div>
                 <div class="panel-body panel-no">
                 {% if events_all %}
@@ -119,6 +108,66 @@
                         There are no events yet. Visit <a href="/map">the map</a> to create one.
                     </div>
                 {% endif %}
+                </div>
+            </div> -->
+            <div class="panel panel-main">
+                <div class="panel-heading">
+                    Members of Circle
+                    <div class="pull-right">
+                        <a href="/circle/{{circle.key().id()}}/invite">
+                            Invite Friends
+                        </a>
+                    </div>
+                </div>
+                <div class="panel-body">
+                {% if admins %}
+                <h1>Admins</h1>
+                {% for member in admins %}
+                    <div class="media">
+                        <a href="#" class='pull-left'>
+                            <img src="/user/photo/{{member.key().id()}}" style="width: 64px; height: 64px;" class="media-object" alt="64x64">
+                        </a>
+                        <div class="media-body">
+                            <div class="pull-left">
+                                <h4>{{member.name}}</h4>
+                            </div>
+                            {% if is_admin %}
+                            <div class="pull-right">
+                                <div class="options">
+                                    {% if not member.key() in circle.admins %}
+                                        <button class='btn btn-success' data-promote='{{member.key().id()}}'>Promote to Admin</button>
+                                    {% endif %}
+                                    <button class='btn btn-danger' data-kick='{{member.key().id()}}'>Kick Member</button>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+                {% endif %}
+                <h1>Members</h1>
+                {% for member in members %}
+                    <div class="media">
+                        <a href="#" class='pull-left'>
+                            <img src="/user/photo/{{member.key().id()}}" style="width: 64px; height: 64px;" class="media-object" alt="64x64">
+                        </a>
+                        <div class="media-body">
+                            <div class="pull-left">
+                                <h4>{{member.name}}</h4>
+                            </div>
+                            {% if is_admin %}
+                            <div class="pull-right">
+                                <div class="options">
+                                    {% if not member.key() in circle.admins %}
+                                        <button class='btn btn-success' data-promote='{{member.key().id()}}'>Promote to Admin</button>
+                                    {% endif %}
+                                    <button class='btn btn-danger' data-kick='{{member.key().id()}}'>Kick Member</button>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
                 </div>
             </div>
         </div>

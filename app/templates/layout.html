@@ -63,10 +63,16 @@
 					<span class="menu-icon fa fa-car"></span>
 				</a>
 			</li>
-			<li class='sidebar-list'>
+			<!-- <li class='sidebar-list'>
 				<a href="/members">
 					Members
 					<span class='menu-icon fa fa-users'></span>
+				</a>
+			</li> -->
+			<li class="sidebar-list">
+				<a href="/events">
+					Events
+					<span class="menu-icon fa fa-calendar"></span>
 				</a>
 			</li>
 			{% if active_circle is defined and active_circle.privacy == 'private' and is_admin %}
@@ -77,12 +83,6 @@
 				</a>
 			</li>
 			{% endif %}
-			<!-- <li class="sidebar-list">
-				<a href="/events">
-					Events
-					<span class="menu-icon fa fa-calendar"></span>
-				</a>
-			</li> -->
 		{% endif %}
 			<li class="sidebar-title separator">
 				<span>QUICK LINKS</span>

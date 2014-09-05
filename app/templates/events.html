@@ -6,14 +6,19 @@
 {% endblock %}
 
 {% block main %}
+<div class="circle-hero">
+    <h1 class='big'>{{circle.name}}</h1>
+    <h4>{{circle.description}}</h4>
+    <a href='/map' class='btn btn-success btn-large'>
+        Add rides & events for this circle
+        <i class='fa fa-plus'></i>
+    </a>
+</div>
+
 <div data-notify="container">
     
 </div>
-<div class="panel panel-default">
-    <div class="panel-body">
-        Create an event by visiting the <a href='/map'>map page</a>.
-    </div>
-</div>
+
 <div class="panel panel-main">
     <div class="panel-heading">Events</div>
     <div class="panel-body panel-no">

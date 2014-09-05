@@ -18,9 +18,10 @@ class GetEventHandler(BaseHandler):
 
         event.date_str = event.date.strftime('%B %dth, %Y')
 
-        rides = Ride.all().filter('event = ', event.key()).fetch(100)
+        offered = Ride.all().filter('event = ', event.key()).filter('driver != ', None).fetch(None)
+        requested = Ride.all().filter('event = ', event.key()).filter('driver = ', None).fetch(None)
 
-        for ride in rides:
+        for ride in offered:
             ride.orig = split_address(ride.origin_add)
             ride.dest = split_address(ride.dest_add)
             if ride.driver and user.key() == ride.driver.key():
@@ -34,13 +35,25 @@ class GetEventHandler(BaseHandler):
 
             ride.seats_availible = ride.passengers_max - ride.passengers_total
 
-        comments = Comment.all().filter('event = ', event.key()).order('-date')
+        for ride in requested:
+            ride.orig = split_address(ride.origin_add)
+            ride.dest = split_address(ride.dest_add)
+            if ride.driver and user.key() == ride.driver.key():
+                ride.is_driver = True
+            else:
+                ride.is_driver = False
+            if user.key() in ride.passengers:
+                ride.is_passenger = True
+            else:
+                ride.is_passenger = False
+
 
         doRender(self, 'view_event.html', {
             'event': event,
-            'rides': rides,
-            'comments': comments,
-            'user': user
+            'offered': offered,
+            'requested': requested,
+            'user': user,
+            'circle': self.circle()
         })
 
 class EventHandler(BaseHandler):
@@ -57,7 +70,8 @@ class EventHandler(BaseHandler):
 
         doRender(self, 'events.html', {
             'events_all': events_all,
-            'user': user
+            'user': user,
+            'circle': circle
         })
 
     def post(self):

@@ -92,6 +92,9 @@ class GetCircleHandler(BaseHandler):
 
         notis = Notification.all().filter('circle = ', circle.key()).filter('type = ', 'circle_message').fetch(100)
 
+        members = User.all().filter('circles =', circle.key()).fetch(None)
+        admins = User.all().filter('__key__ in', circle.admins).fetch(None)
+
         for noti in notis:
             noti.date_str = noti.created.strftime('%B %dth, %Y')
 
@@ -124,7 +127,9 @@ class GetCircleHandler(BaseHandler):
             'is_admin': is_admin,
             'requests': requests,
             'notis': notis,
-            'events_all': events_all
+            'events_all': events_all,
+            'members': members,
+            'admins': admins
         })
 
 class CircleInvited(BaseHandler):

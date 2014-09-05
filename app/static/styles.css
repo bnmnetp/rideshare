@@ -38,7 +38,15 @@ img {
     line-height: 150px;
 }
 
+.circle-hero {
+    margin: 30px;
+}
 
+.circle-hero h1 {
+    font-size: 65px;
+    font-weight: 700;
+    margin: 0px 0px 10px 0px;
+}
 
 /* Subnav */
 .subnav {
@@ -340,6 +348,11 @@ img {
     background-color:  #3F51B5;
     border-color:  #3F51B5;
     color: #FFFFFF;
+}
+
+.panel-main .panel-heading a {
+    color: white;
+    text-decoration: underline;
 }
 
 .panel-message {

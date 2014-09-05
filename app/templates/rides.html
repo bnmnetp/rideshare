@@ -6,12 +6,18 @@
 {% endblock %}
 
 {% block main %}
-<div data-notify="container"></div>
-<div class="panel panel-default">
-    <div class="panel-body">
-        Create a ride by visiting the <a href='/map'>map page</a>.
-    </div>
+
+<div class="circle-hero">
+    <h1 class='big'>{{circle.name}}</h1>
+    <h4>{{circle.description}}</h4>
+    <a href='/map' class='btn btn-success btn-large'>
+        Add rides & events for this circle
+        <i class='fa fa-plus'></i>
+    </a>
 </div>
+
+<div data-notify="container"></div>
+
 <div class="row">
     <div class="col-md-4">
         <h4>Filter Rides</h4>

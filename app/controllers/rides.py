@@ -15,7 +15,8 @@ class RideHandler(BaseHandler):
         user = self.current_user()
 
         doRender(self, 'rides.html', {
-            'user': user
+            'user': user,
+            'circle': self.circle()
         })
 
     def post(self):
@@ -305,7 +306,8 @@ class GetRide(BaseHandler):
                 'ride': ride,
                 'passengers': passengers,
                 'seats': availible_seats,
-                'user': user
+                'user': user,
+                'circle': self.circle()
             })
         else:
             self.response.write('No ride found.')
