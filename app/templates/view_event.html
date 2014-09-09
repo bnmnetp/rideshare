@@ -58,7 +58,14 @@
 <div class="row">
 	<div class="col-md-6">
 		<div class="panel panel-main">
-			<div class="panel-heading">Rides offered to Event</div>
+			<div class="panel-heading">
+				Rides offered to Event
+				<div class="pull-right">
+                    <a href="#"  data-toggle='modal' data-target='#offer_ride'>
+                        Offer a Ride
+                    </a>
+                </div>
+			</div>
 			<div class="panel-body panel-no">
 				{% if offered %}
 					{% for ride in offered %}
@@ -103,7 +110,14 @@
 	</div>
 	<div class="col-md-6">
 		<div class="panel panel-main">
-			<div class="panel-heading">Ride requested to Event</div>
+			<div class="panel-heading">
+				Ride requested to Event
+				<div class="pull-right">
+                    <a href="#" data-toggle='modal' data-target='#need_ride'>
+                        Request a Ride
+                    </a>
+                </div>
+			</div>
 			<div class="panel-body panel-no">
 				{% if requested %}
 					{% for ride in requested %}

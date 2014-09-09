@@ -4,6 +4,9 @@ from app.model import *
 from app.base_handler import BaseHandler
 from datetime import datetime
 
+from google.appengine.tools.devappserver2.python import sandbox
+sandbox._WHITE_LIST_C_MODULES += ['_ctypes', 'gestalt']
+
 env = jinja2.Environment(
     loader=jinja2.PackageLoader('app', 'templates'),
     extensions=['jinja2.ext.autoescape'],

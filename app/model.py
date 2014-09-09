@@ -60,8 +60,17 @@ class Event(db.Model):
         return resp
 
 class Ride(db.Model):
+    creator = db.ReferenceProperty(
+        User,
+        required = False,
+        collection_name = 'creator'
+    )
     passengers_max = db.IntegerProperty()
-    driver = db.ReferenceProperty(User)
+    driver = db.ReferenceProperty(
+        User,
+        required = False,
+        collection_name = 'driver'
+    )
     driven_by = db.StringProperty()
     origin_add = db.StringProperty()
     origin_lat = db.FloatProperty()

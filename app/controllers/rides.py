@@ -9,6 +9,23 @@ from app.common.notification import push_noti
 from app.common.voluptuous import *
 import urllib, urllib2
 
+def is_pass_similar_ride(user, ride):
+    matches = []
+    passengers_match_user = Passenger.all().filter('user = ', user.key()).fetch(None)
+    for p in passengers_match_user:
+
+        if p.ride.event.key() == ride.event.key():
+            print 'MATCHXX'
+            matches.append(p)
+
+    formatted_matches = []
+    if matches:
+        for match in matches:
+            formatted_matches.append(str(match.ride.key().id()))
+        return formatted_matches
+    else:
+        return None
+
 class RideHandler(BaseHandler):
     def get(self):
         self.auth()
@@ -132,12 +149,6 @@ class EditRide(BaseHandler):
             })
 
         set_properties(ride, self.properties, data)
-
-        # ride.passengers_max = data['passengers_max']
-        # ride.date = data['date']
-        # ride.time = data['time']
-        # ride.details = data['details']
-        # ride.driven_by = data['driven_by']
 
         ride.put()
 
@@ -283,7 +294,7 @@ class GetRide(BaseHandler):
         if ride.driver and ride.passengers_max:
             availible_seats = ride.passengers_max - ride.passengers_total
 
-        passengers = ride.passengers
+        passengers = Passenger.all().filter('ride = ', ride.key()).fetch(None)
 
         # For view conditionals
         if ride.driver:
@@ -297,6 +308,9 @@ class GetRide(BaseHandler):
             ride.is_driver = False
             ride.need_driver = True
 
+        if ride.creator == user.key():
+            ride.can_edit = True
+
         if ride.is_passenger(user.key()):
             ride.is_pass = True
             ride.can_pass = False
@@ -308,13 +322,22 @@ class GetRide(BaseHandler):
             ride.can_pass = False
         # End view conditionals
 
+        if is_pass_similar_ride(user, ride):
+            similar_rides = is_pass_similar_ride(user, ride)
+        else:
+            similar_rides = None
+
+        print 'SIMILAR RIDES'
+        print similar_rides
+
         if ride:
             doRender(self, 'view_ride.html', {
                 'ride': ride,
                 'passengers': passengers,
                 'seats': availible_seats,
                 'user': user,
-                'circle': self.circle()
+                'circle': self.circle(),
+                'similar_rides': similar_rides
             })
         else:
             self.response.write('No ride found.')
@@ -367,6 +390,7 @@ class NewRideHandler(BaseHandler):
         ride.origin_lng = data['orig']['lng']
         ride.date = data['date']
         ride.time = data['time']
+        ride.creator = user
 
         if data['driver'] == True:
             ride.passengers_max = int(data['passengers_max'])
@@ -390,6 +414,7 @@ class NewRideHandler(BaseHandler):
         if data['driver'] != True:
             p = Passenger()
             p.ride = ride.key()
+            p.user = user
             p.seats = 1
             p.message = ''
             p.put()
@@ -399,13 +424,13 @@ class NewRideHandler(BaseHandler):
         })
 
 class RideEvent(BaseHandler):
-    def post(self, event_id, type):
+    def post(self, event_id, join_type):
         self.auth()
         json_str = self.request.body
         data = json.loads(json_str)
 
-        if not (type == 'passenger' or type == 'driver'):
-            print type
+        if not (join_type == 'passenger' or join_type == 'driver'):
+            print join_type
             return self.json_resp(500, {
                 'message': 'Invalid type'
             })
@@ -454,18 +479,20 @@ class RideEvent(BaseHandler):
         ride.origin_lng = json_geocode['results'][0]['geometry']['location']['lng']
         ride.date = data['date']
         ride.time = data['time']
+        ride.circle = self.circle().key()
         
         ride.event = event.key()
 
-        if type == 'driver':
+        if join_type == 'driver':
             ride.passengers_max = int(data['passengers_max'])
             ride.driver = user.key()
 
         ride.put()
 
-        if type == 'passenger':
+        if join_type == 'passenger':
             p = Passenger()
             p.ride = ride.key()
+            p.user = user
             p.seats = 1
             p.message = ''
             p.put()

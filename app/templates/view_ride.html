@@ -12,10 +12,31 @@
 <div data-notify="container">
     
 </div>
-{% if ride.need_driver %}
+{% if ride.driver == None %}
     <div class="panel panel-default">
         <div class="panel-body">
             This ride does not have a driver yet.
+        </div>
+    </div>
+{% endif %}
+{% if similar_rides %}
+    <div class="panel panel-main">
+        <div class="panel-heading">
+            Similar Rides
+        </div>
+        <div class="panel-body panel-no">
+            {% for sr in similar_rides %}
+                <div class="list">
+                    <div class="ctx">
+                        <i class="fa fa-exclamation"></i>
+                    </div>
+                    <div class="info">
+                        <div class="title">
+                            You are the passenger of another ride going to this event. If this happened mistankely, please visit <a href='/ride/{{sr}}'>that ride</a> and leave as a passenger. 
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
         </div>
     </div>
 {% endif %}
@@ -71,7 +92,7 @@
                                 </div>
                             {% endfor %}
                         {% else %}
-                            <p>No other passengers</p>
+                            <p>No passengers</p>
                         {% endif %}
                     </li>
 
@@ -88,7 +109,7 @@
                 </ul>
                 <hr>
                 <div class="options">
-                    {% if ride.is_driver %}
+                    {% if ride.is_driver or ride.can_edit %}
                         <a href="/ride/{{ride.key().id()}}/edit" class='btn btn-primary'>Edit ride details</a>
                         <p class="help-block">You are currently the driver.</p>
                         <button class='btn btn-danger' data-driver='leave'>Leave ride</button>
