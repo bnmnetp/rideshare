@@ -129,7 +129,8 @@ class GetCircleHandler(BaseHandler):
             'notis': notis,
             'events_all': events_all,
             'members': members,
-            'admins': admins
+            'admins': admins,
+            'total_members': len(members)
         })
 
 class CircleInvited(BaseHandler):

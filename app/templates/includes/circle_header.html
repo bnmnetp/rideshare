@@ -1,0 +1,14 @@
+<div class="circle-hero">
+	<div class="title">
+	    <h1>{{circle.name}}</h1>
+	    <h4>{{circle.description}}</h4>
+    </div>
+    <a href='/map' class='btn btn-success btn-large'>
+        Add rides & events for this circle
+        <i class='fa fa-plus'></i>
+    </a>
+    {% if is_admin %}
+        <a class="btn btn-primary" href='/circle/{{circle.key().id()}}/edit'>Manage Circle</a>
+        <button class='btn btn-primary' data-toggle="modal" data-target="#send-message">Send message to all circle members</button>
+    {% endif %}
+</div>

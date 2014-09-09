@@ -67,7 +67,6 @@ var Flow = augment(Object, function () {
 			var opts;
 			this.history.push(to);
 			this.handler.state = to;
-			this.handler.special_action(from, to, opts);
 			this.view_slide(to);
 			this.idx++;
 		}

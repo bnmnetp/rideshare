@@ -6,14 +6,8 @@
 {% endblock %}
 
 {% block main %}
-<div class="circle-hero">
-    <h1 class='big'>{{circle.name}}</h1>
-    <h4>{{circle.description}}</h4>
-    <a href='/map' class='btn btn-success btn-large'>
-        Add rides & events for this circle
-        <i class='fa fa-plus'></i>
-    </a>
-</div>
+
+{% include 'includes/circle_header.html' %}
 
 <div data-notify="container">
     

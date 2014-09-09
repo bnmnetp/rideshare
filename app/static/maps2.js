@@ -95,6 +95,7 @@ var Forms = augment(Object, function () {
 		m.circle = circle;
 		m.driver = true;
 		m.recurring = form.recurring.value;
+		m.driven_by = form.driven_by.value;
 
 		var push = $.ajax({
 			type: 'POST',
@@ -373,11 +374,8 @@ var Map = augment(Object, function () {
 		this.map;
 		this.geocoder;
 
-		this.state = '';
-
-		this.markers = [];
-
-		this.create_new_marker = false;
+		this.orig_marker = false;
+		this.dest_marker = false;
 
 		this.create_markers();
 
@@ -393,8 +391,6 @@ var Map = augment(Object, function () {
 			}.bind(this));
 		}
 
-		this.reset();
-
 		this.reset_btn = document.querySelector('[data-reset]');
 		this.reset_btn.addEventListener('click', function (e) {
 			this.reset();
@@ -406,12 +402,14 @@ var Map = augment(Object, function () {
 			flow.reset();
 		}
 
-		this.create_new_marker = true;
-
-		for (var i = 0; i < this.markers.length; i++) {
-			this.markers[i].setMap(null);
+		if (this.dest_marker) {
+			this.dest_marker.setMap(null);
+			this.dest_marker = false;
 		}
-		this.markers = [];
+		if (this.orig_marker) {
+			this.orig_marker.setMap(null);
+			this.orig_marker = false;
+		}
 	};
 
 	this.create_markers = function () {
@@ -428,21 +426,26 @@ var Map = augment(Object, function () {
 	};
 
 	this.set_window = function (location, icon) {
-		if (this.create_new_marker) {
-			var latlng = new google.maps.LatLng(location.lat, location.lng);
+		var marker, latlng;
+		if (this.state == 'select_dest' || this.state == 'select_orig') {
 
-			var marker = new google.maps.Marker({
+			latlng = new google.maps.LatLng(location.lat, location.lng);
+
+			marker = new google.maps.Marker({
 				position: latlng,
 				map: this.map,
 				icon: icons[icon]
 			});
 
 			this.map.panTo(latlng);
-			this.markers.push(marker);
-
-			this.create_new_marker = false;
-		} else {
-			console.log('Cannot create new marker right now');
+		}
+		if (this.state == 'select_dest') {
+			if (this.dest_marker) this.dest_marker.setMap(null);
+			this.dest_marker = marker;
+		}
+		if (this.state == 'select_orig') {
+			if (this.orig_marker) this.orig_marker.setMap(null);
+			this.orig_marker = marker;
 		}
 	};
 
@@ -503,18 +506,6 @@ var Map = augment(Object, function () {
 
 			loc_dest.textContent = this.end.address;
 			loc_btn.classList.remove('hidden');
-		}
-	};
-
-	this.special_action = function (from, to, opts) {
-		if (to == 'path') {
-			this.create_new_marker = false;
-		}
-		if (to == 'select_orig') {
-			this.create_new_marker = true;
-		}
-		if (to == 'select_dest') {
-			this.create_new_marker = true;
 		}
 	};
 });

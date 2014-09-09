@@ -7,12 +7,15 @@
 {% endblock %}
 
 {% block main %}
+
+{% include 'includes/circle_header.html' %}
+
 <div data-notify="container"></div>
 
 {% if circle %}
 <div class="panel panel-primary padding">
     <div class="panel-body">
-        You are currently viewing the events and rides for <a href='/circle/{{circle.key().id()}}'>{{circle.name}}</a> circle. Any rides or events created will only be visible to this circle. <a href='/circle/0/change'>Exit circle view.</a>
+        You are currently viewing the events and rides for <a href='/circle/{{circle.key().id()}}'>{{circle.name}}</a> circle. Any rides or events created will only be visible to this circle.
     </div>
 </div>
 {% endif %}
@@ -227,6 +230,10 @@
                 <label>Additional Details</label>
                 <input class="form-control" type="text" placeholder="Details" name='details'>
             </div>
+            <div class='form-group'>
+                <label>Are you the person driving this ride? If not, enter the driver's name:</label>
+                <input class='form-control' type="text" name='driven_by' placeholder='Driven by'>
+            </div>
             <div class="form-group">
                 <label>Does this event recur?</label>
                 <select name="recurring" class="form-control">
@@ -293,7 +300,6 @@
 
 {% endraw %}
 <script type="text/javascript">
-
     {% if active_circle == None %}
         var circle = false;
     {% else %}

@@ -42,10 +42,19 @@ img {
     margin: 30px;
 }
 
+.circle-hero .title {
+    display: block;
+}
+
 .circle-hero h1 {
     font-size: 65px;
     font-weight: 700;
-    margin: 0px 0px 10px 0px;
+    margin: 0px 20px 10px 0px;
+    display: inline-block;
+}
+
+.circle-hero h4 {
+    display: inline-block;
 }
 
 /* Subnav */

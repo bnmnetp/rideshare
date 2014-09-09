@@ -46,3 +46,7 @@ def grab_json(obj, prop):
 # returns date obj from format
 def create_date(fmt='%m/%d/%Y'):
 	return lambda v: datetime.strptime(v, fmt).date()
+
+def set_properties(db_obj, arr, data):
+	for a in arr:
+		setattr(db_obj, a, data[a])

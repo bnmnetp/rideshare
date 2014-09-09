@@ -62,6 +62,7 @@ class Event(db.Model):
 class Ride(db.Model):
     passengers_max = db.IntegerProperty()
     driver = db.ReferenceProperty(User)
+    driven_by = db.StringProperty()
     origin_add = db.StringProperty()
     origin_lat = db.FloatProperty()
     origin_lng = db.FloatProperty()
@@ -80,6 +81,11 @@ class Ride(db.Model):
 
     # @property
     # def dest(self):
+
+    @property
+    def date_picker(self):
+        return self.date.strftime("%d/%m/%Y")
+    
 
     @property
     def date_str(self):

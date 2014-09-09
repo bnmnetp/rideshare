@@ -1,4 +1,4 @@
-from app.common.toolbox import doRender, split_address, grab_json, create_date
+from app.common.toolbox import doRender, split_address, grab_json, create_date, set_properties
 from app.model import *
 from google.appengine.ext import db
 import datetime
@@ -76,6 +76,9 @@ class FilterRides(BaseHandler):
         self.response.write(json.dumps(results))
 
 class EditRide(BaseHandler):
+
+    properties = ['passengers_max', 'date', 'time', 'details', 'driven_by']
+
     def get(self, ride_id):
         self.auth()
 
@@ -87,9 +90,9 @@ class EditRide(BaseHandler):
             self.redirect('/rides')
             return None
 
-        properties = ['passengers_max', 'date', 'time', 'details']
+        ride_json = grab_json(ride, self.properties)
 
-        ride_json = grab_json(ride, properties)
+        ride_json['date'] = ride.date_picker
 
         doRender(self, 'edit_ride.html', {
             'user': user,
@@ -116,7 +119,8 @@ class EditRide(BaseHandler):
             Required('passengers_max', default=1): Coerce(int),
             Required('date'): create_date(),
             Required('time'): unicode,
-            'details': unicode
+            'details': unicode,
+            'driven_by': unicode
         })
 
         try:
@@ -127,10 +131,13 @@ class EditRide(BaseHandler):
                 'message': str(e)
             })
 
-        ride.passengers_max = data['passengers_max']
-        ride.date = data['date']
-        ride.time = data['time']
-        ride.details = data['details']
+        set_properties(ride, self.properties, data)
+
+        # ride.passengers_max = data['passengers_max']
+        # ride.date = data['date']
+        # ride.time = data['time']
+        # ride.details = data['details']
+        # ride.driven_by = data['driven_by']
 
         ride.put()
 
@@ -325,6 +332,7 @@ class NewRideHandler(BaseHandler):
             'time': unicode,
             'details': unicode,
             'driver': bool,
+            'driven_by': unicode,
             Required('dest'): {
                 'lat': float,
                 'lng': float,
@@ -367,6 +375,7 @@ class NewRideHandler(BaseHandler):
                 ride.recurring = None
             else:
                 ride.recurring = data['recurring']
+            ride.driven_by = data['driven_by']
 
 
         if data['circle'] != '':
