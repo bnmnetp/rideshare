@@ -452,16 +452,24 @@ template {
     display: none;
 }
 
-#map_canvas {
+.map-container {
     height: 675px;
-    width: 100%;
-    margin: 0px;
-    padding: 0px;
 }
 
-#map_event {
+.map-container-sm {
     height: 300px;
+}
+
+.map-container img,
+.map-container-sm img {
+    max-width: none !important;
+}
+
+#map_canvas  {
     width: 100%;
+    height: 100%;
+    margin: 0px;
+    padding: 0px;
 }
 
 .entry {
@@ -498,11 +506,6 @@ template {
     /*//padding-bottom: 12px;*/
     border-bottom: 2px solid #DD4B39;
     color: #333;
-}
-
-.map_con {
-    -webkit-transition: width 2s; /* For Safari 3.1 to 6.0 */
-    transition: width 2s;
 }
 
 /* Switch */
@@ -972,21 +975,20 @@ ul.sidebar .sidebar-list .menu-icon {
 }
 
 .cwitch-container {
-    height: 0px;
-    transition: height 0.5s linear;
+    max-height: 0px;
+    transition: max-height 0.5s cubic-bezier(0, 1.05, 0, 1);
     overflow-x: hidden;
     overflow-y: auto;
     display: block;
 }
 
 .cwitch-container.active {
-    height: 200px;
+    max-height: 200px;
 }
 
 ul.cwitch-list {
     overflow: auto;
     padding-left: 0px;
-    height: 200px;
     width: 250px;
 }
 

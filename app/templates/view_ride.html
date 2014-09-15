@@ -136,8 +136,8 @@
             <div class="panel-heading">
                 Ride Map
             </div>
-            <div class="panel-body">
-                <div id="map_event"></div>
+            <div class="panel-body map-container-sm">
+                <div id="map_canvas"></div>
             </div>
         </div>
     </div>
@@ -271,7 +271,7 @@
     var direction_render = new google.maps.DirectionsRenderer();
     var direction_service = new google.maps.DirectionsService();
 
-    var map = new google.maps.Map(document.querySelector('#map_event'), {
+    var map = new google.maps.Map(document.querySelector('#map_canvas'), {
         draggableCursor: 'crosshair',
         center: new google.maps.LatLng({{ride.origin_lat}}, {{ride.origin_lng}}),
         mapTypeId: google.maps.MapTypeId.ROADMAP,

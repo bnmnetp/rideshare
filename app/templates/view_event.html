@@ -48,8 +48,8 @@
 			<div class="panel-heading">
 				Event Location
 			</div>
-			<div class="panel-body">
-				<div id="map_event"></div>
+			<div class="panel-body map-container-sm">
+				<div id="map_canvas"></div>
 			</div>
 		</div>
 	</div>
@@ -325,7 +325,7 @@
 		size: new google.maps.Size(30, 40)
 	};
 
-	var map = new google.maps.Map(document.querySelector('#map_event'), {
+	var map = new google.maps.Map(document.querySelector('#map_canvas'), {
 	    draggableCursor: 'crosshair',
 	    center: position,
 	    mapTypeId: google.maps.MapTypeId.ROADMAP,
