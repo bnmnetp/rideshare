@@ -1,4 +1,4 @@
-from app.common.toolbox import doRender, split_address, grab_json, create_date
+from app.common.toolbox import doRender, split_address, grab_json, create_date, set_properties
 from app.model import *
 from google.appengine.ext import db
 import datetime
@@ -9,13 +9,32 @@ from app.common.notification import push_noti
 from app.common.voluptuous import *
 import urllib, urllib2
 
+def is_pass_similar_ride(user, ride):
+    matches = []
+    passengers_match_user = Passenger.all().filter('user = ', user.key()).fetch(None)
+    for p in passengers_match_user:
+
+        if p.ride.event.key() == ride.event.key():
+            if p.ride.key() != ride.key():
+                print 'MATCHXX'
+                matches.append(p)
+
+    formatted_matches = []
+    if matches:
+        for match in matches:
+            formatted_matches.append(str(match.ride.key().id()))
+        return formatted_matches
+    else:
+        return None
+
 class RideHandler(BaseHandler):
     def get(self):
         self.auth()
         user = self.current_user()
 
         doRender(self, 'rides.html', {
-            'user': user
+            'user': user,
+            'circle': self.circle()
         })
 
     def post(self):
@@ -28,7 +47,8 @@ class RideHandler(BaseHandler):
         rides.filter('date >=', today)
 
         if data['circle'] != False:
-            rides.filter('circle = ', data['circle'])
+            circle = Circle.get_by_id(int(data['circle']))
+            rides.filter('circle = ', circle.key())
 
         results = json.dumps([r.to_dict() for r in rides])
         self.response.write(results)
@@ -45,7 +65,8 @@ class FilterRides(BaseHandler):
         rides = Ride.all()
 
         if data['circle']:
-            rides.filter('circle =', data['circle'])
+            circle = Circle.get_by_id(int(data['circle']))
+            rides.filter('circle =', circle.key())
 
         if data['filter'] == 'no_driver':
             rides.filter('driver = ', None)
@@ -73,6 +94,9 @@ class FilterRides(BaseHandler):
         self.response.write(json.dumps(results))
 
 class EditRide(BaseHandler):
+
+    properties = ['passengers_max', 'date', 'time', 'details', 'driven_by']
+
     def get(self, ride_id):
         self.auth()
 
@@ -84,9 +108,9 @@ class EditRide(BaseHandler):
             self.redirect('/rides')
             return None
 
-        properties = ['passengers_max', 'date', 'time', 'details']
+        ride_json = grab_json(ride, self.properties)
 
-        ride_json = grab_json(ride, properties)
+        ride_json['date'] = ride.date_picker
 
         doRender(self, 'edit_ride.html', {
             'user': user,
@@ -113,7 +137,8 @@ class EditRide(BaseHandler):
             Required('passengers_max', default=1): Coerce(int),
             Required('date'): create_date(),
             Required('time'): unicode,
-            'details': unicode
+            'details': unicode,
+            'driven_by': unicode
         })
 
         try:
@@ -124,14 +149,12 @@ class EditRide(BaseHandler):
                 'message': str(e)
             })
 
-        ride.passengers_max = data['passengers_max']
-        ride.date = data['date']
-        ride.time = data['time']
-        ride.details = data['details']
+        set_properties(ride, self.properties, data)
 
         ride.put()
 
-        for p in ride.passengers:
+        passengers = ride.passengers
+        for p in passengers:
             push_noti('edited', p, ride.key())
 
         self.response.write(json.dumps({
@@ -164,7 +187,7 @@ class JoinDriver(BaseHandler):
 
         ride = Ride.get_by_id(int(ride_id))
 
-        ride.passengers_max = int(data['passengers_max'])
+        ride.passengers_max = data['passengers_max']
         ride.driver = user.key()
         ride.time = data['time']
         ride.details = data['details']
@@ -178,7 +201,49 @@ class JoinDriver(BaseHandler):
         }
         self.response.write(json.dumps(resp))
 
-class GetRideHandler(BaseHandler):
+class JoinPassenger(BaseHandler):
+    def post(self, ride_id):
+        self.auth()
+        json_str = self.request.body
+        data = json.loads(json_str)
+
+        user = self.current_user()
+
+        join_validator = Schema({
+            Required('seats_claimed', default=1): Coerce(int),
+            'message': unicode
+        })
+
+        try:
+            data = join_validator(data)
+        except MultipleInvalid as e:
+            return self.json_resp(500, {
+                'error': True,
+                'message': str(e)
+            })
+
+        ride = Ride.get_by_id(int(ride_id))
+
+        all_passengers = ride.passengers
+
+        if (ride.passengers_total + data['seats_claimed']) > ride.passengers_max:
+            return self.json_resp(500, {
+                'error': True,
+                'message': 'There are not enough seats for you.'
+            })
+
+        p = Passenger()
+        p.ride = ride.key()
+        p.user = user.key()
+        p.seats = data['seats_claimed']
+        p.message = data['message']
+        p.put()
+
+        return self.json_resp(200, {
+            'message': 'You have been added to this ride.'
+        })
+
+class GetRide(BaseHandler):
     def post(self, ride_id):
         self.auth()
 
@@ -191,40 +256,22 @@ class GetRideHandler(BaseHandler):
 
         if data['type'] == 'passenger':
             if data['action'] == 'leave':
-                if user.key() in ride.passengers:
+                passenger = Passenger.all().filter('ride =', ride.key()).filter('user =', user.key()).get()
+                passenger.delete()
+                if passenger:
                     if ride.driver:
                         push_noti('pass_leave', ride.driver.key(), ride.key())
-                    ride.passengers.remove(user.key())
-                    resp = {
+                resp = {
                         'strong': 'Left the ride!',
                         'message': 'You are no longer a passenger.'
                     }
-                    self.response.write(json.dumps(resp))
-            if data['action'] == 'join':
-                if user.key() not in ride.passengers:
-                    if len(ride.passengers) < ride.passengers_max:
-                        if ride.driver:
-                            push_noti('pass_join', ride.driver.key(), ride.key())
-                        ride.passengers.append(user.key())
-                        resp = {
-                            'strong': 'Joined the ride!',
-                            'message': 'You are now a passenger'
-                        }
-                        self.response.write(json.dumps(resp))
-                    else:
-                        self.response.set_status(500)
-                        resp = {
-                            'strong': 'This ride is full.',
-                            'message': 'Please try another ride.'
-                        }
-                        self.response.write(json.dumps(resp))
+                self.response.write(json.dumps(resp))
 
-            ride.put()
         if data['type'] == 'driver':
             if data['action'] == 'leave':
                 if ride.driver:
                     for passenger in ride.passengers:
-                        push_noti('driver_leave', passenger, ride.key())
+                        push_noti('driver_leave', passenger.user.key(), ride.key())
                     ride.driver = None
                     resp = {
                         'strong': 'Left the ride!',
@@ -243,14 +290,12 @@ class GetRideHandler(BaseHandler):
             return self.redirect('/rides')
 
         user = self.current_user()
-        availible_seats = 0
+        availible_seats = 8
 
         if ride.driver and ride.passengers_max:
-            availible_seats = ride.passengers_max - len(ride.passengers)
+            availible_seats = ride.passengers_max - ride.passengers_total
 
-        passengers = []
-        for passenger in ride.passengers:
-            passengers.append(User.get(passenger))
+        passengers = Passenger.all().filter('ride = ', ride.key()).fetch(None)
 
         # For view conditionals
         if ride.driver:
@@ -264,7 +309,10 @@ class GetRideHandler(BaseHandler):
             ride.is_driver = False
             ride.need_driver = True
 
-        if user.key() in ride.passengers:
+        if ride.creator == user.key():
+            ride.can_edit = True
+
+        if ride.is_passenger(user.key()):
             ride.is_pass = True
             ride.can_pass = False
         elif not ride.is_driver:
@@ -275,12 +323,22 @@ class GetRideHandler(BaseHandler):
             ride.can_pass = False
         # End view conditionals
 
+        if is_pass_similar_ride(user, ride):
+            similar_rides = is_pass_similar_ride(user, ride)
+        else:
+            similar_rides = None
+
+        print 'SIMILAR RIDES'
+        print similar_rides
+
         if ride:
             doRender(self, 'view_ride.html', {
                 'ride': ride,
                 'passengers': passengers,
                 'seats': availible_seats,
-                'user': user
+                'user': user,
+                'circle': self.circle(),
+                'similar_rides': similar_rides
             })
         else:
             self.response.write('No ride found.')
@@ -298,6 +356,7 @@ class NewRideHandler(BaseHandler):
             'time': unicode,
             'details': unicode,
             'driver': bool,
+            'driven_by': unicode,
             Required('dest'): {
                 'lat': float,
                 'lng': float,
@@ -309,16 +368,15 @@ class NewRideHandler(BaseHandler):
                 'address': unicode
             },
             'recurring': unicode,
-            'circle': unicode
+            'circle': Coerce(long)
         })
 
         try:
             data = ride_validator(data)
         except MultipleInvalid as e:
-            print str(e)
             return self.json_resp(500, {
                 'error': True,
-                'message': 'Invalid data'
+                'message': str(e)
             })
 
         user = self.current_user()
@@ -333,7 +391,7 @@ class NewRideHandler(BaseHandler):
         ride.origin_lng = data['orig']['lng']
         ride.date = data['date']
         ride.time = data['time']
-        ride.passengers = []
+        ride.creator = user
 
         if data['driver'] == True:
             ride.passengers_max = int(data['passengers_max'])
@@ -342,8 +400,8 @@ class NewRideHandler(BaseHandler):
                 ride.recurring = None
             else:
                 ride.recurring = data['recurring']
-        else:
-            ride.passengers.append(user.key())
+            ride.driven_by = data['driven_by']
+
 
         if data['circle'] != '':
             circle = Circle.get_by_id(int(data['circle']))
@@ -352,20 +410,29 @@ class NewRideHandler(BaseHandler):
         else:
             ride.circle = None
 
-        ride_key = ride.put()
+        ride.put()
+
+        if data['driver'] != True:
+            p = Passenger()
+            p.ride = ride.key()
+            p.user = user
+            p.seats = 1
+            p.message = ''
+            p.put()
 
         return self.json_resp(200, {
-            'message': 'Ride added!'
+            'message': 'Ride added!',
+            'id': ride.key().id()
         })
 
 class RideEvent(BaseHandler):
-    def post(self, event_id, type):
+    def post(self, event_id, join_type):
         self.auth()
         json_str = self.request.body
         data = json.loads(json_str)
 
-        if not (type == 'passenger' or type == 'driver'):
-            print type
+        if not (join_type == 'passenger' or join_type == 'driver'):
+            print join_type
             return self.json_resp(500, {
                 'message': 'Invalid type'
             })
@@ -414,17 +481,23 @@ class RideEvent(BaseHandler):
         ride.origin_lng = json_geocode['results'][0]['geometry']['location']['lng']
         ride.date = data['date']
         ride.time = data['time']
+        ride.circle = self.circle().key()
         
         ride.event = event.key()
 
-        if type == 'driver':
+        if join_type == 'driver':
             ride.passengers_max = int(data['passengers_max'])
             ride.driver = user.key()
-            ride.passengers = []
-        elif type == 'passenger':
-            ride.passengers.append(user.key())
 
         ride.put()
+
+        if join_type == 'passenger':
+            p = Passenger()
+            p.ride = ride.key()
+            p.user = user
+            p.seats = 1
+            p.message = ''
+            p.put()
 
         response = {
             'message': 'Ride added!',

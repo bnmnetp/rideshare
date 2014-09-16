@@ -8,6 +8,8 @@ var SubmitForm = augment(Object, function () {
         this.done = obj.done;
         this.fail = obj.fail;
 
+        this.data = {};
+
         this.keys = Object.keys(this.model);
 
         this.set_defaults();
@@ -26,36 +28,38 @@ var SubmitForm = augment(Object, function () {
     };
 
     this.get_values = function () {
-        var data = {}, i, current;
+        var i, current;
 
         for (i = 0; i < this.keys.length; i++) {
             current = this.keys[i];
             if (this.form[current]) {
-                data[current] = this.form[current].value;
+                this.data[current] = this.form[current].value;
             }
         }
-
-        return data;
     };
 
     this.submit_form = function (e) {
         e.preventDefault();
 
-        var data = {}, req;
+        var req;
 
-        data = this.get_values();
+        this.get_values();
 
         req = $.ajax({
             type: this.method,
             url: this.route,
             dataType: 'json',
             contentType: 'application/json; charset=UTF-8',
-            data: JSON.stringify(data)
+            data: JSON.stringify(this.data)
         });
 
         req.done(this.done.bind(this));
 
         req.fail(this.fail.bind(this));
+    };
+
+    this.set = function (key, value) {
+        this.data[key] = value;
     };
 
 });

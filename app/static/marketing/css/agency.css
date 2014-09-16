@@ -22,6 +22,14 @@ body {
     padding: 40px;
 }
 
+.split-image {
+    max-height: 200px;
+    max-width: 200px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 p {
     font-size: 14px;
     line-height: 1.75;
@@ -327,7 +335,7 @@ header .intro-text .intro-heading {
 }
 
 section {
-    padding: 100px 0;
+    padding: 75px 0;
 }
 
 section h2.section-heading {
@@ -347,7 +355,7 @@ section h3.section-subheading {
 
 @media(min-width:768px) {
     section {
-        padding: 150px 0;
+        padding: 75px 0;
     }
 }
 
@@ -495,11 +503,15 @@ section h3.section-subheading {
     width: 80px;
     height: 80px;
     margin-left: 0;
-    border: 7px solid #f1f1f1;
+    border: 7px solid #4527A0;
     border-radius: 100%;
     text-align: center;
     color: #fff;
-    background-color: #4527A0;
+    background-color: #f1f1f1;
+}
+
+.timeline-image img {
+    width: 100%;
 }
 
 .timeline>li .timeline-image h4 {

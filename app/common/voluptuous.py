@@ -835,7 +835,10 @@ def Coerce(type, msg=None):
     @wraps(Coerce)
     def f(v):
         try:
-            return type(v)
+            if type == int and (v == 'None' or v == ''):
+                return None
+            else:
+                return type(v)
         except (ValueError, TypeError):
             raise Invalid(msg or ('expected %s' % type.__name__))
     return f

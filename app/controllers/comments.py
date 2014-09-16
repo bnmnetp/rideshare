@@ -45,7 +45,7 @@ class CommentHandler(BaseHandler):
         comment_validator = Schema({
             Required('comment'): unicode,
             Required('type'): comment_type(),
-            'id': long,
+            'id': int,
             'is_owner': bool
         })
 
@@ -91,6 +91,8 @@ class CommentHandler(BaseHandler):
         }))
 
 class FetchComments(BaseHandler):
+    def get(self):
+        return self.redirect('/home')
     def post(self):
         self.auth()
 

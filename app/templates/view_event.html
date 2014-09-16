@@ -7,6 +7,9 @@
 {% endblock %}
 
 {% block main %}
+
+{% include 'includes/circle_header.html' %}
+
 <div data-notify="container"></div>
 <div class="row">
 	<div class="col-md-6">
@@ -17,16 +20,26 @@
 					<li>
 						<b>Event name:</b> {{event.name}}
 					</li>
+					{% if event.details %}
 					<li>
 						<b>Description:</b> {{event.details}}
 					</li>
+					{% endif %}
 					<li>
 						<b>Date:</b> {{event.date_str}}
+					</li>
+					<li>
+						<b>Time:</b> {{event.time}}
+					</li>
+					<li>
+						<b>Address:</b> {{event.address}}
 					</li>
 				</ul>
 				<hr>
 				<button class='btn btn-primary' data-toggle='modal' data-target='#need_ride'>I need a ride to this event</button>
 				<button class='btn btn-primary' data-toggle='modal' data-target='#offer_ride'>I can offer a ride to this event</button>
+				<hr>
+				<a href="http://maps.google.com/maps?q={{event.lat}},{{event.lng}}" target="_blank">View on Google Maps</a>
 			</div>
 		</div>
 	</div>
@@ -35,43 +48,107 @@
 			<div class="panel-heading">
 				Event Location
 			</div>
-			<div class="panel-body">
-				<div id="map_event"></div>
+			<div class="panel-body map-container-sm">
+				<div id="map_canvas"></div>
 			</div>
 		</div>
 	</div>
 </div>
 
 <div class="row">
-	<div class="col-md-12">
+	<div class="col-md-6">
 		<div class="panel panel-main">
-			<div class="panel-heading">Rides going to Event</div>
+			<div class="panel-heading">
+				Rides offered to Event
+				<div class="pull-right">
+                    <a href="#"  data-toggle='modal' data-target='#offer_ride'>
+                        Offer a Ride
+                    </a>
+                </div>
+			</div>
 			<div class="panel-body panel-no">
-				{% if rides %}
-					{% for ride in rides %}
-						<div class='block'>
+				{% if offered %}
+					{% for ride in offered %}
+					<div class="list">
+						<div class="ctx">
+							<i class="fa fa-car"></i>
+						</div>
+						<div class="info">
 							<div class="title">
-								<a href="/ride/{{ride.key().id()}}">{{ride.orig}} to {{ride.dest}}</a>
+								<a href="/ride/{{ride.key().id()}}">Offered by {{ride.driver.name}} from {{ride.orig}} to {{ride.dest}}</a>
 							</div>
-							<div class="details">
-								<div class="deta">
+							<div class="sub">
+								<div class="tag">
 									<i class="fa fa-calendar"></i> {{ride.date}}
 								</div>
 								{% if ride.is_driver %}
-									<div class="deta">
+									<div class="tag">
 										<i class="fa fa-automobile"></i> Driver
 									</div>
 								{% elif ride.is_passenger %}
-									<div class="deta">
+									<div class="tag">
+										<i class="fa fa-automobile"></i> Passenger
+									</div>
+								{% endif %}
+								<div class="tag">
+									{{ride.passengers_max}} Seats Offered
+								</div>
+								<div class="tag">
+									{{ride.seats_availible}} Seats Availible
+								</div>
+							</div>
+						</div>
+					</div>
+					{% endfor %}
+				{% else %}
+				    <div class="panel-message">
+				        There are not rides going to this event. Create one above.
+				    </div>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+	<div class="col-md-6">
+		<div class="panel panel-main">
+			<div class="panel-heading">
+				Ride requested to Event
+				<div class="pull-right">
+                    <a href="#" data-toggle='modal' data-target='#need_ride'>
+                        Request a Ride
+                    </a>
+                </div>
+			</div>
+			<div class="panel-body panel-no">
+				{% if requested %}
+					{% for ride in requested %}
+					<div class="list">
+						<div class="ctx">
+							<i class="fa fa-car"></i>
+						</div>
+						<div class="info">
+							<div class="title">
+								<a href="/ride/{{ride.key().id()}}">Requested from {{ride.orig}} to {{ride.dest}}</a>
+							</div>
+							<div class="sub">
+								<div class="tag">
+									<i class="fa fa-calendar"></i> {{ride.date}}
+								</div>
+								{% if ride.is_driver %}
+									<div class="tag">
+										<i class="fa fa-automobile"></i> Driver
+									</div>
+								{% elif ride.is_passenger %}
+									<div class="tag">
 										<i class="fa fa-automobile"></i> Passenger
 									</div>
 								{% endif %}
 							</div>
 						</div>
+					</div>
 					{% endfor %}
 				{% else %}
 				    <div class="panel-message">
-				        There are not rides going to this event. Create one by visiting <a href="/map">the map</a>.
+				        There are not rides requested to this event. Create one above.
 				    </div>
 				{% endif %}
 			</div>
@@ -102,7 +179,7 @@
 		                </div>
 		            </div>
 		            <div class="form-group">
-		                <label>Time</label>
+		                <label>Departure Time</label>
 		                <div class="input-group date" data-time>
 		                	<input class="form-control" type="text" placeholder="Time" name='time'>
 		                	<span class="input-group-addon">
@@ -248,7 +325,7 @@
 		size: new google.maps.Size(30, 40)
 	};
 
-	var map = new google.maps.Map(document.querySelector('#map_event'), {
+	var map = new google.maps.Map(document.querySelector('#map_canvas'), {
 	    draggableCursor: 'crosshair',
 	    center: position,
 	    mapTypeId: google.maps.MapTypeId.ROADMAP,

@@ -8,20 +8,17 @@
 {% block main %}
 <div data-notify="container"></div>
 <div class="panel panel-main">
-    <div class="panel-heading">Notification Preferences</div>
+    <div class="panel-heading">Ride Alert Preferences</div>
     <div class="panel-body">
-        <form id='form'>
+        <form data-form='alert'>
             <div class="panel panel-default">
                 <div class="panel-body">
-                    Set your preferences to recieve notifications for important events. These wi
+                    Set your preferences to recieve alerts for important events.
                     You are notified if:
                     <ul>
-                        <li>You are the driver and a passenger leaves the ride.</li>
-                        <li>You are the driver and a passenger joins the ride.</li>
-                        <li>You are a passenger of a ride and a driver volunteers to drive.</li>
-                        <li>You are a passenger of a ride and a driver leaves the ride.</li>
+                        <li>A person leaves or joins a ride you are connected to.</li>
                     </ul>
-                    Notifications always appear on your <a href='/home'>home page</a>. These preferences 
+                    Alerts always appear on your <a href='/home'>home page</a>. These preferences help you to be notified quicker.
                 </div>
             </div>
             <div class="form-group">
@@ -43,9 +40,36 @@
         </form>
     </div>
 </div>
+<div class="panel panel-main">
+    <div class="panel-heading">Circle Notification Preferences</div>
+    <div class="panel-body">
+        <form data-form='notification'>
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    Set your preferences to recieve notifications for important events.
+                    You are notified if:
+                    <ul>
+                        <li>A circle admin sends a message to the group.</li>
+                        <li>A person requests to join the circle.</li>
+                    </ul>
+                    Alerts always appear on your <a href='/home'>home page</a>. These preferences help you to be notified quicker.
+                </div>
+            </div>
+            <div class="form-group">
+                <label>How to notify:</label>
+                <select class='form-control' name="type">
+                    <option value='email'>Email me</option>
+                    <option value='none'>Don't notify me</option>
+                </select>
+            </div>
+            <button type='submit' class='btn btn-default'>Update preferences</button>
+        </form>
+    </div>
+</div>
 {% endblock %}
 
 {% block scripts %}
+<script src='/static/push.js'></script>
 {% raw %}
 <script data-notify="template" type='text/x-handlebars-template'>
     <div class="alert alert-{{type}} alert-dismissable">
@@ -55,42 +79,37 @@
 </script>
 {% endraw %}
 <script type="text/javascript">
-    var form = document.querySelector('#form');
+    var alert_form = document.querySelector('[data-form="alert"]');
+    var noti_form = document.querySelector('[data-form="notification"]');
 
-    form.addEventListener('submit', function (e) {
-        e.preventDefault();
-
-        var form = e.target;
-        
-        var data = {};
-        data.type = form.type.value;
-        data.time = form.time.value;
-
-        var push = $.ajax({
-            type: 'POST',
-            url: window.location.pathname,
-            dataType: 'json',
-            contentType: 'application/json; charset=UTF-8',
-            data: JSON.stringify(data)
-        });
-
-        push.done(function (data) {
+    var push_alert = new SubmitForm({
+        form: alert_form,
+        model: {
+            type: {{user.noti_type}},
+            time: {{user.noti_time}}
+        },
+        method: 'POST',
+        route: window.location.pathname,
+        done: function (data) {
             console.log(data)
             notify({
                 type: 'success',
                 strong: 'Preferences edited!',
                 message: 'You have updated your preferences.'
             });
-        });
-
-        push.fail(function (data, status) {
+        },
+        fail: function (data, status) {
             console.log(status)
             notify({
                 type: 'danger',
                 strong: 'Whoops',
                 message: 'Something went wrong. Try again.'
             });
-        });
+        }
     });
+
+    // var push_noti = new SubmitForm({
+        
+    // });
 </script>
 {% endblock %}

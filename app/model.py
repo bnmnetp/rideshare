@@ -3,13 +3,16 @@ from google.appengine.api import users
 
 class User(db.Model):
     auth_id = db.StringProperty()
+    email_account = db.EmailProperty()
+    password = db.StringProperty()
     created = db.DateTimeProperty(auto_now_add=True)
     updated = db.DateTimeProperty(auto_now=True)
     name = db.StringProperty(default='')
-    email = db.EmailProperty()
+    email = db.StringProperty(default='')
     phone = db.StringProperty(default='')
     circles = db.ListProperty(db.Key)
     photo = db.StringProperty()
+    zip = db.IntegerProperty()
     noti_time = db.IntegerProperty()
     noti_type = db.StringProperty()
 
@@ -28,6 +31,8 @@ class Circle(db.Model):
     admins = db.ListProperty(db.Key)
     permission = db.StringProperty()
     requests = db.ListProperty(db.Key)
+    zip = db.IntegerProperty()
+
     def to_dict(self):
         d = {}
         d['id'] = Circle.key().id()
@@ -46,7 +51,6 @@ class Event(db.Model):
     time = db.StringProperty()
     user = db.ReferenceProperty(User)
     details = db.TextProperty()
-    attending = db.ListProperty(db.Key)
 
     def to_dict(self):
         resp = {}
@@ -56,8 +60,18 @@ class Event(db.Model):
         return resp
 
 class Ride(db.Model):
+    creator = db.ReferenceProperty(
+        User,
+        required = False,
+        collection_name = 'creator'
+    )
     passengers_max = db.IntegerProperty()
-    driver = db.ReferenceProperty(User)
+    driver = db.ReferenceProperty(
+        User,
+        required = False,
+        collection_name = 'driver'
+    )
+    driven_by = db.StringProperty()
     origin_add = db.StringProperty()
     origin_lat = db.FloatProperty()
     origin_lng = db.FloatProperty()
@@ -66,11 +80,25 @@ class Ride(db.Model):
     dest_lng = db.FloatProperty()
     date = db.DateProperty()
     time = db.StringProperty()
-    passengers = db.ListProperty(db.Key)
     details = db.StringProperty()
     circle = db.ReferenceProperty(Circle)
     event = db.ReferenceProperty(Event)
     recurring = db.StringProperty()
+
+    # @property
+    # def orig(self):
+
+    # @property
+    # def dest(self):
+
+    @property
+    def date_picker(self):
+        return self.date.strftime("%d/%m/%Y")
+    
+
+    @property
+    def date_str(self):
+        return self.date.strftime('%B %dth, %Y')
 
     def to_dict(self):
         resp = {}
@@ -80,6 +108,26 @@ class Ride(db.Model):
         if self.event != None: 
             resp['event'] = self.event.to_dict()
         return resp
+
+    def is_passenger(self, user_key):
+        passenger = Passenger.all().filter('ride =', self.key()).filter('user =', user_key).get()
+        if passenger != None:
+            return True
+        else:
+            return False
+
+    @property
+    def passengers(self):
+        passengers = Passenger.all().filter('ride =', self.key()).fetch(None)
+        return passengers
+
+    @property
+    def passengers_total(self):
+        passengers = self.passengers
+        total = 0
+        for p in passengers:
+            total += p.seats
+        return total
 
 class Comment(db.Model):
     user = db.ReferenceProperty(
@@ -107,20 +155,14 @@ class Comment(db.Model):
             resp['user'] = self.user.to_dict()
         return resp
 
-class Community(db.Model):
-    name = db.StringProperty()
-    address = db.StringProperty()
-    lat = db.FloatProperty()
-    lng = db.FloatProperty()
-    # appId = db.StringProperty()
-    # appSecret = db.StringProperty()
-
 class Notification(db.Model):
     created = db.DateTimeProperty(auto_now_add=True)
     read = db.BooleanProperty()
-    text = db.TextProperty()
+    type = db.StringProperty()
     user = db.ReferenceProperty(User)
     ride = db.ReferenceProperty(Ride)
+    circle = db.ReferenceProperty(Circle)
+    text = db.TextProperty()
 
     def to_dict(self):
         resp = {}
@@ -147,7 +189,9 @@ class Invite(db.Model):
         collection_name = 'from_user'
     )
 
-class ApplicationParameters(db.Model):
-    apikey = db.StringProperty()
-    notifyEmailAddr = db.StringProperty()
-    fromEmailAddr = db.StringProperty()
+class Passenger(db.Model):
+    created = db.DateTimeProperty(auto_now_add=True)
+    ride = db.ReferenceProperty(Ride)
+    user = db.ReferenceProperty(User)
+    seats = db.IntegerProperty()
+    message = db.TextProperty()

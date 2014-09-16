@@ -12,131 +12,224 @@ import json
 import base64
 import re
 
+import csv
+
 class GetUserHandler(BaseHandler):
-	def get(self, user_id):
-		current_user = self.current_user()
+    def get(self, user_id):
+        current_user = self.current_user()
 
-		self.auth()
-		user = User.get_by_id(int(user_id))
+        self.auth()
+        user = User.get_by_id(int(user_id))
 
-		user.created_str = user.created.strftime('%B %dth, %Y')
+        user.created_str = user.created.strftime('%B %dth, %Y')
 
-		if user_id == current_user.key().id():
-			is_user = True
-		else:
-			is_user = False
+        if user_id == current_user.key().id():
+            is_user = True
+        else:
+            is_user = False
 
-		doRender(self, 'view_user.html', {
-			'user': user,
-			'is_user': is_user
-		})
+        doRender(self, 'view_user.html', {
+            'user': user,
+            'is_user': is_user
+        })
 
 class GetImage(BaseHandler):
-	def get(self, user_id):
-		user = User.get_by_id(int(user_id))
-		self.redirect(images.get_serving_url(user.photo))
-		# blobstore_handlers.BlobstoreDownloadHandler.send_blob(user.photo)
+    def get(self, user_id):
+        user = User.get_by_id(int(user_id))
+        if user.photo:
+            self.redirect(images.get_serving_url(user.photo))
+        else:
+            self.redirect('/static/default_user.png')
+        # blobstore_handlers.BlobstoreDownloadHandler.send_blob(user.photo)
 
 class NotificationUserHandler(BaseHandler):
-	def get(self, user_id):
-		self.auth()
-		user = self.current_user()
+    def get(self, user_id):
+        self.auth()
+        user = self.current_user()
 
-		doRender(self, 'notification_user.html', {
-			'user': user
-		})
+        doRender(self, 'notification_user.html', {
+            'user': user
+        })
 
-	def post(self, user_id):
-		self.auth()
+    def post(self, user_id):
+        self.auth()
 
-		json_str = self.request.body
-		data = json.loads(json_str)
+        json_str = self.request.body
+        data = json.loads(json_str)
 
-		user = self.current_user()
+        user = self.current_user()
 
-		if not user.key().id() == int(user_id):
-			self.redirect('/user/' + user_id)
-			return None
-		else:
-			user.noti_type = data['type']
-			user.noti_time = int(data['time'])
-			user.put()
+        if not user.key().id() == int(user_id):
+            self.redirect('/user/' + user_id)
+            return None
+        else:
+            user.noti_type = data['type']
+            user.noti_time = int(data['time'])
+            user.put()
 
-			resp = {
-				'message': 'Updated!'
-			}
+            resp = {
+                'message': 'Updated!'
+            }
 
-			self.response.write(json.dumps(resp))
+            self.response.write(json.dumps(resp))
 
 class EditUserHandler(BaseHandler):
-	def get(self, user_id):
-		self.auth()
+    def get(self, user_id):
+        self.auth()
 
-		user = self.current_user()
+        user = self.current_user()
 
-		properties = ['name', 'email', 'phone']
+        properties = ['name', 'email', 'phone', 'zip']
 
-		user_json = grab_json(user, properties)
+        user_json = grab_json(user, properties)
 
-		if not user.key().id() == int(user_id):
-			self.redirect('/user/' + user_id)
-			return None
-		else:
-			doRender(self, 'edit_user.html', {
-				'user': user,
-				'user_json': user_json
-			})
+        if not user.key().id() == int(user_id):
+            self.redirect('/user/' + user_id)
+            return None
+        else:
+            doRender(self, 'edit_user.html', {
+                'user': user,
+                'user_json': user_json
+            })
 
-	def post(self, user_id):
-		data_pattern = re.compile('data:image/(png|jpeg);base64,(.*)$')
+    def post(self, user_id):
+        data_pattern = re.compile('data:image/(png|jpeg);base64,(.*)$')
 
-		json_str = self.request.body
-		data = json.loads(json_str)
+        json_str = self.request.body
+        data = json.loads(json_str)
 
-		self.auth()
+        user_validator = Schema({
+            Required('zip'): Coerce(int),
+            Required('email'): unicode,
+            Required('phone'): unicode,
+            Required('name'): unicode,
+            'photo': unicode
+        })
 
-		user = self.current_user()
-		user.name = data['name']
-		user.email = data['email']
-		user.phone = data['phone']
+        try:
+            data = user_validator(data)
+        except MultipleInvalid as e:
+            return self.json_resp(500, {
+                'error': str(e),
+                'message': 'Data could not be validated'
+            })
 
-		if not user.key().id() == int(user_id):
-			self.redirect('/user/' + user_id)
-			return None
-		else:
-			if 'photo' in data and len(data['photo']) > 0:
-				d64 = re.search(r'base64,(.*)', data['photo']).group(1)
-				decoded = d64.decode('base64')
+        self.auth()
 
-				# decoded = data['photo'].decode('base64')
+        user = self.current_user()
+        user.name = data['name']
+        user.email = data['email']
+        user.phone = data['phone']
+        user.zip = data['zip']
 
-				file_name = files.blobstore.create(mime_type='image/png')
+        if not user.key().id() == int(user_id):
+            self.redirect('/user/' + user_id)
+            return None
+        else:
+            if 'photo' in data and len(data['photo']) > 0:
+                d64 = re.search(r'base64,(.*)', data['photo']).group(1)
+                decoded = d64.decode('base64')
 
-				with files.open(file_name, 'a') as f:
-					f.write(decoded)
+                # decoded = data['photo'].decode('base64')
 
-				files.finalize(file_name)
+                file_name = files.blobstore.create(mime_type='image/png')
 
-				key = files.blobstore.get_blob_key(file_name)
-				user.photo = str(key)
-				print key
+                with files.open(file_name, 'a') as f:
+                    f.write(decoded)
 
-		user.put()
+                files.finalize(file_name)
 
-		resp = {
-			'message': 'Edited!'
-		}
+                key = files.blobstore.get_blob_key(file_name)
+                user.photo = str(key)
+                print key
 
-		self.response.write(json.dumps(resp))
+        user.put()
+
+        resp = {
+            'message': 'Edited!'
+        }
+
+        self.response.write(json.dumps(resp))
 
 class UserHandler(BaseHandler):
-	def get(self):
-		self.auth()
-		user = self.current_user()
+    def get(self):
+        self.auth()
+        user = self.current_user()
 
-		user.created_str = user.created.strftime('%B %dth, %Y')
+        user.created_str = user.created.strftime('%B %dth, %Y')
 
-		doRender(self, 'view_user.html', {
-			'user': user,
-			'is_user': True
-		})
+        doRender(self, 'view_user.html', {
+            'user': user,
+            'is_user': True
+        })
+
+class DetailHandler(BaseHandler):
+    def get(self):
+        self.auth()
+        user = self.current_user()
+
+        properties = ['name', 'email', 'phone', 'zip']
+
+        user_json = grab_json(user, properties)
+
+        doRender(self, 'details.html', {
+            'user': user,
+            'user_json': user_json
+        })
+    def post(self):
+        json_str = self.request.body
+        data = json.loads(json_str)
+
+        self.auth()
+        user = self.current_user()
+
+        detail_validator = Schema({
+            Required('zip'): Coerce(int),
+            Required('email'): unicode,
+            Required('phone'): unicode,
+            Required('name'): unicode
+        })
+
+        try:
+            data = detail_validator(data)
+        except MultipleInvalid as e:
+            return self.json_resp(500, {
+                'error': str(e),
+                'message': 'Data could not be validated'
+            })
+
+        user.name = data['name']
+        user.email = data['email']
+        user.phone = data['phone']
+        user.zip = data['zip']
+
+        circle_match = Circle.all().filter('zip =', data['zip']).get()
+
+        if circle_match != None and circle_match.key() not in user.circles:
+            user.circles.append(circle_match.key())
+        else:
+            zip_row = None
+            with open('./app/common/zip_db.csv') as zip_db:
+                zip_data = csv.reader(zip_db, delimiter=',')
+                for row in zip_data:
+                    # Must use string to search
+                    if str(data['zip']) in row:
+                        zip_row = row
+                        break
+            if zip_row:
+                city = zip_row[2]
+                circle = Circle()
+                circle.name = 'Open ' + city + ' Circle'
+                circle.description = 'An open circle for residents of ' + city + '.'
+                circle.permission = 'public'
+                circle.zip = data['zip']
+                circle.color = '#607d8b'
+                circle.privacy = 'public'
+                circle.put()
+                user.circles.append(circle.key())
+
+        user.put()
+
+        return self.json_resp(200, {
+            'message': 'Information updated'
+        })

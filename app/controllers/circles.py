@@ -5,6 +5,7 @@ import datetime
 from datetime import date
 from app.base_handler import BaseHandler
 from app.common.voluptuous import *
+from app.common.notification import push_noti
 import json
 import re
 
@@ -87,16 +88,15 @@ class GetCircleHandler(BaseHandler):
 
         user = self.current_user()
 
-        # Grabs members
-        members = User.all().filter('circles = ', circle.key()).fetch(100)
-
-        # Grabs rides
-        rides = Ride.all().filter('circle = ',  circle.key()).fetch(100)
-
-        # Grabs events
-        events = Event.all().filter('circle = ', circle.key()).fetch(100)
-
         requests = User.all().filter('__key__ in', circle.requests).fetch(100)
+
+        notis = Notification.all().filter('circle = ', circle.key()).filter('type = ', 'circle_message').fetch(100)
+
+        members = User.all().filter('circles =', circle.key()).fetch(None)
+        admins = User.all().filter('__key__ in', circle.admins).fetch(None)
+
+        for noti in notis:
+            noti.date_str = noti.created.strftime('%B %dth, %Y')
 
         if circle.key() in user.circles:
             has_permission = True
@@ -108,36 +108,29 @@ class GetCircleHandler(BaseHandler):
         if invite:
             has_permission = True
 
-        if not has_permission:
-            self.redirect('/circles')
-            return None
-
-        for ride in rides:
-            ride.dest = split_address(ride.dest_add)
-            ride.orig = split_address(ride.origin_add)
-            if ride.driver:
-                if ride.driver.key().id() == user.key().id():
-                    ride.is_driver = True
-                else:
-                    ride.is_driver = False
-            if user.key() in ride.passengers:
-                ride.is_passenger = True
-            else:
-                ride.is_passenger = False
-
         if user.key() in circle.admins:
             is_admin = True
         else:
             is_admin = False
 
+        if not has_permission and not is_admin:
+            return self.redirect('/circles')
+
+        today = date.today()
+
+        events_all = Event.all().filter('circle =', circle).filter('date >=', today).fetch(None)
+
         doRender(self, 'view_circle.html', {
             'circle': circle,
             'user': user,
-            'members': members,
-            'rides': rides,
-            'events': events,
             'invite': invite,
-            'is_admin': is_admin
+            'is_admin': is_admin,
+            'requests': requests,
+            'notis': notis,
+            'events_all': events_all,
+            'members': members,
+            'admins': admins,
+            'total_members': len(members)
         })
 
 class CircleInvited(BaseHandler):
@@ -170,9 +163,7 @@ class CircleHandler(BaseHandler):
         self.auth()
         user = self.current_user()
 
-        circles = Circle.all().fetch(100)
-
-        invites = Invite.all().filter('user = ', user.key())
+        circles = Circle.all().filter('privacy !=', 'invisible').fetch(100)
 
         for circle in circles:
             if circle.key() in user.circles:
@@ -182,8 +173,7 @@ class CircleHandler(BaseHandler):
 
         doRender(self, 'circles.html', {
             'circles': circles,
-            'user': user,
-            'invites': invites
+            'user': user
         })
     def post(self):
         self.auth()
@@ -206,13 +196,10 @@ class CircleHandler(BaseHandler):
         try:
             circle_schema(data)
         except MultipleInvalid as e:
-            print str(e)
-            self.response.set_status(500)
-            self.response.write(json.dumps({
-                    'error': str(e),
-                    'message': 'Data could not be validated'
-                }))
-            return None
+            return self.json_resp(500, {
+                'error': str(e),
+                'message': 'Data could not be validated'
+            })
 
         circle.name = data['name']
         circle.description = data['description']
@@ -252,8 +239,14 @@ class JoinCircle(BaseHandler):
                     user.circles.remove(circle_key)
 
             user.put()
+
+            self.json_resp(200, {
+                'message': 'Circle action completed'
+            })
         else:
-            self.response.set_status(500)
+            self.json_resp(500, {
+                'message': 'User does not exist.'
+            })
 
 class NewCircleHandler(BaseHandler): # actual page
     def get(self):
@@ -271,17 +264,14 @@ class ChangeCircle(BaseHandler):
 
         user = self.current_user()
 
-        if circle_id != '0':
-            circle = Circle.get_by_id(int(circle_id))
-        else:
-            circle = None
+        circle = Circle.get_by_id(int(circle_id))
 
         if not circle:
             self.session['circle'] = None
         else:
             self.session['circle'] = circle.key().id()
 
-        self.redirect(self.request.referer)
+        self.redirect('/circle/' + str(circle.key().id()))
 
 class KickMember(BaseHandler):
     def post(self, circle_id):
@@ -364,6 +354,149 @@ class RequestJoin(BaseHandler):
 
         circle.put()
 
+        for admin in circle.admins:
+            noti = Notification()
+            noti.type = 'request'
+            noti.user = admin
+            noti.circle = circle.key()
+            noti.put()
+
         return self.json_resp(200, {
             'message': 'Request sent'
+        })
+
+class RequestAccept(BaseHandler):
+    def post(self, circle_id):
+        self.auth()
+
+        user = self.current_user()
+
+        circle = Circle.get_by_id(int(circle_id))
+
+        if user.key() not in circle.admins:
+            return self.json_resp(500, {
+                'message': 'You do not have permission for this.'
+            })
+
+        if not circle:
+            return self.json_resp(500, {
+                'message': 'Circle does not exist'
+            })
+
+        json_str = self.request.body
+        data = json.loads(json_str)
+
+        requester = User.get_by_id(int(data['user']))
+
+        if circle.key() not in requester.circles:
+            requester.circles.append(circle.key())
+            requester.put()
+
+        if requester.key() in circle.requests:
+            circle.requests.remove(requester.key())
+            circle.put()
+
+        return self.json_resp(200, {
+            'message': 'Request accepted'
+        })
+
+class CircleMessage(BaseHandler):
+    def post(self, circle_id):
+        self.auth()
+
+        user = self.current_user()
+
+        circle = Circle.get_by_id(int(circle_id))
+
+        if user.key() not in circle.admins:
+            return self.json_resp(500, {
+                'message': 'You do not have permission for this.'
+            })
+
+        if not circle:
+            return self.json_resp(500, {
+                'message': 'Circle does not exist'
+            })
+
+        json_str = self.request.body
+        data = json.loads(json_str)
+
+        members = User.all().filter('circle = ', circle.key()).fetch(100)
+
+        for member in members:
+            noti = Notification()
+            noti.user = user.key()
+            noti.circle = circle.key()
+            noti.type = 'circle_message'
+            noti.text = data['message']
+            noti.put()
+
+        for admin in circle.admins:
+            noti = Notification()
+            noti.user = admin
+            noti.circle = circle.key()
+            noti.type = 'circle_message'
+            noti.text = data['message']
+            noti.put()
+
+        return self.json_resp(200, {
+            'message': 'Message sent to all users'
+        })
+
+class CircleMembers(BaseHandler):
+    def get(self):
+        self.auth()
+
+        if self.circle():
+            circle = Circle.get_by_id(int(self.circle().key().id()))
+        else:
+            circle = None
+
+        if not circle:
+            return self.redirect('/circles')
+
+        user = self.current_user()
+
+        # Grabs members
+        members = User.all().filter('circles =', circle.key()).fetch(None)
+        members += User.all().filter('__key__ in', circle.admins).fetch(None)
+
+        if circle.key() in user.circles:
+            has_permission = True
+        else:
+            has_permission = False
+
+        if user.key() in circle.admins:
+            is_admin = True
+        else:
+            is_admin = False
+
+        if not has_permission and not is_admin:
+            return self.redirect('/circles')
+
+        doRender(self, 'circle_members.html', {
+            'circle': circle,
+            'user': user,
+            'members': members,
+            'is_admin': is_admin
+        })
+
+class CircleRequests(BaseHandler):
+    def get(self):
+        self.auth()
+
+        circle = Circle.get(self.circle().key())
+
+        if not circle:
+            self.redirect('/circles')
+            return None
+
+        user = self.current_user()
+
+        requests = User.all().filter('__key__ in', circle.requests).fetch(None)
+
+        doRender(self, 'circle_request.html', {
+            'requests': requests,
+            'circle': circle,
+            'user': user
         })

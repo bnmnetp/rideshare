@@ -7,15 +7,10 @@
 {% endblock %}
 
 {% block main %}
-<div data-notify="container"></div>
 
-{% if circle %}
-<div class="panel panel-primary padding">
-    <div class="panel-body">
-        You are currently viewing the events and rides for <a href='/circle/{{circle.key().id()}}'>{{circle.name}}</a> circle. Any rides or events created will only be visible to this circle. <a href='/circle/0/change'>Exit circle view.</a>
-    </div>
-</div>
-{% endif %}
+{% include 'includes/circle_header.html' %}
+
+<div data-notify="container"></div>
 
 <div class="panel panel-default padding">
     <div class="panel-body">
@@ -54,11 +49,11 @@
 
 <div class="row">
 
-    <div class="col-md-8 map_con" id='col_map'>
+    <div class="col-md-8 map-container" id='col_map'>
         <div id="map_canvas"></div>
     </div>
 
-    <div class="col-md-4 map_con" data-route='path'>
+    <div class="col-md-4" data-route='path'>
         To get started, <b>click on a marker to get details</b> or
         <ul class="menu">
             <li data-next='new_event'>Create a new Event</li>
@@ -67,22 +62,25 @@
         </ul>
     </div>
 
-    <div class="col-md-4" data-route='select_orig'>
+    <div class="col-md-4 hidden" data-route='select_orig'>
         <div class="locsec">
-            <h1>Select the starting location</h1>
-            <div class="form-group">
-                <label>Origin:
-                    <span data-location='text'>None</span>
-                </label>
-            </div>
-            <button class="btn btn-primary hidden" data-next="true" type='button' data-location="btn">
+            <h1>Select the <span data-type='origin'>starting</span> location</h1>
+            <hr>
+            <h3>
+                Location:
+                <span data-location='text'>
+                    Not Selected
+                </span>
+            </h3>
+            <button class="btn btn-success btn-lg hidden" data-next="true" type='button' data-location="btn">
                 Next
             </button>
+            <hr>
             <p>Use one of the following options:</p>
             <ul>
                 <li>
                     <h2>Point & Click</h2>
-                    Select a location by clicking on the map
+                    Zoom in to select an exact location by clicking on the map
                 </li>
                 <li data-geolocation='container' class='hidden'>
                     <h2>Geolocation</h2>
@@ -102,16 +100,16 @@
         </div>
     </div>
 
-    <div class="col-md-4" data-route='event_details'>
+    <div class="col-md-4 hidden" data-route='event_details'>
         <form data-send="event">
             <div class="form-group">
                 <label>Event Name</label>
-                <input class="form-control" type="text" placeholder="Name" name='name'>
+                <input class="form-control" type="text" placeholder="Name" name='name' required>
             </div>
             <div class="form-group">
                 <label>Date</label>
                 <div class='input-group date' data-datepicker data-date-format="MM/DD/YYYY">
-                    <input class="form-control" type="text" placeholder="Date" name='date'>
+                    <input class="form-control" type="text" placeholder="Date" name='date' required>
                     <span class="input-group-addon">
                         <i class="fa fa-calendar"></i>
                     </span>
@@ -120,7 +118,7 @@
             <div class="form-group">
                 <label>Time</label>
                 <div class="input-group date" data-time>
-                    <input class="form-control" type="text" placeholder="Time" name='time'>
+                    <input class="form-control" type="text" placeholder="Time" name='time' required>
                     <span class="input-group-addon">
                         <i class="fa fa-clock-o"></i>
                     </span>
@@ -134,12 +132,12 @@
         </form>
     </div>
 
-    <div class="col-md-4" data-route='passenger_details'>
+    <div class="col-md-4 hidden" data-route='passenger_details'>
         <form data-send="passenger">
             <div class="form-group">
                 <label>Date</label>
                 <div class='input-group date' data-datepicker data-date-format="MM/DD/YYYY">
-                    <input class="form-control" type="text" placeholder="Date" name='date'>
+                    <input class="form-control" type="text" placeholder="Date" name='date' required>
                     <span class="input-group-addon">
                         <i class="fa fa-calendar"></i>
                     </span>
@@ -147,8 +145,8 @@
             </div>
             <div class="form-group">
                 <label>Time</label>
-                <div class="input-group date" data-time>
-                    <input class="form-control" type="text" placeholder="Time" name='time'>
+                <div class="input-group date" data-time >
+                    <input class="form-control" type="text" placeholder="Time" name='time' required>
                     <span class="input-group-addon">
                         <i class="fa fa-clock-o"></i>
                     </span>
@@ -164,16 +162,21 @@
         </form>
     </div>
 
-    <div class="col-md-4" data-route='select_dest'>
+    <div class="col-md-4 hidden" data-route='select_dest'>
         <form>
             <p class="lead">
                 Select the Destination
             </p>
-            <div class="form-group">
-                <label>Destination:
-                    <span data-ride="loc_dest"></span>
-                </label>
-            </div>
+            <hr>
+            <h3>
+                Destination Location:
+                <span data-ride="loc_dest">
+                    Not Selected
+                </span>
+            </h3>
+            <button class="btn btn-success btn-lg hidden" data-next="details" type='button' data-ride="loc_btn">
+                Next
+            </button>
             <hr>
             <form data-search>
                 <div class="form-group">
@@ -183,18 +186,15 @@
                 <button type="submit" class="btn btn-primary">Search</button>
             </form>
             <hr>
-            <button class="btn btn-primary hidden" data-next="details" type='button' data-ride="loc_btn">
-                Next
-            </button>
         </form>
     </div>
 
-    <div class="col-md-4" data-route='driver_details'>
+    <div class="col-md-4 hidden" data-route='driver_details'>
         <form data-send="ride">
             <p class="lead">Give us additional details</p>
             <div class="form-group">
                 <label>Max Passengers</label>
-                <select class="form-control" name='max_passengers'>
+                <select class="form-control" name='max_passengers' required>
                     <option>1</option>
                     <option>2</option>
                     <option>3</option>
@@ -208,7 +208,7 @@
             <div class="form-group">
                 <label>Date</label>
                 <div class='input-group date' data-datepicker data-date-format="MM/DD/YYYY">
-                    <input class="form-control" type="text" placeholder="Date" name='date'>
+                    <input class="form-control" type="text" placeholder="Date" name='date' required>
                     <span class="input-group-addon">
                         <i class="fa fa-calendar"></i>
                     </span>
@@ -217,7 +217,7 @@
             <div class="form-group">
                 <label>Time</label>
                 <div class="input-group date" data-time>
-                    <input class="form-control" type="text" placeholder="Time" name='time'>
+                    <input class="form-control" type="text" placeholder="Time" name='time' required>
                     <span class="input-group-addon">
                         <i class="fa fa-clock-o"></i>
                     </span>
@@ -227,7 +227,19 @@
                 <label>Additional Details</label>
                 <input class="form-control" type="text" placeholder="Details" name='details'>
             </div>
-            <div class="form-group">
+            <div class='form-group'>
+                <label>Are you the person driving this ride?</label>
+
+                <select class="form-control" data-driver='select'>
+                    <option value="">Yes</option>
+                    <option value="no">No</option>
+                </select>
+            </div>
+            <div class='form-group' data-driver='form'>
+                <label>Enter the driver's name:</label>
+                <input class='form-control' type="text" name='driven_by' placeholder='Driven by' data-driver='input'>
+            </div>
+            <div class="form-group hidden">
                 <label>Does this event recur?</label>
                 <select name="recurring" class="form-control">
                     <option value="false">Never</option>
@@ -293,7 +305,6 @@
 
 {% endraw %}
 <script type="text/javascript">
-
     {% if active_circle == None %}
         var circle = false;
     {% else %}
@@ -309,7 +320,8 @@
 <script type="text/javascript">
 
     $('[data-datepicker]').datetimepicker({
-        pickTime: false
+        pickTime: false,
+        defaultDate: moment().format("MM/DD/YYYY")
     });
 
     $('[data-time]').datetimepicker({
@@ -336,6 +348,25 @@
         help.container.classList.toggle('hidden');
     });
     /* End */
+
+    var if_driving = {
+        form: document.querySelector('[data-driver="form"]'),
+        select: document.querySelector('[data-driver="select"]'),
+        input: document.querySelector('[data-driver="input"]')
+    }
+
+    if_driving.form.classList.add('hidden');
+
+    if_driving.select.addEventListener('change', function (e) {
+        var target = e.target;
+
+        if (target.value == 'no') {
+            if_driving.form.classList.remove('hidden');
+        } else {
+            if_driving.form.classList.add('hidden');
+            if_driving.input.value = '';
+        }
+    });
 </script>
 
 {% endblock %}

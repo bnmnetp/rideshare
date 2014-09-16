@@ -6,14 +6,13 @@
 {% endblock %}
 
 {% block main %}
+
+{% include 'includes/circle_header.html' %}
+
 <div data-notify="container">
     
 </div>
-<div class="panel panel-default">
-    <div class="panel-body">
-        Create an event by visiting the <a href='/map'>map page</a>.
-    </div>
-</div>
+
 <div class="panel panel-main">
     <div class="panel-heading">Events</div>
     <div class="panel-body panel-no">
@@ -28,8 +27,14 @@
                         <a href="/event/{{event.key().id()}}">{{event.name}}</a>
                     </div>
                     <div class="sub">
-                        <i class="fa fa-calendar"></i> {{event.date}}
-                        <i class="fa fa-location-arrow"></i> {{event.address}}
+                        <div class="tag">
+                            <i class="fa fa-calendar"></i>
+                            {{event.date}}
+                        </div>
+                        <div class="tag">
+                            <i class="fa fa-location-arrow"></i>
+                            {{event.address}}
+                        </div>
                     </div>
                 </div>
             </div>

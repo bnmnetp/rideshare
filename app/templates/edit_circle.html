@@ -26,6 +26,7 @@
                 <select class='form-control' name='privacy'>
                     <option value="public">Public</option>
                     <option value="private">Private</option>
+                    <option value="invisible">Invisible</option>
                 </select>
                 <p class="help-block">Public circles are visible to everyone. Private groups are invite only.</p>
             </div>
@@ -54,7 +55,6 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="/static/augment.js"></script>
 <script src='/static/push.js'></script>
 {% raw %}
 <script data-notify="template" type='text/x-handlebars-template'>

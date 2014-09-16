@@ -15,138 +15,98 @@
 	{% endblock %}
 </head>
 <body>
-
-	<nav class="navbar navbar-default navbar-fixed-top">
-		<div class="navbar-header">
-			<button type='button' class='navbar-toggle' data-toggle='collapse' data-target='.navbar-collapse'>
-				<span class="icon-bar"></span>
-				<span class="icon-bar"></span>
-				<span class="icon-bar"></span>
-			</button>
-			<div class='icon'>
-				<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="marker" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve" class='marker'>
-					<g>
-						<path class="marker-surrond" d="M50,76.948c-1.071,0-2.068-0.544-2.647-1.445L27.969,45.346c-2.719-4.224-4.155-9.12-4.155-14.16   C23.814,16.747,35.561,5,50,5s26.186,11.747,26.186,26.186c0,5.043-1.438,9.941-4.158,14.163L52.647,75.503   C52.068,76.404,51.071,76.948,50,76.948z M50,11.294c-10.969,0-19.892,8.924-19.892,19.892c0,3.83,1.09,7.548,3.152,10.751   L50,67.981l16.737-26.038c2.065-3.206,3.156-6.925,3.156-10.757C69.892,20.218,60.969,11.294,50,11.294z"/>
-					</g>
-					<g>
-						<path class="marker-circle" d="M50,41.38c-5.602,0-10.159-4.557-10.159-10.158S44.398,21.063,50,21.063c5.601,0,10.158,4.557,10.158,10.158   S55.602,41.38,50,41.38z M50,25.259c-3.288,0-5.963,2.675-5.963,5.963s2.675,5.963,5.963,5.963s5.963-2.675,5.963-5.963   S53.288,25.259,50,25.259z"/>
-					</g>
-					<g>
-						<path class="marker-bottom" d="M50,95c-19.237,0-33.743-7.24-33.743-16.841c0-4.558,3.291-8.752,9.268-11.811c1.547-0.792,3.443-0.18,4.235,1.368   c0.792,1.547,0.18,3.443-1.368,4.235c-3.712,1.9-5.841,4.163-5.841,6.208c0,4.404,10.442,10.547,27.449,10.547   c17.006,0,27.448-6.143,27.448-10.547c0-2.046-2.13-4.31-5.845-6.21c-1.547-0.792-2.159-2.688-1.368-4.235   c0.792-1.547,2.69-2.159,4.235-1.368c5.979,3.06,9.272,7.255,9.272,11.814C83.743,87.76,69.237,95,50,95z"/>
-					</g>
-				</svg>
-			</div>
-			<a class="navbar-brand" href='/home'>
-				Ridecircles.us
-			</a>
-		</div>
-		<div class="collapse navbar-collapse">
-			{% if user is defined %}
-			<ul class="nav navbar-nav">
-				<li>
-					<a href="/home">
-						<i class="fa fa-home"></i>
-						Dashboard
-					</a>
-					{% if alert_badge %}
-						<span class="nbadge">{{alert_badge}}</span>
-					{% endif%}
-				</li>
-				<li>
-					<a href="#">
-						Viewing as:
-					</a>
-				</li>
-				<li>
-					{% if active_circle is defined %}
-					<div class="dropdown cla">
-						<a href="#" class='dropdown-toggle' data-toggle='dropdown' role='button' id='tooltip-trial'>
-							<i class="fa fa-circle-o"></i>
-							{% if active_circle == None %}
-								Public
-							{% else %}
-								{{active_circle.name}}
-							{% endif %}
-							<span class="caret"></span>
-						</a>
-						<ul class="dropdown-menu">
-							<li>
-								<a href="/circle/0/change">Public</a>
-							</li>
-							{% for circle in circle_list %}
-							<li>
-								<a href="/circle/{{circle.key().id()}}/change">{{circle.name}}</a>
-							</li>
-							{% endfor %}
-						</ul>
-					</div>
-					{% endif %}
-				</li>
-			</ul>
-			{% endif %}
-			<ul class="nav navbar-nav pull-right">
-				{% if user is defined %}
-				<li>
-					<a href="/invites">Invites</a>
-					{% if invite_badge %}
-						<span class="nbadge">{{invite_badge}}</span>
-					{% endif%}
-				</li>
-				<li>
-					<a href="/user">
-						<i class="fa fa-user"></i> 
-						{{user.name}}
-					</a>
-				</li>
-			    <li>
-			        <a href="/logout">
-			        	Signout
-			        </a>
-			    </li>
-			    {% endif %}
-			</ul>
-		</div>
-	</nav>
 	{% if user is defined %}
-	<div id="page-wrapper" class='active'>
 	<div id="sidebar-wrapper">
+		<div class="splash-icon">
+			<a href="/home"></a>
+		</div>
 		<ul class="sidebar">
-			<!-- <li class="sidebar-main">
-			  <a href="#">
-			    Dashboard
-			    <span class="menu-icon fa fa-home"></span>
-			  </a>
-			</li> -->
-			<li class="sidebar-title"><span>NAVIGATION</span></li>
-			{% if (active_circle is defined) and active_circle != None %}
+		{% if user.circles %}
+			<li class="sidebar-title separator first">
+				<span>ACTIVE CIRCLE (Click to switch)</span>
+			</li>
+			<li class="sidebar-main" data-cwitch='li'>
+				<a href="/circle/{{active_circle.key().id()}}" data-cwitch='toggle'>
+					{{active_circle.name}}
+					<span class="menu-icon fa fa-caret-down menu-switch" data-cwitch='caret'></span>
+				</a>
+			</li>
+			<li class='cwitch-container' data-cwitch='container'>
+				<ul class='cwitch-list'>
+					{% for circle in circle_list %}
+					<li>
+						<a href="/circle/{{circle.key().id()}}/change">{{circle.name}}</a>
+					</li>
+					{% endfor %}
+				</ul>
+			</li>
 			<li class="sidebar-list">
-			  <a href="/circle/{{active_circle.key().id()}}">{{active_circle.name}} <span class="menu-icon fa fa-circle-o"></span></a>
+				<a href="/map">
+					Map
+					<span class="menu-icon fa fa-map-marker"></span>
+				</a>
+			</li>
+			<li class="sidebar-list">
+				<a href="/rides">
+					Rides
+					<span class="menu-icon fa fa-car"></span>
+				</a>
+			</li>
+			<!-- <li class='sidebar-list'>
+				<a href="/members">
+					Members
+					<span class='menu-icon fa fa-users'></span>
+				</a>
+			</li> -->
+			<li class="sidebar-list">
+				<a href="/events">
+					Events
+					<span class="menu-icon fa fa-calendar"></span>
+				</a>
+			</li>
+			{% if active_circle is defined and active_circle.privacy == 'private' and is_admin %}
+			<li class='sidebar-list'>
+				<a href="/requests">
+					Requests
+					<span class='menu-icon fa fa-fire'></span>
+				</a>
 			</li>
 			{% endif %}
-			<li class="sidebar-list">
-			  <a href="/map">Map <span class="menu-icon fa fa-map-marker"></span></a>
+		{% endif %}
+			<li class="sidebar-title separator">
+				<span>QUICK LINKS</span>
 			</li>
 			<li class="sidebar-list">
-			  <a href="/rides">Rides <span class="menu-icon fa fa-car"></span></a>
+				<a href="/user">
+					My Profile
+					<span class="menu-icon fa fa-user"></span>
+				</a>
 			</li>
 			<li class="sidebar-list">
-			  <a href="/events">Events <span class="menu-icon fa fa-calendar"></span></a>
+				<a href="/home">
+					Personal Dashboard
+					<span class="menu-icon fa fa-home"></span>
+				</a>
 			</li>
-			<li class="sidebar-title separator"><span>QUICK LINKS</span></li>
 			<li class="sidebar-list">
-			  <a href="/circles">Join Circles <span class="menu-icon fa fa-plus-square-o"></span></a>
+				<a href="/circles">
+					Join Circles
+					<span class="menu-icon fa fa-plus-square-o"></span>
+				</a>
 			</li>
 			<li class="sidebar-list">
-			  <a href="/newCircle">Create Circles <span class="menu-icon fa fa-plus"></span></a>
+				<a href="/newCircle">
+					Create Circles
+					<span class="menu-icon fa fa-plus"></span>
+				</a>
 			</li>
 		</ul>
-	</div>
 	</div>
 	{% endif %}
     
 
 	{% block wide %}{% endblock %}
-	<div class="container">
+	<div class="container" id='main_container'>
 		{% block main %}{% endblock %}
 	</div>
 
@@ -162,14 +122,41 @@
 	<script src="/static/notify.js"></script>
 	<script src="/static/augment.js"></script>
 	<script>
-	$('#tooltip-trial').tooltip({
-		placement: 'right',
-		title: 'Click to select',
-		delay: {
-			show: 100,
-			hide: 500
-		}
-	});
+		$('#tooltip-trial').tooltip({
+			placement: 'right',
+			title: 'Click to select',
+			delay: {
+				show: 100,
+				hide: 500
+			}
+		});
+		$(function () {
+			var page_short = location.pathname.split("/")[1];
+			var page_long = location.pathname;
+			$('#sidebar-wrapper a[href="' + page_long + '"]').addClass('active');
+
+			var circle2_switcher = document.querySelector('[data-cwitch="li"]');
+			switch (page_short) {
+				case 'home':
+				case 'user':
+				case 'circles':
+				case 'newCircle':
+					circle2_switcher.classList.add('inactive');
+					break;
+			}
+		});
+
+		var cwitch = {};
+		cwitch.container = document.querySelector('[data-cwitch="container"]');
+		cwitch.toggle = document.querySelector('[data-cwitch="caret"]');
+		cwitch.caret = document.querySelector('[data-cwitch="caret"]');
+
+		cwitch.toggle.addEventListener('click', function (e) {
+			e.preventDefault();
+			cwitch.container.classList.toggle('active');
+			cwitch.caret.classList.toggle('fa-caret-down');
+			cwitch.caret.classList.toggle('fa-caret-up');
+		});	
 	</script>
 	{% block scripts %}
 	{% endblock %}

@@ -14,25 +14,13 @@ class BaseHandler(webapp2.RequestHandler):
                 return webapp2.redirect('/?redirect=' + self.request.path, False, True)
         else:
             return webapp2.redirect('/?redirect=' + self.request.path, False, True)
+
     def current_user(self):
         id = self.session.get('user')
         if id and id != None:
             return User.get_by_id(id)
         else:
             return None
-
-    def create_context(self):
-        cd = {}
-
-        if self.current_user:
-            cd['nickname'] = self.current_user.name
-            cd['public_link'] = self.current_user.public_link
-            cd['logout_url'] = "/auth/logout"
-            cd['isuser'] = True
-        else:
-            cd['login_url'] = "/auth/login"
-            cd['isuser'] = False
-        return cd
 
     def dispatch(self):
         # Get a session store for this request.
@@ -57,12 +45,32 @@ class BaseHandler(webapp2.RequestHandler):
         return self.session_store.get_session()
 
     def circle(self):
-        if 'circle' in self.session:
-            if self.session['circle'] != None:
-                circle = Circle.get_by_id(int(self.session['circle']))
+        user = self.current_user()
+        if 'circle' in self.session and self.session['circle'] != None:
+            circle = Circle.get_by_id(int(self.session['circle']))
+            if not circle:
+                if user.circles:
+                    circle_key = user.circles[0]
+                    circle = Circle.get(circle_key)
+                    self.session['circle'] = circle.key().id()
+                else:
+                    circle = None
+        else:
+            if user.circles:
+                circle_key = user.circles[0]
+                circle = Circle.get(circle_key)
+                self.session['circle'] = circle.key().id()
             else:
                 circle = None
-        else:
-            circle = None
-
         return circle
+
+    def login_redirect(self, user):
+        redirect = self.session.get('redirect')
+        redirect_str = '/home'
+        if redirect:
+            self.session['redirect'] = None
+            redirect_str = redirect
+        else:
+            if user.phone == None or user.email == None or user.zip == None:
+                redirect_str = '/details'
+        return redirect_str

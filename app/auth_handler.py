@@ -18,15 +18,7 @@ class AuthHandler(BaseHandler, SimpleAuthHandler):
             user.auth_id = auth_id
             user.put()
             self.session['user'] = user.key().id()
-        redirect = self.session.get('redirect')
-        if redirect:
-            self.session['redirect'] = None
-            self.redirect(redirect)
-        else:
-            if user.phone == None or user.email == None:
-                self.redirect('/details')
-            else:
-                self.redirect('/map')
+        return self.redirect(self.login_redirect(user))
     def logout(self):
         self.session['user'] = None
         self.redirect('/')
