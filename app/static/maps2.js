@@ -110,8 +110,9 @@ var Forms = augment(Object, function () {
 			notify({
 				type: 'success',
 				strong: 'You created a new ride!',
-				message: 'We sent you a confirmation email.'
+				message: 'Redirecting...'
 			});
+			document.location = '/ride/' + data.id;
 		});
 
 		push.fail(function (message, status) {
@@ -151,8 +152,9 @@ var Forms = augment(Object, function () {
 			notify({
 				type: 'success',
 				strong: 'You asked for a ride!',
-				message: 'We sent you a confirmation email.'
+				message: 'Redirecting...'
 			});
+			document.location = '/ride/' + data.id;
 		});
 
 		push.fail(function (message, status) {
@@ -192,8 +194,9 @@ var Forms = augment(Object, function () {
 			notify({
 				type: 'success',
 				strong: 'Event created!',
-				message: 'We sent you a confirmation email.'
+				message: 'Redirecting...'
 			});
+			document.location = '/event/' + data.id;
 		});
 
 		push.fail(function (data, status) {
@@ -508,6 +511,15 @@ var Map = augment(Object, function () {
 			loc_btn.classList.remove('hidden');
 		}
 	};
+
+	this.update_view = function (history) {
+		console.log(history)
+		if (history.indexOf('new_event') != -1) {
+			console.log('triggered')
+			var change_type = document.querySelector("[data-type='origin']");
+			change_type.textContent = 'event';
+		}
+	}
 });
 
 var map = new Map();

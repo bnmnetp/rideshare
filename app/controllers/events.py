@@ -137,6 +137,7 @@ class NewEventHandler(BaseHandler):
 
         event.put()
         response = {
-            'message': 'Event added!'
+            'message': 'Event added!',
+            'id': event.key().id()
         }
         self.response.write(json.dumps(response))

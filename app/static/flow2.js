@@ -58,13 +58,14 @@ var Flow = augment(Object, function () {
 				this.reset();
 				this.path = paths[route];
 				this.history.push(route);
+				console.log(this.history)
 				this.has_path = true;
 			}
 		}
 		if (this.has_path) {
+			this.handler.update_view(this.history);
 			var from = this.history[this.history.length - 1];
 			var to = this.path[this.idx];
-			var opts;
 			this.history.push(to);
 			this.handler.state = to;
 			this.view_slide(to);

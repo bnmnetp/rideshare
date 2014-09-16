@@ -421,7 +421,8 @@ class NewRideHandler(BaseHandler):
             p.put()
 
         return self.json_resp(200, {
-            'message': 'Ride added!'
+            'message': 'Ride added!',
+            'id': ride.key().id()
         })
 
 class RideEvent(BaseHandler):
