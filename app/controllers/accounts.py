@@ -12,7 +12,10 @@ class LoginHandler(BaseHandler):
         if self.current_user():
             self.redirect('/home')
         else:
-            redirect = self.session['redirect']
+            if 'redirect' in self.session:
+                redirect = self.session['redirect']
+            else:
+                redirect = None
             doRender(self, 'loginPage.html', {
                 'redirect': redirect
             })
