@@ -135,6 +135,8 @@ class GetCircleHandler(BaseHandler):
 
 class CircleInvited(BaseHandler):
     def get(self, circle_id):
+        self.auth()
+
         user = self.current_user()
 
         circle = Circle.get_by_id(int(circle_id))
@@ -143,6 +145,21 @@ class CircleInvited(BaseHandler):
             'user': user,
             'circle': circle
         })
+    def post(self, circle_id):
+        self.auth()
+
+        user = self.current_user()
+
+        circle = Circle.get_by_id(int(circle_id))
+
+        user.circles.append(circle.key())
+        user.put()
+
+        self.json_resp(200, {
+            'message': 'You have joined',
+            'id': circle.key().id()
+        })
+
 
 
 class GetCircleInvite(BaseHandler):
@@ -153,9 +170,12 @@ class GetCircleInvite(BaseHandler):
 
         user = self.current_user()
 
+        url = self.request.host_url
+
         doRender(self, 'view_circle_invite.html', {
             'circle': circle,
-            'user': user
+            'user': user,
+            'url': url
         })
 
 class CircleHandler(BaseHandler):

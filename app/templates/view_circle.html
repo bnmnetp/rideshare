@@ -66,8 +66,15 @@
             </div>
         </div>
         <div class="col-md-6">
-            <!-- <div class="panel panel-main">
-                <div class="panel-heading">Events</div>
+            <div class="panel panel-main">
+                <div class="panel-heading">
+                    Events
+                    <div class="pull-right">
+                        <a href="/map?events=true">
+                            Create Events
+                        </a>
+                    </div>
+                </div>
                 <div class="panel-body panel-no">
                 {% if events_all %}
                     {% for event in events_all %}
@@ -98,7 +105,7 @@
                     </div>
                 {% endif %}
                 </div>
-            </div> -->
+            </div>
             <div class="panel panel-main">
                 <div class="panel-heading">
                     Members of Circle ({{total_members}} Members)

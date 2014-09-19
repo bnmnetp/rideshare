@@ -127,7 +127,8 @@ class SendInviteEmail(BaseHandler):
             send_invite(email, {
                 'sender_name': user.name,
                 'circle_name': circle.name,
-                'invite_id': invite.key().id() 
+                'invite_id': invite.key().id(),
+                'url': self.request.host_url
             })
 
         self.response.write(json.dumps(resp))
