@@ -17,9 +17,8 @@ class HomeHandler(BaseHandler):
         invites = Invite.all().filter('user = ', user.key()).fetch(10)
 
         today = datetime.date.today()
-        upcoming_pass = Ride.all().filter('date > ', today).filter('passengers =', user.key()).fetch(10)
-        upcoming_drive = Ride.all().filter('date > ', today).filter('driver =', user.key()).fetch(10)
-        upcoming = upcoming_pass + upcoming_drive
+        upcoming_pass = Passenger.all().filter('user =', user.key()).fetch(10)
+        upcoming = Ride.all().filter('date >= ', today).filter('driver =', user.key()).fetch(10)
 
         rides_driving = Ride.all().filter('driver =', user.key()).fetch(10)
         passenger_joined = Passenger.all().filter('ride in', rides_driving).fetch(10)
@@ -27,36 +26,37 @@ class HomeHandler(BaseHandler):
         site_notifications = []
         ride_alerts = []
 
-        # Format data
+        # Create object
         for up in upcoming:
             up.orig = split_address(up.origin_add)
             up.dest = split_address(up.dest_add)
-
-            up.is_pass = False
-            if user.key() in up.passengers:
-                up.is_pass = True
-                up.type = "You are Passenger"
-
-            up.is_driver = False
-            if up.driver:
-                if user.key() == up.driver.key():
-                    up.is_driver = True
-                    up.type = "You are Driver"
-
-        # Create object
-        for up in upcoming:
             obj = {
-                'message': '<strong>' + up.type + '</strong>: <a href="/ride/' + str(up.key().id()) + '">' + up.orig + ' to ' + up.dest + '</a>',
+                'message': '<strong>Driver of</strong>: <a href="/ride/' + str(up.key().id()) + '">' + up.orig + ' to ' + up.dest + '</a>',
                 'date': up.date_str,
                 'details': False,
-                'driver': up.is_driver,
-                'pass': up.is_pass,
+                'driver': True,
                 'type': 'Upcoming Ride'
             }
             if up.circle:
                 obj['circle'] = {
                     'name': up.circle.name,
                     'id': up.circle.key().id()
+                }
+            ride_alerts.append(obj)
+
+        for upp in upcoming_pass:
+            upp.ride.orig = split_address(upp.ride.origin_add)
+            upp.ride.dest = split_address(upp.ride.dest_add)
+            obj = {
+                'message': '<strong>Passenger of</strong>: <a href="/ride/' + str(upp.ride.key().id()) + '">' + upp.ride.orig + ' to ' + upp.ride.dest + '</a>',
+                'date': upp.ride.date_str,
+                'passenger': True,
+                'type': 'Upcoming Ride'          
+            }
+            if upp.ride.circle:
+                obj['circle'] = {
+                    'name': upp.ride.circle.name,
+                    'id': upp.ride.circle.key().id()
                 }
             ride_alerts.append(obj)
 
@@ -113,7 +113,7 @@ class HomeHandler(BaseHandler):
             else:
                 obj = {
                     'message': noti.message,
-                    'date': None,
+                    'date': noti.ride.date_str,
                     'details': {
                         'message': noti.ride.orig + ' to ' + noti.ride.dest,
                         'id': noti.ride.key().id()

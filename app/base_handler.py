@@ -11,9 +11,9 @@ class BaseHandler(webapp2.RequestHandler):
         if id and id != None:
             user = User.get_by_id(id)
             if not user:
-                return webapp2.redirect('/?redirect=' + self.request.path, False, True)
+                return webapp2.redirect('/', False, True)
         else:
-            return webapp2.redirect('/?redirect=' + self.request.path, False, True)
+            return webapp2.redirect('/', False, True)
 
     def current_user(self):
         id = self.session.get('user')
@@ -65,8 +65,8 @@ class BaseHandler(webapp2.RequestHandler):
         return circle
 
     def login_redirect(self, user):
-        redirect = self.session.get('redirect')
         redirect_str = '/home'
+        redirect = self.session.get('redirect')
         if redirect:
             self.session['redirect'] = None
             redirect_str = redirect

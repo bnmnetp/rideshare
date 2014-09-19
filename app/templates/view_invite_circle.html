@@ -28,7 +28,7 @@
                 <b>Description:</b> {{circle.description}}
             </li>
         </ul>
-        <button class='btn btn-primary btn-lg'>Join Circle</button>
+        <button class='btn btn-primary btn-lg' id='join'>Join Circle</button>
     </div>
 </div>
 <div class="panel panel-main">
@@ -62,5 +62,24 @@
     </div>
 </script>
 {% endraw %}
+<script>
+    document.querySelector('#join').addEventListener('click', function (e) {
+        e.preventDefault();
+
+        var req;
+
+        req = $.ajax({
+            type: 'POST',
+            url: '/circle/{{circle.key().id()}}/invited',
+            dataType: 'json',
+            contentType: 'application/json; charset=UTF-8',
+            data: JSON.stringify({test: 'test'})
+        });
+
+        req.done(function (data) {
+            document.location = '/circle/' + data.id;
+        });
+    });
+</script>
 
 {% endblock %}

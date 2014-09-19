@@ -43,8 +43,8 @@ class CommentHandler(BaseHandler):
         data = json.loads(json_str)
 
         comment_validator = Schema({
-            Required('comment'): unicode,
-            Required('type'): comment_type(),
+            'comment': unicode,
+            'type': unicode,
             'id': int,
             'is_owner': bool
         })
