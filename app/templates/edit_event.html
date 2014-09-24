@@ -1,0 +1,113 @@
+{% extends "layout.html" %}
+
+{% block title %}Edit Event Details{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="/static/datepicker.css">
+{% endblock %}
+
+{% block main %}
+<div data-notify="container">
+    
+</div>
+<div class="panel panel-main">
+    <div class="panel-heading">Edit Event</div>
+    <div class="panel-body">
+        <form data-send="event">
+            <div class="form-group">
+                <label>Event Name</label>
+                <input class="form-control" type="text" placeholder="Name" name='name' required>
+            </div>
+            <div class="form-group">
+                <label>Event Address</label>
+                <div class="input-group">
+                    <input class="form-control" type="text" placeholder='Address' name='address' required>
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="button">Search Address</button>
+                    </span>
+                </div>
+                <div class="help-block">You must search for an address before submitting.</div>
+            </div>
+            <div class="form-group">
+                <label>Date</label>
+                <div class='input-group date' data-datepicker data-date-format="MM/DD/YYYY">
+                    <input class="form-control" type="text" placeholder="Date" name='date' required>
+                    <span class="input-group-addon">
+                        <i class="fa fa-calendar"></i>
+                    </span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Time</label>
+                <div class="input-group date" data-time='container'>
+                    <input class="form-control" type="text" placeholder="Time" name='time' required data-time='input'>
+                    <span class="input-group-addon">
+                        <i class="fa fa-clock-o"></i>
+                    </span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Details</label>
+                <input class="form-control" type="text" placeholder="Details" name='details'>
+            </div>
+            <button type='submit' class='btn btn-primary'>Create Event</button>
+            <button type='button' class='btn btn-danger pull-right'>Delete Event</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/augment.js"></script>
+<script src='/static/push.js'></script>
+<script src='//cdnjs.cloudflare.com/ajax/libs/moment.js/2.7.0/moment.min.js'></script>
+<script src='//cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/3.0.0/js/bootstrap-datetimepicker.min.js'></script>
+{% raw %}
+<script data-notify="template" type='text/x-handlebars-template'>
+    <div class="alert alert-{{type}} alert-dismissable">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        <strong>{{strong}}</strong>
+        {{message}}
+    </div>
+</script>
+{% endraw %}
+<script type="text/javascript">
+    $('[data-datepicker]').datetimepicker({
+        pickTime: false,
+        defaultDate: '{{event_json.date}}'
+    });
+
+    $('[data-time]').datetimepicker({
+        icons: {
+            time: "fa fa-clock-o",
+            date: "fa fa-calendar",
+            up: "fa fa-arrow-up",
+            down: "fa fa-arrow-down"
+        },
+        pickDate: false
+    });
+
+    var form = document.querySelector('[data-send="event"]');
+
+    var edit_event = new SubmitForm({
+        form: form,
+        model: {{event_json|safe}},
+        method: 'POST',
+        route: window.location.pathname,
+        done: function (data) {
+            notify({
+                type: 'success',
+                strong: 'Event edited!',
+                message: 'This event has been edited. All passengers have been notified.'
+            });
+        },
+        fail: function (data, status) {
+            notify({
+                type: 'danger',
+                strong: 'Event not edited.',
+                message: 'Try again.'
+            });
+        }
+    });
+</script>
+{% endblock %}

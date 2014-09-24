@@ -88,9 +88,9 @@ app = webapp2.WSGIApplication([
     ('/ride/(\d+)/edit', EditRide),
     ('/ride/(\d+)/driver', JoinDriver),
     ('/ride/(\d+)/passenger', JoinPassenger),
-    ("/newride", NewRideHandler),
+    ('/newride', NewRideHandler),
     ('/filter', FilterRides),
-    ('/event/(\d+)/(\w+)', RideEvent),
+    ('/event/(\d+)/(\w+)/1', RideEvent),
 
     # controllers/users.py
     ('/user/(\d+)', GetUserHandler),
@@ -130,6 +130,8 @@ app = webapp2.WSGIApplication([
 
     # controllers/events.py
     ('/event/(\d+)', GetEventHandler),
+    ('/event/(\d+)/edit', EditEvent),
+    ('/event/(\d+)/delete', DeleteEvent),
     ('/events', EventHandler),
     ('/newevent', NewEventHandler),
 

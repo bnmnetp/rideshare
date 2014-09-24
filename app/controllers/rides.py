@@ -16,7 +16,6 @@ def is_pass_similar_ride(user, ride):
 
         if p.ride.event.key() == ride.event.key():
             if p.ride.key() != ride.key():
-                print 'MATCHXX'
                 matches.append(p)
 
     formatted_matches = []
