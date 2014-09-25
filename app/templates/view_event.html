@@ -22,7 +22,7 @@
 					</li>
 					{% if event.details %}
 					<li>
-						<b>Description:</b> {{event.details}}
+						<b>Details:</b> {{event.details}}
 					</li>
 					{% endif %}
 					<li>
@@ -38,6 +38,7 @@
 				<hr>
 				<button class='btn btn-primary' data-toggle='modal' data-target='#need_ride'>I need a ride to this event</button>
 				<button class='btn btn-primary' data-toggle='modal' data-target='#offer_ride'>I can offer a ride to this event</button>
+				<a class='btn btn-primary' href='/event/{{event.key().id()}}/edit'>Edit Event</a>
 				<hr>
 				<a href="http://maps.google.com/maps?q={{event.lat}},{{event.lng}}" target="_blank">View on Google Maps</a>
 			</div>
@@ -219,7 +220,7 @@
                 		<p class="help-block">Please input a full address.</p>
                 	</div>
 		            <div class="form-group">
-		                <label>Max Passengers</label>
+		                <label>Passenger seats availible</label>
 		                <select class="form-control" name='max_passengers' required>
 		                    <option>1</option>
 		                    <option>2</option>
@@ -241,7 +242,7 @@
 		                </div>
 		            </div>
 		            <div class="form-group">
-		                <label>Time</label>
+		                <label>Departure Time</label>
 		                <div class="input-group date" data-time='container'>
 		                	<input class="form-control" type="text" placeholder="Time" name='time' data-time='input' required>
 		                	<span class="input-group-addon">

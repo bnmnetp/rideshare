@@ -16,7 +16,6 @@ def is_pass_similar_ride(user, ride):
 
         if p.ride.event.key() == ride.event.key():
             if p.ride.key() != ride.key():
-                print 'MATCHXX'
                 matches.append(p)
 
     formatted_matches = []
@@ -158,7 +157,8 @@ class EditRide(BaseHandler):
             push_noti('edited', p, ride.key())
 
         self.response.write(json.dumps({
-            'message': 'Edited.'
+            'message': 'Edited.',
+            'id': ride.key().id()
         }))
 
 class JoinDriver(BaseHandler):

@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 
-{% block title %}Edit Ride Details{% endblock %}
+{% block title %}Edit Event Details{% endblock %}
 
 {% block head %}
 <link rel="stylesheet" href="/static/datepicker.css">
@@ -11,11 +11,15 @@
     
 </div>
 <div class="panel panel-main">
-    <div class="panel-heading">Edit Ride</div>
+    <div class="panel-heading">Edit Event</div>
     <div class="panel-body">
-        <form id='form'>
+        <form data-send="event">
+            <div class="form-group">
+                <label>Event Name</label>
+                <input class="form-control" type="text" placeholder="Name" name='name' required>
+            </div>
             <div class="form-group" data-location='container'>
-                <label>Starting Address</label>
+                <label>Event Address</label>
                 <div class="input-group">
                     <input class="form-control" type="text" placeholder='Address' name='address' required data-location='input'>
                     <span class="input-group-btn">
@@ -28,22 +32,9 @@
                 <div class="help-block">You must search for an address before submitting.</div>
             </div>
             <div class="form-group">
-                <label>Passenger seats availible</label>
-                <select class="form-control" name='passengers_max'>
-                    <option value='1'>1</option>
-                    <option value='2'>2</option>
-                    <option value='3'>3</option>
-                    <option value='4'>4</option>
-                    <option value='5'>5</option>
-                    <option value='6'>6</option>
-                    <option value='7'>7</option>
-                    <option value='8'>8</option>
-                </select>
-            </div>
-            <div class="form-group">
                 <label>Date</label>
-                <div class="input-group date" data-datepicker data-date-format="MM/DD/YYYY">
-                    <input class="form-control date-select" type="text" placeholder="Date" name='date'>
+                <div class='input-group date' data-datepicker data-date-format="MM/DD/YYYY">
+                    <input class="form-control" type="text" placeholder="Date" name='date' required>
                     <span class="input-group-addon">
                         <i class="fa fa-calendar"></i>
                     </span>
@@ -51,23 +42,19 @@
             </div>
             <div class="form-group">
                 <label>Time</label>
-                <div class="input-group date" data-time>
-                    <input class="form-control" type="text" placeholder="Time" name='time'>
+                <div class="input-group date" data-time='container'>
+                    <input class="form-control" type="text" placeholder="Time" name='time' required data-time='input'>
                     <span class="input-group-addon">
                         <i class="fa fa-clock-o"></i>
                     </span>
                 </div>
             </div>
-            <div class='form-group'>
-                <label>Are you the person driving this ride? If not, enter the driver's name:</label>
-                <input class='form-control' type="text" name='driven_by' placeholder='Driven by'>
-            </div>
             <div class="form-group">
-                <label>Additional Details</label>
+                <label>Details</label>
                 <input class="form-control" type="text" placeholder="Details" name='details'>
             </div>
-            <button type='submit' class='btn btn-default'>Edit Ride</button>
-            <button type='button' class='btn btn-danger pull-right'>Delete Ride</button>
+            <button type='submit' class='btn btn-primary'>Edit Event</button>
+            <button type='button' class='btn btn-danger pull-right'>Delete Event</button>
         </form>
     </div>
 </div>
@@ -76,6 +63,8 @@
 {% block scripts %}
 <script src="/static/augment.js"></script>
 <script src='/static/push.js'></script>
+<script src='/static/location.js'></script>
+
 <script src='//cdnjs.cloudflare.com/ajax/libs/moment.js/2.7.0/moment.min.js'></script>
 <script src='//cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/3.0.0/js/bootstrap-datetimepicker.min.js'></script>
 {% raw %}
@@ -90,7 +79,7 @@
 <script type="text/javascript">
     $('[data-datepicker]').datetimepicker({
         pickTime: false,
-        defaultDate: '{{ride_json.date}}'
+        defaultDate: '{{event_json.date}}'
     });
 
     $('[data-time]').datetimepicker({
@@ -103,20 +92,20 @@
         pickDate: false
     });
 
-    var form = document.querySelector('#form');
+    var form = document.querySelector('[data-send="event"]');
 
-    var edit_ride = new SubmitForm({
+    var edit_event = new SubmitForm({
         form: form,
-        model: {{ride_json|safe}},
+        model: {{event_json|safe}},
         method: 'POST',
         route: window.location.pathname,
         done: function (data) {
-            document.location = '/ride/' + data.id;
+            document.location = '/event/' + data.id;
         },
         fail: function (data, status) {
             notify({
                 type: 'danger',
-                strong: 'Ride not edited.',
+                strong: 'Event not edited.',
                 message: 'Try again.'
             });
         }
@@ -125,7 +114,7 @@
     var ql_container = document.querySelector('[data-location="input"]');
     var ql = new QueryLocation(
         ql_container,
-        edit_ride
+        edit_event
     );
 </script>
 {% endblock %}

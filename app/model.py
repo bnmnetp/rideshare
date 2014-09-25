@@ -49,8 +49,8 @@ class Event(db.Model):
     date = db.DateProperty()
     address = db.StringProperty()
     time = db.StringProperty()
-    user = db.ReferenceProperty(User)
     details = db.TextProperty()
+    creator = db.ReferenceProperty(User)
 
     def to_dict(self):
         resp = {}
@@ -95,7 +95,6 @@ class Ride(db.Model):
     def date_picker(self):
         return self.date.strftime("%d/%m/%Y")
     
-
     @property
     def date_str(self):
         return self.date.strftime('%B %dth, %Y')

@@ -1,4 +1,4 @@
-from app.common.toolbox import doRender, split_address, create_date
+from app.common import toolbox
 from google.appengine.ext import db
 from app.model import *
 from google.appengine.api import mail
@@ -22,8 +22,8 @@ class GetEventHandler(BaseHandler):
         requested = Ride.all().filter('event = ', event.key()).filter('driver = ', None).fetch(None)
 
         for ride in offered:
-            ride.orig = split_address(ride.origin_add)
-            ride.dest = split_address(ride.dest_add)
+            ride.orig = toolbox.format_address(ride.origin_add)
+            ride.dest = toolbox.format_address(ride.dest_add)
             if ride.driver and user.key() == ride.driver.key():
                 ride.is_driver = True
             else:
@@ -36,8 +36,8 @@ class GetEventHandler(BaseHandler):
             ride.seats_availible = ride.passengers_max - ride.passengers_total
 
         for ride in requested:
-            ride.orig = split_address(ride.origin_add)
-            ride.dest = split_address(ride.dest_add)
+            ride.orig = toolbox.format_address(ride.origin_add)
+            ride.dest = toolbox.format_address(ride.dest_add)
             if ride.driver and user.key() == ride.driver.key():
                 ride.is_driver = True
             else:
@@ -48,7 +48,7 @@ class GetEventHandler(BaseHandler):
                 ride.is_passenger = False
 
 
-        doRender(self, 'view_event.html', {
+        toolbox.render(self, 'view_event.html', {
             'event': event,
             'offered': offered,
             'requested': requested,
@@ -68,13 +68,15 @@ class EventHandler(BaseHandler):
 
         events_all = Event.all().filter('circle =', circle).filter('date >=', today).fetch(None)
 
-        doRender(self, 'events.html', {
+        toolbox.render(self, 'events.html', {
             'events_all': events_all,
             'user': user,
             'circle': circle
         })
 
     def post(self):
+        self.auth()
+
         json_str = self.request.body
         data = json.loads(json_str)
 
@@ -91,6 +93,7 @@ class EventHandler(BaseHandler):
 
 class NewEventHandler(BaseHandler):
     def post(self):
+        self.auth()
         event = Event()
 
         json_str = self.request.body
@@ -103,7 +106,7 @@ class NewEventHandler(BaseHandler):
             Required('lat'): float,
             Required('lng'): float,
             Required('address'): unicode,
-            Required('date'): create_date(),
+            Required('date'): toolbox.create_date(),
             'time': unicode,
             'details': unicode
         }, extra = True)
@@ -126,6 +129,7 @@ class NewEventHandler(BaseHandler):
         event.date = data['date']
         event.time = data['time']
         event.details = data['details']
+        event.creator = user.key()
         event.user = user.key()
 
         if data['circle']:
@@ -141,3 +145,76 @@ class NewEventHandler(BaseHandler):
             'id': event.key().id()
         }
         self.response.write(json.dumps(response))
+
+class EditEvent(BaseHandler):
+    def get(self, event_id):
+        self.auth()
+
+        user = self.current_user()
+
+        event = Event.get_by_id(int(event_id))
+
+        properties = ['name', 'date', 'time', 'details', 'address', 'lat', 'lng']
+
+        event_json = toolbox.grab_json(event, properties)
+
+        event_json['date'] = toolbox.date_picker(event.date)
+
+        toolbox.render(self, 'edit_event.html', {
+            'event': event,
+            'event_json': event_json,
+            'user': user
+        })
+    def post(self, event_id):
+        self.auth()
+
+        json_str = self.request.body
+        data = json.loads(json_str)
+
+        user = self.current_user()
+
+        event = Event.get_by_id(int(event_id))
+
+        event.name = data['name']
+        event.data = data['date']
+        event.time = data['time']
+        event.details = data['details']
+        event.address = data['address']
+        event.lat = data['lat']
+        event.lng = data['lng']
+        event.put()
+
+        self.json_resp(200, {
+            'message': 'Event edited',
+            'id': event.key().id()
+        })
+
+class DeleteEvent(BaseHandler):
+    def post(self, event_id):
+        self.auth()
+
+        user = self.current_user()
+
+        event = Event.get_by_id(int(event_id))
+
+        json_str = self.request.body
+        data = json.loads(json_str)
+
+        event_validator = Schema({
+            Required('name'): unicode,
+            Required('lat'): float,
+            Required('lng'): float,
+            Required('address'): unicode,
+            Required('date'): toolbox.create_date(),
+            'time': unicode,
+            'details': unicode
+        }, extra = True)
+
+        try:
+            data = event_validator(data)
+        except MultipleInvalid as e:
+            print str(e)
+            return self.json_resp(500, {
+                'error': True,
+                'message': 'Invalid data'
+            })

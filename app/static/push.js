@@ -34,6 +34,10 @@ var SubmitForm = augment(Object, function () {
             current = this.keys[i];
             if (this.form[current]) {
                 this.data[current] = this.form[current].value;
+            } else if (this.data[current]) {
+
+            } else {
+                this.data[current] = this.model[current];
             }
         }
     };
@@ -61,5 +65,4 @@ var SubmitForm = augment(Object, function () {
     this.set = function (key, value) {
         this.data[key] = value;
     };
-
 });

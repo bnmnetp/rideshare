@@ -35,7 +35,32 @@ def doRender(handler, name = 'home.html', value = {}):
 	template = env.get_template(name)
 	handler.response.write(template.render(value))
 
+def render(handler, name = 'home.html', value = {}):
+	b = BaseHandler()
+	if b != None:
+		user = b.current_user()
+
+	value['active_circle'] = None
+
+	if user:
+		value['invite_badge'] = Invite.all().filter('user = ', user.key()).count()
+		value['alert_badge'] = Notification.all().filter('user = ', user.key()).count()
+		circle_keys = user.circles
+		value['circle_list'] = Circle.all().filter('__key__ in', circle_keys).fetch(20)
+		value['active_circle'] = handler.circle()
+		if value['active_circle']:
+			if user.key() in value['active_circle'].admins:
+				value['is_admin'] = True
+
+	value['current_page'] = handler.request.path
+	template = env.get_template(name)
+	handler.response.write(template.render(value))
+
 def split_address(add):
+	temp = add.split(',')
+	return temp[1][1:] + ', ' + temp[2][1:3]
+
+def format_address(add):
 	temp = add.split(',')
 	return temp[1][1:] + ', ' + temp[2][1:3]
 
@@ -53,3 +78,10 @@ def create_date(fmt='%m/%d/%Y'):
 def set_properties(db_obj, arr, data):
 	for a in arr:
 		setattr(db_obj, a, data[a])
+
+def date_display(date):
+	return date.strftime('%B %dth, %Y')
+	
+def date_picker(date):
+	return date.strftime("%m/%d/%Y")
+	

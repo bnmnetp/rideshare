@@ -38,6 +38,13 @@ img {
     line-height: 150px;
 }
 
+/* Data Location */
+[data-location='output'] {
+    padding-top: 10px;
+}
+/* End */
+
+/* Circle Hero */
 .circle-hero {
     margin: 30px;
 }
@@ -47,7 +54,7 @@ img {
 }
 
 .circle-hero h1 {
-    font-size: 65px;
+    font-size: 32px;
     font-weight: 700;
     margin: 0px 20px 10px 0px;
     display: inline-block;
@@ -56,6 +63,7 @@ img {
 .circle-hero h4 {
     display: inline-block;
 }
+/* End */
 
 /* Subnav */
 .subnav {
