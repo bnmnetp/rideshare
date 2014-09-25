@@ -58,7 +58,7 @@
         <ul class="menu">
             <li data-next='new_event'>Create a new Event</li>
             <li data-next='new_ride'>Request a Ride</li>
-            <li data-next='new_trip'>Create a new Trip</li>
+            <li data-next='new_trip'>Create a new Ride</li>
         </ul>
     </div>
 
@@ -80,7 +80,7 @@
             <ul>
                 <li>
                     <h2>Point & Click</h2>
-                    Zoom in to select an exact location by clicking on the map
+                    Zoom in to select an exact location by clicking on the map. (Zoom in as close as possible!)
                 </li>
                 <li data-geolocation='container' class='hidden'>
                     <h2>Geolocation</h2>
@@ -156,6 +156,7 @@
                 <label>Additional Details</label>
                 <input class="form-control" type="text" placeholder="Details" name='details'>
             </div>
+            <p class="help-block">The ride you are creating is not connected to an event. Visit an event to connect a ride to it.</p>
             <button class="btn btn-primary" type='submit'>
                 Ask for Ride
             </button>
@@ -178,6 +179,9 @@
                 Next
             </button>
             <hr>
+                <h2>Point & Click</h2>
+                Zoom in to select an exact location by clicking on the map. (Zoom in as close as possible!)
+            <hr>
             <form data-search>
                 <div class="form-group">
                     <label>Enter an address, city, or state:</label>
@@ -193,7 +197,7 @@
         <form data-send="ride">
             <p class="lead">Give us additional details</p>
             <div class="form-group">
-                <label>Max Passengers</label>
+                <label>Passenger seats availible</label>
                 <select class="form-control" name='max_passengers' required>
                     <option>1</option>
                     <option>2</option>
@@ -215,7 +219,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <label>Time</label>
+                <label>Departure Time</label>
                 <div class="input-group date" data-time='container'>
                     <input class="form-control" type="text" placeholder="Time" name='time' required data-time='input'>
                     <span class="input-group-addon">
@@ -247,8 +251,9 @@
                     <option value="weekly">Weekly</option>
                 </select>
             </div>
+            <p class="help-block">The ride you are creating is not connected to an event. Visit an event to connect a ride to it.</p>
             <button class="btn btn-primary"  type='submit'>
-                Create Trip
+                Create Ride
             </button>
         </form>
     </div>

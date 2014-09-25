@@ -157,7 +157,8 @@ class EditRide(BaseHandler):
             push_noti('edited', p, ride.key())
 
         self.response.write(json.dumps({
-            'message': 'Edited.'
+            'message': 'Edited.',
+            'id': ride.key().id()
         }))
 
 class JoinDriver(BaseHandler):

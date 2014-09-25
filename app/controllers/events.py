@@ -154,7 +154,7 @@ class EditEvent(BaseHandler):
 
         event = Event.get_by_id(int(event_id))
 
-        properties = ['name', 'date', 'time', 'details']
+        properties = ['name', 'date', 'time', 'details', 'address', 'lat', 'lng']
 
         event_json = toolbox.grab_json(event, properties)
 
@@ -168,9 +168,26 @@ class EditEvent(BaseHandler):
     def post(self, event_id):
         self.auth()
 
+        json_str = self.request.body
+        data = json.loads(json_str)
+
         user = self.current_user()
 
         event = Event.get_by_id(int(event_id))
+
+        event.name = data['name']
+        event.data = data['date']
+        event.time = data['time']
+        event.details = data['details']
+        event.address = data['address']
+        event.lat = data['lat']
+        event.lng = data['lng']
+        event.put()
+
+        self.json_resp(200, {
+            'message': 'Event edited',
+            'id': event.key().id()
+        })
 
 class DeleteEvent(BaseHandler):
     def post(self, event_id):
