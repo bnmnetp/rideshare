@@ -11,10 +11,6 @@ body {
     width: auto;
 }
 
-.beta-note {
-    
-}
-
 .login {
     width: 600px;
     margin: 0px auto;
@@ -868,11 +864,6 @@ ul.sidebar .sidebar-list a.active,
     background: #2d3e63;
 }
 
-ul.sidebar .sidebar-main a {
-    border-top: 1px solid #172951;
-    border-bottom: 1px solid #172951;
-}
-
 ul.sidebar {
     /*position: absolute;*/
     /*top: 0;*/
@@ -896,43 +887,55 @@ ul.sidebar li a {
 ul.sidebar .sidebar-main {
     height: 65px;
     font-size: 0;
-    overflow: auto;
+    white-space: nowrap;
+    word-spacing: -1;
 }
 
 ul.sidebar .sidebar-main a {
     font-size: 18px;
-    line-height: 60px;
+    line-height: 65px;
+    height: 65px;
     display: block;
     float: left;
-    width: 200px;
-    height: 63px;
+    width: 80%;
+    margin: 0px;
     overflow-x: hidden;
     overflow-y: hidden;
-    text-overflow: ellipsis;
+    white-space: normal;
+    vertical-align: top;
+    border-top: 1px solid #172951;
+    border-bottom: 1px solid #172951;
 }
 
 ul.sidebar .sidebar-main .menu-icon {
     display: block;
     float: left;
     font-size: 18px;
-    line-height: 60px;
-    border: 1px solid #172951;
-    width: 48px;
+    line-height: 63px;
+    width: 20%;
     color: white;
+    margin: 0px;
+    white-space: normal;
+    vertical-align: top;
+    cursor: pointer;
+    border-left: 1px solid #172951;
+    border-top: 1px solid #172951;
+    border-bottom: 1px solid #172951;
 }
 
 ul.sidebar .sidebar-main.inactive {
-    height: 50px;
+    height: 45px;
 }
 
 ul.sidebar .sidebar-main.inactive a {
     color: #b2bfdc;
     font-size: 14px;
     line-height: 45px;
+    height: 45px;
 }
 
 ul.sidebar .sidebar-main.inactive .menu-icon {
-  line-height: 45px;
+    line-height: 43px;
 }
 
 ul.sidebar .sidebar-title {
