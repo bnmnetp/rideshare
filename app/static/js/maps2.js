@@ -20,12 +20,12 @@ var get_geolocation = function (e) {
 	});
 };
 
-function getParameterByName (name) {
+var getParameterByName = function (name) {
     name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
     var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
         results = regex.exec(location.search);
     return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-}
+};
 
 var display_geolocation = function () {
 	var geo_container = document.querySelector('[data-geolocation="container"]');
@@ -53,22 +53,22 @@ var icons = {
 		size: new google.maps.Size(22, 20)
 	},
 	error: {
-		url: '/static/end.png',
+		url: '/static/img/end.png',
 		anchor: new google.maps.Point(20, 20),
 		size: new google.maps.Size(30, 40)
 	},
 	success: {
-		url: '/static/start.png',
+		url: '/static/img/start.png',
 		anchor: new google.maps.Point(20, 20),
 		size: new google.maps.Size(30, 40)
 	},
 	person: {
-		url: '/static/person.png',
+		url: '/static/img/person.png',
 		anchor: new google.maps.Point(20, 20),
 		size: new google.maps.Size(30, 40)
 	},
 	plus: {
-		url: '/static/cross.png',
+		url: '/static/img/cross.png',
 		anchor: new google.maps.Point(20, 20),
 		size: new google.maps.Size(30, 40)
 	}

@@ -39,7 +39,7 @@ class GetImage(BaseHandler):
         if user.photo:
             self.redirect(images.get_serving_url(user.photo))
         else:
-            self.redirect('/static/default_user.png')
+            self.redirect('/static/img/default_user.png')
         # blobstore_handlers.BlobstoreDownloadHandler.send_blob(user.photo)
 
 class NotificationUserHandler(BaseHandler):
