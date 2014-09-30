@@ -9,7 +9,7 @@
     <div class='splash'>
         <div class="container">
             <div class="intro-text">
-                <div class="intro-heading">You're invited to Ridecircles.</div>
+                <div class="intro-heading">You're invited to {{circle.name}}.</div>
             </div>
         </div>
     </div>
@@ -51,9 +51,6 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="/static/augment.js" type="text/javascript"></script>
-<script type="text/javascript" src='/static/comment.js'></script>
-{% include 'comment.html' %}
 {% raw %}
 <script data-notify="template" type='text/x-handlebars-template'>
     <div class="alert alert-{{type}} alert-dismissable">

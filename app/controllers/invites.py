@@ -1,4 +1,4 @@
-from app.common.toolbox import doRender
+from app.common import toolbox
 from google.appengine.ext import db
 from google.appengine.api import search
 from app.model import *
@@ -18,7 +18,7 @@ class ViewInvites(BaseHandler):
 
         invites = Invite.all().filter('user = ', user.key()).fetch(100)
 
-        doRender(self, 'view_invites.html', {
+        toolbox.render(self, 'view_invites.html', {
             'invites': invites,
             'user': user
         })
@@ -62,7 +62,7 @@ class SendInvite(BaseHandler):
     def get(self, invite_id):
         invite = Invite.get_by_id(int(invite_id))
 
-        doRender(self, 'view_invite.html', {
+        toolbox.render(self, 'view_invite.html', {
             'invite': invite
         })
     def post(self, invite_id):

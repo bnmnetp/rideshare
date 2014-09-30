@@ -135,6 +135,8 @@ class GetCircleHandler(BaseHandler):
 
 class CircleInvited(BaseHandler):
     def get(self, circle_id):
+        self.session['invited'] = str(circle_id)
+        print(self.session.get('invited'), 'TEST')
         self.auth()
 
         user = self.current_user()

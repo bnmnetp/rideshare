@@ -3,14 +3,15 @@
 {% block title %}Ridecircles{% endblock %}
 
 {% block main %}
-    <!-- <div class="invite">
+    {% if invite %}
+    <div class="invite">
         <h1>You have been invited to Ridecircles.</h1>
-        <p class="lead">You have been asked to join the XXX circle. Please login or register.</p>
-        <div class="btns">
-            <a href="/login">Login</a>
-            <a href="/login">Register</a>
+        <p class="lead">You have been asked to join the {{invite.name}} circle. Please login or register.</p>
+            <a href="/login" class="btn btn-xl">Login</a>
+            <a href="/login" class="btn btn-xl">Register</a>
         </div>
-    </div> -->
+    </div>
+    {% endif %}
     <!-- Header -->
     <header>
         <div class="container">

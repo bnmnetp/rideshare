@@ -11,6 +11,10 @@ body {
     width: auto;
 }
 
+.beta-note {
+    
+}
+
 .login {
     width: 600px;
     margin: 0px auto;
@@ -834,7 +838,7 @@ template {
     height: 140px;
     width: 250px;
     /*position: fixed;*/
-    background: url('/static/wheel.svg') no-repeat scroll 50% 50% / 80px auto #3F51B5;
+    background: url('/static/img/wheel.svg') no-repeat scroll 50% 50% / 80px auto #3F51B5;
     left: 0px;
     top: 0px;
     transform: translateZ(0px);
@@ -855,6 +859,7 @@ template {
 }
 
 /*ul.sidebar .sidebar-main a,*/
+
 .sidebar-footer,
 ul.sidebar .sidebar-list a:hover,
 ul.sidebar .sidebar-list a.active,
@@ -889,38 +894,45 @@ ul.sidebar li a {
 }
 
 ul.sidebar .sidebar-main {
-  height: 65px;
+    height: 65px;
+    font-size: 0;
+    overflow: auto;
 }
 
 ul.sidebar .sidebar-main a {
-  font-size: 18px;
-  line-height: 60px;
+    font-size: 18px;
+    line-height: 60px;
+    display: block;
+    float: left;
+    width: 200px;
+    height: 63px;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    text-overflow: ellipsis;
 }
 
-ul.sidebar .inactive {
+ul.sidebar .sidebar-main .menu-icon {
+    display: block;
+    float: left;
+    font-size: 18px;
+    line-height: 60px;
+    border: 1px solid #172951;
+    width: 48px;
+    color: white;
+}
+
+ul.sidebar .sidebar-main.inactive {
     height: 50px;
 }
 
-ul.sidebar .inactive a {
+ul.sidebar .sidebar-main.inactive a {
     color: #b2bfdc;
     font-size: 14px;
     line-height: 45px;
 }
 
-ul.sidebar .sidebar-main .menu-icon {
-  float: right;
-  font-size: 18px;
-  padding-right: 28px;
-  line-height: 60px;
-}
-
-ul.sidebar .inactive .menu-icon {
+ul.sidebar .sidebar-main.inactive .menu-icon {
   line-height: 45px;
-}
-
-ul.sidebar .menu-switch {
-    border-left: 1px solid #172951;
-    padding-left: 8px;
 }
 
 ul.sidebar .sidebar-title {

@@ -1,16 +1,21 @@
 <!DOCTYPE html>
 <html>
 <head>
+
 	<title>{% block title %}{% endblock %} - Rideshare</title>
-	<link rel="stylesheet" type="text/css" href="/static/bootstrap.css">
+
+	<link rel="stylesheet" type="text/css" href="/static/css/bootstrap.css">
 	<link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
-	<link rel="stylesheet" type="text/css" href="/static/styles.css">
+	<link rel="stylesheet" type="text/css" href="/static/css/styles.css">
+
 	<meta charset="utf-8">
 	<meta content="width=device-width, initial-scale=1.0, user-scalable=no" name="viewport">
-	<link rel="shortcut icon" sizes="1024x1024" href="/static/marker.png">
-	<link rel="shortcut icon" sizes="128x128" href="/static/marker.png">
-	<link rel="apple-touch-icon" sizes="1024x1024" href="/static/marker.png">
+
+	<link rel="shortcut icon" sizes="1024x1024" href="/static/img/marker.png">
+	<link rel="shortcut icon" sizes="128x128" href="/static/img/marker.png">
+	<link rel="apple-touch-icon" sizes="1024x1024" href="/static/img/marker.png">
 	<link rel="apple-touch-icon-precomposed" sizes="1024x1024" href="/static/marker.png">
+
 	{% block head %}
 	{% endblock %}
 </head>
@@ -23,13 +28,16 @@
 		<ul class="sidebar">
 		{% if user.circles %}
 			<li class="sidebar-title separator first">
+				<span>BETA. Please bear with us.</span>
+			</li>
+			<li class="sidebar-title separator first">
 				<span>ACTIVE CIRCLE (Click to switch)</span>
 			</li>
 			<li class="sidebar-main" data-cwitch='li'>
-				<a href="/circle/{{active_circle.key().id()}}" data-cwitch='toggle'>
+				<a href="/circle/{{active_circle.key().id()}}">
 					{{active_circle.name}}
-					<span class="menu-icon fa fa-caret-down menu-switch" data-cwitch='caret'></span>
 				</a>
+				<span class="fa fa-caret-down menu-icon" data-cwitch='caret'></span>
 			</li>
 			<li class='cwitch-container' data-cwitch='container'>
 				<ul class='cwitch-list'>
@@ -112,15 +120,15 @@
 
 	<!-- <div id="footer">
 		<div class="container">
-			Developed by Luther College
+			
 		</div>
 	</div> -->
 
 	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 	<script src='//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/js/bootstrap.min.js'></script>
 	<script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/1.3.0/handlebars.min.js"></script>
-	<script src="/static/notify.js"></script>
-	<script src="/static/augment.js"></script>
+	<script src="/static/js/notify.js"></script>
+	<script src="/static/js/augment.js"></script>
 	<script>
 		$('#tooltip-trial').tooltip({
 			placement: 'right',
@@ -146,12 +154,12 @@
 			}
 		});
 
-		var cwitch = {};
-		cwitch.container = document.querySelector('[data-cwitch="container"]');
-		cwitch.toggle = document.querySelector('[data-cwitch="caret"]');
-		cwitch.caret = document.querySelector('[data-cwitch="caret"]');
+		var cwitch = {
+			container: document.querySelector('[data-cwitch="container"]'),
+			caret: document.querySelector('[data-cwitch="caret"]')
+		};
 
-		cwitch.toggle.addEventListener('click', function (e) {
+		cwitch.caret.addEventListener('click', function (e) {
 			e.preventDefault();
 			cwitch.container.classList.toggle('active');
 			cwitch.caret.classList.toggle('fa-caret-down');
