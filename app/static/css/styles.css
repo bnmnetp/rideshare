@@ -891,26 +891,30 @@ ul.sidebar li a {
 
 ul.sidebar .sidebar-main {
     height: 65px;
+    font-size: 0;
+    overflow: auto;
 }
 
 ul.sidebar .sidebar-main a {
     font-size: 18px;
     line-height: 60px;
-    display: inline-block;
-    width: 80%;
+    display: block;
+    float: left;
+    width: 200px;
     height: 63px;
     overflow-x: hidden;
     overflow-y: hidden;
+    text-overflow: ellipsis;
 }
 
 ul.sidebar .sidebar-main .menu-icon {
-    display: inline-block;
+    display: block;
+    float: left;
     font-size: 18px;
-    padding-right: 28px;
     line-height: 60px;
-    border-left: 1px solid #172951;
-    padding-left: 8px;
-    width: 19%;
+    border: 1px solid #172951;
+    width: 48px;
+    color: white;
 }
 
 ul.sidebar .sidebar-main.inactive {
