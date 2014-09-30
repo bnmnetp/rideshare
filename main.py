@@ -36,15 +36,23 @@ from app.controllers.alert import *
 from app.controllers.accounts import *
 from app.controllers.home import *
 
-from app.common.toolbox import doRender
+from app.common import toolbox
 
 class Marketing(BaseHandler):
     def get(self):
-        doRender(self, 'marketing/home.html')
+        redirect = self.session.get('redirect')
+        invited = self.session.get('invited')
+        print(redirect, invited)
+        invite = None
+        if redirect and invited:
+            invite = Circle.get_by_id(int(invited))
+        toolbox.render(self, 'marketing/home.html', {
+            'invite': invite
+        })
 
 class GetStarted(BaseHandler):
     def get(self):
-        doRender(self, 'marketing/get_started.html')
+        toolbox.render(self, 'marketing/get_started.html')
     
 class MapHandler(BaseHandler):
     def get(self):
@@ -53,7 +61,7 @@ class MapHandler(BaseHandler):
 
         circle = self.circle()
 
-        doRender(self, 'map.html', {
+        toolbox.render(self, 'map.html', {
             'user': user,
             'circle': circle
         })
@@ -66,7 +74,7 @@ class HelpHandler(BaseHandler):
     def get(self):
         user = self.current_user()
 
-        doRender(self, 'help.html', {
+        toolbox.render(self, 'help.html', {
             'user': user
         })
 

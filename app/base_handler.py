@@ -68,8 +68,8 @@ class BaseHandler(webapp2.RequestHandler):
         redirect_str = '/home'
         redirect = self.session.get('redirect')
         if redirect:
-            self.session['redirect'] = None
             redirect_str = redirect
+            self.session['redirect'] = None
         else:
             if user.phone == None or user.email == None or user.zip == None:
                 redirect_str = '/details'

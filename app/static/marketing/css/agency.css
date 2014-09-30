@@ -9,6 +9,20 @@ body {
     font-family: "Roboto Slab","Helvetica Neue",Helvetica,Arial,sans-serif;
 }
 
+/* Invite */
+.invite {
+    margin-top: 70px;
+    width: 100%;
+    overflow: auto;
+    padding: 0px 50px;
+}
+.invite h1 {
+    display: block;
+    text-align: center;
+    font-size: 36px;
+}
+/* End Invite */
+
 .text-muted {
     color: #777;
 }
