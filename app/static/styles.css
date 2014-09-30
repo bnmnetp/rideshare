@@ -897,6 +897,11 @@ ul.sidebar .sidebar-main a {
   line-height: 60px;
 }
 
+ul.sidebar .sidebar-main .wrap {
+    word-wrap: break-word;
+    width: 180px;
+}
+
 ul.sidebar .inactive {
     height: 50px;
 }
