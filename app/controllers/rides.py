@@ -358,13 +358,13 @@ class NewRideHandler(BaseHandler):
             'driver': bool,
             'driven_by': unicode,
             Required('dest'): {
-                'lat': float,
-                'lng': float,
+                'lat': Coerce(float),
+                'lng': Coerce(float),
                 'address': unicode
             },
             Required('orig'): {
-                'lat': float,
-                'lng': float,
+                'lat': Coerce(float),
+                'lng': Coerce(float),
                 'address': unicode
             },
             'recurring': unicode,
@@ -446,7 +446,9 @@ class RideEvent(BaseHandler):
             'time': unicode,
             'details': unicode,
             'driver': bool,
-            'circle': unicode
+            'circle': unicode,
+            'lat': Coerce(float),
+            'lng': Coerce(float)
         })
 
         try:
@@ -462,23 +464,12 @@ class RideEvent(BaseHandler):
 
         ride = Ride()
 
-        address = urllib.quote(data['address'])
-        url = "http://maps.googleapis.com/maps/api/geocode/json?address=%s" % address
-
-        response = urllib2.urlopen(url)
-        json_geocode = json.loads(response.read())
-
-        if not json_geocode['status'] == 'OK':
-            return self.json_resp(500, {
-                'message': 'Address not found'
-            })
-
         ride.dest_add = event.address
         ride.dest_lat = event.lat
         ride.dest_lng = event.lng
-        ride.origin_add = json_geocode['results'][0]['formatted_address']
-        ride.origin_lat = json_geocode['results'][0]['geometry']['location']['lat']
-        ride.origin_lng = json_geocode['results'][0]['geometry']['location']['lng']
+        ride.origin_add = data['address']
+        ride.origin_lat = data['lat']
+        ride.origin_lng = data['lng']
         ride.date = data['date']
         ride.time = data['time']
         ride.circle = self.circle().key()

@@ -51,19 +51,64 @@
                 </div>
             </div>
             <div class="panel panel-main">
-                <div class="panel-heading">Comments</div>
-                <div class="panel-body" data-comment='container'>
-                    <form data-comment='form' autocomplete='off'>
-                        <div class="form-group">
-                            <label>Comment</label>
-                            <textarea class='form-control' rows='3' name='comment'></textarea>
+                <div class="panel-heading">
+                    Members of Circle ({{total_members}} Members)
+                    <div class="pull-right">
+                        <a href="/circle/{{circle.key().id()}}/invite">
+                            Invite Friends
+                        </a>
+                    </div>
+                </div>
+                <div class="panel-body">
+                {% if admins %}
+                {% for member in admins %}
+                    <div class="media">
+                        <a href="#" class='pull-left'>
+                            <img src="/user/photo/{{member.key().id()}}" style="width: 64px; height: 64px;" class="media-object" alt="64x64">
+                        </a>
+                        <div class="media-body">
+                            <div class="pull-left">
+                                <h4>{{member.name}}</h4>
+                            </div>
+                            {% if is_admin %}
+                            <div class="pull-right">
+                                <div class="options">
+                                    {% if not member.key() in circle.admins %}
+                                        <button class='btn btn-success' data-promote='{{member.key().id()}}'>Promote to Manager</button>
+                                    {% endif %}
+                                    <button class='btn btn-danger' data-kick='{{member.key().id()}}'>Kick Member</button>
+                                </div>
+                            </div>
+                            {% endif %}
                         </div>
-                        <button type='submit' class='btn btn-primary'>
-                            Post Comment
-                        </button>
-                    </form>
+                    </div>
+                {% endfor %}
+                {% endif %}
+                {% for member in members %}
+                    <div class="media">
+                        <a href="#" class='pull-left'>
+                            <img src="/user/photo/{{member.key().id()}}" style="width: 64px; height: 64px;" class="media-object" alt="64x64">
+                        </a>
+                        <div class="media-body">
+                            <div class="pull-left">
+                                <h4>{{member.name}}</h4>
+                            </div>
+                            {% if is_admin %}
+                            <div class="pull-right">
+                                <div class="options">
+                                    {% if not member.key() in circle.admins %}
+                                        <button class='btn btn-success' data-promote='{{member.key().id()}}'>Promote to Manager</button>
+                                    {% endif %}
+                                    <button class='btn btn-danger' data-kick='{{member.key().id()}}'>Kick Member</button>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
                 </div>
             </div>
+
         </div>
         <div class="col-md-6">
             <div class="panel panel-main">
@@ -107,63 +152,17 @@
                 </div>
             </div>
             <div class="panel panel-main">
-                <div class="panel-heading">
-                    Members of Circle ({{total_members}} Members)
-                    <div class="pull-right">
-                        <a href="/circle/{{circle.key().id()}}/invite">
-                            Invite Friends
-                        </a>
-                    </div>
-                </div>
-                <div class="panel-body">
-                {% if admins %}
-                <h1>Admins</h1>
-                {% for member in admins %}
-                    <div class="media">
-                        <a href="#" class='pull-left'>
-                            <img src="/user/photo/{{member.key().id()}}" style="width: 64px; height: 64px;" class="media-object" alt="64x64">
-                        </a>
-                        <div class="media-body">
-                            <div class="pull-left">
-                                <h4>{{member.name}}</h4>
-                            </div>
-                            {% if is_admin %}
-                            <div class="pull-right">
-                                <div class="options">
-                                    {% if not member.key() in circle.admins %}
-                                        <button class='btn btn-success' data-promote='{{member.key().id()}}'>Promote to Admin</button>
-                                    {% endif %}
-                                    <button class='btn btn-danger' data-kick='{{member.key().id()}}'>Kick Member</button>
-                                </div>
-                            </div>
-                            {% endif %}
+                <div class="panel-heading">Comments</div>
+                <div class="panel-body" data-comment='container'>
+                    <form data-comment='form' autocomplete='off'>
+                        <div class="form-group">
+                            <label>Comment</label>
+                            <textarea class='form-control' rows='3' name='comment'></textarea>
                         </div>
-                    </div>
-                {% endfor %}
-                {% endif %}
-                <h1>Members</h1>
-                {% for member in members %}
-                    <div class="media">
-                        <a href="#" class='pull-left'>
-                            <img src="/user/photo/{{member.key().id()}}" style="width: 64px; height: 64px;" class="media-object" alt="64x64">
-                        </a>
-                        <div class="media-body">
-                            <div class="pull-left">
-                                <h4>{{member.name}}</h4>
-                            </div>
-                            {% if is_admin %}
-                            <div class="pull-right">
-                                <div class="options">
-                                    {% if not member.key() in circle.admins %}
-                                        <button class='btn btn-success' data-promote='{{member.key().id()}}'>Promote to Admin</button>
-                                    {% endif %}
-                                    <button class='btn btn-danger' data-kick='{{member.key().id()}}'>Kick Member</button>
-                                </div>
-                            </div>
-                            {% endif %}
-                        </div>
-                    </div>
-                {% endfor %}
+                        <button type='submit' class='btn btn-primary'>
+                            Post Comment
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>

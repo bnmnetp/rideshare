@@ -18,7 +18,7 @@
                 <label>Event Name</label>
                 <input class="form-control" type="text" placeholder="Name" name='name' required>
             </div>
-            <div class="form-group" data-location='container'>
+            <div class="form-group" data-location='event'>
                 <label>Event Address</label>
                 <div class="input-group">
                     <input class="form-control" type="text" placeholder='Address' name='address' required data-location='input'>
@@ -30,6 +30,11 @@
                     <b>Results:</b> <span data-location='address'></span>
                 </div>
                 <div class="help-block">You must search for an address before submitting.</div>
+            </div>
+            <div class="form-group">
+                <label>Location Description</label>
+                <input class="form-control" type="text" placeholder="Name" name='location' required>
+                <p class="help-block">Give a short description of where the event will take place. i.e. Decorah High School</p>
             </div>
             <div class="form-group">
                 <label>Date</label>
@@ -110,7 +115,7 @@
         }
     });
 
-    var ql_container = document.querySelector('[data-location="input"]');
+    var ql_container = document.querySelector('[data-location="event"]');
     var ql = new QueryLocation(
         ql_container,
         edit_event

@@ -13,21 +13,18 @@
         <form data-form='alert'>
             <div class="panel panel-default">
                 <div class="panel-body">
-                    Set your preferences to recieve alerts for important events.
-                    You are notified if:
-                    <ul>
-                        <li>A person leaves or joins a ride you are connected to.</li>
-                    </ul>
-                    Alerts always appear on your <a href='/home'>home page</a>. These preferences help you to be notified quicker.
+                You will recieve a ride alert on your dashboard and via your chosen notificaiton method when a person joins or leaves a ride you are connected to.
                 </div>
             </div>
             <div class="form-group">
                 <label>How long prior to scheduled departue would you like to be notified?</label>
                 <select class='form-control' name='time'>
                     <option value="0">No notifications</option>
-                    <option value="1">Within 24 hours</option>
-                    <option value="2">Within 48 days</option>
-                    <option value="7">Within 7 days</option>
+                    <option value="2">Within 2 hours</option>
+                    <option value="6">Within 6 hours</option>
+                    <option value="12">Within 12 hours</option>
+                    <option value="24">Within 24 hours</option>
+                    <option value="48">Within 48 hours</option>
                 </select>
             </div>
             <div class="form-group">
@@ -40,7 +37,7 @@
         </form>
     </div>
 </div>
-<div class="panel panel-main">
+<!-- <div class="panel panel-main">
     <div class="panel-heading">Circle Notification Preferences</div>
     <div class="panel-body">
         <form data-form='notification'>
@@ -65,7 +62,7 @@
             <button type='submit' class='btn btn-default'>Update preferences</button>
         </form>
     </div>
-</div>
+</div> -->
 {% endblock %}
 
 {% block scripts %}
@@ -80,7 +77,7 @@
 {% endraw %}
 <script type="text/javascript">
     var alert_form = document.querySelector('[data-form="alert"]');
-    var noti_form = document.querySelector('[data-form="notification"]');
+    // var noti_form = document.querySelector('[data-form="notification"]');
 
     var push_alert = new SubmitForm({
         form: alert_form,

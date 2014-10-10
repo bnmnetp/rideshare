@@ -20,7 +20,7 @@ class EditCircle(BaseHandler):
         if not circle:
             self.redirect('/circles')
 
-        properties = ['name', 'description', 'privacy', 'permission', 'color']
+        properties = ['name', 'description', 'privacy', 'permission', 'color', 'address', 'lat', 'lng']
 
         circle_json = grab_json(circle, properties)
         
@@ -46,7 +46,10 @@ class EditCircle(BaseHandler):
             Required('description', default=""): unicode,
             Required('privacy', default="public"): unicode,
             Required('color', default="#607d8b"): unicode,
-            Required('permission'): unicode
+            Required('permission'): unicode,
+            'address': unicode,
+            'lat': Coerce(float),
+            'lng': Coerce(float)
         })
 
         json_str = self.request.body
@@ -68,6 +71,9 @@ class EditCircle(BaseHandler):
         circle.privacy = data['privacy']
         circle.color = data['color']
         circle.permission = data['permission']
+        circle.address = data['address']
+        circle.lat = data['lat']
+        circle.lng = data['lng']
 
         circle.put()
 
@@ -118,7 +124,10 @@ class GetCircleHandler(BaseHandler):
 
         today = date.today()
 
-        events_all = Event.all().filter('circle =', circle).filter('date >=', today).fetch(None)
+        events_all = Event.all().filter('circle =', circle).filter('date >=', today).fetch(100)
+
+        for event in events_all:
+            event.date_str = event.date.strftime('%B %dth, %Y')
 
         doRender(self, 'view_circle.html', {
             'circle': circle,
@@ -209,7 +218,10 @@ class CircleHandler(BaseHandler):
             Required('description', default=""): unicode,
             Required('privacy', default="public"): unicode,
             Required('color', default="#607d8b"): unicode,
-            Required('permission'): unicode
+            Required('permission'): unicode,
+            'address': unicode,
+            'lat': Coerce(float),
+            'lng': Coerce(float)
         })
 
         json_str = self.request.body
@@ -229,6 +241,9 @@ class CircleHandler(BaseHandler):
         circle.color = data['color']
         circle.permission = data['permission']
         circle.admins.append(user.key())
+        circle.address = data['address']
+        circle.lat = data['lat']
+        circle.lng = data['lng']
 
         circle.put()
 

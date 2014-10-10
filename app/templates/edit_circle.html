@@ -17,6 +17,19 @@
                 <label>Name</label>
                 <input type='text' name='name' placeholder='Name' class='form-control'>
             </div>
+            <div class="form-group" data-location='base'>
+                <label>Home Base Address</label>
+                <div class="input-group">
+                    <input class="form-control" type="text" placeholder='Address' name='address' required data-location='input'>
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="button" data-location='search'>Search Address</button>
+                    </span>
+                </div>
+                <div data-location='output' class='hidden'>
+                    <b>Results:</b> <span data-location='address'></span>
+                </div>
+                <div class="help-block">You must search for an address before submitting.</div>
+            </div>
             <div class='form-group'>
                 <label>Description</label>
                 <input type='text' name='description' placeholder='Description' class='form-control'>
@@ -56,6 +69,7 @@
 
 {% block scripts %}
 <script src='/static/js/push.js'></script>
+<script src='/static/js/location.js'></script>
 {% raw %}
 <script data-notify="template" type='text/x-handlebars-template'>
     <div class="alert alert-{{type}} alert-dismissable">
@@ -84,5 +98,11 @@
             });
         }
     });
+
+    var ql_container = document.querySelector('[data-location="base"]');
+    var ql = new QueryLocation(
+        ql_container,
+        push
+    );
 </script>
 {% endblock %}

@@ -16,6 +16,10 @@ class User(db.Model):
     noti_time = db.IntegerProperty()
     noti_type = db.StringProperty()
 
+    address = db.StringProperty()
+    lat = db.FloatProperty()
+    lng = db.FloatProperty()
+
     def to_dict(self):
         resp = {}
         for u in User._properties:
@@ -32,6 +36,10 @@ class Circle(db.Model):
     permission = db.StringProperty()
     requests = db.ListProperty(db.Key)
     zip = db.IntegerProperty()
+
+    address = db.StringProperty()
+    lat = db.FloatProperty()
+    lng = db.FloatProperty()
 
     def to_dict(self):
         d = {}
@@ -51,6 +59,7 @@ class Event(db.Model):
     time = db.StringProperty()
     details = db.TextProperty()
     creator = db.ReferenceProperty(User)
+    location = db.TextProperty()
 
     def to_dict(self):
         resp = {}
