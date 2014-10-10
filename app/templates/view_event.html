@@ -406,7 +406,7 @@
     		lng: ''
     	},
     	method: 'POST',
-    	route: '/event/{{event.key().id()}}/driver',
+    	route: '/event/{{event.key().id()}}/driver/1',
     	done: function (data) {
             document.location = '/ride/' + data.id;
         },
@@ -438,7 +438,7 @@
     		lng: ''
     	},
     	method: 'POST',
-    	route: '/event/{{event.key().id()}}/passenger',
+    	route: '/event/{{event.key().id()}}/passenger/1',
     	done: function (data) {
             document.location = '/ride/' + data.id;
         },
