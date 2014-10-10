@@ -1,9 +1,9 @@
 var QueryLocation = function QueryLocation (parent, submit_form) {
 	this.parent = parent;
-	this.btn = document.querySelector('[data-location="search"]');
-	this.input = document.querySelector('[data-location="input"]');
-	this.output = document.querySelector('[data-location="output"]');
-	this.address = document.querySelector('[data-location="address"]');
+	this.btn = this.parent.querySelector('[data-location="search"]');
+	this.input = this.parent.querySelector('[data-location="input"]');
+	this.output = this.parent.querySelector('[data-location="output"]');
+	this.address = this.parent.querySelector('[data-location="address"]');
 
 	this.submit_form = submit_form;
 
@@ -24,8 +24,8 @@ QueryLocation.prototype.send_request = function (e) {
 				this.output.classList.remove('hidden');
 				this.address.textContent = data['results'][0]['formatted_address'];
 				this.result.add = data['results'][0]['formatted_address'];
-				this.result.lat = data['results'][0]['geometry']['location']['lat'];
-				this.result.lng = data['results'][0]['geometry']['location']['lng'];
+				this.result.lat = parseFloat(data['results'][0]['geometry']['location']['lat']);
+				this.result.lng = parseFloat(data['results'][0]['geometry']['location']['lng']);
 				this.submit_form.set('address', this.result.add);
 				this.submit_form.set('lat', this.result.lat);
 				this.submit_form.set('lng', this.result.lng);

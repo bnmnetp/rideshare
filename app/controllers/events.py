@@ -17,6 +17,7 @@ class GetEventHandler(BaseHandler):
         event = Event.get_by_id(int(id))
 
         event.date_str = event.date.strftime('%B %dth, %Y')
+        event.date_picker = event.date.strftime("%m/%d/%Y")
 
         offered = Ride.all().filter('event = ', event.key()).filter('driver != ', None).fetch(None)
         requested = Ride.all().filter('event = ', event.key()).filter('driver = ', None).fetch(None)
@@ -103,12 +104,13 @@ class NewEventHandler(BaseHandler):
 
         event_validator = Schema({
             Required('name'): unicode,
-            Required('lat'): float,
-            Required('lng'): float,
+            Required('lat'): Coerce(float),
+            Required('lng'): Coerce(float),
             Required('address'): unicode,
             Required('date'): toolbox.create_date(),
             'time': unicode,
-            'details': unicode
+            'details': unicode,
+            'location': unicode
         }, extra = True)
 
         try:
@@ -123,6 +125,7 @@ class NewEventHandler(BaseHandler):
         # Refer to model.py for structure of data
         # class Event
         event.name = data['name']
+        event.location = data['location']
         event.lat = data['lat']
         event.lng = data['lng']
         event.address = data['address']
@@ -154,7 +157,7 @@ class EditEvent(BaseHandler):
 
         event = Event.get_by_id(int(event_id))
 
-        properties = ['name', 'date', 'time', 'details', 'address', 'lat', 'lng']
+        properties = ['name', 'date', 'time', 'details', 'address', 'lat', 'lng', 'location']
 
         event_json = toolbox.grab_json(event, properties)
 
@@ -171,11 +174,33 @@ class EditEvent(BaseHandler):
         json_str = self.request.body
         data = json.loads(json_str)
 
+
+        event_validator = Schema({
+            Required('name'): unicode,
+            'location': unicode,
+            'lat': Coerce(float),
+            'lng': Coerce(float),
+            'address': unicode,
+            Required('date'): toolbox.create_date(),
+            'time': unicode,
+            'details': unicode
+        }, extra = True)
+
+        try:
+            data = event_validator(data)
+        except MultipleInvalid as e:
+            print str(e)
+            return self.json_resp(500, {
+                'error': True,
+                'message': 'Invalid data'
+            })
+
         user = self.current_user()
 
         event = Event.get_by_id(int(event_id))
 
         event.name = data['name']
+        event.location = data['location']
         event.data = data['date']
         event.time = data['time']
         event.details = data['details']

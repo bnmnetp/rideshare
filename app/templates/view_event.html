@@ -20,6 +20,9 @@
 					<li>
 						<b>Event name:</b> {{event.name}}
 					</li>
+					<li>
+						<b>Location description:</b> {{event.location}}
+					</li>
 					{% if event.details %}
 					<li>
 						<b>Details:</b> {{event.details}}
@@ -50,8 +53,15 @@
 				Event Location
 			</div>
 			<div class="panel-body map-container-sm">
+				<p>
+					Distance: <span data-route='distance'></span>
+				</p>
+				<p>
+					Duration: <span data-route='duration'></span>
+				</p>
 				<div id="map_canvas"></div>
 			</div>
+
 		</div>
 	</div>
 </div>
@@ -166,11 +176,19 @@
                     <h4 class="modal-title">Need a ride</h4>
                 </div>
                 <div class="modal-body">
-                	<div class="form-group">
-                		<label>Starting address</label>
-                		<input class="form-control" type="text" placeholder="Address" name='address' required>
-                		<p class="help-block">Please input a full address.</p>
-                	</div>
+		            <div class="form-group" data-location='passenger'>
+		                <label>Starting Address</label>
+		                <div class="input-group">
+		                    <input class="form-control" type="text" placeholder='Address' name='address' required data-location='input'>
+		                    <span class="input-group-btn">
+		                        <button class="btn btn-default" type="button" data-location='search'>Search Address</button>
+		                    </span>
+		                </div>
+		                <div data-location='output' class='hidden'>
+		                    <b>Results:</b> <span data-location='address'></span>
+		                </div>
+		                <div class="help-block">You must search for an address before submitting.</div>
+		            </div>
 		            <div class="form-group">
 		                <label>Date</label>
 		                <div class='input-group date' data-datepicker data-date-format="MM/DD/YYYY">
@@ -214,14 +232,22 @@
                     <h4 class="modal-title">Offer a ride</h4>
                 </div>
                 <div class="modal-body">
-                	<div class="form-group">
-                		<label>Starting address</label>
-                		<input class="form-control" type="text" placeholder="Address" name='address' required>
-                		<p class="help-block">Please input a full address.</p>
-                	</div>
+		            <div class="form-group" data-location='driver'>
+		                <label>Starting Address</label>
+		                <div class="input-group">
+		                    <input class="form-control" type="text" placeholder='Address' name='address' required data-location='input'>
+		                    <span class="input-group-btn">
+		                        <button class="btn btn-default" type="button" data-location='search'>Search Address</button>
+		                    </span>
+		                </div>
+		                <div data-location='output' class='hidden'>
+		                    <b>Results:</b> <span data-location='address'></span>
+		                </div>
+		                <div class="help-block">You must search for an address before submitting.</div>
+		            </div>
 		            <div class="form-group">
 		                <label>Passenger seats availible</label>
-		                <select class="form-control" name='max_passengers' required>
+		                <select class="form-control" name='passengers_max' required>
 		                    <option>1</option>
 		                    <option>2</option>
 		                    <option>3</option>
@@ -288,6 +314,9 @@
 <script src='/static/js/comment.js'></script>
 <script src='//cdnjs.cloudflare.com/ajax/libs/moment.js/2.7.0/moment.min.js'></script>
 <script src='//cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/3.0.0/js/bootstrap-datetimepicker.min.js'></script>
+
+<script src='/static/js/push.js'></script>
+<script src='/static/js/location.js'></script>
 {% include 'comment.html' %}
 {% raw %}
 <script data-notify="template" type='text/x-handlebars-template'>
@@ -323,7 +352,11 @@
 	});
 
 	/* Map */
-	var position = new google.maps.LatLng({{event.lat}}, {{event.lng}});
+	var orig_pos = new google.maps.LatLng({{circle.lat}}, {{circle.lng}});
+	var dest_pos = new google.maps.LatLng({{event.lat}}, {{event.lng}});
+
+    var direction_render = new google.maps.DirectionsRenderer();
+    var direction_service = new google.maps.DirectionsService();
 
 	var icon = {
 		url: '/static/person.png',
@@ -333,93 +366,95 @@
 
 	var map = new google.maps.Map(document.querySelector('#map_canvas'), {
 	    draggableCursor: 'crosshair',
-	    center: position,
+	    center: orig_pos,
 	    mapTypeId: google.maps.MapTypeId.ROADMAP,
 	    zoom: 10
 	});
+	direction_render.setMap(map);
 
-	var event_marker = new google.maps.Marker({
-		position: position,
-		map: map,
-		icon: icon
-	});
-
-	var info_window = new google.maps.InfoWindow({
-		content: 'Event Location'
-	});
-
-	google.maps.event.addListener(event_marker, 'click', function () {
-		info_window.open(map, event_marker);
-	});
+    function calc_route () {
+        var request = {
+            origin: orig_pos,
+            destination: dest_pos,
+            travelMode: google.maps.TravelMode.DRIVING
+        };
+        direction_service.route(request, function (result, status) {
+            if (status == google.maps.DirectionsStatus.OK) {
+            	console.log(result);
+            	var duration = document.querySelector('[data-route="duration"]');
+            	var distance = document.querySelector('[data-route="distance"]');
+            	duration.textContent = result.routes[0].legs[0].duration.text;
+            	distance.textContent = result.routes[0].legs[0].distance.text;
+                direction_render.setDirections(result);
+            }
+        });
+    };
+    calc_route();
 	/* End */
 
     var form_driver = document.querySelector('[data-send="driver"]');
 
-    form_driver.addEventListener('submit', function (e) {
-        e.preventDefault();
-
-        var form = e.target;
-
-        var data = {};
-        data.passengers_max = form.max_passengers.value;
-        data.date = form.date.value;
-        data.time = form.time.value;
-        data.details = form.details.value;
-        data.address = form.address.value;
-
-        var push = $.ajax({
-            type: 'POST',
-            url: '/event/{{event.key().id()}}/driver',
-            dataType: 'json',
-            contentType: 'application/json; charset=UTF-8',
-            data: JSON.stringify(data)
-        });
-
-        push.done(function (data) {
+    var submit_driver = new SubmitForm({
+    	form: form_driver,
+    	model: {
+    		passengers_max: 1,
+    		date: '',
+    		time: '',
+    		details: '',
+    		address: '',
+    		lat: '',
+    		lng: ''
+    	},
+    	method: 'POST',
+    	route: '/event/{{event.key().id()}}/driver',
+    	done: function (data) {
             document.location = '/ride/' + data.id;
-        });
-
-        push.fail(function (data, status) {
+        },
+        fail: function (data, status) {
             notify({
                 type: 'danger',
                 strong: 'Oops',
                 message: 'Refresh and try again'
             });
-        });
+        }
     });
+
+    var ql_container = document.querySelector('[data-location="driver"]');
+    var ql = new QueryLocation(
+        ql_container,
+        submit_driver
+    );
 
     var form_pass = document.querySelector('[data-send="pass"]');
 
-    form_pass.addEventListener('submit', function (e) {
-        e.preventDefault();
-
-        var form = e.target;
-
-        var data = {};
-        data.time = form.time.value;
-        data.date = form.date.value;
-        data.details = form.details.value;
-        data.address = form.address.value;
-
-        var push = $.ajax({
-            type: 'POST',
-            url: '/event/{{event.key().id()}}/passenger',
-            dataType: 'json',
-            contentType: 'application/json; charset=UTF-8',
-            data: JSON.stringify(data)
-        });
-
-        push.done(function (data) {
+    var submit_pass = new SubmitForm({
+    	form: form_pass,
+    	model: {
+    		date: {{event.date_picker}},
+    		time: '',
+    		details: '',
+    		address: '',
+    		lat: '',
+    		lng: ''
+    	},
+    	method: 'POST',
+    	route: '/event/{{event.key().id()}}/passenger',
+    	done: function (data) {
             document.location = '/ride/' + data.id;
-        });
-
-        push.fail(function (data, status) {
+        },
+        fail: function (data, status) {
             notify({
                 type: 'danger',
                 strong: 'Oops',
                 message: 'Refresh and try again'
             });
-        });
+        }
     });
+
+    var ql_container = document.querySelector('[data-location="passenger"]');
+    var ql = new QueryLocation(
+        ql_container,
+        submit_pass
+    );
 </script>
 {% endblock %}

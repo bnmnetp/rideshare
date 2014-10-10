@@ -79,7 +79,7 @@ class EditUserHandler(BaseHandler):
 
         user = self.current_user()
 
-        properties = ['name', 'email', 'phone', 'zip']
+        properties = ['name', 'email', 'phone', 'zip', 'address', 'lat', 'lng']
 
         user_json = grab_json(user, properties)
 
@@ -103,7 +103,10 @@ class EditUserHandler(BaseHandler):
             Required('email'): unicode,
             Required('phone'): unicode,
             Required('name'): unicode,
-            'photo': unicode
+            'photo': unicode,
+            'address': unicode,
+            'lat': float,
+            'lng': float
         })
 
         try:
@@ -111,7 +114,7 @@ class EditUserHandler(BaseHandler):
         except MultipleInvalid as e:
             return self.json_resp(500, {
                 'error': str(e),
-                'message': 'Data could not be validated'
+                'message': 'Data could not be validated!'
             })
 
         self.auth()
@@ -121,6 +124,9 @@ class EditUserHandler(BaseHandler):
         user.email = data['email']
         user.phone = data['phone']
         user.zip = data['zip']
+        user.address = data['address']
+        user.lat = data['lat']
+        user.lng = data['lng']
 
         if not user.key().id() == int(user_id):
             self.redirect('/user/' + user_id)
@@ -187,7 +193,10 @@ class DetailHandler(BaseHandler):
             Required('zip'): Coerce(int),
             Required('email'): unicode,
             Required('phone'): unicode,
-            Required('name'): unicode
+            Required('name'): unicode,
+            'address': unicode,
+            'lat': float,
+            'lng': float
         })
 
         try:
@@ -202,6 +211,9 @@ class DetailHandler(BaseHandler):
         user.email = data['email']
         user.phone = data['phone']
         user.zip = data['zip']
+        user.add = data['address']
+        user.lat = data['lat']
+        user.lng = data['lng']
 
         circle_match = Circle.all().filter('zip =', data['zip']).get()
 

@@ -27,6 +27,18 @@
                 <label>ZIP</label>
                 <input type="text" class='form-control' placeholder='ZIP' name='zip'>
             </div>
+            <div class="form-group" data-location='address'>
+                <label>Home Address</label>
+                <div class="input-group">
+                    <input class="form-control" type="text" placeholder='Address' name='add' required data-location='input'>
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="button" data-location='search'>Search Address</button>
+                    </span>
+                </div>
+                <div data-location='output' class='hidden'>
+                    <b>Results:</b> <span data-location='address'></span>
+                </div>
+            </div>
             <div class="form-group">
                 <label>Profile Picture</label>
                 <input type='file' name ='photo'>
@@ -40,6 +52,7 @@
 
 {% block scripts %}
 <script src='/static/js/push.js'></script>
+<script src='/static/js/location.js'></script>
 {% raw %}
 <script data-notify="template" type='text/x-handlebars-template'>
     <div class="alert alert-{{type}} alert-dismissable">
@@ -128,5 +141,11 @@
 
         reader.readAsDataURL(file);
     }
+
+    var ql_container = document.querySelector('[data-location="address"]');
+    var ql = new QueryLocation(
+        ql_container,
+        user_submit
+    );
 </script>
 {% endblock %}

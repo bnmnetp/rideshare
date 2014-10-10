@@ -358,13 +358,13 @@ class NewRideHandler(BaseHandler):
             'driver': bool,
             'driven_by': unicode,
             Required('dest'): {
-                'lat': float,
-                'lng': float,
+                'lat': Coerce(float),
+                'lng': Coerce(float),
                 'address': unicode
             },
             Required('orig'): {
-                'lat': float,
-                'lng': float,
+                'lat': Coerce(float),
+                'lng': Coerce(float),
                 'address': unicode
             },
             'recurring': unicode,
