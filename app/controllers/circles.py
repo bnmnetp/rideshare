@@ -124,7 +124,10 @@ class GetCircleHandler(BaseHandler):
 
         today = date.today()
 
-        events_all = Event.all().filter('circle =', circle).filter('date >=', today).fetch(None)
+        events_all = Event.all().filter('circle =', circle).filter('date >=', today).fetch(100)
+
+        for event in events_all:
+            event.date_str = event.date.strftime('%B %dth, %Y')
 
         doRender(self, 'view_circle.html', {
             'circle': circle,
