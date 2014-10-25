@@ -89,8 +89,11 @@ class GetCircleHandler(BaseHandler):
         circle = Circle.get_by_id(int(circle_id))
 
         if not circle:
+            self.session['circle'] = None
             self.redirect('/circles')
             return None
+
+        self.session['circle'] = circle.key().id()
 
         user = self.current_user()
 

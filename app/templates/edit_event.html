@@ -59,7 +59,7 @@
                 <input class="form-control" type="text" placeholder="Details" name='details'>
             </div>
             <button type='submit' class='btn btn-primary'>Edit Event</button>
-            <button type='button' class='btn btn-danger pull-right'>Delete Event</button>
+            <button type='button' class='btn btn-danger pull-right' data-event='delete'>Delete Event</button>
         </form>
     </div>
 </div>
@@ -120,5 +120,31 @@
         ql_container,
         edit_event
     );
+
+    var delete_event = document.querySelector('[data-event="delete"]');
+
+    delete_event.addEventListener('click', function (e) {
+        var request = $.ajax({
+            type: 'POST',
+            url: '/event/{{event.key().id()}}/delete',
+            dataType: 'json',
+            contentType: 'application/json; charset=UTF-8',
+            data: JSON.stringify({
+                delete: true
+            })
+        });
+
+        request.done(function (data) {
+            document.location = '/circles';
+        });
+
+        request.fail(function (data, status) {
+            notify({
+                type: 'danger',
+                strong: 'Event not deleted.',
+                message: 'Try again.'
+            });
+        });
+    });
 </script>
 {% endblock %}

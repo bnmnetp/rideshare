@@ -14,7 +14,7 @@ def send_email(user, subject, template_file, ctx):
 	html = template.render(ctx)
 
 	message = mail.EmailMessage(
-		sender='Rideshare Team <bananagus@gmail.com>',
+		sender='Ridecircle Team <help@ridecircles.us>',
 		subject=subject
 	)
 
@@ -30,8 +30,8 @@ def send_invite(email, ctx):
 	html = template.render(ctx)
 
 	message = mail.EmailMessage(
-		sender='Rideshare Team <bananagus@gmail.com>',
-		subject='Invite to Rideshare'
+		sender='Ridecircle Team <help@ridecircles.us>',
+		subject='You are invited to join Ridecircles'
 	)
 
 	message.to = ' <' + email + '>'
