@@ -352,7 +352,11 @@
 	});
 
 	/* Map */
-	var orig_pos = new google.maps.LatLng({{circle.lat}}, {{circle.lng}});
+	{% if circle.lat and circle.lng %}
+		var orig_pos = new google.maps.LatLng({{circle.lat}}, {{circle.lng}});
+	{% else %}
+		var orig_pos = new google.maps.LatLng(43.3017, -91.7903);
+	{% endif %}
 	var dest_pos = new google.maps.LatLng({{event.lat}}, {{event.lng}});
 
     var direction_render = new google.maps.DirectionsRenderer();

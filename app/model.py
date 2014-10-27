@@ -7,7 +7,7 @@ class User(db.Model):
     password = db.StringProperty()
     created = db.DateTimeProperty(auto_now_add=True)
     updated = db.DateTimeProperty(auto_now=True)
-    name = db.StringProperty(default='')
+    name = db.StringProperty(default='No name entered')
     email = db.StringProperty(default='')
     phone = db.StringProperty(default='')
     circles = db.ListProperty(db.Key)
