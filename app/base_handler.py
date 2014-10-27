@@ -8,12 +8,17 @@ class BaseHandler(webapp2.RequestHandler):
     def auth(self):
         id = self.session.get('user')
         self.session['redirect'] = self.request.path
+        redirect_str = '/?'
+        if 'redirect' in self.session:
+            redirect_str += 'redirect=' + self.session['redirect'] + '&'
+        if 'invited' in self.session:
+            redirect_str += 'invited=' + self.session['invited'] + '&'
         if id and id != None:
             user = User.get_by_id(id)
             if not user:
-                return webapp2.redirect('/', False, True)
+                return webapp2.redirect(redirect_str, False, True)
         else:
-            return webapp2.redirect('/', False, True)
+            return webapp2.redirect(redirect_str, False, True)
 
     def current_user(self):
         id = self.session.get('user')
@@ -67,10 +72,14 @@ class BaseHandler(webapp2.RequestHandler):
     def login_redirect(self, user):
         redirect_str = '/home'
         redirect = self.session.get('redirect')
-        if redirect == '' or redirect == None:
-            redirect_str = redirect
+        if redirect == None or redirect == '':
+            print('FLAG #2')
+            redirect_str = str(redirect)
             self.session['redirect'] = None
         else:
-            if user.phone == None or user.email == None or user.zip == None or user.name == None:
+            print('FLAG #1')
+            if user.phone == 0 or user.email == '' or user.zip == 'None' or user.name == 'No name entered':
                 redirect_str = '/user/edit/' + str(user.key().id())
+
+        print(redirect_str)
         return redirect_str

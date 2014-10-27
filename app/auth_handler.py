@@ -18,7 +18,7 @@ class AuthHandler(BaseHandler, SimpleAuthHandler):
             user.auth_id = auth_id
             user.put()
             self.session['user'] = user.key().id()
-        return self.redirect(self.login_redirect(user))
+        return self.redirect(self.login_redirect(user), user)
     def logout(self):
         self.session['user'] = None
         self.redirect('/')
