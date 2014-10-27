@@ -4,6 +4,8 @@ from app import secrets
 from app.model import *
 import urllib
 
+from app.controllers.accounts import check_for_invite
+
 from app.base_handler import BaseHandler
 
 class AuthHandler(BaseHandler, SimpleAuthHandler):
@@ -18,6 +20,7 @@ class AuthHandler(BaseHandler, SimpleAuthHandler):
             user.auth_id = auth_id
             user.put()
             self.session['user'] = user.key().id()
+        check_for_invite(self, user)
         return self.redirect(self.login_redirect(user))
     def logout(self):
         self.session['user'] = None

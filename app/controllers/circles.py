@@ -89,8 +89,11 @@ class GetCircleHandler(BaseHandler):
         circle = Circle.get_by_id(int(circle_id))
 
         if not circle:
+            self.session['circle'] = None
             self.redirect('/circles')
             return None
+
+        self.session['circle'] = circle.key().id()
 
         user = self.current_user()
 
@@ -145,7 +148,7 @@ class GetCircleHandler(BaseHandler):
 class CircleInvited(BaseHandler):
     def get(self, circle_id):
         self.session['invited'] = str(circle_id)
-        print(self.session.get('invited'), 'TEST')
+        
         self.auth()
 
         user = self.current_user()
@@ -170,8 +173,6 @@ class CircleInvited(BaseHandler):
             'message': 'You have joined',
             'id': circle.key().id()
         })
-
-
 
 class GetCircleInvite(BaseHandler):
     def get(self, circle_id):

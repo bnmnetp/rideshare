@@ -7,6 +7,14 @@ from app.model import *
 
 from app.common.encryption import bcrypt
 
+def check_for_invite(self, user):
+    print('FLAG FOR CHECK INVITE')
+    if self.session.get('invited'):
+        print('FLAG FOR CHECK INVITE 2')
+        circle = Circle.get_by_id(int(self.session.get('invited')))
+        user.circles.append(circle.key())
+        user.put()
+
 class LoginHandler(BaseHandler):
     def get(self):
         if self.current_user():
@@ -37,6 +45,7 @@ class LoginHandler(BaseHandler):
 
         if bcrypt.hashpw(data['password'], user.password) == user.password:
             self.session['user'] = user.key().id()
+            check_for_invite(self, user)
             return self.json_resp(200, {
                 'message': 'You have logged in.',
                 'redirect': self.login_redirect(user)
@@ -65,7 +74,7 @@ class RegisterHandler(BaseHandler):
         user.put()
 
         self.session['user'] = user.key().id()
-
+        check_for_invite(self, user)
         return self.json_resp(200, {
             'message': 'Account created',
             'redirect': self.login_redirect(user)

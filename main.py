@@ -40,8 +40,12 @@ from app.common import toolbox
 
 class Marketing(BaseHandler):
     def get(self):
-        redirect = self.session.get('redirect')
-        invited = self.session.get('invited')
+        redirect = invited = None
+        if 'redirect' in self.request.GET:
+            redirect = self.request.GET['redirect']
+        if 'invited' in self.request.GET:
+            invited = self.request.GET['invited']
+            self.session['invited'] = str(invited)
         print(redirect, invited)
         invite = None
         if redirect and invited:
@@ -49,10 +53,6 @@ class Marketing(BaseHandler):
         toolbox.render(self, 'marketing/home.html', {
             'invite': invite
         })
-
-class GetStarted(BaseHandler):
-    def get(self):
-        toolbox.render(self, 'marketing/get_started.html')
     
 class MapHandler(BaseHandler):
     def get(self):
@@ -80,7 +80,6 @@ class HelpHandler(BaseHandler):
 
 app = webapp2.WSGIApplication([
     ('/', Marketing),
-    ('/get_started', GetStarted),
     ('/map', MapHandler),
 
     # controllers/accounts.py

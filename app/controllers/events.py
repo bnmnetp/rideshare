@@ -222,24 +222,23 @@ class DeleteEvent(BaseHandler):
 
         event = Event.get_by_id(int(event_id))
 
-        json_str = self.request.body
-        data = json.loads(json_str)
-
-        event_validator = Schema({
-            Required('name'): unicode,
-            Required('lat'): float,
-            Required('lng'): float,
-            Required('address'): unicode,
-            Required('date'): toolbox.create_date(),
-            'time': unicode,
-            'details': unicode
-        }, extra = True)
-
-        try:
-            data = event_validator(data)
-        except MultipleInvalid as e:
-            print str(e)
+        if not event:
             return self.json_resp(500, {
-                'error': True,
-                'message': 'Invalid data'
+                'message': 'This event does not exists.'
             })
+
+        if user.key() != event.creator.key():
+            return self.json_resp(500, {
+                'message': 'You do not have permission to delete this event.'
+            })
+
+        connected_rides = Ride.all().filter('event =', event.key()).fetch(None)
+
+        for ride in connected_rides:
+            ride.delete()
+
+        event.delete()
+
+        return self.json_resp(200, {
+            'message': 'Deleted event and all associated rides.'
+        })

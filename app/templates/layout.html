@@ -31,7 +31,7 @@
 				BETA. Please bear with us.
 			</li>
 			<li class="sidebar-title separator first beta-warning">
-				Email <a href='mailto:nelsan06@luther.edu'>developer</a> with issues.
+				Email <a href='mailto:nelsan06@luther.edu,andy@energydistrict.org'>developer</a> with issues.
 			</li>
 			<li class="sidebar-title separator first">
 				<span>ACTIVE CIRCLE (Click to switch)</span>
@@ -147,13 +147,15 @@
 			$('#sidebar-wrapper a[href="' + page_long + '"]').addClass('active');
 
 			var circle2_switcher = document.querySelector('[data-cwitch="li"]');
-			switch (page_short) {
-				case 'home':
-				case 'user':
-				case 'circles':
-				case 'newCircle':
-					circle2_switcher.classList.add('inactive');
-					break;
+			if (circle2_switcher) {
+				switch (page_short) {
+					case 'home':
+					case 'user':
+					case 'circles':
+					case 'newCircle':
+						circle2_switcher.classList.add('inactive');
+						break;
+				}
 			}
 		});
 
@@ -162,12 +164,15 @@
 			caret: document.querySelector('[data-cwitch="caret"]')
 		};
 
-		cwitch.caret.addEventListener('click', function (e) {
-			e.preventDefault();
-			cwitch.container.classList.toggle('active');
-			cwitch.caret.classList.toggle('fa-caret-down');
-			cwitch.caret.classList.toggle('fa-caret-up');
-		});	
+		if (cwitch.caret) {
+			cwitch.caret.addEventListener('click', function (e) {
+				e.preventDefault();
+				cwitch.container.classList.toggle('active');
+				cwitch.caret.classList.toggle('fa-caret-down');
+				cwitch.caret.classList.toggle('fa-caret-up');
+			});
+		}
+	
 	</script>
 	{% block scripts %}
 	{% endblock %}
