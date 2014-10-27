@@ -45,6 +45,7 @@ class Marketing(BaseHandler):
             redirect = self.request.GET['redirect']
         if 'invited' in self.request.GET:
             invited = self.request.GET['invited']
+            self.session['invited'] = str(invited)
         print(redirect, invited)
         invite = None
         if redirect and invited:
