@@ -41,7 +41,9 @@
 				<hr>
 				<button class='btn btn-primary' data-toggle='modal' data-target='#need_ride'>I need a ride to this event</button>
 				<button class='btn btn-primary' data-toggle='modal' data-target='#offer_ride'>I can offer a ride to this event</button>
-				<a class='btn btn-primary' href='/event/{{event.key().id()}}/edit'>Edit Event</a>
+				{% if user.key() == event.creator.key() %}
+					<a class='btn btn-primary' href='/event/{{event.key().id()}}/edit'>Edit Event</a>
+				{% endif %}
 				<hr>
 				<a href="http://maps.google.com/maps?q={{event.lat}},{{event.lng}}" target="_blank">View on Google Maps</a>
 			</div>
