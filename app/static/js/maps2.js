@@ -92,8 +92,12 @@ var Forms = augment(Object, function () {
 		var form  = e.target;
 		var m = {};
 
-		m.orig = map.start;
-		m.dest = map.end;
+		m.orig_address = map.start.address;
+		m.orig_lat = map.start.lat;
+		m.orig_lng = map.start.lng;
+		m.dest_address = map.end.address;
+		m.dest_lat = map.end.lat;
+		m.dest_lng = map.end.lng;
 
 		m.passengers_max = form.max_passengers.value;
 		m.date = form.date.value;
@@ -103,10 +107,11 @@ var Forms = augment(Object, function () {
 		m.driver = true;
 		m.recurring = form.recurring.value;
 		m.driven_by = form.driven_by.value;
+		m.event = '';
 
 		var push = $.ajax({
 			type: 'POST',
-			url: '/newride',
+			url: '/ride/create',
 			dataType: 'json',
 			contentType: 'application/json; charset=UTF-8',
 			data: JSON.stringify(m)
@@ -137,18 +142,23 @@ var Forms = augment(Object, function () {
 		var form  = e.target;
 		var m = {};
 
-		m.orig = map.start;
-		m.dest = map.end;
+		m.orig_address = map.start.address;
+		m.orig_lat = map.start.lat;
+		m.orig_lng = map.start.lng;
+		m.dest_address = map.end.address;
+		m.dest_lat = map.end.lat;
+		m.dest_lng = map.end.lng;
 
 		m.date = form.date.value;
 		m.time = form.time.value;
 		m.details = form.details.value;
 		m.circle = circle;
 		m.driver = false;
+		m.event = '';
 
 		var push = $.ajax({
 			type: 'POST',
-			url: '/newride',
+			url: '/ride/create',
 			dataType: 'json',
 			contentType: 'application/json; charset=UTF-8',
 			data: JSON.stringify(m)
