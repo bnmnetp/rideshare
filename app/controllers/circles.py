@@ -97,6 +97,8 @@ class GetCircleHandler(BaseHandler):
 
         user = self.current_user()
 
+        today = date.today()
+
         requests = User.all().filter('__key__ in', circle.requests).fetch(100)
 
         notis = Notification.all().filter('circle = ', circle.key()).filter('type = ', 'circle_message').filter('created >=', today).fetch(100)
