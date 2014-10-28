@@ -439,3 +439,27 @@ class CreateRide(BaseHandler):
             'message': 'Ride added!',
             'id': ride.key().id()
         })
+
+class DeleteRide(BaseHandler):
+    def post(self, ride_id):
+        self.auth()
+
+        ride = Ride.get_by_id(int(ride_id))
+
+        user = self.current_user()
+
+        if not ride:
+            return self.json_resp(500, {
+                'message': 'No ride found'
+            })
+
+        if ride.creator and ride.creator.key() != user.key():
+            return self.json_resp(500, {
+                'message': 'Cannot delete. You did not create this ride.'
+            })            
+
+        ride.delete()
+
+        return self.json_resp(200, {
+            'message': 'Ride deleted.'
+        })

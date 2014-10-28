@@ -67,7 +67,7 @@
                 <input class="form-control" type="text" placeholder="Details" name='details'>
             </div>
             <button type='submit' class='btn btn-default'>Edit Ride</button>
-            <button type='button' class='btn btn-danger pull-right'>Delete Ride</button>
+            <button type='button' data-ride='delete' class='btn btn-danger pull-right'>Delete Ride</button>
         </form>
     </div>
 </div>
@@ -119,6 +119,32 @@
                 message: 'Try again.'
             });
         }
+    });
+
+    var delete_ride = document.querySelector('[data-ride="delete"]');
+
+    delete_ride.addEventListener('click', function (e) {
+        var request = $.ajax({
+            type: 'POST',
+            url: '/ride/{{ride.key().id()}}/delete',
+            dataType: 'json',
+            contentType: 'application/json; charset=UTF-8',
+            data: JSON.stringify({
+                delete: true
+            })
+        });
+
+        request.done(function (data) {
+            document.location = '/home';
+        });
+
+        request.fail(function (data, status) {
+            notify({
+                type: 'danger',
+                strong: 'Ride not deleted.',
+                message: 'Try again.'
+            });
+        });
     });
 
     var ql_container = document.querySelector('[data-location="input"]');
