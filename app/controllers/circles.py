@@ -99,7 +99,7 @@ class GetCircleHandler(BaseHandler):
 
         requests = User.all().filter('__key__ in', circle.requests).fetch(100)
 
-        notis = Notification.all().filter('circle = ', circle.key()).filter('type = ', 'circle_message').fetch(100)
+        notis = Notification.all().filter('circle = ', circle.key()).filter('type = ', 'circle_message').filter('created >=', today).fetch(100)
 
         members = User.all().filter('circles =', circle.key()).fetch(None)
         admins = User.all().filter('__key__ in', circle.admins).fetch(None)

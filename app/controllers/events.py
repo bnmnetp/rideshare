@@ -29,6 +29,7 @@ class GetEventHandler(BaseHandler):
                 ride.is_driver = True
             else:
                 ride.is_driver = False
+
             if user.key() in ride.passengers:
                 ride.is_passenger = True
             else:
@@ -39,10 +40,12 @@ class GetEventHandler(BaseHandler):
         for ride in requested:
             ride.orig = toolbox.format_address(ride.origin_add)
             ride.dest = toolbox.format_address(ride.dest_add)
+            
             if ride.driver and user.key() == ride.driver.key():
                 ride.is_driver = True
             else:
                 ride.is_driver = False
+
             if user.key() in ride.passengers:
                 ride.is_passenger = True
             else:

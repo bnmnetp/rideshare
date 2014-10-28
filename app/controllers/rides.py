@@ -62,6 +62,8 @@ class FilterRides(BaseHandler):
         data = json.loads(json_str)
 
         rides = Ride.all()
+        today = date.today()
+        rides.filter('date >=', today)
 
         if data['circle']:
             circle = Circle.get_by_id(int(data['circle']))
@@ -80,7 +82,7 @@ class FilterRides(BaseHandler):
             rides.filter('date >=', today)
         if data['filter'] == 'past':
             print 'test'
-
+        rides.fetch(None)
         results = []
         for ride in rides:
             d = {}

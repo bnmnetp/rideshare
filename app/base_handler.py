@@ -17,6 +17,9 @@ class BaseHandler(webapp2.RequestHandler):
             user = User.get_by_id(id)
             if not user:
                 return webapp2.redirect(redirect_str, False, True)
+            else:
+                # Auth does not fail
+                return None
         else:
             return webapp2.redirect(redirect_str, False, True)
 
