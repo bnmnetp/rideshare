@@ -39,6 +39,12 @@ indexes:
   - name: circle
   - name: date
 
+- kind: Notification
+  properties:
+  - name: circle
+  - name: type
+  - name: created
+
 - kind: Ride
   properties:
   - name: circle

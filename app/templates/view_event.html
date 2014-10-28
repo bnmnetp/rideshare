@@ -12,159 +12,161 @@
 
 <div data-notify="container"></div>
 <div class="row">
-	<div class="col-md-6">
-		<div class="panel panel-main">
-			<div class="panel-heading">Event details</div>
-			<div class="panel-body">
-				<ul class="information">
-					<li>
-						<b>Event name:</b> {{event.name}}
-					</li>
-					<li>
-						<b>Location description:</b> {{event.location}}
-					</li>
-					{% if event.details %}
-					<li>
-						<b>Details:</b> {{event.details}}
-					</li>
-					{% endif %}
-					<li>
-						<b>Date:</b> {{event.date_str}}
-					</li>
-					<li>
-						<b>Time:</b> {{event.time}}
-					</li>
-					<li>
-						<b>Address:</b> {{event.address}}
-					</li>
-				</ul>
-				<hr>
-				<button class='btn btn-primary' data-toggle='modal' data-target='#need_ride'>I need a ride to this event</button>
-				<button class='btn btn-primary' data-toggle='modal' data-target='#offer_ride'>I can offer a ride to this event</button>
-				<a class='btn btn-primary' href='/event/{{event.key().id()}}/edit'>Edit Event</a>
-				<hr>
-				<a href="http://maps.google.com/maps?q={{event.lat}},{{event.lng}}" target="_blank">View on Google Maps</a>
-			</div>
-		</div>
-	</div>
-	<div class="col-md-6">
-		<div class="panel panel-main">
-			<div class="panel-heading">
-				Event Location
-			</div>
-			<div class="panel-body map-container-sm">
-				<p>
-					Distance: <span data-route='distance'></span>
-				</p>
-				<p>
-					Duration: <span data-route='duration'></span>
-				</p>
-				<div id="map_canvas"></div>
-			</div>
+    <div class="col-md-6">
+        <div class="panel panel-main">
+            <div class="panel-heading">Event details</div>
+            <div class="panel-body">
+                <ul class="information">
+                    <li>
+                        <b>Event name:</b> {{event.name}}
+                    </li>
+                    <li>
+                        <b>Location description:</b> {{event.location}}
+                    </li>
+                    {% if event.details %}
+                    <li>
+                        <b>Details:</b> {{event.details}}
+                    </li>
+                    {% endif %}
+                    <li>
+                        <b>Date:</b> {{event.date_str}}
+                    </li>
+                    <li>
+                        <b>Time:</b> {{event.time}}
+                    </li>
+                    <li>
+                        <b>Address:</b> {{event.address}}
+                    </li>
+                </ul>
+                <hr>
+                <button class='btn btn-primary' data-toggle='modal' data-target='#need_ride'>I need a ride to this event</button>
+                <button class='btn btn-primary' data-toggle='modal' data-target='#offer_ride'>I can offer a ride to this event</button>
+                {% if user.key() == event.creator.key() %}
+                    <a class='btn btn-primary' href='/event/{{event.key().id()}}/edit'>Edit Event</a>
+                {% endif %}
+                <hr>
+                <a href="http://maps.google.com/maps?q={{event.lat}},{{event.lng}}" target="_blank">View on Google Maps</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="panel panel-main">
+            <div class="panel-heading">
+                Event Location
+            </div>
+            <div class="panel-body map-container-sm">
+                <p>
+                    Distance: <span data-route='distance'></span>
+                </p>
+                <p>
+                    Duration: <span data-route='duration'></span>
+                </p>
+                <div id="map_canvas"></div>
+            </div>
 
-		</div>
-	</div>
+        </div>
+    </div>
 </div>
 
 <div class="row">
-	<div class="col-md-6">
-		<div class="panel panel-main">
-			<div class="panel-heading">
-				Rides offered to Event
-				<div class="pull-right">
+    <div class="col-md-6">
+        <div class="panel panel-main">
+            <div class="panel-heading">
+                Rides offered to Event
+                <div class="pull-right">
                     <a href="#"  data-toggle='modal' data-target='#offer_ride'>
                         Offer a Ride
                     </a>
                 </div>
-			</div>
-			<div class="panel-body panel-no">
-				{% if offered %}
-					{% for ride in offered %}
-					<div class="list">
-						<div class="ctx">
-							<i class="fa fa-car"></i>
-						</div>
-						<div class="info">
-							<div class="title">
-								<a href="/ride/{{ride.key().id()}}">Offered by {{ride.driver.name}} from {{ride.orig}} to {{ride.dest}}</a>
-							</div>
-							<div class="sub">
-								<div class="tag">
-									<i class="fa fa-calendar"></i> {{ride.date}}
-								</div>
-								{% if ride.is_driver %}
-									<div class="tag">
-										<i class="fa fa-automobile"></i> Driver
-									</div>
-								{% elif ride.is_passenger %}
-									<div class="tag">
-										<i class="fa fa-automobile"></i> Passenger
-									</div>
-								{% endif %}
-								<div class="tag">
-									{{ride.passengers_max}} Seats Offered
-								</div>
-								<div class="tag">
-									{{ride.seats_availible}} Seats Availible
-								</div>
-							</div>
-						</div>
-					</div>
-					{% endfor %}
-				{% else %}
-				    <div class="panel-message">
-				        There are not rides going to this event. Create one above.
-				    </div>
-				{% endif %}
-			</div>
-		</div>
-	</div>
-	<div class="col-md-6">
-		<div class="panel panel-main">
-			<div class="panel-heading">
-				Ride requested to Event
-				<div class="pull-right">
+            </div>
+            <div class="panel-body panel-no">
+                {% if offered %}
+                    {% for ride in offered %}
+                    <div class="list">
+                        <div class="ctx">
+                            <i class="fa fa-car"></i>
+                        </div>
+                        <div class="info">
+                            <div class="title">
+                                <a href="/ride/{{ride.key().id()}}">Offered by {{ride.driver.name}} from {{ride.orig}} to {{ride.dest}}</a>
+                            </div>
+                            <div class="sub">
+                                <div class="tag">
+                                    <i class="fa fa-calendar"></i> {{ride.date}}
+                                </div>
+                                {% if ride.is_driver %}
+                                    <div class="tag">
+                                        <i class="fa fa-automobile"></i> Driver
+                                    </div>
+                                {% elif ride.is_passenger %}
+                                    <div class="tag">
+                                        <i class="fa fa-automobile"></i> Passenger
+                                    </div>
+                                {% endif %}
+                                <div class="tag">
+                                    {{ride.passengers_max}} Seats Offered
+                                </div>
+                                <div class="tag">
+                                    {{ride.seats_availible}} Seats Availible
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="panel-message">
+                        There are no rides going to this event. Create one above.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="panel panel-main">
+            <div class="panel-heading">
+                Ride requested to Event
+                <div class="pull-right">
                     <a href="#" data-toggle='modal' data-target='#need_ride'>
                         Request a Ride
                     </a>
                 </div>
-			</div>
-			<div class="panel-body panel-no">
-				{% if requested %}
-					{% for ride in requested %}
-					<div class="list">
-						<div class="ctx">
-							<i class="fa fa-car"></i>
-						</div>
-						<div class="info">
-							<div class="title">
-								<a href="/ride/{{ride.key().id()}}">Requested from {{ride.orig}} to {{ride.dest}}</a>
-							</div>
-							<div class="sub">
-								<div class="tag">
-									<i class="fa fa-calendar"></i> {{ride.date}}
-								</div>
-								{% if ride.is_driver %}
-									<div class="tag">
-										<i class="fa fa-automobile"></i> Driver
-									</div>
-								{% elif ride.is_passenger %}
-									<div class="tag">
-										<i class="fa fa-automobile"></i> Passenger
-									</div>
-								{% endif %}
-							</div>
-						</div>
-					</div>
-					{% endfor %}
-				{% else %}
-				    <div class="panel-message">
-				        There are not rides requested to this event. Create one above.
-				    </div>
-				{% endif %}
-			</div>
-		</div>
-	</div>
+            </div>
+            <div class="panel-body panel-no">
+                {% if requested %}
+                    {% for ride in requested %}
+                    <div class="list">
+                        <div class="ctx">
+                            <i class="fa fa-car"></i>
+                        </div>
+                        <div class="info">
+                            <div class="title">
+                                <a href="/ride/{{ride.key().id()}}">Requested from {{ride.orig}} to {{ride.dest}}</a>
+                            </div>
+                            <div class="sub">
+                                <div class="tag">
+                                    <i class="fa fa-calendar"></i> {{ride.date}}
+                                </div>
+                                {% if ride.is_driver %}
+                                    <div class="tag">
+                                        <i class="fa fa-automobile"></i> Driver
+                                    </div>
+                                {% elif ride.is_passenger %}
+                                    <div class="tag">
+                                        <i class="fa fa-automobile"></i> Passenger
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="panel-message">
+                        There are no rides requested to this event. Create one above.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="modal fade" id="need_ride" tabindex="-1" role="dialog" aria-aria-hidden="true">
@@ -176,41 +178,41 @@
                     <h4 class="modal-title">Need a ride</h4>
                 </div>
                 <div class="modal-body">
-		            <div class="form-group" data-location='passenger'>
-		                <label>Starting Address</label>
-		                <div class="input-group">
-		                    <input class="form-control" type="text" placeholder='Address' name='address' required data-location='input'>
-		                    <span class="input-group-btn">
-		                        <button class="btn btn-default" type="button" data-location='search'>Search Address</button>
-		                    </span>
-		                </div>
-		                <div data-location='output' class='hidden'>
-		                    <b>Results:</b> <span data-location='address'></span>
-		                </div>
-		                <div class="help-block">You must search for an address before submitting.</div>
-		            </div>
-		            <div class="form-group">
-		                <label>Date</label>
-		                <div class='input-group date' data-datepicker data-date-format="MM/DD/YYYY">
-							<input class="form-control" type="text" placeholder="Date" name='date' required>
-							<span class="input-group-addon">
-								<i class="fa fa-calendar"></i>
-                    		</span>
-		                </div>
-		            </div>
-		            <div class="form-group">
-		                <label>Departure Time</label>
-		                <div class="input-group date" data-time='container'>
-		                	<input class="form-control" type="text" placeholder="Time" name='time' data-time='input' required>
-		                	<span class="input-group-addon">
-		                		<i class="fa fa-clock-o"></i>
-                    		</span>
-		                </div>
-		            </div>
-		            <div class="form-group">
-		                <label>Additional Details</label>
-		                <input class="form-control" type="text" placeholder="Details" name='details'>
-		            </div>
+                    <div class="form-group" data-location='passenger'>
+                        <label>Starting Address</label>
+                        <div class="input-group">
+                            <input class="form-control" type="text" placeholder='Address' name='address' required data-location='input'>
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="button" data-location='search'>Search Address</button>
+                            </span>
+                        </div>
+                        <div data-location='output' class='hidden'>
+                            <b>Results:</b> <span data-location='address'></span>
+                        </div>
+                        <div class="help-block">You must search for an address before submitting.</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Date</label>
+                        <div class='input-group date' data-datepicker data-date-format="MM/DD/YYYY">
+                            <input class="form-control" type="text" placeholder="Date" name='date' required>
+                            <span class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Departure Time</label>
+                        <div class="input-group date" data-time='container'>
+                            <input class="form-control" type="text" placeholder="Time" name='time' data-time='input' required>
+                            <span class="input-group-addon">
+                                <i class="fa fa-clock-o"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Additional Details</label>
+                        <input class="form-control" type="text" placeholder="Details" name='details'>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-primary" type='submit'>
@@ -232,54 +234,66 @@
                     <h4 class="modal-title">Offer a ride</h4>
                 </div>
                 <div class="modal-body">
-		            <div class="form-group" data-location='driver'>
-		                <label>Starting Address</label>
-		                <div class="input-group">
-		                    <input class="form-control" type="text" placeholder='Address' name='address' required data-location='input'>
-		                    <span class="input-group-btn">
-		                        <button class="btn btn-default" type="button" data-location='search'>Search Address</button>
-		                    </span>
-		                </div>
-		                <div data-location='output' class='hidden'>
-		                    <b>Results:</b> <span data-location='address'></span>
-		                </div>
-		                <div class="help-block">You must search for an address before submitting.</div>
-		            </div>
-		            <div class="form-group">
-		                <label>Passenger seats availible</label>
-		                <select class="form-control" name='passengers_max' required>
-		                    <option>1</option>
-		                    <option>2</option>
-		                    <option>3</option>
-		                    <option>4</option>
-		                    <option>5</option>
-		                    <option>6</option>
-		                    <option>7</option>
-		                    <option>8</option>
-		                </select>
-		            </div>
-		            <div class="form-group">
-		                <label>Date</label>
-		                <div class='input-group date' data-datepicker data-date-format="MM/DD/YYYY">
-							<input class="form-control" type="text" placeholder="Date" name='date' required>
-							<span class="input-group-addon">
-								<i class="fa fa-calendar"></i>
-                    		</span>
-		                </div>
-		            </div>
-		            <div class="form-group">
-		                <label>Departure Time</label>
-		                <div class="input-group date" data-time='container'>
-		                	<input class="form-control" type="text" placeholder="Time" name='time' data-time='input' required>
-		                	<span class="input-group-addon">
-		                		<i class="fa fa-clock-o"></i>
-                    		</span>
-		                </div>
-		            </div>
-		            <div class="form-group">
-		                <label>Additional Details</label>
-		                <input class="form-control" type="text" placeholder="Details" name='details'>
-		            </div>
+                    <div class="form-group" data-location='driver'>
+                        <label>Starting Address</label>
+                        <div class="input-group">
+                            <input class="form-control" type="text" placeholder='Address' name='address' required data-location='input'>
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="button" data-location='search'>Search Address</button>
+                            </span>
+                        </div>
+                        <div data-location='output' class='hidden'>
+                            <b>Results:</b> <span data-location='address'></span>
+                        </div>
+                        <div class="help-block">You must search for an address before submitting.</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Passenger seats availible</label>
+                        <select class="form-control" name='passengers_max' required>
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                            <option>6</option>
+                            <option>7</option>
+                            <option>8</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Date</label>
+                        <div class='input-group date' data-datepicker data-date-format="MM/DD/YYYY">
+                            <input class="form-control" type="text" placeholder="Date" name='date' required>
+                            <span class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Departure Time</label>
+                        <div class="input-group date" data-time='container'>
+                            <input class="form-control" type="text" placeholder="Time" name='time' data-time='input' required>
+                            <span class="input-group-addon">
+                                <i class="fa fa-clock-o"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class='form-group'>
+                        <label>Are you the person driving this ride?</label>
+
+                        <select class="form-control" data-driver='select'>
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+                    <div class='form-group' data-driver='form'>
+                        <label>Enter the driver's name:</label>
+                        <input class='form-control' type="text" name='driven_by' placeholder='Driven by' data-driver='input'>
+                    </div>
+                    <div class="form-group">
+                        <label>Additional Details</label>
+                        <input class="form-control" type="text" placeholder="Details" name='details'>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-primary" type='submit'>
@@ -329,8 +343,7 @@
 <script type="text/javascript">
 
     $('[data-datepicker]').datetimepicker({
-        pickTime: false,
-        defaultDate: moment().format("MM/DD/YYYY")
+        pickTime: false
     });
 
     $('[data-time="container"]').datetimepicker({
@@ -340,41 +353,39 @@
             up: "fa fa-arrow-up",
             down: "fa fa-arrow-down"
         },
-        pickDate: false,
+        pickDate: false
     });
 
-    $('[data-time="input"]').val(moment().format('h:mm A'))
+    var comment = new Comment({
+        type: 'event',
+        id: {{event.key().id()}},
+        container: '[data-comment="container"]'
+    });
 
-	var comment = new Comment({
-	    type: 'event',
-	    id: {{event.key().id()}},
-	    container: '[data-comment="container"]'
-	});
-
-	/* Map */
-	{% if circle.lat and circle.lng %}
-		var orig_pos = new google.maps.LatLng({{circle.lat}}, {{circle.lng}});
-	{% else %}
-		var orig_pos = new google.maps.LatLng(43.3017, -91.7903);
-	{% endif %}
-	var dest_pos = new google.maps.LatLng({{event.lat}}, {{event.lng}});
+    /* Map */
+    {% if circle.lat and circle.lng %}
+        var orig_pos = new google.maps.LatLng({{circle.lat}}, {{circle.lng}});
+    {% else %}
+        var orig_pos = new google.maps.LatLng(43.3017, -91.7903);
+    {% endif %}
+    var dest_pos = new google.maps.LatLng({{event.lat}}, {{event.lng}});
 
     var direction_render = new google.maps.DirectionsRenderer();
     var direction_service = new google.maps.DirectionsService();
 
-	var icon = {
-		url: '/static/person.png',
-		anchor: new google.maps.Point(20, 20),
-		size: new google.maps.Size(30, 40)
-	};
+    var icon = {
+        url: '/static/person.png',
+        anchor: new google.maps.Point(20, 20),
+        size: new google.maps.Size(30, 40)
+    };
 
-	var map = new google.maps.Map(document.querySelector('#map_canvas'), {
-	    draggableCursor: 'crosshair',
-	    center: orig_pos,
-	    mapTypeId: google.maps.MapTypeId.ROADMAP,
-	    zoom: 10
-	});
-	direction_render.setMap(map);
+    var map = new google.maps.Map(document.querySelector('#map_canvas'), {
+        draggableCursor: 'crosshair',
+        center: orig_pos,
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        zoom: 10
+    });
+    direction_render.setMap(map);
 
     function calc_route () {
         var request = {
@@ -384,34 +395,39 @@
         };
         direction_service.route(request, function (result, status) {
             if (status == google.maps.DirectionsStatus.OK) {
-            	console.log(result);
-            	var duration = document.querySelector('[data-route="duration"]');
-            	var distance = document.querySelector('[data-route="distance"]');
-            	duration.textContent = result.routes[0].legs[0].duration.text;
-            	distance.textContent = result.routes[0].legs[0].distance.text;
+                console.log(result);
+                var duration = document.querySelector('[data-route="duration"]');
+                var distance = document.querySelector('[data-route="distance"]');
+                duration.textContent = result.routes[0].legs[0].duration.text;
+                distance.textContent = result.routes[0].legs[0].distance.text;
                 direction_render.setDirections(result);
             }
         });
     };
     calc_route();
-	/* End */
+    /* End */
 
     var form_driver = document.querySelector('[data-send="driver"]');
 
     var submit_driver = new SubmitForm({
-    	form: form_driver,
-    	model: {
-    		passengers_max: 1,
-    		date: '',
-    		time: '',
-    		details: '',
-    		address: '',
-    		lat: '',
-    		lng: ''
-    	},
-    	method: 'POST',
-    	route: '/event/{{event.key().id()}}/driver/1',
-    	done: function (data) {
+        form: form_driver,
+        model: {
+            passengers_max: 1,
+            date: '{{event.date_picker}}',
+            time: moment().format('h:mm A'),
+            details: '',
+            orig_lat: '',
+            orig_lng: '',
+            orig_address: '',
+            driven_by: '',
+            event: '{{event.key().id()}}',
+            driver: true,
+            recurring: 'false',
+            circle: '{{circle.key().id()}}'
+        },
+        method: 'POST',
+        route: '/ride/create',
+        done: function (data) {
             document.location = '/ride/' + data.id;
         },
         fail: function (data, status) {
@@ -432,18 +448,22 @@
     var form_pass = document.querySelector('[data-send="pass"]');
 
     var submit_pass = new SubmitForm({
-    	form: form_pass,
-    	model: {
-    		date: {{event.date_picker}},
-    		time: '',
-    		details: '',
-    		address: '',
-    		lat: '',
-    		lng: ''
-    	},
-    	method: 'POST',
-    	route: '/event/{{event.key().id()}}/passenger/1',
-    	done: function (data) {
+        form: form_pass,
+        model: {
+            date: '{{event.date_picker}}',
+            time: moment().format('h:mm A'),
+            details: '',
+            orig_address: '',
+            orig_lat: '',
+            orig_lng: '',
+            event: '{{event.key().id()}}',
+            driver: false,
+            recurring: 'false',
+            circle: '{{circle.key().id()}}'
+        },
+        method: 'POST',
+        route: '/ride/create',
+        done: function (data) {
             document.location = '/ride/' + data.id;
         },
         fail: function (data, status) {
@@ -460,5 +480,24 @@
         ql_container,
         submit_pass
     );
+
+    var if_driving = {
+        form: document.querySelector('[data-driver="form"]'),
+        select: document.querySelector('[data-driver="select"]'),
+        input: document.querySelector('[data-driver="input"]')
+    }
+
+    if_driving.form.classList.add('hidden');
+
+    if_driving.select.addEventListener('change', function (e) {
+        var target = e.target;
+
+        if (target.value == 'no') {
+            if_driving.form.classList.remove('hidden');
+        } else {
+            if_driving.form.classList.add('hidden');
+            if_driving.input.value = '';
+        }
+    });
 </script>
 {% endblock %}

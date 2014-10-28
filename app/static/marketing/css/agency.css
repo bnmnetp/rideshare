@@ -8,7 +8,9 @@ body {
     overflow-x: hidden;
     font-family: "Roboto Slab","Helvetica Neue",Helvetica,Arial,sans-serif;
 }
-
+#why-rc .row {
+    margin-bottom: 50px;
+}
 /* Invite */
 .invite {
     margin-top: 70px;

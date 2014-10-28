@@ -22,7 +22,9 @@ var SubmitForm = augment(Object, function () {
         for (i = 0; i < this.keys.length; i++) {
             current = this.keys[i];
             if (this.form[current]) {
-                this.form[current].value = this.model[current];
+                if (current != '') {
+                    this.form[current].value = this.model[current];
+                }
             }
         }
     };

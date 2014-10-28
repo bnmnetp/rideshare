@@ -45,14 +45,14 @@
                         {% endfor %}
                     {% else %}
                         <div class="panel-message">
-                            You do not have any upcoming events.
+                            You do not have any upcoming notifications.
                         </div>
                     {% endif %}
                 </div>
             </div>
             <div class="panel panel-main">
                 <div class="panel-heading">
-                    Members of Circle ({{total_members}} Members)
+                    Members of Circle <!-- ({{total_members}} Members) -->
                     <div class="pull-right">
                         <a href="/circle/{{circle.key().id()}}/invite">
                             Invite Friends

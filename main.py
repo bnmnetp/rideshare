@@ -95,9 +95,9 @@ app = webapp2.WSGIApplication([
     ('/ride/(\d+)/edit', EditRide),
     ('/ride/(\d+)/driver', JoinDriver),
     ('/ride/(\d+)/passenger', JoinPassenger),
-    ('/newride', NewRideHandler),
+    ('/ride/create', CreateRide),
+    ('/ride/(\d+)/delete', DeleteRide),
     ('/filter', FilterRides),
-    ('/event/(\d+)/(\w+)/1', RideEvent),
 
     # controllers/users.py
     ('/user/(\d+)', GetUserHandler),

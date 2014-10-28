@@ -26,9 +26,9 @@ QueryLocation.prototype.send_request = function (e) {
 				this.result.add = data['results'][0]['formatted_address'];
 				this.result.lat = parseFloat(data['results'][0]['geometry']['location']['lat']);
 				this.result.lng = parseFloat(data['results'][0]['geometry']['location']['lng']);
-				this.submit_form.set('address', this.result.add);
-				this.submit_form.set('lat', this.result.lat);
-				this.submit_form.set('lng', this.result.lng);
+				this.submit_form.set('orig_address', this.result.add);
+				this.submit_form.set('orig_lat', this.result.lat);
+				this.submit_form.set('orig_lng', this.result.lng);
 			}.bind(this)
 		);
 	} else {

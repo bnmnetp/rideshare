@@ -18,6 +18,7 @@ class GetEventHandler(BaseHandler):
 
         event.date_str = event.date.strftime('%B %dth, %Y')
         event.date_picker = event.date.strftime("%m/%d/%Y")
+        event.date_parse = event.date.strftime('%b %d, %Y')
 
         offered = Ride.all().filter('event = ', event.key()).filter('driver != ', None).fetch(None)
         requested = Ride.all().filter('event = ', event.key()).filter('driver = ', None).fetch(None)
@@ -29,6 +30,7 @@ class GetEventHandler(BaseHandler):
                 ride.is_driver = True
             else:
                 ride.is_driver = False
+
             if user.key() in ride.passengers:
                 ride.is_passenger = True
             else:
@@ -39,10 +41,12 @@ class GetEventHandler(BaseHandler):
         for ride in requested:
             ride.orig = toolbox.format_address(ride.origin_add)
             ride.dest = toolbox.format_address(ride.dest_add)
+            
             if ride.driver and user.key() == ride.driver.key():
                 ride.is_driver = True
             else:
                 ride.is_driver = False
+
             if user.key() in ride.passengers:
                 ride.is_passenger = True
             else:
