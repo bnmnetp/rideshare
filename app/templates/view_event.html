@@ -331,8 +331,7 @@
 <script type="text/javascript">
 
     $('[data-datepicker]').datetimepicker({
-        pickTime: false,
-        defaultDate: moment().format("MM/DD/YYYY")
+        pickTime: false
     });
 
     $('[data-time="container"]').datetimepicker({
@@ -342,7 +341,7 @@
             up: "fa fa-arrow-up",
             down: "fa fa-arrow-down"
         },
-        pickDate: false,
+        pickDate: false
     });
 
     $('[data-time="input"]').val(moment().format('h:mm A'))
@@ -404,7 +403,7 @@
     	form: form_driver,
     	model: {
     		passengers_max: 1,
-    		date: '',
+    		date: '{{event.date_picker}}',
     		time: '',
     		details: '',
     		address: '',
@@ -436,7 +435,7 @@
     var submit_pass = new SubmitForm({
     	form: form_pass,
     	model: {
-    		date: {{event.date_picker}},
+    		date: '{{event.date_picker}}',
     		time: '',
     		details: '',
     		address: '',

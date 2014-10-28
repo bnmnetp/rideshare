@@ -18,6 +18,7 @@ class GetEventHandler(BaseHandler):
 
         event.date_str = event.date.strftime('%B %dth, %Y')
         event.date_picker = event.date.strftime("%m/%d/%Y")
+        event.date_parse = event.date.strftime('%b %d, %Y')
 
         offered = Ride.all().filter('event = ', event.key()).filter('driver != ', None).fetch(None)
         requested = Ride.all().filter('event = ', event.key()).filter('driver = ', None).fetch(None)
