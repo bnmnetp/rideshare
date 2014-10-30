@@ -30,7 +30,7 @@
             <div class="form-group" data-location='address'>
                 <label>Home Address</label>
                 <div class="input-group">
-                    <input class="form-control" type="text" placeholder='Address' name='add' required data-location='input'>
+                    <input class="form-control" type="text" placeholder='Address' name='address' required data-location='input'>
                     <span class="input-group-btn">
                         <button class="btn btn-default" type="button" data-location='search'>Search Address</button>
                     </span>
@@ -146,7 +146,12 @@
     var ql_container = document.querySelector('[data-location="address"]');
     var ql = new QueryLocation(
         ql_container,
-        user_submit
+        function () {
+            console.log('test')
+            user_submit.set('address', this.result.add);
+            user_submit.set('lat', this.result.lat);
+            user_submit.set('lng', this.result.lng);
+        }
     );
 </script>
 {% endblock %}

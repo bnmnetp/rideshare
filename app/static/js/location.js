@@ -1,11 +1,11 @@
-var QueryLocation = function QueryLocation (parent, submit_form) {
+var QueryLocation = function QueryLocation (parent, set_val) {
 	this.parent = parent;
 	this.btn = this.parent.querySelector('[data-location="search"]');
 	this.input = this.parent.querySelector('[data-location="input"]');
 	this.output = this.parent.querySelector('[data-location="output"]');
 	this.address = this.parent.querySelector('[data-location="address"]');
 
-	this.submit_form = submit_form;
+	this.set_val = set_val;
 
 	this.result = {
 		'add': '',
@@ -26,9 +26,8 @@ QueryLocation.prototype.send_request = function (e) {
 				this.result.add = data['results'][0]['formatted_address'];
 				this.result.lat = parseFloat(data['results'][0]['geometry']['location']['lat']);
 				this.result.lng = parseFloat(data['results'][0]['geometry']['location']['lng']);
-				this.submit_form.set('orig_address', this.result.add);
-				this.submit_form.set('orig_lat', this.result.lat);
-				this.submit_form.set('orig_lng', this.result.lng);
+				
+				this.set_val().bind(this);
 			}.bind(this)
 		);
 	} else {
