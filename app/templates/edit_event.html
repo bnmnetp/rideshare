@@ -118,7 +118,11 @@
     var ql_container = document.querySelector('[data-location="event"]');
     var ql = new QueryLocation(
         ql_container,
-        edit_event
+        function () {
+            edit_event.set('address', this.result.add);
+            edit_event.set('lat', this.result.lat);
+            edit_event.set('lng', this.result.lng);
+        }
     );
 
     var delete_event = document.querySelector('[data-event="delete"]');

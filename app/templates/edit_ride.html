@@ -150,7 +150,11 @@
     var ql_container = document.querySelector('[data-location="input"]');
     var ql = new QueryLocation(
         ql_container,
-        edit_ride
+        function () {
+            edit_ride.set('address', this.result.add);
+            edit_ride.set('lat', this.result.lat);
+            edit_ride.set('lng', this.result.lng);
+        }
     );
 </script>
 {% endblock %}

@@ -442,7 +442,11 @@
     var ql_container = document.querySelector('[data-location="driver"]');
     var ql = new QueryLocation(
         ql_container,
-        submit_driver
+        function () {
+            submit_driver.set('orig_address', this.result.add);
+            submit_driver.set('orig_lat', this.result.lat);
+            submit_driver.set('orig_lng', this.result.lng);
+        }
     );
 
     var form_pass = document.querySelector('[data-send="pass"]');
@@ -478,7 +482,11 @@
     var ql_container = document.querySelector('[data-location="passenger"]');
     var ql = new QueryLocation(
         ql_container,
-        submit_pass
+        function () {
+            this.submit_pass.set('orig_address', this.result.add);
+            this.submit_pass.set('orig_lat', this.result.lat);
+            this.submit_pass.set('orig_lng', this.result.lng);
+        }
     );
 
     var if_driving = {

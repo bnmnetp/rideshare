@@ -105,8 +105,8 @@ class EditUserHandler(BaseHandler):
             Required('name'): unicode,
             'photo': unicode,
             'address': unicode,
-            'lat': float,
-            'lng': float
+            'lat': Coerce(float),
+            'lng': Coerce(float)
         })
 
         try:
