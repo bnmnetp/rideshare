@@ -1,9 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<meta name="viewport" content="width=device-width"/>
-	<style>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width"/>
+  <style>
 /**********************************************
 * Ink v1.0.5 - Copyright 2013 ZURB Inc        *
 **********************************************/
@@ -774,12 +774,12 @@ body.outlook p {
       }
     }
 
-	</style>
+  </style>
 </head>
 <body>
-	<table class="body">
-		<tr>
-			<td class="center" align="center" valign="top">
+  <table class="body">
+    <tr>
+      <td class="center" align="center" valign="top">
         <center>
 
           <table class="row header">
@@ -793,11 +793,11 @@ body.outlook p {
 
                         <table class="twelve columns">
                           <tr>
-                            <td class="six sub-columns">
+                            <!-- <td class="six sub-columns">
                               <img src="http://placehold.it/200x50">
-                            </td>
+                            </td> -->
                             <td class="six sub-columns last" style="text-align:right; vertical-align:middle;">
-                              <span class="template-label">RIDESHARE</span>
+                              <span class="template-label">RIDECIRCLES.US</span>
                             </td>
                             <td class="expander"></td>
                           </tr>
@@ -823,9 +823,12 @@ body.outlook p {
                       <table class="twelve columns">
                         <tr>
                           <td>
-                            <h1>Hi {{user_name}},</h1>
-                						<p class="lead">You have recieved an alert from rideshare.</p>
-                						<p>{{message}}</p>
+                            <h1>Hi,</h1>
+                            <p class="lead">This is a notification from Ridecircles.us. You have an upcoming ride.</p>
+                            <p class='lead'>{{origin}} to {{destination}}</p>
+                            <p class='lead'>Departure Time: {{time}}</p>
+                            <p class='lead'>Date: {{date}}</p>
+                            <p class='lead'>You are a {{rider_type}}.</p>
                           </td>
                           <td class="expander"></td>
                         </tr>
@@ -842,7 +845,7 @@ body.outlook p {
                       <table class="twelve columns">
                         <tr>
                           <td class="panel">
-                            <p>Set up rides and events on your local rideshare page! <a href="{{rideshare_url}}">{{community_name}} Rideshare »</a></p>
+                            <p><a href="/ride/{{ride_id}}">Click here to view the ride! »</a></p>
                           </td>
                           <td class="expander"></td>
                         </tr>
@@ -851,96 +854,13 @@ body.outlook p {
                     </td>
                   </tr>
                 </table>
-
-                <!-- <table class="row footer">
-                  <tr>
-                    <td class="wrapper">
-
-                      <table class="six columns">
-                        <tr>
-                          <td class="left-text-pad">
-
-                            <h5>Connect With Us:</h5>
-
-                            <table class="tiny-button facebook">
-                              <tr>
-                                <td>
-                                  <a href="#">Facebook</a>
-                                </td>
-                              </tr>
-                            </table>
-
-                            <br>
-
-                            <table class="tiny-button twitter">
-                              <tr>
-                                <td>
-                                  <a href="#">Twitter</a>
-                                </td>
-                              </tr>
-                            </table>
-
-                            <br>
-
-                            <table class="tiny-button google-plus">
-                              <tr>
-                                <td>
-                                  <a href="#">Google +</a>
-                                </td>
-                              </tr>
-                            </table>
-
-                          </td>
-                          <td class="expander"></td>
-                        </tr>
-                      </table>
-
-                    </td>
-                    <td class="wrapper last">
-
-                      <table class="six columns">
-                        <tr>
-                          <td class="last right-text-pad">
-                            <h5>Contact Info:</h5>
-                            <p>Phone: 408.341.0600</p>
-                            <p>Email: <a href="mailto:hseldon@trantor.com">hseldon@trantor.com</a></p>
-                          </td>
-                          <td class="expander"></td>
-                        </tr>
-                      </table>
-
-                    </td>
-                  </tr>
-                </table> -->
-
-
-                <!-- <table class="row">
-                  <tr>
-                    <td class="wrapper last">
-
-                      <table class="twelve columns">
-                        <tr>
-                          <td align="center">
-                            <center>
-                              <p style="text-align:center;"><a href="#">Terms</a> | <a href="#">Privacy</a> | <a href="#">Unsubscribe</a></p>
-                            </center>
-                          </td>
-                          <td class="expander"></td>
-                        </tr>
-                      </table>
-
-                    </td>
-                  </tr>
-                </table> -->
-
-              <!-- container end below -->
               </td>
             </tr>
           </table>
 
         </center>
-			</td>
-		</tr>
-	</table>
+      </td>
+    </tr>
+  </table>
 </body>
 </html>
