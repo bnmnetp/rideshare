@@ -1,0 +1,7 @@
+cron:
+- description: sends pending notifications hourly
+  url: /notifications/check
+  schedule: every 1 hours
+- description: updates times of recurring rides
+  url: /recurring/check
+  schedule: every 1 hours

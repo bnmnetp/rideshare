@@ -2,6 +2,7 @@ from app.model import *
 from google.appengine.ext import db
 import datetime
 from datetime import date
+from app.base_handler import BaseHandler
 
 # Grab recurring rides
 rides = Rides.all().filter('recurring !=', None).fetch(100)
