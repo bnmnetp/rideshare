@@ -24,6 +24,7 @@ class AuthHandler(BaseHandler, SimpleAuthHandler):
         return self.redirect(self.login_redirect(user))
     def logout(self):
         self.session['user'] = None
+        self.session['redirect'] = None
         self.redirect('/')
     def _callback_uri_for(self, provider):
         return self.uri_for('auth_callback', provider = provider, _full = True)

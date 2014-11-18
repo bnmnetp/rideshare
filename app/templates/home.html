@@ -27,8 +27,8 @@
             <div class="tab-pane active" id="q1">
                 Alerts are important messages regarding rides you are connected to. You will be alerted if:
 
-                If a person leaves or joins a ride you are connected to.
-                When you have an upcoming ride in the next few days.
+                1. If a person leaves or joins a ride you are connected to.
+                2. When you have an upcoming ride in the next few days.
 
                 These alerts will always be shown on your home page but you can also receive these messages through email. Set your preferences by visiting your profile page.
             </div>
@@ -272,14 +272,20 @@
 
 /* Toggle Help */
 var help = {};
-help.btn = document.querySelector('[data-help="toggle"]');
+help.btns = document.querySelectorAll('[data-help="toggle"]');
 help.container = document.querySelector('[data-help="container"]');
 
-help.btn.addEventListener('click', function (e) {
-    var target = e.target;
+for (btn in help.btns) {
+    btn.addEventListener('click', function (e) {
+        help.container.classList.toggle('hidden');
+    });
+}
 
-    help.container.classList.toggle('hidden');
-});
+// help.btn.addEventListener('click', function (e) {
+//     var target = e.target;
+
+//     help.container.classList.toggle('hidden');
+// });
 /* End */
 </script>
 

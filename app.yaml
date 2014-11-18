@@ -5,17 +5,16 @@ api_version: 1
 threadsafe: true
 
 handlers:
+# - url: /notifications/check
+#   script: notifications.py
+#   login: admin
 - url: /static
   static_dir: app/static
 - url: /.*
   script: main.app
-- url: /notifications/check
-- url: /recurring/check
-  login: admin
 
 libraries:
 - name: webapp2
   version: latest
 - name: jinja2
   version: latest
-
