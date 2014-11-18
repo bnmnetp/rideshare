@@ -275,11 +275,13 @@ var help = {};
 help.btns = document.querySelectorAll('[data-help="toggle"]');
 help.container = document.querySelector('[data-help="container"]');
 
-for (btn in help.btns) {
+console.log(help.btns)
+
+for (var btn of help.btns) {
     btn.addEventListener('click', function (e) {
         help.container.classList.toggle('hidden');
     });
-}
+};
 
 // help.btn.addEventListener('click', function (e) {
 //     var target = e.target;
