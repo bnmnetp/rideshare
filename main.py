@@ -36,6 +36,8 @@ from app.controllers.alert import *
 from app.controllers.accounts import *
 from app.controllers.home import *
 
+from app.cron.notifications import *
+
 from app.common import toolbox
 
 class Marketing(BaseHandler):
@@ -81,6 +83,9 @@ class HelpHandler(BaseHandler):
 app = webapp2.WSGIApplication([
     ('/', Marketing),
     ('/map', MapHandler),
+
+    # cron
+    ('/notifications/check', CheckNotifications),
 
     # controllers/accounts.py
     ('/login', LoginHandler),

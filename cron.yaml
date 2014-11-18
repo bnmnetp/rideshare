@@ -1,0 +1,4 @@
+cron:
+- description: sends pending notifications hourly
+  url: /notifications/check
+  schedule: every 2 hours

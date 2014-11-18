@@ -77,13 +77,12 @@
 {% endraw %}
 <script type="text/javascript">
     var alert_form = document.querySelector('[data-form="alert"]');
-    // var noti_form = document.querySelector('[data-form="notification"]');
 
     var push_alert = new SubmitForm({
         form: alert_form,
         model: {
-            type: {{user.noti_type}},
-            time: {{user.noti_time}}
+            type: '{{user.noti_type}}',
+            time: '{{user.noti_time}}'
         },
         method: 'POST',
         route: window.location.pathname,
@@ -104,9 +103,5 @@
             });
         }
     });
-
-    // var push_noti = new SubmitForm({
-        
-    // });
 </script>
 {% endblock %}
