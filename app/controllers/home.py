@@ -12,16 +12,18 @@ class HomeHandler(BaseHandler):
         self.auth()
         user = self.current_user()
 
-        notis = Notification.all().filter('user = ', user.key()).fetch(10)
+        today = datetime.date.today()
+
+        notis = Notification.all().filter('created >= ', today).filter('user = ', user.key()).fetch(10)
 
         invites = Invite.all().filter('user = ', user.key()).fetch(10)
 
-        today = datetime.date.today()
-        upcoming_pass = Passenger.all().filter('user =', user.key()).fetch(10)
+        
+        upcoming_pass = Passenger.all().filter('created >= ', today).filter('user =', user.key()).fetch(10)
         upcoming = Ride.all().filter('date >= ', today).filter('driver =', user.key()).fetch(10)
 
-        rides_driving = Ride.all().filter('driver =', user.key()).fetch(10)
-        passenger_joined = Passenger.all().filter('ride in', rides_driving).fetch(10)
+        rides_driving = Ride.all().filter('date >= ', today).filter('driver =', user.key()).fetch(10)
+        passenger_joined = Passenger.all().filter('created >= ', today).filter('ride in', rides_driving).fetch(10)
 
         site_notifications = []
         ride_alerts = []
