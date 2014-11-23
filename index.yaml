@@ -45,6 +45,16 @@ indexes:
   - name: type
   - name: created
 
+- kind: Notification
+  properties:
+  - name: user
+  - name: created
+
+- kind: Passenger
+  properties:
+  - name: user
+  - name: created
+
 - kind: Ride
   properties:
   - name: circle
