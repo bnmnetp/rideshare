@@ -75,7 +75,7 @@ class BaseHandler(webapp2.RequestHandler):
     def login_redirect(self, user):
         redirect_str = '/home'
         redirect = self.session.get('redirect')
-        if redirect == None or redirect == '':
+        if redirect == None or redirect != '':
             print('FLAG #2')
             redirect_str = str(redirect)
             self.session['redirect'] = None

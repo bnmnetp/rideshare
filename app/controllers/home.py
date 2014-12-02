@@ -1,4 +1,4 @@
-from app.common.toolbox import doRender, grab_json, split_address
+from app.common.toolbox import doRender, grab_json, split_address, date_display
 from google.appengine.ext import db
 from app.base_handler import BaseHandler
 from app.common.voluptuous import *
@@ -7,21 +7,77 @@ from app.model import *
 import datetime
 from datetime import date
 
+# class HomeHandler(BaseHandler):
+#     def get(self):
+#         self.auth()
+#         user = self.current_user()
+
+#         today = datetime.date.today()
+
+#         # What do we need to grab
+#         # upcoming rides, driver or passenger
+#         # if a passenger joins your ride
+#         # if you are passenger: ride has or does not have driver
+#         # message sent to circle, display for one week
+
+#         upcoming_pass = Passenger.all()'created >= ', today).filter('user = ', user.key()).fetch(10)
+#         upcoming_ride = Ride.all().filter('date >= ', today).filter('driver =', user.key()).fetch(10)
+
+#         joined_pass = Passenger.all().filter('created >= ', today).filter('ride in', upcoming_ride).fetch(10)
+
+#         site_notifications = []
+#         ride_alerts = []
+
+#         for u in upcoming_ride:
+#             u.orig = split_address(u.origin_add)
+#             u.dest = split_address(u.dest_add)
+#             obj = {
+#                 'message': '<strong>Driver of</strong>: <a href="/ride/' + str(u.key().id()) + '">' + u.orig + ' to ' + u.dest + '</a>',
+#                 'date': date_display(u.date),
+#                 'details': False,
+#                 'driver': True,
+#                 'type': 'Upcoming Ride'
+#             }
+#             if u.circle:
+#                 obj['circle'] = {
+#                     'name': u.circle.name,
+#                     'id': u.circle.key().id()
+#                 }
+#             ride_alerts.append(obj)
+
+#         for u in upcoming_pass:
+#             u.ride.orig = split_address(u.ride.origin_add)
+#             u.ride.dest = split_address(u.ride.dest_add)
+#             obj = {
+#                 'message': '<strong>Passenger of</strong>: <a href="/ride/' + str(u.ride.key().id()) + '">' + u.ride.orig + ' to ' + u.ride.dest + '</a>',
+#                 'date': date_display(u.ride.date),
+#                 'passenger': True,
+#                 'type': 'Upcoming Ride'          
+#             }
+#             if upp.ride.circle:
+#                 obj['circle'] = {
+#                     'name': u.ride.circle.name,
+#                     'id': u.ride.circle.key().id()
+#                 }
+#             ride_alerts.append(obj)
+
 class HomeHandler(BaseHandler):
     def get(self):
         self.auth()
         user = self.current_user()
 
-        notis = Notification.all().filter('user = ', user.key()).fetch(10)
+        today = datetime.date.today()
+
+        notis = Notification.all().filter('created >= ', today).filter('user = ', user.key()).fetch(10)
 
         invites = Invite.all().filter('user = ', user.key()).fetch(10)
 
-        today = datetime.date.today()
-        upcoming_pass = Passenger.all().filter('user =', user.key()).fetch(10)
+        
+        upcoming_pass = Passenger.all().filter('created >= ', today).filter('user =', user.key()).fetch(10)
         upcoming = Ride.all().filter('date >= ', today).filter('driver =', user.key()).fetch(10)
 
-        rides_driving = Ride.all().filter('driver =', user.key()).fetch(10)
-        passenger_joined = Passenger.all().filter('ride in', rides_driving).fetch(10)
+        rides_driving = Ride.all().filter('date >= ', today).filter('driver =', user.key()).fetch(10)
+        passenger_joined = Passenger.all().filter('created >= ', today).filter('ride in', rides_driving).fetch(10)
 
         site_notifications = []
         ride_alerts = []
@@ -82,8 +138,6 @@ class HomeHandler(BaseHandler):
                 noti.message = """
                 Your ride has been edited.
                 """
-            elif noti.type == 'request':
-                noti.message = 'A person has requested to join this circle.'
             elif noti.type == 'circle_message':
                 noti.message = noti.text
 
@@ -110,6 +164,8 @@ class HomeHandler(BaseHandler):
                 }
 
                 site_notifications.append(obj)
+            elif noti.type == 'request':
+                pass
             else:
                 obj = {
                     'message': noti.message,

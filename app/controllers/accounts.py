@@ -8,9 +8,9 @@ from app.model import *
 from app.common.encryption import bcrypt
 
 def check_for_invite(self, user):
-    print('FLAG FOR CHECK INVITE')
+    # print('FLAG FOR CHECK INVITE')
     if self.session.get('invited'):
-        print('FLAG FOR CHECK INVITE 2')
+        # print('FLAG FOR CHECK INVITE 2')
         circle = Circle.get_by_id(int(self.session.get('invited')))
         user.circles.append(circle.key())
         user.put()
@@ -80,5 +80,22 @@ class RegisterHandler(BaseHandler):
             'redirect': self.login_redirect(user)
         })
 
+class PasswordReset(BaseHandler):
+    def post(self):
+        user = self.current_user()
 
+        json_str = self.request.body
+        data = json.loads(json_str)
+
+        reset_validator = Schema({
+            Required('email'): unicode
+        })
+
+        try:
+            data = reset_validator(data)
+        except MultipleInvalid as e:
+            return self.json_resp(500, {
+                'error': str(e),
+                'message': 'Email could not be validated'
+            })
 
