@@ -187,6 +187,10 @@ var notify = function (opts) {
 		var alert_container = document.querySelector('#main_container');
 	}
 
+	if ('container' in opts) {
+		var alert_container = document.querySelector(opts.container);
+	}
+
 	var source;
 	if (!alert_template) {
 		source = '<div class="alert alert-{{type}} alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong>{{strong}}</strong>{{message}}</div>';
