@@ -16,6 +16,8 @@ class User(db.Model):
     noti_time = db.IntegerProperty()
     noti_type = db.StringProperty()
 
+    reset = db.StringProperty()
+
     address = db.StringProperty()
     lat = db.FloatProperty()
     lng = db.FloatProperty()

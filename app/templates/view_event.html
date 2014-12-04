@@ -178,6 +178,7 @@
                     <h4 class="modal-title">Need a ride</h4>
                 </div>
                 <div class="modal-body">
+                    <div data-error='passenger'></div>
                     <div class="form-group" data-location='passenger'>
                         <label>Starting Address</label>
                         <div class="input-group">
@@ -234,6 +235,7 @@
                     <h4 class="modal-title">Offer a ride</h4>
                 </div>
                 <div class="modal-body">
+                    <div data-error='driver'></div>
                     <div class="form-group" data-location='driver'>
                         <label>Starting Address</label>
                         <div class="input-group">
@@ -434,7 +436,8 @@
             notify({
                 type: 'danger',
                 strong: 'Oops',
-                message: 'Refresh and try again'
+                message: 'Refresh and try again',
+                container: '[data-error="driver"]'
             });
         }
     });
@@ -474,7 +477,8 @@
             notify({
                 type: 'danger',
                 strong: 'Oops',
-                message: 'Refresh and try again'
+                message: 'Refresh and try again',
+                container: '[data-error="passenger"]'
             });
         }
     });

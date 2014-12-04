@@ -6,6 +6,9 @@ import json
 from app.model import *
 
 from app.common.encryption import bcrypt
+from app.common.email import send_invite, send_email
+
+import uuid
 
 def check_for_invite(self, user):
     # print('FLAG FOR CHECK INVITE')
@@ -82,8 +85,6 @@ class RegisterHandler(BaseHandler):
 
 class PasswordReset(BaseHandler):
     def post(self):
-        user = self.current_user()
-
         json_str = self.request.body
         data = json.loads(json_str)
 
@@ -99,5 +100,26 @@ class PasswordReset(BaseHandler):
                 'message': 'Email could not be validated'
             })
 
-        # User.
+        user = User.all().filter('email =', data['email']).get()
+        user.hash = str(uuid.uuid4()).replace('-', '')
+        user.put()
+        print(user.hash)
+        if user != None:
+            send_email(user, 'Password Reset', 'emails/password_reset.html', {
+                'reset_hash': user.hash
+            })
+            return self.json_resp(200, {
+                'message': 'Reset email sent!'
+            })
+        else:
+            # Security measure
+            return self.json_resp(200, {
+                'message': 'Reset email sent!'
+            })
 
+class NewPassword(BaseHandler):
+    def get(self, hash):
+        print('XXXXXXXXXXXXXXXXXXXXtest')
+        pass
+    def post(self, hash):
+        pass

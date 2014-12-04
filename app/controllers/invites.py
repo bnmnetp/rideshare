@@ -8,7 +8,7 @@ from app.base_handler import BaseHandler
 from app.common.voluptuous import *
 import json
 import re
-from app.common.email import send_invite
+from app.common.email import send_invite, send_email
 import csv
 
 class ViewInvites(BaseHandler):
