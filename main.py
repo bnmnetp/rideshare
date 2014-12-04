@@ -90,7 +90,8 @@ app = webapp2.WSGIApplication([
     # controllers/accounts.py
     ('/login', LoginHandler),
     ('/register', RegisterHandler),
-    ('/forgot_password', PasswordReset),
+    ('/reset_password', PasswordReset),
+    ('/reset/(\w+)', NewPassword),
 
     # controllers/home.py
     ('/home', HomeHandler),
