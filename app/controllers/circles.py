@@ -484,16 +484,10 @@ class CircleMessage(BaseHandler):
         })
 
 class CircleMembers(BaseHandler):
-    def get(self):
+    def get(self, circle_id):
         self.auth()
 
-        if self.circle():
-            circle = Circle.get_by_id(int(self.circle().key().id()))
-        else:
-            circle = None
-
-        if not circle:
-            return self.redirect('/circles')
+        circle = Circle.get_by_id(int(circle_id))
 
         user = self.current_user()
 
@@ -522,10 +516,10 @@ class CircleMembers(BaseHandler):
         })
 
 class CircleRequests(BaseHandler):
-    def get(self):
+    def get(self, circle_id):
         self.auth()
 
-        circle = Circle.get(self.circle().key())
+        circle = Circle.get_by_id(int(circle_id))
 
         if not circle:
             self.redirect('/circles')

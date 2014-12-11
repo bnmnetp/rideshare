@@ -57,11 +57,11 @@ class Marketing(BaseHandler):
         })
     
 class MapHandler(BaseHandler):
-    def get(self):
+    def get(self, circle_id):
         self.auth()
         user = self.current_user()
 
-        circle = self.circle()
+        circle = Circle.get_by_id(int(circle_id))
 
         toolbox.render(self, 'map.html', {
             'user': user,
@@ -82,7 +82,7 @@ class HelpHandler(BaseHandler):
 
 app = webapp2.WSGIApplication([
     ('/', Marketing),
-    ('/map', MapHandler),
+    ('/circle/(\d+)/map', MapHandler),
 
     # cron
     ('/notifications/check', CheckNotifications),
@@ -129,8 +129,8 @@ app = webapp2.WSGIApplication([
     ('/circle/(\d+)/request', RequestJoin),
     ('/circle/(\d+)/accept', RequestAccept),
     ('/circle/(\d+)/message', CircleMessage),
-    ('/members', CircleMembers),
-    ('/requests', CircleRequests),
+    ('/circle/(\d+)/members', CircleMembers),
+    ('/circle/(\d+)/requests', CircleRequests),
     ('/newCircle', NewCircleHandler),
     ('/circles', CircleHandler),
     ('/join_circle', JoinCircle),
