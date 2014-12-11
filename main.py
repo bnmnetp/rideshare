@@ -40,6 +40,14 @@ from app.cron.notifications import *
 
 from app.common import toolbox
 
+class GetStarted(BaseHandler):
+    def get(self):
+        self.auth()
+        user = self.current_user()
+        toolbox.render(self, 'get_started.html',  {
+            'user': user
+        })
+
 class Marketing(BaseHandler):
     def get(self):
         redirect = invited = None
@@ -82,6 +90,7 @@ class HelpHandler(BaseHandler):
 
 app = webapp2.WSGIApplication([
     ('/', Marketing),
+    ('/get_started', GetStarted),
     ('/circle/(\d+)/map', MapHandler),
 
     # cron
@@ -131,6 +140,7 @@ app = webapp2.WSGIApplication([
     ('/circle/(\d+)/message', CircleMessage),
     ('/circle/(\d+)/members', CircleMembers),
     ('/circle/(\d+)/requests', CircleRequests),
+    ('/circle/(\d+)/rides', CircleRides),
     ('/newCircle', NewCircleHandler),
     ('/circles', CircleHandler),
     ('/join_circle', JoinCircle),

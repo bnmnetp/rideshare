@@ -55,8 +55,16 @@
 				<!-- </div> -->
 
 				<ul class="dropdown-menu" role="menu">
-					<li><a href="/circle/{{circle.key().id()}}/map">Map</a></li>
-					<li><a href="/circle/{{circle.key().id()}}/rides">Rides</a></li>
+					<li>
+						<a href="/circle/{{circle.key().id()}}/map">
+							Map
+						</a>
+					</li>
+					<li>
+						<a href="/circle/{{circle.key().id()}}/rides">
+							Rides
+						</a>
+					</li>
 					{% if active_circle is defined and active_circle.privacy == 'private' and is_admin %}
 					<li>
 						<a href="/requests">
@@ -102,19 +110,17 @@
 			</li> -->
 
 		{% endif %}
-			<li class="sidebar-title separator">
-				<span>QUICK LINKS</span>
-			</li>
+			<hr>
 			<li class="sidebar-list">
-				<a href="/user">
-					My Profile
-					<span class="menu-icon fa fa-user"></span>
+				<a href="/home">
+					Dashboard
+					<span class="menu-icon fa fa-home"></span>
 				</a>
 			</li>
 			<li class="sidebar-list">
-				<a href="/home">
-					Personal Dashboard
-					<span class="menu-icon fa fa-home"></span>
+				<a href="/rides">
+					My Rides
+					<span class='menu-icon fa fa-car'></span>
 				</a>
 			</li>
 			<li class="sidebar-list">
@@ -127,6 +133,12 @@
 				<a href="/newCircle">
 					Create Circles
 					<span class="menu-icon fa fa-plus"></span>
+				</a>
+			</li>
+			<li class="sidebar-list">
+				<a href="/signout">
+					Signout
+					<span class="menu-icon fa fa-user"></span>
 				</a>
 			</li>
 		</ul>

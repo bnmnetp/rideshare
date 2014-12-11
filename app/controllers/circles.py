@@ -534,3 +534,15 @@ class CircleRequests(BaseHandler):
             'circle': circle,
             'user': user
         })
+
+class CircleRides(BaseHandler):
+    def get(self, circle_id):
+        self.auth()
+
+        circle = Circle.get_by_id(int(circle_id))
+
+        if not circle:
+            self.redirect('/circles')
+            return None
+
+        user = self.current_user()

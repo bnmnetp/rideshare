@@ -66,6 +66,8 @@ class HomeHandler(BaseHandler):
         self.auth()
         user = self.current_user()
 
+        user.created_str = user.created.strftime('%B %dth, %Y')
+
         today = datetime.date.today()
 
         notis = Notification.all().filter('created >= ', today).filter('user = ', user.key()).fetch(10)
