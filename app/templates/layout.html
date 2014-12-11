@@ -33,16 +33,41 @@
 			<li class="sidebar-title separator first beta-warning">
 				Email <a href='mailto:nelsan06@luther.edu,andy@energydistrict.org'>developer</a> with issues.
 			</li>
-			<li class="sidebar-title separator first">
+			<!-- <li class="sidebar-title separator first">
 				<span>ACTIVE CIRCLE (Click to switch)</span>
 			</li>
 			<li class="sidebar-main" data-cwitch='li'>
 				<a href="/circle/{{active_circle.key().id()}}">
 					{{active_circle.name}}
 				</a>
-				<span class="fa fa-caret-down menu-icon" data-cwitch='caret'></span>
+				<span class="fa fa-caret-down" data-cwitch='caret'></span>
+			</li> -->
+			<li class="sidebar-title separator">
+				<span>MY CIRCLES</span>
 			</li>
-			<li class='cwitch-container' data-cwitch='container'>
+			{% for circle in circle_list %}
+			<li class='sidebar-list dropdown menu-option'>
+				<!-- <div class=""> -->
+					<a href="/circle/{{circle.key().id()}}" class='link'>{{circle.name}}</a>
+					<div data-toggle="dropdown" class="dropdown-toggle down">
+						<i class="fa fa-caret-down"></i>
+					</div>
+				<!-- </div> -->
+
+				<ul class="dropdown-menu" role="menu">
+					<li><a href="/circle/{{circle.key().id()}}/map">Map</a></li>
+					<li><a href="/circle/{{circle.key().id()}}/rides">Rides</a></li>
+					{% if active_circle is defined and active_circle.privacy == 'private' and is_admin %}
+					<li>
+						<a href="/requests">
+							Requests
+						</a>
+					</li>
+					{% endif %}
+				</ul>
+			</li>
+			{% endfor %}
+			<!-- <li class='cwitch-container' data-cwitch='container'>
 				<ul class='cwitch-list'>
 					{% for circle in circle_list %}
 					<li>
@@ -50,8 +75,8 @@
 					</li>
 					{% endfor %}
 				</ul>
-			</li>
-			<li class="sidebar-list">
+			</li> -->
+			<!-- <li class="sidebar-list">
 				<a href="/map">
 					Map
 					<span class="menu-icon fa fa-map-marker"></span>
@@ -62,7 +87,7 @@
 					Rides
 					<span class="menu-icon fa fa-car"></span>
 				</a>
-			</li>
+			</li> -->
 			<!-- <li class='sidebar-list'>
 				<a href="/members">
 					Members
@@ -75,14 +100,7 @@
 					<span class="menu-icon fa fa-calendar"></span>
 				</a>
 			</li> -->
-			{% if active_circle is defined and active_circle.privacy == 'private' and is_admin %}
-			<li class='sidebar-list'>
-				<a href="/requests">
-					Requests
-					<span class='menu-icon fa fa-fire'></span>
-				</a>
-			</li>
-			{% endif %}
+
 		{% endif %}
 			<li class="sidebar-title separator">
 				<span>QUICK LINKS</span>

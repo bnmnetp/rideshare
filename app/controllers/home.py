@@ -77,6 +77,7 @@ class HomeHandler(BaseHandler):
         upcoming = Ride.all().filter('date >= ', today).filter('driver =', user.key()).fetch(10)
 
         rides_driving = Ride.all().filter('date >= ', today).filter('driver =', user.key()).fetch(10)
+        
         passenger_joined = Passenger.all().filter('created >= ', today).filter('ride in', rides_driving).fetch(10)
 
         site_notifications = []

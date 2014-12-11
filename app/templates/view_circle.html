@@ -100,7 +100,7 @@
                                     {% if not member.key() in circle.admins %}
                                         <button class='btn btn-success' data-promote='{{member.key().id()}}'>Promote to Manager</button>
                                     {% endif %}
-                                    <button class='btn btn-danger' data-kick='{{member.key().id()}}'>Kick Member</button>
+                                    <button class='btn btn-danger' data-kick='{{member.key().id()}}'>Remove Member</button>
                                 </div>
                             </div>
                             {% endif %}
@@ -117,7 +117,7 @@
                 <div class="panel-heading">
                     Events
                     <div class="pull-right">
-                        <a href="/map?events=true">
+                        <a href="/circle/{{circle.key().id()}}/map?events=true">
                             Create Events
                         </a>
                     </div>
@@ -148,23 +148,9 @@
                     {% endfor %}
                 {% else %}
                     <div class="panel-message">
-                        There are no events yet. Visit <a href="/map">the map</a> to create one.
+                        There are no events yet. Visit <a href="/circle/{{circle.key().id()}}/map">the map</a> to create one.
                     </div>
                 {% endif %}
-                </div>
-            </div>
-            <div class="panel panel-main">
-                <div class="panel-heading">Comments</div>
-                <div class="panel-body" data-comment='container'>
-                    <form data-comment='form' autocomplete='off'>
-                        <div class="form-group">
-                            <label>Comment</label>
-                            <textarea class='form-control' rows='3' name='comment'></textarea>
-                        </div>
-                        <button type='submit' class='btn btn-primary'>
-                            Post Comment
-                        </button>
-                    </form>
                 </div>
             </div>
         </div>
@@ -199,9 +185,7 @@
 {% endblock %}
 
 {% block scripts %}
-<script src='/static/js/comment.js'></script>
 
-{% include 'comment.html' %}
 {% raw %}
 <script data-notify="template" type='text/x-handlebars-template'>
     <div class="alert alert-{{type}} alert-dismissable">
@@ -210,11 +194,4 @@
     </div>
 </script>
 {% endraw %}
-<script type="text/javascript">
-var comment = new Comment({
-    type: 'circle',
-    id: {{circle.key().id()}},
-    container: '[data-comment="container"]'
-});
-</script>
 {% endblock %}
