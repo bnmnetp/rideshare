@@ -7,8 +7,6 @@
 
 {% block main %}
 
-{% include 'includes/circle_header.html' %}
-
 <div data-notify="container"></div>
 
 <div class="row">
@@ -85,14 +83,8 @@
 <script src="static/js/filter.js" type='text/javascript'></script>
 
 <script type="text/javascript">
-    {% if active_circle == None %}
-        var circle = false;
-    {% else %}
-        var circle = {{active_circle.key().id()}}
-    {% endif %}
-
     var flow = new Flow('my_rides');
-    var filter = new Filter(circle);
+    var filter = new Filter();
     filter.action('past');
 </script>
 

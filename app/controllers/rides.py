@@ -65,9 +65,9 @@ class FilterRides(BaseHandler):
         today = date.today()
         rides.filter('date >=', today)
 
-        if data['circle']:
-            circle = Circle.get_by_id(int(data['circle']))
-            rides.filter('circle =', circle.key())
+        # if data['circle']:
+        #     circle = Circle.get_by_id(int(data['circle']))
+        #     rides.filter('circle =', circle.key())
 
         if data['filter'] == 'no_driver':
             rides.filter('driver = ', None)
