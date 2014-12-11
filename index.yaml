@@ -52,6 +52,11 @@ indexes:
 
 - kind: Passenger
   properties:
+  - name: ride
+  - name: created
+
+- kind: Passenger
+  properties:
   - name: user
   - name: created
 
