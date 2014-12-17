@@ -122,12 +122,12 @@ var suggestions = new Bloodhound({
 });
 suggestions.initialize();
 
-invite.select = document.querySelector('[data-invite="select"]');
-invite.select.disabled = true;
+// invite.select = document.querySelector('[data-invite="select"]');
+// invite.select.disabled = true;
 
 invite.send_array = [];
 
-invite.input = document.querySelector('[data-invite="input"]');
+// invite.input = document.querySelector('[data-invite="input"]');
 invite.output = document.querySelector('[data-invite="output"]');
 invite.source = document.querySelector('[data-invite="template"]').innerHTML;
 invite.template = Handlebars.compile(invite.source);
@@ -145,19 +145,19 @@ document.addEventListener('click', function (e) {
     }
 });
 
-invite.select.addEventListener('click', function (e) {
-    invite.send_array.push(invite.selected.id);
-    var html = invite.template({
-        id: invite.selected.id,
-        name: invite.selected.name
-    });
-    invite.output.insertAdjacentHTML('beforeend', html);
-    invite.select.disabled = true;
-});
+// invite.select.addEventListener('click', function (e) {
+//     invite.send_array.push(invite.selected.id);
+//     var html = invite.template({
+//         id: invite.selected.id,
+//         name: invite.selected.name
+//     });
+//     invite.output.insertAdjacentHTML('beforeend', html);
+//     invite.select.disabled = true;
+// });
 
-invite.input.addEventListener('input', function () {
-    invite.select.disabled = true;
-});
+// invite.input.addEventListener('input', function () {
+//     invite.select.disabled = true;
+// });
 
 $('[data-invite="input"]').typeahead(null, {
     name: 'query',
@@ -169,33 +169,33 @@ $('[data-invite="input"]').typeahead(null, {
     invite.selected = sug;
 });
 
-var send_invites = document.querySelector('[data-invite="send"]');
+// var send_invites = document.querySelector('[data-invite="send"]');
 
-send_invites.addEventListener('click', function (e) {
-    e.preventDefault();
+// send_invites.addEventListener('click', function (e) {
+//     e.preventDefault();
 
-    var push = $.ajax({
-        type: 'POST',
-        url: '/invite/{{circle.key().id()}}/name',
-        dataType: 'json',
-        contentType: 'application/json; charset=UTF-8',
-        data: JSON.stringify(invite.send_array)
-    });
+//     var push = $.ajax({
+//         type: 'POST',
+//         url: '/invite/{{circle.key().id()}}/name',
+//         dataType: 'json',
+//         contentType: 'application/json; charset=UTF-8',
+//         data: JSON.stringify(invite.send_array)
+//     });
 
-    push.done(function (data) {
-        notify({
-            type: 'success',
-            strong: 'Invites sent!'
-        });
-    });
+//     push.done(function (data) {
+//         notify({
+//             type: 'success',
+//             strong: 'Invites sent!'
+//         });
+//     });
 
-    push.fail(function (data, status) {
-        notify({
-            type: 'danger',
-            strong: 'Invites not sent.'
-        });
-    });
-});
+//     push.fail(function (data, status) {
+//         notify({
+//             type: 'danger',
+//             strong: 'Invites not sent.'
+//         });
+//     });
+// });
 
 var email_csv = document.querySelector('#email_csv');
 
