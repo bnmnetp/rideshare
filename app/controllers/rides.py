@@ -463,3 +463,29 @@ class DeleteRide(BaseHandler):
         return self.json_resp(200, {
             'message': 'Ride deleted.'
         })
+
+class GetRides(BaseHandler):
+    def get(self):
+        self.auth()
+
+        user = self.current_user()
+
+        today = date.today()
+
+        rides_driven = Rides.all().filter('date =>', today).filter('driven_by =', user.key()).fetch(None)
+
+        passenger = Passenger.all().filter('user = ', user.key()).fetch(None)
+
+        rides_passenger = []
+        for p in passenger:
+            if p.ride.date >= today:
+                rides_passenger.append(p.ride)
+
+
+        doRender(self, 'rides.html', {
+                'user': user,
+                'rides_driven': rides_driven,
+                'rides_passenger': rides_passenger
+            })
+
+

@@ -9,36 +9,27 @@
 
 <div data-notify="container"></div>
 
-<div class="row">
-    <div class="col-md-4">
-        <h4>Filter Rides</h4>
-        <h5>Rides that:</h5>
-        <ul class='menu'>
-            <li data-filter='no_driver'>Need a Driver</li>
-            <li data-filter='driver'>Have a Driver</li>
-        </ul>
-        <h5>Rides where:</h5>
-        <ul class="menu">
-            <li data-filter='user_passenger'>I'm a passenger</li>
-            <li data-filter='user_driver'>I'm a driver</li>
-        </ul>
-        <!-- <ul class="menu">
-            <li data-filter='current'>Current rides</li>
-            <li data-filter='past'>Past & Current rides</li>
-        </ul> -->
-        <!-- <ul class="menu">
-            <li data-filter='rides'>Only rides</li>
-            <li data-filter='events'>Only events</li>
-            <li data-filter='trips'>All trips</li>
-        </ul> -->
+<div class="panel panel-main">
+    <div class="panel-heading">
+        My Upcoming Rides
     </div>
-    <div class="col-md-8">
-        <div class="panel panel-main">
-            <div class="panel-heading">
-                Results
+    <div class="panel-body panel-no">
+        <div class="list">
+            <div class="ctx">
+                <i class="fa fa-car"></i>
             </div>
-            <div class="panel-body panel-no" data-container='filter'>
-
+            <div class="info">
+                <div class="title">
+                    <a href='/ride/{{id}}'>
+                        {{orig}} to {{dest}}
+                    </a>
+                </div>
+                <div class="sub">
+                    <div class='deta'>
+                        <i class='fa fa-calendar'></i>
+                        {{date}}
+                    </div>
+                </div>
             </div>
         </div>
     </div>
