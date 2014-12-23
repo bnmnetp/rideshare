@@ -8,32 +8,75 @@
 {% block main %}
 
 <div data-notify="container"></div>
-
-<div class="panel panel-main">
-    <div class="panel-heading">
-        My Upcoming Rides
-    </div>
-    <div class="panel-body panel-no">
-        <div class="list">
-            <div class="ctx">
-                <i class="fa fa-car"></i>
+<div class="row">
+    <div class="col-md-6">
+        <div class="panel panel-main">
+            <div class="panel-heading">
+                Upcoming Rides - Driver
             </div>
-            <div class="info">
-                <div class="title">
-                    <a href='/ride/{{id}}'>
-                        {{orig}} to {{dest}}
-                    </a>
-                </div>
-                <div class="sub">
-                    <div class='deta'>
-                        <i class='fa fa-calendar'></i>
-                        {{date}}
+            <div class="panel-body panel-no">
+                {% if rides_driven.count() %}
+                {% for ride in rides_driven %}
+                <div class="list">
+                    <div class="ctx">
+                        <i class="fa fa-car"></i>
+                    </div>
+                    <div class="info">
+                        <div class="title">
+                            <a href='/ride/{{id}}'>
+                                {{ride.orig}} to {{ride.dest}}
+                            </a>
+                        </div>
+                        <div class="sub">
+                            <div class='deta'>
+                                <i class='fa fa-calendar'></i>
+                                {{ride.date}}
+                            </div>
+                        </div>
                     </div>
                 </div>
+                {% endfor %}
+                {% else %}
+                    <div class="panel-message">You do not have any upcoming rides.</div>
+                {% endif %}
             </div>
-        </div>
+        </div>  
+    </div>
+    <div class="col-md-6">
+        <div class="panel panel-main">
+            <div class="panel-heading">
+                Upcoming Rides - Passender
+            </div>
+            <div class="panel-body panel-no">
+                {% if rides_passenger %}
+                {% for p in rides_passenger %}
+                <div class="list">
+                    <div class="ctx">
+                        <i class="fa fa-car"></i>
+                    </div>
+                    <div class="info">
+                        <div class="title">
+                            <a href='/ride/{{id}}'>
+                                {{p.orig}} to {{p.dest}}
+                            </a>
+                        </div>
+                        <div class="sub">
+                            <div class='deta'>
+                                <i class='fa fa-calendar'></i>
+                                {{p.date}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                {% else %}
+                    <div class="panel-message">You do not have any upcoming rides.</div>
+                {% endif %}
+            </div>
+        </div> 
     </div>
 </div>
+
 {% endblock %}
 
 {% block scripts %}
