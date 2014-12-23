@@ -9,6 +9,39 @@ from app.common.notification import push_noti
 from app.common.voluptuous import *
 import urllib, urllib2
 
+class GetRides(BaseHandler):
+    def get(self):
+        self.auth()
+
+        user = self.current_user()
+
+        today = date.today()
+
+        rides_driven = Ride.all()
+        rides_driven.filter('driver =', user.key())
+        rides_driven.filter('date >', today)
+        rides_driven.fetch(100)
+
+        passengers = Passenger.all().filter('user =', user.key()).fetch(100)
+
+        rides_passenger = []
+        for p in passengers:
+            p.ride.orig = split_address(p.ride.origin_add)
+            p.ride.dest = split_address(p.ride.dest_add)
+            if p.ride.date >= today:
+                rides_passenger.append(p.ride)
+
+
+        print(rides_passenger, 'INFOXXX')
+        print(rides_driven, 'INFOXXX')
+
+
+        doRender(self, 'rides.html', {
+                'user': user,
+                'rides_driven': rides_driven,
+                'rides_passenger': rides_passenger
+            })
+
 def is_pass_similar_ride(user, ride):
     matches = []
     passengers_match_user = Passenger.all().filter('user = ', user.key()).fetch(None)

@@ -8,41 +8,75 @@
 {% block main %}
 
 <div data-notify="container"></div>
-
 <div class="row">
-    <div class="col-md-4">
-        <h4>Filter Rides</h4>
-        <h5>Rides that:</h5>
-        <ul class='menu'>
-            <li data-filter='no_driver'>Need a Driver</li>
-            <li data-filter='driver'>Have a Driver</li>
-        </ul>
-        <h5>Rides where:</h5>
-        <ul class="menu">
-            <li data-filter='user_passenger'>I'm a passenger</li>
-            <li data-filter='user_driver'>I'm a driver</li>
-        </ul>
-        <!-- <ul class="menu">
-            <li data-filter='current'>Current rides</li>
-            <li data-filter='past'>Past & Current rides</li>
-        </ul> -->
-        <!-- <ul class="menu">
-            <li data-filter='rides'>Only rides</li>
-            <li data-filter='events'>Only events</li>
-            <li data-filter='trips'>All trips</li>
-        </ul> -->
-    </div>
-    <div class="col-md-8">
+    <div class="col-md-6">
         <div class="panel panel-main">
             <div class="panel-heading">
-                Results
+                Upcoming Rides - Driver
             </div>
-            <div class="panel-body panel-no" data-container='filter'>
-
+            <div class="panel-body panel-no">
+                {% if rides_driven.count() %}
+                {% for ride in rides_driven %}
+                <div class="list">
+                    <div class="ctx">
+                        <i class="fa fa-car"></i>
+                    </div>
+                    <div class="info">
+                        <div class="title">
+                            <a href='/ride/{{id}}'>
+                                {{ride.orig}} to {{ride.dest}}
+                            </a>
+                        </div>
+                        <div class="sub">
+                            <div class='deta'>
+                                <i class='fa fa-calendar'></i>
+                                {{ride.date}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                {% else %}
+                    <div class="panel-message">You do not have any upcoming rides.</div>
+                {% endif %}
             </div>
-        </div>
+        </div>  
+    </div>
+    <div class="col-md-6">
+        <div class="panel panel-main">
+            <div class="panel-heading">
+                Upcoming Rides - Passender
+            </div>
+            <div class="panel-body panel-no">
+                {% if rides_passenger %}
+                {% for p in rides_passenger %}
+                <div class="list">
+                    <div class="ctx">
+                        <i class="fa fa-car"></i>
+                    </div>
+                    <div class="info">
+                        <div class="title">
+                            <a href='/ride/{{id}}'>
+                                {{p.orig}} to {{p.dest}}
+                            </a>
+                        </div>
+                        <div class="sub">
+                            <div class='deta'>
+                                <i class='fa fa-calendar'></i>
+                                {{p.date}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                {% else %}
+                    <div class="panel-message">You do not have any upcoming rides.</div>
+                {% endif %}
+            </div>
+        </div> 
     </div>
 </div>
+
 {% endblock %}
 
 {% block scripts %}
