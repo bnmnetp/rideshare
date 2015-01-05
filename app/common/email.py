@@ -14,7 +14,7 @@ def send_email(user, subject, template_file, ctx):
 	html = template.render(ctx)
 
 	message = mail.EmailMessage(
-		sender='Ridecircle Team <decorahrideshare-live@appid.appspotmail.com>',
+		sender='Ridecircle Team <hello@decorahrideshare-live.appspotmail.com>',
 		subject=subject
 	)
 
@@ -30,7 +30,7 @@ def send_invite(email, ctx):
 	html = template.render(ctx)
 
 	message = mail.EmailMessage(
-		sender='Ridecircle Team <decorahrideshare-live@appid.appspotmail.com>',
+		sender='Ridecircle Team <hello@decorahrideshare-live.appspotmail.com>',
 		subject='You are invited to join Ridecircles'
 	)
 
