@@ -44,6 +44,11 @@
         </div>
     </div>
 </div>
+{% if user.name == '' or user.name == 'No name entered' %}
+<div class="alert alert-info" role="alert">
+    <strong>You need to fill out your profile!</strong> Please edit your profile and give us some additional information. <a href="/user/edit/{{user.key().id()}}">Edit Profile >></a>
+</div>
+{% endif %}
 <div class="row">
     <div class="col-md-6">
         <div class="panel panel-main">
