@@ -7,31 +7,37 @@ from app.model import *
 import datetime
 from datetime import date
 
-noti_templates = {
-    'new_event': 'A new event has been added to <a href="/circle/{}">{}</a>',
-    'request_circle': '<a href="/user/{}">{}</a> has requested to join <a href="/circle/{}">{}</a>',
-    'invite_circle': '<a href="/user/{}">{}</a> has invited you to join <a href="/circle/{}">{}</a>',
-    'passenger_joined': '<a href="/user/{}">{}</a> has joined your ride <a href="/ride/{}">from {} to {}</a> as a passenger',
-    'driver_joined': '<a href="/user/{}">{}</a> has joined your ride <a href="/ride/{}">from {} to {}</a> as a driver',
-    'ride_updated': '<a href="/ride/{}">from {} to {}</a> has been updated'
-}
-
-noti_symbols = {
-    'new_event': 'location-arrow',
-    'request_circle': 'question',
-    'invite_circle': 'plus-square-o',
-    'passenger_joined': 'users',
-    'driver_joined': 'thumbs-up',
-    'ride_updated': 'exclamation'
-}
-
-noti_title = {
-    'new_event': 'New Event',
-    'request_circle': 'Request for Circle',
-    'invite_circle': 'Invite to Circle',
-    'passenger_joined': 'Passenger Joined',
-    'driver_joined': 'Driver Joined',
-    'ride_updated': 'Ride Updated'
+noti = {
+    'new_event': {
+        'symbol': 'location-arrow',
+        'template': 'A new event has been added to <a href="/circle/{}">{}</a>',
+        'title': 'New Event'
+    },
+    'request_circle': {
+        'symbol': 'question',
+        'template': '<a href="/user/{}">{}</a> has requested to join <a href="/circle/{}">{}</a>',
+        'title': 'Request for Circle'
+    },
+    'invite_circle': {
+        'symbol': 'plus-square-o',
+        'template': '<a href="/user/{}">{}</a> has invited you to join <a href="/circle/{}">{}</a>',
+        'title': 'Invite to Circle'
+    },
+    'passenger_joined': {
+        'symbol': 'users',
+        'template': '<a href="/user/{}">{}</a> has joined your ride <a href="/ride/{}">from {} to {}</a> as a passenger',
+        'title': 'Passenger Joined'
+    },
+    'driver_joined': {
+        'symbol': 'thumbs-up',
+        'template': '<a href="/user/{}">{}</a> has joined your ride <a href="/ride/{}">from {} to {}</a> as a driver',
+        'title': 'Driver Joined'
+    },
+    'ride_updated': {
+        'symbol': 'exclamation',
+        'template': '<a href="/ride/{}">from {} to {}</a> has been updated',
+        'title': 'Ride Updated'
+    }
 }
 
 class Home2(BaseHandler):
@@ -40,27 +46,27 @@ class Home2(BaseHandler):
         data = [
             {
                 'type': 'new_event',
-                'message': noti_templates['new_event'].format(1, 'Open Galena Circle')         
+                'message': noti['new_event']['template'].format(1, 'Open Galena Circle')         
             },
             {
                 'type': 'request_circle',
-                'message': noti_templates['request_circle'].format(1, 'Gus', 1, 'Open Galena Circle')
+                'message': noti['request_circle']['template'].format(1, 'Gus', 1, 'Open Galena Circle')
             },
             {
                 'type': 'invite_circle',
-                'message': noti_templates['invite_circle'].format(1, 'Gus', 1, 'Open Galena Circle')
+                'message': noti['invite_circle']['template'].format(1, 'Gus', 1, 'Open Galena Circle')
             },
             {
                 'type': 'passenger_joined',
-                'message': noti_templates['passenger_joined'].format(1, 'Gus', 1, 'Galena, IL', 'Dubuque, IA')
+                'message': noti['passenger_joined']['template'].format(1, 'Gus', 1, 'Galena, IL', 'Dubuque, IA')
             },
             {
                 'type': 'driver_joined',
-                'message': noti_templates['driver_joined'].format(1, 'Gus', 1, 'Galena, IL', 'Dubuque, IA')
+                'message': noti['driver_joined']['template'].format(1, 'Gus', 1, 'Galena, IL', 'Dubuque, IA')
             },
             {
                 'type': 'ride_updated',
-                'message': noti_templates['ride_updated'].format(1, 'Galena, IL', 'Dubuque, IA')
+                'message': noti['ride_updated']['template'].format(1, 'Galena, IL', 'Dubuque, IA')
             }
         ]
 
