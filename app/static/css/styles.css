@@ -229,8 +229,12 @@ img {
     top: 0px;
     right: 20px;
     background-color: #ba4556;
-    padding: 5px;
+    padding: 5px 7px;
     border-radius: 4px;
+}
+
+.list .dismiss i {
+    color: white;
 }
 
 .list:last-child {

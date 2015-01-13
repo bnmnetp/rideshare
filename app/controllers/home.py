@@ -113,9 +113,18 @@ class Home2(BaseHandler):
         #     }
         # ]
 
+        circles = Circle.all().fetch(None)
+
+        for circle in circles:
+            if circle.key() in user.circles:
+                circle.user = True
+            else:
+                circle.user = False
+
         doRender(self, 'home2.html', { 
             'site_notis': notifications,
-            'user': user
+            'user': user,
+            'circles': circles
         })
 
 
