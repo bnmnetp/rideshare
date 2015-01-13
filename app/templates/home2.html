@@ -61,7 +61,7 @@
             <div class="panel-body panel-no">
                 {% if site_notis %}
                 {% for sn in site_notis %}
-                    <div class="list">
+                    <div class="list noti">
                         <div class="ctx">
                             <i class="fa fa-{{sn.symbol}}"></i>
                         </div>
@@ -70,6 +70,9 @@
                                 <b>{{sn.title}}</b>
                                 <p>{{sn.message | safe}}</p>
                             </div>
+                        </div>
+                        <div class="dismiss">
+                            <i class="fa fa-times"></i>
                         </div>
                     </div>
                 {% endfor %}

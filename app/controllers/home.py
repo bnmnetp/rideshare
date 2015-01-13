@@ -25,7 +25,7 @@ noti = {
     },
     'passenger_joined': {
         'symbol': 'users',
-        'template': '<a href="/user/{}">{}</a> has joined your ride <a href="/ride/{}">from {} to {}</a> as a passenger',
+        'template': '<a href="/user/{}">{}</a> and {} other people have joined your ride <a href="/ride/{}">from {} to {}</a> as a passenger',
         'title': 'Passenger Joined'
     },
     'driver_joined': {
@@ -42,40 +42,79 @@ noti = {
 
 class Home2(BaseHandler):
     def get(self):
+        self.auth()
         user = self.current_user()
-        data = [
-            {
-                'type': 'new_event',
-                'message': noti['new_event']['template'].format(1, 'Open Galena Circle')         
-            },
-            {
-                'type': 'request_circle',
-                'message': noti['request_circle']['template'].format(1, 'Gus', 1, 'Open Galena Circle')
-            },
-            {
-                'type': 'invite_circle',
-                'message': noti['invite_circle']['template'].format(1, 'Gus', 1, 'Open Galena Circle')
-            },
-            {
-                'type': 'passenger_joined',
-                'message': noti['passenger_joined']['template'].format(1, 'Gus', 1, 'Galena, IL', 'Dubuque, IA')
-            },
-            {
-                'type': 'driver_joined',
-                'message': noti['driver_joined']['template'].format(1, 'Gus', 1, 'Galena, IL', 'Dubuque, IA')
-            },
-            {
-                'type': 'ride_updated',
-                'message': noti['ride_updated']['template'].format(1, 'Galena, IL', 'Dubuque, IA')
-            }
-        ]
+        # events !
+        # requests
+        # invites
+        # passengers !
+        # drivers !
+        # updates
+        events = Event.all().filter('circle in', user.circles).fetch(10)
+        driving = Ride.all().filter('driver =', user.key()).fetch(10)
+        pass_join = Passenger.all().filter('ride in', driving).fetch(10)
+        is_pass = Passenger.all().filter('user =', user.key()).fetch(10)
 
-        for d in data:
-            d['title'] = noti_title[d['type']]
-            d['symbol'] = noti_symbols[d['type']]
+        notifications = []
+
+        for e in events:
+            t = 'new_event'
+            notifications.append({
+                'type': t,
+                'message': noti[t]['template'].format(e.key().id(), e.circle.name)
+            })
+
+        for p in pass_join:
+            t = 'passenger_joined'
+            notifications.append({
+                'type': t,
+                'message': noti[t]['template'].format(p.user.key().id(), p.user.name, 0, p.ride.key().id(), p.ride.origin_add, p.ride.dest_add)
+            })
+
+        for d in is_pass:
+            t = 'driver_joined'
+            if d.ride.driver:
+                notifications.append({
+                    'type': t,
+                    'message': noti[t]['template'].format(d.ride.driver.key().id(), d.ride.driver.name, d.ride.key().id(), d.ride.origin_add, d.ride.dest_add)
+                })
+
+        for n in notifications:
+            n['title'] = noti[n['type']]['title']
+            n['symbol'] = noti[n['type']]['symbol']
+
+        # upcoming_pass = Passenger.all().filter('created >= ', today).filter('user = ', user.key()).fetch(10)
+        # upcoming_ride = Ride.all().filter('date >= ', today).filter('driver =', user.key()).fetch(10)
+        # user = self.current_user()
+        # data = [
+        #     {
+        #         'type': 'new_event',
+        #         'message': noti['new_event']['template'].format(1, 'Open Galena Circle')         
+        #     },
+        #     {
+        #         'type': 'request_circle',
+        #         'message': noti['request_circle']['template'].format(1, 'Gus', 1, 'Open Galena Circle')
+        #     },
+        #     {
+        #         'type': 'invite_circle',
+        #         'message': noti['invite_circle']['template'].format(1, 'Gus', 1, 'Open Galena Circle')
+        #     },
+        #     {
+        #         'type': 'passenger_joined',
+        #         'message': noti['passenger_joined']['template'].format(1, 'Gus', 1, 'Galena, IL', 'Dubuque, IA')
+        #     },
+        #     {
+        #         'type': 'driver_joined',
+        #         'message': noti['driver_joined']['template'].format(1, 'Gus', 1, 'Galena, IL', 'Dubuque, IA')
+        #     },
+        #     {
+        #         'type': 'ride_updated',
+        #         'message': noti['ride_updated']['template'].format(1, 'Galena, IL', 'Dubuque, IA')
+        #     }
+        # ]
 
         doRender(self, 'home2.html', { 
-            'site_notis': data,
+            'site_notis': notifications,
             'user': user
         })
 

@@ -220,7 +220,17 @@ img {
 /* List */
 .list {
     /*padding: 10px 0px;*/
+    position: relative;
     margin-top: 20px;
+}
+
+.list .dismiss {
+    position: absolute;
+    top: 0px;
+    right: 20px;
+    background-color: #ba4556;
+    padding: 5px;
+    border-radius: 4px;
 }
 
 .list:last-child {
@@ -239,6 +249,10 @@ img {
     line-height: 40px;
     margin-left: 20px;
     vertical-align: top;
+}
+
+.list.noti .ctx {
+    background-color: #ba4556;
 }
 
 .list .info {
