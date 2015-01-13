@@ -53,63 +53,39 @@
     <div class="col-md-6">
         <div class="panel panel-main">
             <div class="panel-heading">
-                Ride Alert
+                Site Notifications
                 <div class="pull-right">
                     <i class="fa fa-question" data-help='toggle'></i>
                 </div>
             </div>
             <div class="panel-body panel-no">
-                {% if ride_alerts %}
-                    {% for ra in ride_alerts %}
-                        <div class="list" data-parent=''>
-                            <div class="ctx">
-                                <i class="fa fa-paper-plane"></i>
-                            </div>
-                            <div class="info">
-                                <div class="title">
-                                    {{ra.message | safe}}
-                                    {% if ra.submessage %}
-                                    <blockquote>
-                                        {{ra.submessage}}
-                                    </blockquote>
-                                    {% endif %}
-                                </div>
-                                <div class="sub">
-                                    {% if ra.details %}
-                                    <a href="/ride/{{ra.details.id}}" class='btn btn-primary btn-sm'>
-                                        <i class="fa fa-automobile"></i>
-                                        {{ra.details.message}}
-                                    </a>
-                                    {% endif %}
-                                    {% if ra.circle %}
-                                    <a href="/circle/{{ra.circle.id}}" class='btn btn-primary btn-sm'>
-                                        <i class="fa fa-circle-o"></i>
-                                        {{ra.circle.name}}
-                                    </a>
-                                    {% endif %}
-                                    {% if ra.date %}
-                                    <div class="tag">
-                                        <i class="fa fa-calendar"></i> {{ra.date}}
-                                    </div>
-                                    {% endif %}
-                                    <div class="tag">
-                                        {{ra.type}}
-                                    </div>
-                                    <!-- <button class='btn btn-danger btn-xs' data-alert='' data-type='{{ra.type}}'>
-                                        <i class="fa fa-times"></i>
-                                        Dismiss
-                                    </button> -->
-                                </div>
+                {% if site_notis %}
+                {% for sn in site_notis %}
+                    <div class="list noti">
+                        <div class="ctx">
+                            <i class="fa fa-{{sn.symbol}}"></i>
+                        </div>
+                        <div class="info">
+                            <div class="title">
+                                <b>{{sn.title}}</b>
+                                <p>{{sn.message | safe}}</p>
                             </div>
                         </div>
-                    {% endfor %}
+                        <div class="dismiss">
+                            <i class="fa fa-times"></i>
+                        </div>
+                    </div>
+                {% endfor %}
                 {% else %}
-                <div class="panel-message">
-                    You do not have any notifications.
-                </div>
+                    <div class="panel-message">
+                        You do not have any upcoming events.
+                    </div>
                 {% endif %}
             </div>
         </div>
+
+    </div>
+    <div class="col-md-6">
         <div class="panel panel-main">
             <div class="panel-heading">Quick options</div>
             <div class="panel-body panel-no">
@@ -133,61 +109,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="panel panel-main">
-            <div class="panel-heading">
-                Circle Notifications
-                <div class="pull-right">
-                    <i class="fa fa-question" data-help='toggle'></i>
-                </div>
-            </div>
-            <div class="panel-body panel-no">
-                {% if site_notis %}
-                {% for sn in site_notis %}
-                    <div class="list">
-                        <div class="ctx">
-                            <i class="fa fa-envelope-o"></i>
-                        </div>
-                        <div class="info">
-                            <div class="title">
-                                {{sn.message}}
-                            </div>
-                            <div class="sub">
-                                {% if sn.circle %}
-                                <a href="/circle/{{sn.circle.id}}" class='btn btn-primary btn-sm'>
-                                    <i class="fa fa-circle-o"></i>
-                                    {{sn.circle.name}}
-                                </a>
-                                {% endif %}
-                                {% if sn.invited_by %}
-                                <a href="/circle/{{sn.invited_by.id}}" class='btn btn-primary btn-sm'>
-                                    <i class="fa fa-circle-o"></i>
-                                    {{sn.invited_by.name}}
-                                </a>
-                                {% endif %}
-                                {% if sn.date %}
-                                <div class="tag">
-                                    <i class="fa fa-calendar"></i>
-                                    {{sn.date}}
-                                </div>
-                                {% endif %}
-                                {% if sn.type %}
-                                <div class="tag">
-                                    {{sn.type}}
-                                </div>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
-                {% endfor %}
-                {% else %}
-                    <div class="panel-message">
-                        You do not have any upcoming events.
-                    </div>
-                {% endif %}
             </div>
         </div>
         <div class="panel panel-main">

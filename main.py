@@ -103,7 +103,8 @@ app = webapp2.WSGIApplication([
     ('/reset/(\w+)', NewPassword),
 
     # controllers/home.py
-    ('/home', HomeHandler),
+    ('/home', Home2),
+    ('/home2', HomeHandler),
 
     # controllers/rides.py
     ('/rides', GetRides),

@@ -7,6 +7,127 @@ from app.model import *
 import datetime
 from datetime import date
 
+noti = {
+    'new_event': {
+        'symbol': 'location-arrow',
+        'template': 'A new event has been added to <a href="/circle/{}">{}</a>',
+        'title': 'New Event'
+    },
+    'request_circle': {
+        'symbol': 'question',
+        'template': '<a href="/user/{}">{}</a> has requested to join <a href="/circle/{}">{}</a>',
+        'title': 'Request for Circle'
+    },
+    'invite_circle': {
+        'symbol': 'plus-square-o',
+        'template': '<a href="/user/{}">{}</a> has invited you to join <a href="/circle/{}">{}</a>',
+        'title': 'Invite to Circle'
+    },
+    'passenger_joined': {
+        'symbol': 'users',
+        'template': '<a href="/user/{}">{}</a> and {} other people have joined your ride <a href="/ride/{}">from {} to {}</a> as a passenger',
+        'title': 'Passenger Joined'
+    },
+    'driver_joined': {
+        'symbol': 'thumbs-up',
+        'template': '<a href="/user/{}">{}</a> has joined your ride <a href="/ride/{}">from {} to {}</a> as a driver',
+        'title': 'Driver Joined'
+    },
+    'ride_updated': {
+        'symbol': 'exclamation',
+        'template': '<a href="/ride/{}">from {} to {}</a> has been updated',
+        'title': 'Ride Updated'
+    }
+}
+
+class Home2(BaseHandler):
+    def get(self):
+        self.auth()
+        user = self.current_user()
+        # events !
+        # requests
+        # invites
+        # passengers !
+        # drivers !
+        # updates
+        events = Event.all().filter('circle in', user.circles).fetch(10)
+        driving = Ride.all().filter('driver =', user.key()).fetch(10)
+        pass_join = Passenger.all().filter('ride in', driving).fetch(10)
+        is_pass = Passenger.all().filter('user =', user.key()).fetch(10)
+
+        notifications = []
+
+        for e in events:
+            t = 'new_event'
+            notifications.append({
+                'type': t,
+                'message': noti[t]['template'].format(e.key().id(), e.circle.name)
+            })
+
+        for p in pass_join:
+            t = 'passenger_joined'
+            notifications.append({
+                'type': t,
+                'message': noti[t]['template'].format(p.user.key().id(), p.user.name, 0, p.ride.key().id(), p.ride.origin_add, p.ride.dest_add)
+            })
+
+        for d in is_pass:
+            t = 'driver_joined'
+            if d.ride.driver:
+                notifications.append({
+                    'type': t,
+                    'message': noti[t]['template'].format(d.ride.driver.key().id(), d.ride.driver.name, d.ride.key().id(), d.ride.origin_add, d.ride.dest_add)
+                })
+
+        for n in notifications:
+            n['title'] = noti[n['type']]['title']
+            n['symbol'] = noti[n['type']]['symbol']
+
+        # upcoming_pass = Passenger.all().filter('created >= ', today).filter('user = ', user.key()).fetch(10)
+        # upcoming_ride = Ride.all().filter('date >= ', today).filter('driver =', user.key()).fetch(10)
+        # user = self.current_user()
+        # data = [
+        #     {
+        #         'type': 'new_event',
+        #         'message': noti['new_event']['template'].format(1, 'Open Galena Circle')         
+        #     },
+        #     {
+        #         'type': 'request_circle',
+        #         'message': noti['request_circle']['template'].format(1, 'Gus', 1, 'Open Galena Circle')
+        #     },
+        #     {
+        #         'type': 'invite_circle',
+        #         'message': noti['invite_circle']['template'].format(1, 'Gus', 1, 'Open Galena Circle')
+        #     },
+        #     {
+        #         'type': 'passenger_joined',
+        #         'message': noti['passenger_joined']['template'].format(1, 'Gus', 1, 'Galena, IL', 'Dubuque, IA')
+        #     },
+        #     {
+        #         'type': 'driver_joined',
+        #         'message': noti['driver_joined']['template'].format(1, 'Gus', 1, 'Galena, IL', 'Dubuque, IA')
+        #     },
+        #     {
+        #         'type': 'ride_updated',
+        #         'message': noti['ride_updated']['template'].format(1, 'Galena, IL', 'Dubuque, IA')
+        #     }
+        # ]
+
+        circles = Circle.all().fetch(None)
+
+        for circle in circles:
+            if circle.key() in user.circles:
+                circle.user = True
+            else:
+                circle.user = False
+
+        doRender(self, 'home2.html', { 
+            'site_notis': notifications,
+            'user': user,
+            'circles': circles
+        })
+
+
 # class HomeHandler(BaseHandler):
 #     def get(self):
 #         self.auth()
@@ -186,7 +307,7 @@ class HomeHandler(BaseHandler):
         for invite in invites:
             obj = {
                 'message': """
-                    You have been invited to <a href='/circle/%s'>%s circle</a>.
+                    You have been invited to <a href='/circle/{}'>{} circle</a>.
                 """ % (invite.circle.key().id(), invite.circle.name),
                 'circle': {
                     'name': invite.circle.name,
@@ -205,7 +326,7 @@ class HomeHandler(BaseHandler):
 
             obj = {
                 'message': """
-                <a href='/user/%s'>%s</a> has joined this ride.
+                <a href='/user/{}'>{}</a> has joined this ride.
                 """ % (p.user.key().id(), p.user.name),
                 'submessage': p.message,
                 'date': None,
