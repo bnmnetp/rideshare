@@ -1,0 +1,207 @@
+{% extends "layout.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block main %}
+<div data-notify='container'></div>
+<div class="row hidden" data-help='container'>
+    <div class="col-md-4">
+        <ul class='list-group'>
+            <a href="#q1" data-toggle='tab' class='list-group-item active'>
+                What is a ride alert?
+            </a>
+            <a href="#q2" data-toggle='tab' class='list-group-item'>
+                What is a circle notification?
+            </a>
+            <a href="#q3" data-toggle='tab' class='list-group-item'>
+                Can I be emailed when I recieve an alert?
+            </a>
+        </ul>
+    </div>
+    <div class="col-md-8">
+        <div class="tab-content">
+            <div class="tab-pane active" id="q1">
+                Alerts are important messages regarding rides you are connected to. You will be alerted if:
+
+                1. If a person leaves or joins a ride you are connected to.
+                2. When you have an upcoming ride in the next few days.
+
+                These alerts will always be shown on your home page but you can also receive these messages through email. Set your preferences by visiting your profile page.
+            </div>
+            <div class="tab-pane" id="q2">
+                Circle notifications are news about circles you belond to. You will be notified if:
+
+                A circle admin sends the group a message.
+                If someone requests to join your circle.
+            </div>
+            <div class="tab-pane" id="q3">
+                Yes! Visit your notification preference page.
+            </div>
+        </div>
+    </div>
+</div>
+{% if user.name == '' or user.name == 'No name entered' %}
+<div class="alert alert-info" role="alert">
+    <strong>You need to fill out your profile!</strong> Please edit your profile and give us some additional information. <a href="/user/edit/{{user.key().id()}}">Edit Profile >></a>
+</div>
+{% endif %}
+<div class="row">
+    <div class="col-md-6">
+        <div class="panel panel-main">
+            <div class="panel-heading">
+                Site Notifications
+                <div class="pull-right">
+                    <i class="fa fa-question" data-help='toggle'></i>
+                </div>
+            </div>
+            <div class="panel-body panel-no">
+                {% if site_notis %}
+                {% for sn in site_notis %}
+                    <div class="list">
+                        <div class="ctx">
+                            <i class="fa fa-{{sn.symbol}}"></i>
+                        </div>
+                        <div class="info">
+                            <div class="title">
+                                <b>{{sn.title}}</b>
+                                <p>{{sn.message | safe}}</p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                {% else %}
+                    <div class="panel-message">
+                        You do not have any upcoming events.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+    <div class="col-md-6">
+        <div class="panel panel-main">
+            <div class="panel-heading">Quick options</div>
+            <div class="panel-body panel-no">
+                <div class="list">
+                    <div class="ctx">
+                        <i class="fa fa-user"></i>
+                    </div>
+                    <div class="info">
+                        <div class="title">
+                            <a href="/user">My Profile</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="list">
+                    <div class="ctx">
+                        <i class="fa fa-child"></i>
+                    </div>
+                    <div class="info">
+                        <div class="title">
+                            <a href="/get_started">Get Started</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-main">
+            <div class="panel-heading">My Circles</div>
+            <div class="panel-body panel-no">
+            {% if circles %}
+                {% for circle in circles %}
+                    {% if circle.user %}
+                    <div class="list" data-circle='{{circle.key().id()}}'>
+                    {% else %}
+                    <div class="list hidden" data-circle='{{circle.key().id()}}'>
+                    {% endif %}    
+                        {% if circle.color %}
+                        <div class="ctx" style='background-color:{{circle.color}};'>
+                        {% else %}
+                        <div class="ctx">
+                        {% endif %}
+                            <i class='fa fa-circle-o'></i>
+                        </div>
+                        <div class="info">
+                            <div class="title">
+                                <a href='/circle/{{circle.key().id()}}/change'>{{circle.name}}</a>
+                            </div>
+                            <div class="sub">
+                                <a href='/circle/{{circle.key().id()}}/change'>
+                                    Add rides & events for this circle
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="panel-message">
+                    You have not joined any circles.
+                </div>
+            {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript">
+    var send_req = function (id) {
+        var push = $.ajax({
+            type: 'POST',
+            url: '/alert/' + id + '/dismiss',
+            dataType: 'json',
+            contentType: 'application/json; charset=UTF-8',
+            data: JSON.stringify({
+                id: id
+            })
+        });
+
+        push.done(function (data) {
+            var parent = document.querySelector('[data-parent="' + id + '"]');
+            parent.parentNode.removeChild(parent);
+        });
+
+        push.fail(function (data, status) {
+            notify({
+                type: 'danger',
+                strong: 'Whoops',
+                message: 'Alert does not exist.'
+            });
+        });
+    };
+
+    document.body.addEventListener('click', function (e) {
+        var target = e.target;
+
+        if (target.dataset.alert) {
+            send_req(target.dataset.alert);
+        }
+    });
+
+/* Toggle Help */
+var help = {};
+help.btns = document.querySelectorAll('[data-help="toggle"]');
+help.container = document.querySelector('[data-help="container"]');
+
+console.log(help.btns)
+
+for (var btn of help.btns) {
+    btn.addEventListener('click', function (e) {
+        help.container.classList.toggle('hidden');
+    });
+};
+
+// help.btn.addEventListener('click', function (e) {
+//     var target = e.target;
+
+//     help.container.classList.toggle('hidden');
+// });
+/* End */
+</script>
+
+{% endblock %}

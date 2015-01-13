@@ -104,6 +104,7 @@ app = webapp2.WSGIApplication([
 
     # controllers/home.py
     ('/home', HomeHandler),
+    ('/home2', Home2),
 
     # controllers/rides.py
     ('/rides', GetRides),
