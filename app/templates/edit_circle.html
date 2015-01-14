@@ -62,6 +62,7 @@
                 <p class="help-block">Select a color for your circles so users will be able to identify and distinguish it easier.</p>
             </div>
             <button type='submit' class='btn btn-primary'>Edit Circle</button>
+            <button type='button' class='btn btn-danger pull-right' data-circle='delete'>Delete Circle & All Associated Rides and Event</button>
         </form>
     </div>
 </div>
@@ -108,5 +109,31 @@
             push.set('lng', this.result.lng);
         }
     );
+
+    var delete_circle = document.querySelector('[data-circle="delete"]');
+
+    delete_circle.addEventListener('click', function (e) {
+        var req = $.ajax({
+            type: 'POST',
+            url: '/circle/{{circle.key().id()}}/delete',
+            dataType: 'json',
+            contentType: 'application/json; charset=UTF-8',
+            data: JSON.stringify({
+                delete: true
+            })
+        });
+
+        req.done(function (data) {
+            document.location = '/home';
+        });
+
+        req.fail(function (data, status) {
+            notify({
+                type: 'danger',
+                strong: 'Error.',
+                message: 'This circle could not be deleted. Please try again.'
+            });
+        });
+    });
 </script>
 {% endblock %}

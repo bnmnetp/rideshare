@@ -9,6 +9,48 @@ from app.common.notification import push_noti
 import json
 import re
 
+class DeleteCircle(BaseHandler):
+    def post(self, circle_id):
+        self.auth()
+        user = self.current_user()
+
+        circle = Circle.get_by_id(int(circle_id))
+
+        if user.key() in circle.admins:
+            rides = Ride.all().filter('circle', circle.key()).fetch(None)
+
+            events = Event.all().filter('circle', circle.key()).fetch(None)
+
+            passengers = Passenger.all().filter('ride in', rides).fetch(None)
+
+            for p in passengers:
+                p.delete()
+
+            for p in rides:
+                p.delete()
+
+            for p in events:
+                p.delete()
+
+            users = User.all().fetch(None)
+
+            for u in users:
+                if circle.key()in u.circles:
+                    u.circles.remove(circle.key())
+                    u.put()
+
+            circle.delete()
+
+            self.json_resp(200, {
+                'message': 'Success! Circle has been removed.'
+            })
+
+        else:
+            self.json_resp(500, {
+                'message': 'You do not have permission to do that.'
+            })
+
+
 class EditCircle(BaseHandler):
     def get(self, circle_id):
         self.auth()
