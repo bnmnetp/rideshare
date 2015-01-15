@@ -9,7 +9,7 @@
 <div data-notify="container">
     
 </div>
-    {% if circle.privacy == 'private' and is_admin %}
+    {% if is_admin %}
     <div class="panel panel-main">
         <div class="panel-heading">
             Requests to Join
@@ -74,7 +74,7 @@
         req.done(function (data) {
             notify({
                 type: 'success',
-                strong: 'Member accept!'
+                strong: 'Member accepted!'
             });
             document.location.reload(true);
         });
