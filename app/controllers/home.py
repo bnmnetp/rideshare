@@ -10,12 +10,12 @@ from datetime import date
 noti = {
     'new_event': {
         'symbol': 'location-arrow',
-        'template': 'A new event has been added to <a href="/circle/{}">{}</a>',
+        'template': '<a href="/event/{}">{}</a> has been added to <a href="/circle/{}">{}</a>',
         'title': 'New Event'
     },
     'request_circle': {
         'symbol': 'question',
-        'template': '<a href="/user/{}">{}</a> has requested to join <a href="/circle/{}">{}</a>',
+        'template': '<a href="/user/{}">{}</a> and {} other people have requested to join <a href="/circle/{}">{}</a>',
         'title': 'Request for Circle'
     },
     'invite_circle': {
@@ -55,20 +55,50 @@ class Home2(BaseHandler):
         pass_join = Passenger.all().filter('ride in', driving).fetch(10)
         is_pass = Passenger.all().filter('user =', user.key()).fetch(10)
 
+        circle_owned = Circle.all().filter('admins =', user.key()).fetch(10)
+
         notifications = []
+
+        for e in circle_owned:
+            t = 'request_circle'
+            if e.requests:
+                first = User.get(e.requests[0])
+                plus_more = len(e.requests) - 1
+                notifications.append({
+                    'type': t,
+                    'message': noti[t]['template'].format(
+                        first.key().id(),
+                        first.name,
+                        plus_more,
+                        e.key().id(),
+                        e.name
+                    )
+                })
 
         for e in events:
             t = 'new_event'
             notifications.append({
                 'type': t,
-                'message': noti[t]['template'].format(e.key().id(), e.circle.name)
+                'message': noti[t]['template'].format(
+                    e.key().id(),
+                    e.name,
+                    e.circle.key().id(),
+                    e.circle.name
+                )
             })
 
         for p in pass_join:
             t = 'passenger_joined'
             notifications.append({
                 'type': t,
-                'message': noti[t]['template'].format(p.user.key().id(), p.user.name, 0, p.ride.key().id(), p.ride.origin_add, p.ride.dest_add)
+                'message': noti[t]['template'].format(
+                    p.user.key().id(),
+                    p.user.name,
+                    0,
+                    p.ride.key().id(),
+                    p.ride.origin_add,
+                    p.ride.dest_add
+                )
             })
 
         for d in is_pass:
@@ -76,7 +106,13 @@ class Home2(BaseHandler):
             if d.ride.driver:
                 notifications.append({
                     'type': t,
-                    'message': noti[t]['template'].format(d.ride.driver.key().id(), d.ride.driver.name, d.ride.key().id(), d.ride.origin_add, d.ride.dest_add)
+                    'message': noti[t]['template'].format(
+                        d.ride.driver.key().id(),
+                        d.ride.driver.name,
+                        d.ride.key().id(),
+                        d.ride.origin_add,
+                        d.ride.dest_add
+                    )
                 })
 
         for n in notifications:
