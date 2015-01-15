@@ -64,14 +64,14 @@
 						<a href="/circle/{{circle.key().id()}}/rides">
 							Rides
 						</a>
-					</li>
-					{% if active_circle is defined and active_circle.privacy == 'private' and is_admin %}
+					</li> -->
+					{% if user.key() in circle.admins %}
 					<li>
-						<a href="/requests">
+						<a href="/circle/{{circle.key().id()}}/requests">
 							Requests
 						</a>
 					</li>
-					{% endif %} -->
+					{% endif %}
 				</ul>
 			</li>
 			{% endfor %}
