@@ -569,6 +569,10 @@ class CircleRequests(BaseHandler):
 
         user = self.current_user()
 
+        if user.key() not in circle.admins:
+            self.redirect('/circles')
+            return None
+
         requests = User.all().filter('__key__ in', circle.requests).fetch(None)
 
         doRender(self, 'circle_request.html', {
