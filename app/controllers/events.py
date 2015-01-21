@@ -41,6 +41,10 @@ class GetEventHandler(BaseHandler):
         for ride in requested:
             ride.orig = toolbox.format_address(ride.origin_add)
             ride.dest = toolbox.format_address(ride.dest_add)
+
+            # Order by Date
+            passengers = Passenger.all().filter('ride =', ride.key().id()).fetch(None)
+            ride.requester = passengers[0].user.name
             
             if ride.driver and user.key() == ride.driver.key():
                 ride.is_driver = True
