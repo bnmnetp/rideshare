@@ -29,6 +29,14 @@ class User(db.Model):
         resp['id'] = self.key().id()
         return resp
 
+    @property
+    def name_x(self):
+        if self.name == '' or self.name == None:
+            return 'User #' + str(self.key().id())
+        else:
+            return self.name
+    
+
 class Circle(db.Model):
     name = db.StringProperty()
     description = db.StringProperty()
