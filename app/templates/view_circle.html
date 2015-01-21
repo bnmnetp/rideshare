@@ -93,7 +93,11 @@
                         </a>
                         <div class="media-body">
                             <div class="pull-left">
-                                <h4>{{member.name_x}}</h4>
+                                <h4>
+                                    <a href="/user/{{member.key().id()}}">
+                                        {{member.name_x}}
+                                    </a>
+                                </h4>
                             </div>
                             {% if is_admin %}
                             <div class="pull-right">
