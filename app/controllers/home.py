@@ -45,7 +45,7 @@ class Home2(BaseHandler):
         self.auth()
         user = self.current_user()
         # events !
-        # requests
+        # requests !
         # invites
         # passengers !
         # drivers !
