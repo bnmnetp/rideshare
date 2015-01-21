@@ -87,7 +87,6 @@
                 {% endfor %}
                 {% endif %}
                 {% for member in members %}
-                    {% if not is_admin %}
                     <div class="media">
                         <a href="#" class='pull-left'>
                             <img src="/user/photo/{{member.key().id()}}" style="width: 64px; height: 64px;" class="media-object" alt="64x64">
@@ -108,7 +107,6 @@
                             {% endif %}
                         </div>
                     </div>
-                    {% endif %}
                 {% endfor %}
                 </div>
             </div>
