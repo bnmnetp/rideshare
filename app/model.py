@@ -33,6 +33,8 @@ class User(db.Model):
     def name_x(self):
         if self.name == '' or self.name == None:
             return 'User #' + str(self.key().id())
+        elif self.email != '':
+            return self.email
         else:
             return self.name
     
