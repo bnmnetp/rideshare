@@ -31,10 +31,9 @@ class User(db.Model):
 
     @property
     def name_x(self):
+        # show name 1st, show email 2nd, show user id 3rd
         if self.name == '' or self.name == None:
             return 'User #' + str(self.key().id())
-        elif self.email != '':
-            return self.email
         else:
             return self.name
     
