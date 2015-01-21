@@ -68,7 +68,9 @@
                         </a>
                         <div class="media-body">
                             <div class="pull-left">
-                                <h4>{{member.name}}</h4>
+                                <h4>
+                                    <a href="/user/{{member.key().id()}}">{{member.name_x}}</a>
+                                </h4>
                             </div>
                             {% if is_admin %}
                             <div class="pull-right">
@@ -76,7 +78,7 @@
                                     {% if not member.key() in circle.admins %}
                                         <button class='btn btn-success' data-promote='{{member.key().id()}}'>Promote to Manager</button>
                                     {% endif %}
-                                    <button class='btn btn-danger' data-kick='{{member.key().id()}}'>Kick Member</button>
+                                    <!-- <button class='btn btn-danger' data-kick='{{member.key().id()}}'>Kick Member</button> -->
                                 </div>
                             </div>
                             {% endif %}
@@ -92,7 +94,7 @@
                         </a>
                         <div class="media-body">
                             <div class="pull-left">
-                                <h4>{{member.name}}</h4>
+                                <h4>{{member.name_x}}</h4>
                             </div>
                             {% if is_admin %}
                             <div class="pull-right">
