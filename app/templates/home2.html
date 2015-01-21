@@ -45,7 +45,8 @@
     </div>
 </div>
 {% if user.name == '' or user.name == 'No name entered' %}
-<div class="alert alert-info" role="alert">
+<div class="alert alert-danger" role="alert">
+    <i class="fa fa-exclamation-circle"></i>
     <strong>You need to fill out your profile!</strong> Please edit your profile and give us some additional information. <a href="/user/edit/{{user.key().id()}}">Edit Profile >></a>
 </div>
 {% endif %}
