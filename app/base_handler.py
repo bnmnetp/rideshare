@@ -75,11 +75,11 @@ class BaseHandler(webapp2.RequestHandler):
     def login_redirect(self, user):
         redirect_str = '/home'
         redirect = self.session.get('redirect')
-        if redirect_str:
+        if redirect:
             redirect_str = str(redirect)
             self.session['redirect'] = None
         else:
-            if user.phone == 0 or user.email == '' or user.zip == 'None' or user.name == 'No name entered':
+            if user.email == '' or user.name == '':
                 redirect_str = '/user/edit/' + str(user.key().id())
 
         return redirect_str
