@@ -73,6 +73,7 @@ class RegisterHandler(BaseHandler):
         user = User()
         user.email_account = data['email']
         user.email = data['email']
+        user.name = data['name']
         user.password = hashed
         user.put()
 
