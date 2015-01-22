@@ -32,11 +32,12 @@ class User(db.Model):
     @property
     def name_x(self):
         # show name 1st, show email 2nd, show user id 3rd
-        if self.name == '' or self.name == None:
-            return 'User #' + str(self.key().id())
-        else:
+        if self.name:
             return self.name
-    
+        elif self.email:
+            return self.email
+        else:
+            return 'User #' + str(self.key().id())
 
 class Circle(db.Model):
     name = db.StringProperty()
