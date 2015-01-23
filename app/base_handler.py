@@ -5,9 +5,11 @@ import urllib
 import json
 
 class BaseHandler(webapp2.RequestHandler):
+
     def auth(self):
         id = self.session.get('user')
-        self.session['redirect'] = self.request.path
+        if self.request.method == 'GET':
+            self.session['redirect'] = self.request.path
         redirect_str = '/?'
         if 'redirect' in self.session:
             redirect_str += 'redirect=' + self.session['redirect'] + '&'
