@@ -73,6 +73,43 @@ class NotificationUserHandler(BaseHandler):
 
             self.response.write(json.dumps(resp))
 
+class DeleteUser(BaseHandler):
+    def post(self, user_id):
+        self.auth()
+
+        user = self.current_user()
+
+        requested_user = User.get_by_id(int(user_id))
+
+        if user.key() == requested_user.key():
+
+            all_circles = Circle.all().fetch(None)
+            for circle in all_circles:
+                if user.key() in circle.admins:
+                    circle.admins.remove(user.key())
+                    circle.put()
+
+            rides = Ride.all().filter('driver =', user.key()).fetch(None)
+            for ride in rides:
+                ride.driver = None
+                ride.put()
+
+            passengers = Passenger.all().filter('user =', user.key()).fetch(None)
+
+            for passenger in passengers:
+                passenger.delete()
+
+            user.delete()
+
+            return self.json_resp(200, {
+                'message': 'User removed.'
+            })
+
+        else:
+            return self.json_resp(500, {
+                'message': 'You do not have permission to delete this user.'
+            })
+
 class EditUserHandler(BaseHandler):
     def get(self, user_id):
         self.auth()
