@@ -79,7 +79,7 @@ class DeleteUser(BaseHandler):
 
         user = self.current_user()
 
-        requested_user = User.get(int(user_id))
+        requested_user = User.get_by_id(int(user_id))
 
         if user.key() == requested_user.key():
 
@@ -104,7 +104,7 @@ class DeleteUser(BaseHandler):
             return self.json_resp(200, {
                 'message': 'User removed.'
             })
-            
+
         else:
             return self.json_resp(500, {
                 'message': 'You do not have permission to delete this user.'
