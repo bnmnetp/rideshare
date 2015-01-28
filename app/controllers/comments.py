@@ -45,7 +45,7 @@ class CommentHandler(BaseHandler):
         comment_validator = Schema({
             'comment': unicode,
             'type': unicode,
-            'id': int,
+            'id': Coerce(int),
             'is_owner': bool
         })
 
