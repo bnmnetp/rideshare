@@ -61,8 +61,9 @@ def split_address(add):
 	return temp[1][1:] + ', ' + temp[2][1:3]
 
 def format_address(add):
-	temp = add.split(',')
-	return temp[1][1:] + ', ' + temp[2][1:3]
+	return add
+	# temp = add.split(',')
+	# return temp[1][1:] + ', ' + temp[2][1:3]
 
 def grab_json(obj, prop):
 	resp = {}
