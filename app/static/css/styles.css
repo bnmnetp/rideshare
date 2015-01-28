@@ -6,6 +6,10 @@ body {
     background-color: #F3F3F3;
 }
 
+.media-object {
+    max-width: 64px;
+}
+
 .container {
     margin-left: 250px;
     width: auto;
