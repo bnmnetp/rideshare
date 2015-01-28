@@ -199,10 +199,19 @@ class CircleInvited(BaseHandler):
 
         circle = Circle.get_by_id(int(circle_id))
 
-        doRender(self, 'view_invite_circle.html', {
-            'user': user,
-            'circle': circle
-        })
+        if user:
+            previous = Invite.all().filter('circle =', circle).fetch(None)
+            if not previous:
+                inv = Invite()
+                inv.circle = circle
+                inv.email = ''
+                inv.user = user
+                inv.put()
+
+            self.redirect('/invites')
+        else:
+            self.redirect('/')
+
     def post(self, circle_id):
         self.auth()
 

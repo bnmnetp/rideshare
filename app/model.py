@@ -202,6 +202,11 @@ class Invite(db.Model):
         required = False,
         collection_name = 'to_user'
     )
+    sender = db.ReferenceProperty(
+        User,
+        required = False,
+        collection_name = 'from_user'
+    )
 
 class Passenger(db.Model):
     created = db.DateTimeProperty(auto_now_add=True)
