@@ -500,7 +500,7 @@ template {
 }
 
 .map-container-sm {
-    min-height: 500px;
+    min-height: 435px;
     overflow: auto;
 }
 
@@ -511,7 +511,7 @@ template {
 
 #map_canvas  {
     width: 100%;
-    height: 400px;
+    height: 335px;
     margin: 0px;
     padding: 0px;
 }
