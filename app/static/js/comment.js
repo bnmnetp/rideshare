@@ -58,6 +58,7 @@ var Comment = augment(Object, function () {
             // Refer to comments.CommentHandler for expected response
             data.is_owner = true
             this.add_comment(data);
+            e.target.comment.value = '';
         }.bind(this));
         req.fail(function (data, status) {
 
