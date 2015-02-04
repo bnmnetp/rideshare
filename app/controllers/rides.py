@@ -363,8 +363,8 @@ class GetRide(BaseHandler):
         else:
             similar_rides = None
 
-        print 'SIMILAR RIDES'
-        print similar_rides
+        # print 'SIMILAR RIDES'
+        # print similar_rides
 
         if ride:
             doRender(self, 'view_ride.html', {
@@ -379,6 +379,22 @@ class GetRide(BaseHandler):
             self.response.write('No ride found.')
 
 class CreateRide(BaseHandler):
+    def alert_requesters(self, event, circle, ride):
+        requesters = Requester().all().filter('event = ', event.key()).fetch(None)
+
+        d = {
+            'template': 'new_ride.html',
+            'data': {
+                'circle_name': circle.name,
+                'circle_id': circle.key().id(),
+                'event_name': event.name,
+                'event_id': event.key().id(),
+                'ride_id': ride.key().id()
+            },
+            'subject': 'New Ride offered for ' + event.name,
+            'users': [r.user for r in requesters]
+        }
+
     def post(self):
         self.auth()
 
@@ -427,6 +443,7 @@ class CreateRide(BaseHandler):
                     'message': 'Event does not exist'
                 })
         else:
+            event = None
             ride.dest_add = data['dest_address']
             ride.dest_lat = data['dest_lat']
             ride.dest_lng = data['dest_lng']
@@ -456,6 +473,7 @@ class CreateRide(BaseHandler):
                     'message': 'Circle does not exist'
                 })
         else:
+            circle = None
             ride.circle = None
 
         ride.put()
@@ -467,6 +485,9 @@ class CreateRide(BaseHandler):
             p.seats = 1
             p.message = data['details']
             p.put()
+
+        if event and circle:
+            self.alert_requesters(event, circle, ride)
 
         return self.json_resp(200, {
             'message': 'Ride added!',

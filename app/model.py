@@ -15,6 +15,7 @@ class User(db.Model):
     zip = db.IntegerProperty()
     noti_time = db.IntegerProperty()
     noti_type = db.StringProperty()
+    notis = db.ListProperty(db.Key)
 
     reset = db.StringProperty()
 
@@ -147,6 +148,11 @@ class Ride(db.Model):
         for p in passengers:
             total += p.seats
         return total
+
+class Requester(db.Model):
+    user = db.ReferenceProperty(User)
+    seats = db.IntegerProperty()
+    event = db.ReferenceProperty(Event)        
 
 class Comment(db.Model):
     user = db.ReferenceProperty(

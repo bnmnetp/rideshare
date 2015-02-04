@@ -33,6 +33,11 @@ noti = {
         'template': '<a href="/user/{}">{}</a> has joined your ride <a href="/ride/{}">from {} to {}</a> as a driver',
         'title': 'Driver Joined'
     },
+    'ride_offered': {
+        'symbol': 'thumbs-up',
+        'template': '{} ride(s) are offered to <a href="/event/{}">{}</a>.',
+        'title': 'Ride Offered'
+    },
     'ride_updated': {
         'symbol': 'exclamation',
         'template': '<a href="/ride/{}">from {} to {}</a> has been updated',
@@ -44,16 +49,18 @@ class Home2(BaseHandler):
     def get(self):
         self.auth()
         user = self.current_user()
+        today = date.today()
         # events !
         # requests !
         # invites
         # passengers !
         # drivers !
         # updates
-        events = Event.all().filter('circle in', user.circles).fetch(10)
-        driving = Ride.all().filter('driver =', user.key()).fetch(10)
+        events = Event.all().filter('circle in', user.circles).filter('date >=', today).fetch(10)
+        driving = Ride.all().filter('driver =', user.key()).filter('date >=', today).fetch(10)
         pass_join = Passenger.all().filter('ride in', driving).fetch(10)
-        is_pass = Passenger.all().filter('user =', user.key()).fetch(10)
+        # is_pass = Passenger.all().filter('user =', user.key()).fetch(10)
+        requests = Requester.all().filter('user = ', user.key()).fetch(10)
 
         circle_owned = Circle.all().filter('admins =', user.key()).fetch(10)
 
@@ -101,19 +108,32 @@ class Home2(BaseHandler):
                 )
             })
 
-        for d in is_pass:
-            t = 'driver_joined'
-            if d.ride.driver:
+        for r in requests:
+            t = 'ride_offered'
+            today = date.today()
+            rides_offered = Ride.all().filter('event =', r.event).fetch(None)
+            if r.event.date >= today and len(rides_offered):
                 notifications.append({
                     'type': t,
                     'message': noti[t]['template'].format(
-                        d.ride.driver.key().id(),
-                        d.ride.driver.name,
-                        d.ride.key().id(),
-                        d.ride.origin_add,
-                        d.ride.dest_add
+                        len(rides_offered),
+                        r.event.key().id(),
+                        r.event.name
                     )
                 })
+        # for d in is_pass:
+        #     t = 'driver_joined'
+        #     if d.ride.driver:
+        #         notifications.append({
+        #             'type': t,
+        #             'message': noti[t]['template'].format(
+        #                 d.ride.driver.key().id(),
+        #                 d.ride.driver.name,
+        #                 d.ride.key().id(),
+        #                 d.ride.origin_add,
+        #                 d.ride.dest_add
+        #             )
+        #         })
 
         for n in notifications:
             n['title'] = noti[n['type']]['title']

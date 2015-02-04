@@ -7,7 +7,7 @@ body {
 }
 
 .media-object {
-    max-width: 64px;
+    max-width: 64px !important;
 }
 
 .container {
