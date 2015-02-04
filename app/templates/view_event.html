@@ -39,7 +39,7 @@
                     </li>
                 </ul>
                 <hr>
-                <button class='btn btn-primary' data-toggle='modal' data-target='#need_ride'>I need a ride to this event</button>
+                <button class='btn btn-primary' data-ride='request' data-alt='Requested!'>I need a ride to this event</button>
                 <button class='btn btn-primary' data-toggle='modal' data-target='#offer_ride'>I can offer a ride to this event</button>
                 {% if user.key() == event.creator.key() %}
                     <a class='btn btn-primary' href='/event/{{event.key().id()}}/edit'>Edit Event</a>
@@ -124,113 +124,41 @@
     <div class="col-md-6">
         <div class="panel panel-main">
             <div class="panel-heading">
-                Ride requested to Event
-                <div class="pull-right">
+                Ride Requesters
+                <!-- <div class="pull-right">
                     <a href="#" data-toggle='modal' data-target='#need_ride'>
                         Request a Ride
                     </a>
-                </div>
+                </div> -->
             </div>
-            <div class="panel-body panel-no">
-                {% if requested %}
-                    {% for ride in requested %}
-                    <div class="list">
-                        <div class="ctx">
-                            <i class="fa fa-car"></i>
-                        </div>
-                        <div class="info">
-                            {% if ride.requester %}
-                            <div class="title">
-                                <a href="/ride/{{ride.key().id()}}">Requested by {{ride.requester}} from {{ride.orig}} to {{ride.dest}}</a>
-                            </div>
-                            {% else %}
-                            <div class="title">
-                                <a href="/ride/{{ride.key().id()}}">Requested from {{ride.orig}} to {{ride.dest}}</a>
-                            </div>
-                            {% endif %}
-                            <div class="sub">
-                                <div class="tag">
-                                    <i class="fa fa-calendar"></i> {{ride.date}}
-                                </div>
-                                {% if ride.is_driver %}
-                                    <div class="tag">
-                                        <i class="fa fa-automobile"></i> Driver
-                                    </div>
-                                {% elif ride.is_passenger %}
-                                    <div class="tag">
-                                        <i class="fa fa-automobile"></i> Passenger
-                                    </div>
-                                {% endif %}
+            <div class="panel-body">
+                <div class="alert alert-warning" role="alert">This feature is under construction.</div>
+                {% if requesters %}
+                    {% for requester in requesters %}
+                    <div class="media">
+                        <a href="#" class='pull-left'>
+                            <img src="/user/photo/{{requester.user.key().id()}}" class="media-object" alt="64x64">
+                        </a>
+                        <div class="media-body">
+                            <div class="pull-left">
+                                <h4>
+                                    <a href="/user/{{requester.user.key().id()}}">
+                                        {{requester.user.name_x}}
+                                    </a>
+                                </h4>
                             </div>
                         </div>
                     </div>
                     {% endfor %}
                 {% else %}
                     <div class="panel-message">
-                        There are no rides requested to this event. Create one above.
+                        There are no requesters to this event. Create one above.
                     </div>
                 {% endif %}
             </div>
         </div>
     </div>
 </div>
-
-<div class="modal fade" id="need_ride" tabindex="-1" role="dialog" aria-aria-hidden="true">
-    <div class="modal-dialog">
-        <form data-send="pass">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                    <h4 class="modal-title">Need a ride</h4>
-                </div>
-                <div class="modal-body">
-                    <div data-error='passenger'></div>
-                    <div class="form-group" data-location='passenger'>
-                        <label>Starting Address</label>
-                        <div class="input-group">
-                            <input class="form-control" type="text" placeholder='Address' name='address' required data-location='input'>
-                            <span class="input-group-btn">
-                                <button class="btn btn-default" type="button" data-location='search'>Search Address</button>
-                            </span>
-                        </div>
-                        <div data-location='output' class='hidden'>
-                            <b>Results:</b> <span data-location='address'></span>
-                        </div>
-                        <div class="help-block">You must search for an address before submitting.</div>
-                    </div>
-                    <div class="form-group">
-                        <label>Date</label>
-                        <div class='input-group date' data-datepicker data-date-format="MM/DD/YYYY">
-                            <input class="form-control" type="text" placeholder="Date" name='date' required>
-                            <span class="input-group-addon">
-                                <i class="fa fa-calendar"></i>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Departure Time</label>
-                        <div class="input-group date" data-time='container'>
-                            <input class="form-control" type="text" placeholder="Time" name='time' data-time='input' required>
-                            <span class="input-group-addon">
-                                <i class="fa fa-clock-o"></i>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Additional Details</label>
-                        <input class="form-control" type="text" placeholder="Details" name='details'>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-primary" type='submit'>
-                        Ask for Ride
-                    </button>
-                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-                </div>
-            </div><!-- /.modal-content -->
-        </form>
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
 
 <div class="modal fade" id="offer_ride" tabindex="-1" role="dialog" aria-aria-hidden="true">
     <div class="modal-dialog">
@@ -458,47 +386,26 @@
         }
     );
 
-    var form_pass = document.querySelector('[data-send="pass"]');
+    var request_ride = document.querySelector('[data-ride="request"]');
 
-    var submit_pass = new SubmitForm({
-        form: form_pass,
-        model: {
-            date: '{{event.date_picker}}',
-            time: moment().format('h:mm A'),
-            details: '',
-            orig_address: '',
-            orig_lat: '',
-            orig_lng: '',
-            event: '{{event.key().id()}}',
-            driver: false,
-            recurring: 'false',
-            circle: '{{circle.key().id()}}'
-        },
-        method: 'POST',
-        route: '/ride/create',
-        done: function (data) {
-            document.location = '/ride/' + data.id;
-        },
-        fail: function (data, status) {
-            notify({
-                type: 'danger',
-                strong: 'Oops',
-                message: 'Refresh and try again',
-                container: '[data-error="passenger"]'
+    request_ride.addEventListener('click', function (e) {
+        var target = e.target;
+        if (!target.disabled) {
+            var req = $.ajax({
+                type: 'POST',
+                url: '/event/{{event.key().id()}}/request',
+                dataType: 'json',
+                contentType: 'application/json; charset=UTF-8',
+                data: JSON.stringify({
+                    user: '{{user.key().id()}}'
+                })
+            });
+
+            req.done(function (data) {
+                document.location = '/event/' + data.id;
             });
         }
     });
-
-    var ql_container2 = document.querySelector('[data-location="passenger"]');
-    var ql2 = new QueryLocation(
-        ql_container2,
-        function () {
-            console.log('set vals!?')
-            submit_pass.set('orig_address', this.result.add);
-            submit_pass.set('orig_lat', this.result.lat);
-            submit_pass.set('orig_lng', this.result.lng);
-        }
-    );
 
     var if_driving = {
         form: document.querySelector('[data-driver="form"]'),

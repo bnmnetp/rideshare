@@ -23,6 +23,8 @@ class GetEventHandler(BaseHandler):
         offered = Ride.all().filter('event = ', event.key()).filter('driver != ', None).fetch(None)
         requested = Ride.all().filter('event = ', event.key()).filter('driver = ', None).fetch(None)
 
+        requesters = Requester.all().filter('event = ', event.key()).fetch(None)
+
         for ride in offered:
             ride.orig = toolbox.format_address(ride.origin_add)
             ride.dest = toolbox.format_address(ride.dest_add)
@@ -38,33 +40,32 @@ class GetEventHandler(BaseHandler):
 
             ride.seats_availible = ride.passengers_max - ride.passengers_total
 
-        for ride in requested:
-            ride.orig = toolbox.format_address(ride.origin_add)
-            ride.dest = toolbox.format_address(ride.dest_add)
-
-            # Order by Date
-            passengers = Passenger.all().filter('ride =', ride.key()).fetch(None)
-            if passengers:
-                ride.requester = passengers[0].user.name_x
-
-            
-            if ride.driver and user.key() == ride.driver.key():
-                ride.is_driver = True
-            else:
-                ride.is_driver = False
-
-            if user.key() in ride.passengers:
-                ride.is_passenger = True
-            else:
-                ride.is_passenger = False
-
-
         toolbox.render(self, 'view_event.html', {
             'event': event,
             'offered': offered,
-            'requested': requested,
+            'requesters': requesters,
             'user': user,
             'circle': self.circle()
+        })
+
+class EventRequest(BaseHandler):
+    def post(self, event_id):
+        self.auth()
+
+        user = self.current_user()
+
+        e = Event().get_by_id(int(event_id))
+
+        r = Requester()
+
+        r.user = user
+        r.event = e
+        r.seats = 1
+
+        r.put()
+
+        self.json_resp(200, {
+            'id': e.key().id()
         })
 
 class EventHandler(BaseHandler):
