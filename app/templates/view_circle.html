@@ -87,6 +87,7 @@
                 {% endfor %}
                 {% endif %}
                 {% for member in members %}
+                    {% if member.key() not in circle.admins %}
                     <div class="media">
                         <a href="#" class='pull-left'>
                             <img src="/user/photo/{{member.key().id()}}" class="media-object" alt="64x64">
@@ -111,6 +112,7 @@
                             {% endif %}
                         </div>
                     </div>
+                    {% endif %}
                 {% endfor %}
                 </div>
             </div>

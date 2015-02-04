@@ -148,6 +148,11 @@ class Ride(db.Model):
             total += p.seats
         return total
 
+class Requester(db.Model):
+    user = db.ReferenceProperty(User)
+    seats = db.IntegerProperty()
+    event = db.ReferenceProperty(Event)        
+
 class Comment(db.Model):
     user = db.ReferenceProperty(
         User,
