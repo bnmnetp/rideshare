@@ -147,6 +147,11 @@
                                     </a>
                                 </h4>
                             </div>
+                            {% if user.key() == requester.user.key() %}
+                            <div class='pull-right'>
+                                <button class='btn btn-danger' data-unrequest='{{requester.key().id()}}'>Unrequest</button>
+                            </div>
+                            {% endif %}
                         </div>
                     </div>
                     {% endfor %}
@@ -423,6 +428,26 @@
         } else {
             if_driving.form.classList.add('hidden');
             if_driving.input.value = '';
+        }
+    });
+
+    document.body.addEventListener('click', function (e) {
+        var target = e.target;
+
+        if (target.dataset.unrequest) {
+            var req = $.ajax({
+                type: 'POST',
+                url: '/event/{{event.key().id()}}/unrequest',
+                dataType: 'json',
+                contentType: 'application/json; charset=UTF-8',
+                data: JSON.stringify({
+                    id: target.dataset.unrequest
+                })
+            });
+
+            req.done(function (data) {
+                document.location = '/event/' + data.id;
+            });
         }
     });
 </script>
