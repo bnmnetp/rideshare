@@ -159,6 +159,7 @@ app = webapp2.WSGIApplication([
     ('/event/(\d+)/edit', EditEvent),
     ('/event/(\d+)/delete', DeleteEvent),
     ('/event/(\d+)/request', EventRequest),
+    ('/event/(\d+)/unrequest', EventUnrequest),
     ('/events', EventHandler),
     ('/newevent', NewEventHandler),
 
