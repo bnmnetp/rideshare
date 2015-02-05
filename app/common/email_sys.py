@@ -26,7 +26,7 @@ def sender(d):
 
 	message.html = html
 
-	for u in users:
+	for u in d['users']:
 		if u.email:
 			message.to = u.name + '<' + u.email + '>'
 			message.send()
