@@ -139,36 +139,6 @@ class Home2(BaseHandler):
             n['title'] = noti[n['type']]['title']
             n['symbol'] = noti[n['type']]['symbol']
 
-        # upcoming_pass = Passenger.all().filter('created >= ', today).filter('user = ', user.key()).fetch(10)
-        # upcoming_ride = Ride.all().filter('date >= ', today).filter('driver =', user.key()).fetch(10)
-        # user = self.current_user()
-        # data = [
-        #     {
-        #         'type': 'new_event',
-        #         'message': noti['new_event']['template'].format(1, 'Open Galena Circle')         
-        #     },
-        #     {
-        #         'type': 'request_circle',
-        #         'message': noti['request_circle']['template'].format(1, 'Gus', 1, 'Open Galena Circle')
-        #     },
-        #     {
-        #         'type': 'invite_circle',
-        #         'message': noti['invite_circle']['template'].format(1, 'Gus', 1, 'Open Galena Circle')
-        #     },
-        #     {
-        #         'type': 'passenger_joined',
-        #         'message': noti['passenger_joined']['template'].format(1, 'Gus', 1, 'Galena, IL', 'Dubuque, IA')
-        #     },
-        #     {
-        #         'type': 'driver_joined',
-        #         'message': noti['driver_joined']['template'].format(1, 'Gus', 1, 'Galena, IL', 'Dubuque, IA')
-        #     },
-        #     {
-        #         'type': 'ride_updated',
-        #         'message': noti['ride_updated']['template'].format(1, 'Galena, IL', 'Dubuque, IA')
-        #     }
-        # ]
-
         circles = Circle.all().fetch(None)
 
         for circle in circles:
@@ -182,61 +152,6 @@ class Home2(BaseHandler):
             'user': user,
             'circles': circles
         })
-
-
-# class HomeHandler(BaseHandler):
-#     def get(self):
-#         self.auth()
-#         user = self.current_user()
-
-#         today = datetime.date.today()
-
-#         # What do we need to grab
-#         # upcoming rides, driver or passenger
-#         # if a passenger joins your ride
-#         # if you are passenger: ride has or does not have driver
-#         # message sent to circle, display for one week
-
-#         upcoming_pass = Passenger.all()'created >= ', today).filter('user = ', user.key()).fetch(10)
-#         upcoming_ride = Ride.all().filter('date >= ', today).filter('driver =', user.key()).fetch(10)
-
-#         joined_pass = Passenger.all().filter('created >= ', today).filter('ride in', upcoming_ride).fetch(10)
-
-#         site_notifications = []
-#         ride_alerts = []
-
-#         for u in upcoming_ride:
-#             u.orig = split_address(u.origin_add)
-#             u.dest = split_address(u.dest_add)
-#             obj = {
-#                 'message': '<strong>Driver of</strong>: <a href="/ride/' + str(u.key().id()) + '">' + u.orig + ' to ' + u.dest + '</a>',
-#                 'date': date_display(u.date),
-#                 'details': False,
-#                 'driver': True,
-#                 'type': 'Upcoming Ride'
-#             }
-#             if u.circle:
-#                 obj['circle'] = {
-#                     'name': u.circle.name,
-#                     'id': u.circle.key().id()
-#                 }
-#             ride_alerts.append(obj)
-
-#         for u in upcoming_pass:
-#             u.ride.orig = split_address(u.ride.origin_add)
-#             u.ride.dest = split_address(u.ride.dest_add)
-#             obj = {
-#                 'message': '<strong>Passenger of</strong>: <a href="/ride/' + str(u.ride.key().id()) + '">' + u.ride.orig + ' to ' + u.ride.dest + '</a>',
-#                 'date': date_display(u.ride.date),
-#                 'passenger': True,
-#                 'type': 'Upcoming Ride'          
-#             }
-#             if upp.ride.circle:
-#                 obj['circle'] = {
-#                     'name': u.ride.circle.name,
-#                     'id': u.ride.circle.key().id()
-#                 }
-#             ride_alerts.append(obj)
 
 class HomeHandler(BaseHandler):
     def get(self):

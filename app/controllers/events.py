@@ -68,6 +68,32 @@ class EventRequest(BaseHandler):
             'id': e.key().id()
         })
 
+class EventUnrequest(BaseHandler):
+    def post(self, event_id):
+        self.auth()
+
+        user = self.current_user()
+
+        json_str = self.request.body
+        data = json.loads(json_str)
+
+        e = Event().get_by_id(int(event_id))
+
+        request = Requester.get_by_id(int(data['id']))
+
+        if request:
+
+            request.delete()
+
+            self.json_resp(200, {
+                'id': e.key().id()
+            })
+
+        else:
+            self.json_resp(500, {
+                'message': 'No request exists.'
+            })
+
 class EventHandler(BaseHandler):
     def get(self):
         self.auth()
