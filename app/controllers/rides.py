@@ -7,6 +7,7 @@ import json
 from app.base_handler import BaseHandler
 from app.common.notification import push_noti
 from app.common.voluptuous import *
+from app.common.email_sys import sender
 import urllib, urllib2
 
 class GetRides(BaseHandler):
@@ -383,7 +384,7 @@ class CreateRide(BaseHandler):
         requesters = Requester().all().filter('event = ', event.key()).fetch(None)
 
         d = {
-            'template': 'new_ride.html',
+            'template': 'emails/new_ride.html',
             'data': {
                 'circle_name': circle.name,
                 'circle_id': circle.key().id(),
@@ -394,6 +395,8 @@ class CreateRide(BaseHandler):
             'subject': 'New Ride offered for ' + event.name,
             'users': [r.user for r in requesters]
         }
+
+        sender(d)
 
     def post(self):
         self.auth()
