@@ -180,11 +180,28 @@ class NewEventHandler(BaseHandler):
             event.circle = None
 
         event.put()
-        response = {
+
+        # EMAIL NOTIFICATION
+        if event.circle:
+            circle_members = User.all().fetch('circle =', event.circle.key()).fetch(None)
+            d = {
+                'template': 'emails/event_created.html',
+                'data': {
+                    'circle_name': event.circle.name,
+                    'circle_id': event.circle.key().id(),
+                    'event_name': event.name,
+                    'event_id': event.key().id()
+                },
+                'subject': 'Ridecircles - An event was created in ' + event.circle.name,
+                'users': circle_members
+            }
+
+            sender(d)
+
+        return self.json_resp(200, {
             'message': 'Event added!',
             'id': event.key().id()
-        }
-        self.response.write(json.dumps(response))
+        })
 
 class EditEvent(BaseHandler):
     def get(self, event_id):

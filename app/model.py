@@ -15,7 +15,7 @@ class User(db.Model):
     zip = db.IntegerProperty()
     noti_time = db.IntegerProperty()
     noti_type = db.StringProperty()
-    notis = db.ListProperty(db.StringProperty)
+    notis = db.ListProperty(db.Key)
 
     reset = db.StringProperty()
 

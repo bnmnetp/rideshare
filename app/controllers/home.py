@@ -59,9 +59,7 @@ class Home2(BaseHandler):
         events = Event.all().filter('circle in', user.circles).filter('date >=', today).fetch(10)
         driving = Ride.all().filter('driver =', user.key()).filter('date >=', today).fetch(10)
         pass_join = Passenger.all().filter('ride in', driving).fetch(10)
-        # is_pass = Passenger.all().filter('user =', user.key()).fetch(10)
         requests = Requester.all().filter('user = ', user.key()).fetch(10)
-
         circle_owned = Circle.all().filter('admins =', user.key()).fetch(10)
 
         notifications = []
@@ -72,6 +70,7 @@ class Home2(BaseHandler):
                 first = User.get(e.requests[0])
                 plus_more = len(e.requests) - 1
                 notifications.append({
+                    'id': e.key(),
                     'type': t,
                     'message': noti[t]['template'].format(
                         first.key().id(),
@@ -85,6 +84,7 @@ class Home2(BaseHandler):
         for e in events:
             t = 'new_event'
             notifications.append({
+                'id': e.key(),
                 'type': t,
                 'message': noti[t]['template'].format(
                     e.key().id(),
@@ -97,6 +97,7 @@ class Home2(BaseHandler):
         for p in pass_join:
             t = 'passenger_joined'
             notifications.append({
+                'id': p.key(),
                 'type': t,
                 'message': noti[t]['template'].format(
                     p.user.key().id(),
@@ -114,6 +115,7 @@ class Home2(BaseHandler):
             rides_offered = Ride.all().filter('event =', r.event).fetch(None)
             if r.event.date >= today and len(rides_offered):
                 notifications.append({
+                    'id': r.key(),
                     'type': t,
                     'message': noti[t]['template'].format(
                         len(rides_offered),

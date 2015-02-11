@@ -164,7 +164,7 @@ app = webapp2.WSGIApplication([
     ('/newevent', NewEventHandler),
 
     # controllers/alert.py
-    ('/alert/(\d+)/dismiss', DismissAlert),
+    ('/alert/dismiss', DismissAlert),
 
     # auth routes
     webapp2.Route(
