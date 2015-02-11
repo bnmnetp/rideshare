@@ -153,8 +153,8 @@ class Home2(BaseHandler):
             'circles': circles
         })
 
-class ClearNotification:
-    def post(self, noti_id):
-        self.auth()
+# class ClearNotification:
+#     def post(self, noti_id):
+#         self.auth()
 
-        user = self.current_user()
+#         user = self.current_user()
