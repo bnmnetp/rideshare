@@ -173,7 +173,10 @@ class EditRide(BaseHandler):
             Required('date'): create_date(),
             Required('time'): unicode,
             'details': unicode,
-            'driven_by': unicode
+            'driven_by': unicode,
+            'address': unicode,
+            'lat': Coerce(float),
+            'lng': Coerce(float)
         })
 
         try:
@@ -189,8 +192,10 @@ class EditRide(BaseHandler):
         ride.put()
 
         # EMAIL NOTIFICATION
+        print('STEP #1')
         passengers = Passenger.all().filter('ride =', ride.key()).fetch(None)
         if passengers and ride.event and ride.event.circle:
+            print('STEP #2')
             d = {
                 'template': 'emails/ride_edited.html',
                 'data': {
@@ -203,8 +208,10 @@ class EditRide(BaseHandler):
                     'ride_id': ride.key().id()
                 },
                 'subject': 'Ridecircles - Ride details updated',
-                'users': passengers
+                'users': [r.user for r in passengers]
             }
+
+            sender(d)
 
         self.response.write(json.dumps({
             'message': 'Edited.',
