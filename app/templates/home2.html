@@ -72,7 +72,7 @@
                                 <p>{{sn.message | safe}}</p>
                             </div>
                         </div>
-                        <div class="dismiss">
+                        <div class="dismiss" data-dismiss="{{sn.id}}">
                             <i class="fa fa-times"></i>
                         </div>
                     </div>
@@ -154,20 +154,19 @@
 
 {% block scripts %}
 <script type="text/javascript">
-    var send_req = function (id) {
+    var send_req = function (ele) {
         var push = $.ajax({
             type: 'POST',
-            url: '/alert/' + id + '/dismiss',
+            url: '/alert/' + ele.dataset.dismiss + '/dismiss',
             dataType: 'json',
             contentType: 'application/json; charset=UTF-8',
             data: JSON.stringify({
-                id: id
+                id: ele.dataset.dismiss
             })
         });
 
         push.done(function (data) {
-            var parent = document.querySelector('[data-parent="' + id + '"]');
-            parent.parentNode.removeChild(parent);
+            ele.parentNode.parentNode.removeChild(ele.parentNode);
         });
 
         push.fail(function (data, status) {
@@ -182,23 +181,41 @@
     document.body.addEventListener('click', function (e) {
         var target = e.target;
 
-        if (target.dataset.alert) {
-            send_req(target.dataset.alert);
+        if (target.dataset.dismiss) {
+            send_req(target);
         }
     });
 
-/* Toggle Help */
-var help = {};
-help.btns = document.querySelectorAll('[data-help="toggle"]');
-help.container = document.querySelector('[data-help="container"]');
+    /* Toggle Help */
+    var help = {};
+    help.btns = document.querySelectorAll('[data-help="toggle"]');
+    help.container = document.querySelector('[data-help="container"]');
 
-console.log(help.btns)
+    for (var btn of help.btns) {
+        btn.addEventListener('click', function (e) {
+            help.container.classList.toggle('hidden');
+        });
+    };
 
-for (var btn of help.btns) {
-    btn.addEventListener('click', function (e) {
-        help.container.classList.toggle('hidden');
-    });
-};
+    // document.body.addEventListener('click', function (e) {
+    //     var target = e.target;
+    //     if (target.dataset.dismiss) {
+    //         var push = $.ajax({
+    //             type: 'POST',
+    //             url: '/alert/' + id + '/dismiss',
+    //             dataType: 'json',
+    //             contentType: 'application/json; charset=UTF-8',
+    //             data: JSON.stringify({
+    //                 id: id
+    //             })
+    //         });
+
+    //         push.done(function (data) {
+    //             var parent = document.querySelector('[data-parent="' + id + '"]');
+    //             parent.parentNode.removeChild(parent);
+    //         });
+    //     }
+    // });
 
 // help.btn.addEventListener('click', function (e) {
 //     var target = e.target;

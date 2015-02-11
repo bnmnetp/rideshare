@@ -445,12 +445,22 @@ class RequestJoin(BaseHandler):
 
         circle.put()
 
-        for admin in circle.admins:
-            noti = Notification()
-            noti.type = 'request'
-            noti.user = admin
-            noti.circle = circle.key()
-            noti.put()
+        # EMAIL NOTIFICATION
+        if circle.admins:
+            admins = User.all().filter('__key__ in', circle.admins).fetch(None)
+            d = {
+                'template': 'emails/join_requested.html',
+                'data': {
+                    'circle_name': circle.name,
+                    'circle_id': circle.key().id(),
+                    'requester_name': user.name_x,
+                    'requester_id': user.key().id()
+                },
+                'subject': 'Ridecircles - ' + user.name_x + ' has requested to join your circle',
+                'users': admins
+            }
+
+            sender(d)
 
         return self.json_resp(200, {
             'message': 'Request sent'

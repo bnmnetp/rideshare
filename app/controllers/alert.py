@@ -9,18 +9,20 @@ import json
 import re
 
 class DismissAlert(BaseHandler):
-	def post(self, alert_id):
+	def post(self):
 		self.auth()
 
-		alert = Notification.get_by_id(int(alert_id))
+		json_str = self.request.body
+		data = json.loads(json_str)
 
-		if not alert:
-			return self.json_resp(500, {
-				'message': 'Notification does not exist'
-			})
-		else:
-			alert.delete()
-			
-			return self.json_resp(200, {
-				'message': 'Notification dismissed.'
-			})
+		user = self.current_user()
+
+		obj = db.get(str(data['key']))
+
+		user.notis.append(obj.key())
+
+		user.put()
+
+		return self.json_resp(200, {
+			'message': 'Notification dismissed.'
+		})
