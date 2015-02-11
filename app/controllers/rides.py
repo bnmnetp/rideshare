@@ -173,7 +173,10 @@ class EditRide(BaseHandler):
             Required('date'): create_date(),
             Required('time'): unicode,
             'details': unicode,
-            'driven_by': unicode
+            'driven_by': unicode,
+            'address': unicode,
+            'lat': Coerce(float),
+            'lng': Coerce(float)
         })
 
         try:
@@ -188,9 +191,27 @@ class EditRide(BaseHandler):
 
         ride.put()
 
-        passengers = ride.passengers
-        for p in passengers:
-            push_noti('edited', p, ride.key())
+        # EMAIL NOTIFICATION
+        print('STEP #1')
+        passengers = Passenger.all().filter('ride =', ride.key()).fetch(None)
+        if passengers and ride.event and ride.event.circle:
+            print('STEP #2')
+            d = {
+                'template': 'emails/ride_edited.html',
+                'data': {
+                    'driver_name': ride.driver.name_x,
+                    'driver_id': ride.driver.key().id(),
+                    'circle_name': ride.event.circle.name,
+                    'circle_id': ride.event.circle.key().id(),
+                    'event_name': ride.event.name,
+                    'event_id': ride.event.key().id(),
+                    'ride_id': ride.key().id()
+                },
+                'subject': 'Ridecircles - Ride details updated',
+                'users': [r.user for r in passengers]
+            }
+
+            sender(d)
 
         self.response.write(json.dumps({
             'message': 'Edited.',
@@ -274,6 +295,32 @@ class JoinPassenger(BaseHandler):
         p.seats = data['seats_claimed']
         p.message = data['message']
         p.put()
+
+        # check_requests
+        if ride.event:
+            requests = Requester.all().filter('event =', ride.event.key()).filter('user =', user.key()).fetch(None)
+            if requests:
+                for r in requests:
+                    r.delete()
+
+        # EMAIL NOTIFICATION
+        if ride.driver and ride.event:
+            d = {
+                'template': 'emails/passenger_joined.html',
+                'data': {
+                    'circle_name': ride.event.circle.name,
+                    'circle_id': ride.event.circle.key().id(),
+                    'event_name': ride.event.name,
+                    'event_id': ride.event.key().id(),
+                    'ride_id': ride.key().id(),
+                    'ride_name': ride.origin_add + ' to ' + ride.dest_add,
+                    'seats': p.seats
+                },
+                'subject': 'Ridecircles - A passenger joined your ride.',
+                'users': [ride.driver]
+            }
+
+            sender(d)
 
         return self.json_resp(200, {
             'message': 'You have been added to this ride.'
@@ -380,6 +427,7 @@ class GetRide(BaseHandler):
             self.response.write('No ride found.')
 
 class CreateRide(BaseHandler):
+    # EMAIL NOTIFICATION
     def alert_requesters(self, event, circle, ride):
         requesters = Requester().all().filter('event = ', event.key()).fetch(None)
 
