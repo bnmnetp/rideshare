@@ -8,6 +8,7 @@ from app.common.voluptuous import *
 from app.common.notification import push_noti
 import json
 import re
+from app.common.email_sys import sender
 
 class DeleteCircle(BaseHandler):
     def post(self, circle_id):
