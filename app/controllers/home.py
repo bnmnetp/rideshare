@@ -6,6 +6,7 @@ import json
 from app.model import *
 import datetime
 from datetime import date
+from app.common.email_sys import sender
 
 noti = {
     'new_event': {

@@ -4,7 +4,7 @@ from app.base_handler import BaseHandler
 from app.common.voluptuous import *
 import json
 from app.model import *
-
+from app.common.email_sys import sender
 from app.common.encryption import bcrypt
 from app.common.email import send_invite, send_email
 
