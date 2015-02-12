@@ -7,6 +7,7 @@ from datetime import date
 import json
 from app.base_handler import BaseHandler
 from app.common.voluptuous import *
+from app.common.email_sys import sender
 
 class GetEventHandler(BaseHandler):
     def get(self, id):
@@ -175,7 +176,7 @@ class NewEventHandler(BaseHandler):
         if data['circle']:
             circle = Circle.get_by_id(int(data['circle']))
             if circle:
-                event.circle = circle.key()
+                event.circle = circle
         else:
             event.circle = None
 
@@ -183,7 +184,7 @@ class NewEventHandler(BaseHandler):
 
         # EMAIL NOTIFICATION
         if event.circle:
-            circle_members = User.all().fetch('circle =', event.circle.key()).fetch(None)
+            c_members = User.all().filter('circles =', event.circle.key()).fetch(None)
             d = {
                 'template': 'emails/event_created.html',
                 'data': {
@@ -193,7 +194,7 @@ class NewEventHandler(BaseHandler):
                     'event_id': event.key().id()
                 },
                 'subject': 'Ridecircles - An event was created in ' + event.circle.name,
-                'users': circle_members
+                'users': c_members
             }
 
             sender(d)
