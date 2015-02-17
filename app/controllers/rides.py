@@ -308,6 +308,8 @@ class JoinPassenger(BaseHandler):
             d = {
                 'template': 'emails/passenger_joined.html',
                 'data': {
+                    'pass_name': p.user.name_x,
+                    'pass_id': p.user.key().id(),
                     'circle_name': ride.event.circle.name,
                     'circle_id': ride.event.circle.key().id(),
                     'event_name': ride.event.name,
