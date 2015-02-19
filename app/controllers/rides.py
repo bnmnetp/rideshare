@@ -1,4 +1,5 @@
 from app.common.toolbox import doRender, split_address, grab_json, create_date, set_properties
+from app.common import toolbox
 from app.model import *
 from google.appengine.ext import db
 import datetime
@@ -130,7 +131,7 @@ class FilterRides(BaseHandler):
 
 class EditRide(BaseHandler):
 
-    properties = ['passengers_max', 'date', 'time', 'details', 'driven_by']
+    properties = ['passengers_max', 'date', 'time', 'details', 'driven_by', 'origin_add', 'origin_lat', 'origin_lng',]
 
     def get(self, ride_id):
         self.auth()
@@ -144,8 +145,7 @@ class EditRide(BaseHandler):
             return None
 
         ride_json = grab_json(ride, self.properties)
-
-        ride_json['date'] = ride.date_picker
+        ride_json['date'] = toolbox.date_picker(ride.date)
 
         doRender(self, 'edit_ride.html', {
             'user': user,
@@ -174,9 +174,9 @@ class EditRide(BaseHandler):
             Required('time'): unicode,
             'details': unicode,
             'driven_by': unicode,
-            'address': unicode,
-            'lat': Coerce(float),
-            'lng': Coerce(float)
+            'orig_add': unicode,
+            'orig_lat': Coerce(float),
+            'orig_lng': Coerce(float)
         })
 
         try:
@@ -192,10 +192,25 @@ class EditRide(BaseHandler):
         ride.put()
 
         # EMAIL NOTIFICATION
-        print('STEP #1')
         passengers = Passenger.all().filter('ride =', ride.key()).fetch(None)
+
+        notifications = Noti.all().filter('relation =', ride.key()).fetch(None)
+        for n in notifications:
+            n.status = 'new'
+            n.put()
+
+        user_have_noti = [n.user for n in notifications]
+        for p in passengers:
+            if p.user.key() not in user_have_noti:
+                n = Noti()
+                n.relation = ride.key()
+                n.type = 'ride_updated'
+                n.user = p.user.key()
+                n.status = 'new'
+                n.put()
+
         if passengers and ride.event and ride.event.circle:
-            print('STEP #2')
+            
             d = {
                 'template': 'emails/ride_edited.html',
                 'data': {
@@ -213,10 +228,10 @@ class EditRide(BaseHandler):
 
             sender(d)
 
-        self.response.write(json.dumps({
+        return self.json_resp(200, {
             'message': 'Edited.',
             'id': ride.key().id()
-        }))
+        })
 
 class JoinDriver(BaseHandler):
     def post(self, ride_id):
@@ -250,13 +265,19 @@ class JoinDriver(BaseHandler):
         ride.details = data['details']
         ride.put()
 
-        for passenger in ride.passengers:
-            push_noti('driver_join', passenger, ride.key())
+        passengers = Passenger.all().filter('ride =', ride.key()).fetch(None)
+        for passenger in passengers:
+            # NEW NOTIFICATION
+            n = Noti()
+            n.relation = ride.key()
+            n.type = 'driver_joined'
+            n.user = passenger.user.key()
+            n.status = 'new'
+            n.put()
 
-        resp = {
-            'message': 'Success.'
-        }
-        self.response.write(json.dumps(resp))
+        return self.json_resp(200, {
+            'message': 'Success'
+        })
 
 class JoinPassenger(BaseHandler):
     def post(self, ride_id):
@@ -305,9 +326,19 @@ class JoinPassenger(BaseHandler):
 
         # EMAIL NOTIFICATION
         if ride.driver and ride.event:
+            # NEW NOTIFICATION
+            n = Noti()
+            n.relation = ride.key()
+            n.type = 'passenger_joined'
+            n.user = ride.driver.key()
+            n.status = 'new'
+            n.put()
+
             d = {
                 'template': 'emails/passenger_joined.html',
                 'data': {
+                    'pass_name': p.user.name_x,
+                    'pass_id': p.user.key().id(),
                     'circle_name': ride.event.circle.name,
                     'circle_id': ride.event.circle.key().id(),
                     'event_name': ride.event.name,

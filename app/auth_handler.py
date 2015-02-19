@@ -21,6 +21,8 @@ class AuthHandler(BaseHandler, SimpleAuthHandler):
             user.put()
             self.session['user'] = user.key().id()
         check_for_invite(self, user)
+        print("ALERT ALERT")
+        print(self.login_redirect(user))
         return self.redirect(self.login_redirect(user))
     def logout(self):
         self.session['user'] = None
