@@ -9,37 +9,37 @@ from datetime import date
 from app.common.email_sys import sender
 
 noti = {
-    'new_event': {
+    'new_event': { # /
         'symbol': 'location-arrow',
         'template': '<a href="/event/{}">{}</a> has been added to <a href="/circle/{}">{}</a>',
         'title': 'New Event'
     },
-    'request_circle': {
+    'request_circle': { # /
         'symbol': 'question',
         'template': '<a href="/user/{}">{}</a> and {} other people have requested to join <a href="/circle/{}">{}</a>',
         'title': 'Request for Circle'
     },
-    'invite_circle': {
+    'invite_circle': { # X
         'symbol': 'plus-square-o',
         'template': '<a href="/user/{}">{}</a> has invited you to join <a href="/circle/{}">{}</a>',
         'title': 'Invite to Circle'
     },
-    'passenger_joined': {
+    'passenger_joined': { # /
         'symbol': 'users',
         'template': '<a href="/user/{}">{}</a> and {} other people have joined your ride <a href="/ride/{}">from {} to {}</a> as a passenger',
         'title': 'Passenger Joined'
     },
-    'driver_joined': {
+    'driver_joined': { # /
         'symbol': 'thumbs-up',
         'template': '<a href="/user/{}">{}</a> has joined your ride <a href="/ride/{}">from {} to {}</a> as a driver',
         'title': 'Driver Joined'
     },
-    'ride_offered': {
+    'ride_offered': { # X
         'symbol': 'thumbs-up',
         'template': '{} ride(s) are offered to <a href="/event/{}">{}</a>.',
         'title': 'Ride Offered'
     },
-    'ride_updated': {
+    'ride_updated': { # /
         'symbol': 'exclamation',
         'template': '<a href="/ride/{}">from {} to {}</a> has been updated',
         'title': 'Ride Updated'

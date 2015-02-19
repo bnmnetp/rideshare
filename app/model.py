@@ -200,6 +200,12 @@ class Notification(db.Model):
             resp['ride'] = self.ride.to_dict()
         return resp
 
+class Noti(db.Model):
+    relation = db.Key()
+    user = db.ReferenceProperty(User)
+    type = db.StringProperty()
+    status = db.StringProperty() # new, view, ack
+
 class Invite(db.Model):
     circle = db.ReferenceProperty(Circle)
     email = db.StringProperty()

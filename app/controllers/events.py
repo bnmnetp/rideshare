@@ -182,6 +182,14 @@ class NewEventHandler(BaseHandler):
 
         event.put()
 
+        # NEW NOTIFICATION
+        n = Noti()
+        n.relation = event.key()
+        n.type = 'new_event'
+        n.user = user.key()
+        n.status = 'new'
+        n.put()
+
         # EMAIL NOTIFICATION
         if event.circle:
             c_members = User.all().filter('circles =', event.circle.key()).fetch(None)
