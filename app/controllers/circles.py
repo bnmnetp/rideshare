@@ -449,6 +449,16 @@ class RequestJoin(BaseHandler):
         # EMAIL NOTIFICATION
         if circle.admins:
             admins = User.all().filter('__key__ in', circle.admins).fetch(None)
+
+            # NEW NOTIFICATION
+            for admin in admins:
+                n = Noti()
+                n.relation = circle.key()
+                n.type = 'request_circle'
+                n.user = admin.key()
+                n.status = 'new'
+                n.put()
+
             d = {
                 'template': 'emails/join_requested.html',
                 'data': {
