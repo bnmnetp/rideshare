@@ -107,6 +107,10 @@ class RideStats(BaseHandler):
                 r.total_passengers = Passenger.all().filter('ride =', r.key()).count()
                 url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=%s&destinations=%s&units=imperial" % (o_lat_lng, d_lat_lng)
 
+                d = db.get(r.driver)
+                if not d:
+                    r.driver = None
+
                 response = urllib2.urlopen(url)
                 json_geocode = json.loads(response.read())
                 if json_geocode['rows'][0]['elements'][0]['status'] == 'OK':
