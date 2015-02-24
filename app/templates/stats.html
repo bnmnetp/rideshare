@@ -10,6 +10,9 @@
 	<h1>Adjusted rides: {{adjusted_rides}}</h1>
 	<h1>Total miles: {{total_distance}}</h1>
 	<h1>Adjusted miles: {{adjusted_distance}}</h1>
+
+	<h2>Rides</h2>
+	<hr>
 	<table class='table'>
 		<thead>
 			<th>Circle</th>
@@ -35,6 +38,23 @@
 					<td>{{r.distance}}</td>
 					<td>{{r.adjusted_miles}}</td>
 				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+
+	<h2>Users</h2>
+	<hr>
+	<table class='table'>
+		<thead>
+			<th>Name</th>
+			<th>Email</th>
+		</thead>
+		<tbody>
+			{% for u in users %}
+			<tr>
+				<td>{{u.name_x}}</td>
+				<td>{{u.email}}</td>
+			</tr>
 			{% endfor %}
 		</tbody>
 	</table>

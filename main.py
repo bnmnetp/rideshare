@@ -128,13 +128,16 @@ class RideStats(BaseHandler):
                     r.distance = 0
                     r.adjusted_miles = 0
 
+                users = User.all().fetch(None)
+
             toolbox.render(self, 'stats.html', {
                 'rides': rides,
                 'total_distance': total_distance,
                 'adjusted_distance': adjusted_distance,
                 'total_rides': total_rides,
                 'adjusted_rides': adjusted_rides,
-                'total_members': total_members
+                'total_members': total_members,
+                'users': users
             })
 
 app = webapp2.WSGIApplication([
