@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Stats</title>
+	<link rel="stylesheet"href='//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css'></link>
+</head>
+<body>
+	<h1>Total members: {{total_members}}</h1>
+	<h1>Total rides: {{total_rides}}</h1>
+	<h1>Adjusted rides: {{adjusted_rides}}</h1>
+	<h1>Total miles: {{total_distance}}</h1>
+	<h1>Adjusted miles: {{adjusted_distance}}</h1>
+	<table class='table'>
+		<thead>
+			<th>Circle</th>
+			<th>Driver</th>
+			<th># of Passengers</th>
+			<th>Origin</th>
+			<th>Destination</th>
+			<th>Miles</th>
+			<th>Adjusted Miles</th>
+		</thead>
+		<tbody>
+			{% for r in rides %}
+				<tr>
+					<td>{{r.circle.name}}</td>
+					<td>{{r.driver.name}}</td>
+					<td>{{r.total_passengers}}</td>
+					<td>{{r.origin_add}}</td>
+					<td>{{r.dest_add}}</td>
+					<td>{{r.distance}}</td>
+					<td>{{r.adjusted_miles}}</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</body>
+</html>

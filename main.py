@@ -1,4 +1,5 @@
 import webapp2
+import urllib2
 from simpleauth import SimpleAuthHandler
 from app.base_handler import BaseHandler
 
@@ -88,10 +89,50 @@ class HelpHandler(BaseHandler):
             'user': user
         })
 
+class RideStats(BaseHandler):
+    def get(self, ver_id):
+        if ver_id != 'rced':
+            self.redirect('/')
+        else:
+            rides = Ride.all().fetch(None)
+            total_distance = 0
+            adjusted_distance = 0
+            total_rides = 0
+            adjusted_rides = 0
+
+            total_members = User.all().count()
+            for r in rides:
+                o_lat_lng = str(r.origin_lat) + ',' + str(r.origin_lng)
+                d_lat_lng = str(r.dest_lat) + ',' + str(r.dest_lng)
+                r.total_passengers = Passenger.all().filter('ride =', r.key()).count()
+                url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=%s&destinations=%s&units=imperial" % (o_lat_lng, d_lat_lng)
+
+                response = urllib2.urlopen(url)
+                json_geocode = json.loads(response.read())
+                meters = json_geocode['rows'][0]['elements'][0]['distance']['value']
+
+                r.distance = meters * 0.000621371192
+                r.adjusted_miles = r.distance * (r.total_passengers + 1)
+
+                total_distance += r.distance
+                adjusted_distance += r.adjusted_miles
+                total_rides += 1
+                adjusted_rides += (1 + r.total_passengers)
+
+            toolbox.render(self, 'stats.html', {
+                'rides': rides,
+                'total_distance': total_distance,
+                'adjusted_distance': adjusted_distance,
+                'total_rides': total_rides,
+                'adjusted_rides': adjusted_rides,
+                'total_members': total_members
+            })
+
 app = webapp2.WSGIApplication([
     ('/', Marketing),
     ('/get_started', GetStarted),
     ('/circle/(\d+)/map', MapHandler),
+    ('/stats/(\w+)', RideStats),
 
     # cron
     ('/notifications/check', CheckNotifications),
