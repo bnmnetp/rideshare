@@ -24,7 +24,11 @@
 			{% for r in rides %}
 				<tr>
 					<td>{{r.circle.name}}</td>
-					<td>{{r.driver.name}}</td>
+					{% if r.driver %}
+						<td>{{r.driver.name}}</td>
+					{% else %}
+						<td>None</td>
+					{% endif %}
 					<td>{{r.total_passengers}}</td>
 					<td>{{r.origin_add}}</td>
 					<td>{{r.dest_add}}</td>
