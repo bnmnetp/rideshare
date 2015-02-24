@@ -109,15 +109,19 @@ class RideStats(BaseHandler):
 
                 response = urllib2.urlopen(url)
                 json_geocode = json.loads(response.read())
-                meters = json_geocode['rows'][0]['elements'][0]['distance']['value']
+                if json_geocode['rows'][0]['elements'][0]['status'] == 'OK':
+                    meters = json_geocode['rows'][0]['elements'][0]['distance']['value']
 
-                r.distance = meters * 0.000621371192
-                r.adjusted_miles = r.distance * (r.total_passengers + 1)
+                    r.distance = meters * 0.000621371192
+                    r.adjusted_miles = r.distance * (r.total_passengers + 1)
 
-                total_distance += r.distance
-                adjusted_distance += r.adjusted_miles
-                total_rides += 1
-                adjusted_rides += (1 + r.total_passengers)
+                    total_distance += r.distance
+                    adjusted_distance += r.adjusted_miles
+                    total_rides += 1
+                    adjusted_rides += (1 + r.total_passengers)
+                else:
+                    r.distance = 0
+                    r.adjusted_miles = 0
 
             toolbox.render(self, 'stats.html', {
                 'rides': rides,
