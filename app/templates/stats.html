@@ -48,12 +48,14 @@
 		<thead>
 			<th>Name</th>
 			<th>Email</th>
+			<th>Joined</th>
 		</thead>
 		<tbody>
 			{% for u in users %}
 			<tr>
 				<td>{{u.name_x}}</td>
 				<td>{{u.email}}</td>
+				<td>{{u.created}}</td>
 			</tr>
 			{% endfor %}
 		</tbody>
