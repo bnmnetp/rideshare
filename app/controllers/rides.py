@@ -174,9 +174,9 @@ class EditRide(BaseHandler):
             Required('time'): unicode,
             'details': unicode,
             'driven_by': unicode,
-            'orig_add': unicode,
-            'orig_lat': Coerce(float),
-            'orig_lng': Coerce(float)
+            'origin_add': unicode,
+            'origin_lat': Coerce(float),
+            'origin_lng': Coerce(float)
         })
 
         try:
