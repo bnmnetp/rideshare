@@ -17,7 +17,7 @@ class DismissAlert(BaseHandler):
 
 		user = self.current_user()
 
-		obj = db.get(str(data['key']))
+		obj = db.get(str(data['id']))
 
 		user.notis.append(obj.key())
 

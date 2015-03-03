@@ -83,7 +83,6 @@ class EventUnrequest(BaseHandler):
         request = Requester.get_by_id(int(data['id']))
 
         if request:
-
             request.delete()
 
             self.json_resp(200, {

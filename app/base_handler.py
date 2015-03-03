@@ -1,5 +1,6 @@
 import webapp2
 from webapp2_extras import sessions
+from webapp2_extras import sessions_memcache
 from app.model import *
 import urllib
 import json
@@ -15,13 +16,11 @@ class BaseHandler(webapp2.RequestHandler):
         if user:
             return None
         else:
-            self.response.set_cookie('redirect', self.request.path)
             if self.request.method == 'GET':
-                self.response.set_cookie('redirect', self.request.path)
+                self.session['redirect'] = self.request.path
             redirect_str = '/login?'
             if 'invited' in self.session:
                 redirect_str += 'invited=' + self.session['invited']
-            print ('REQUEST PATH', self.request.path)
             return webapp2.redirect(redirect_str, False, True)
 
     def current_user(self):
@@ -51,7 +50,8 @@ class BaseHandler(webapp2.RequestHandler):
     def session(self):
         self.session_store = sessions.get_store(request=self.request)
         # Returns a session using the default cookie key.
-        return self.session_store.get_session()
+        return self.session_store.get_session(name='mc_session',
+        factory=sessions_memcache.MemcacheSessionFactory)
 
     def circle(self):
         user = self.current_user()
@@ -75,12 +75,10 @@ class BaseHandler(webapp2.RequestHandler):
 
     def login_redirect(self, user):
         redirect_str = '/home'
-        print(self.request.cookies)
-        redirect = self.request.cookies.get('redirect')
-        print('FROM COOKIE', redirect)
+        redirect = self.session.get('redirect')
         if redirect:
             redirect_str = str(redirect)
-            self.response.set_cookie('redirect', None)
+            self.session['redirect'] = None
         else:
             if user.email == '' or user.name == '':
                 redirect_str = '/user/edit/' + str(user.key().id())

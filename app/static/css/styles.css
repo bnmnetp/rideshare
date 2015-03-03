@@ -235,6 +235,7 @@ img {
     background-color: #ba4556;
     padding: 5px 7px;
     border-radius: 4px;
+    cursor: pointer;
 }
 
 .list .dismiss i {
@@ -914,6 +915,7 @@ ul.sidebar {
     text-indent: 20px;
     overflow-x: hidden;
     overflow-y: auto;
+    height: 700px;
 }
 
 ul.sidebar li a {

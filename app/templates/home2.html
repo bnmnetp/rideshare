@@ -73,13 +73,13 @@
                             </div>
                         </div>
                         <div class="dismiss" data-dismiss="{{sn.id}}">
-                            <i class="fa fa-times"></i>
+                            <i class="fa fa-times" data-child='true'></i>
                         </div>
                     </div>
                 {% endfor %}
                 {% else %}
                     <div class="panel-message">
-                        You do not have any upcoming events.
+                        You do not have any notifications.
                     </div>
                 {% endif %}
             </div>
@@ -157,7 +157,7 @@
     var send_req = function (ele) {
         var push = $.ajax({
             type: 'POST',
-            url: '/alert/' + ele.dataset.dismiss + '/dismiss',
+            url: '/alert/dismiss',
             dataType: 'json',
             contentType: 'application/json; charset=UTF-8',
             data: JSON.stringify({
@@ -181,6 +181,10 @@
     document.body.addEventListener('click', function (e) {
         var target = e.target;
 
+        if (target.dataset.child) {
+            target = target.parentNode;
+        }
+
         if (target.dataset.dismiss) {
             send_req(target);
         }
@@ -202,7 +206,7 @@
     //     if (target.dataset.dismiss) {
     //         var push = $.ajax({
     //             type: 'POST',
-    //             url: '/alert/' + id + '/dismiss',
+    //             url: '/alert/dismiss',
     //             dataType: 'json',
     //             contentType: 'application/json; charset=UTF-8',
     //             data: JSON.stringify({

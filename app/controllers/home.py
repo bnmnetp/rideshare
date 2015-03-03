@@ -66,64 +66,68 @@ class Home2(BaseHandler):
         notifications = []
 
         for e in circle_owned:
-            t = 'request_circle'
-            if e.requests:
-                first = User.get(e.requests[0])
-                plus_more = len(e.requests) - 1
+            if e.key() not in user.notis:
+                t = 'request_circle'
+                if e.requests:
+                    first = User.get(e.requests[0])
+                    plus_more = len(e.requests) - 1
+                    notifications.append({
+                        'id': e.key(),
+                        'type': t,
+                        'message': noti[t]['template'].format(
+                            first.key().id(),
+                            first.name,
+                            plus_more,
+                            e.key().id(),
+                            e.name
+                        )
+                    })
+
+        for e in events:
+            if e.key() not in user.notis:
+                t = 'new_event'
                 notifications.append({
                     'id': e.key(),
                     'type': t,
                     'message': noti[t]['template'].format(
-                        first.key().id(),
-                        first.name,
-                        plus_more,
                         e.key().id(),
-                        e.name
+                        e.name,
+                        e.circle.key().id(),
+                        e.circle.name
                     )
                 })
-
-        for e in events:
-            t = 'new_event'
-            notifications.append({
-                'id': e.key(),
-                'type': t,
-                'message': noti[t]['template'].format(
-                    e.key().id(),
-                    e.name,
-                    e.circle.key().id(),
-                    e.circle.name
-                )
-            })
 
         for p in pass_join:
-            t = 'passenger_joined'
-            notifications.append({
-                'id': p.key(),
-                'type': t,
-                'message': noti[t]['template'].format(
-                    p.user.key().id(),
-                    p.user.name,
-                    0,
-                    p.ride.key().id(),
-                    p.ride.origin_add,
-                    p.ride.dest_add
-                )
-            })
-
-        for r in requests:
-            t = 'ride_offered'
-            today = date.today()
-            rides_offered = Ride.all().filter('event =', r.event).fetch(None)
-            if r.event.date >= today and len(rides_offered):
+            if p.key() not in user.notis:
+                t = 'passenger_joined'
                 notifications.append({
-                    'id': r.key(),
+                    'id': p.key(),
                     'type': t,
                     'message': noti[t]['template'].format(
-                        len(rides_offered),
-                        r.event.key().id(),
-                        r.event.name
+                        p.user.key().id(),
+                        p.user.name,
+                        0,
+                        p.ride.key().id(),
+                        p.ride.origin_add,
+                        p.ride.dest_add
                     )
                 })
+
+        for r in requests:
+            if r.key() not in user.notis:
+                t = 'ride_offered'
+                today = date.today()
+                rides_offered = Ride.all().filter('event =', r.event).fetch(None)
+                if r.event.date >= today and len(rides_offered):
+                    notifications.append({
+                        'id': r.key(),
+                        'type': t,
+                        'message': noti[t]['template'].format(
+                            len(rides_offered),
+                            r.event.key().id(),
+                            r.event.name
+                        )
+                    })
         # for d in is_pass:
         #     t = 'driver_joined'
         #     if d.ride.driver:
@@ -156,8 +160,8 @@ class Home2(BaseHandler):
             'circles': circles
         })
 
-# class ClearNotification:
-#     def post(self, noti_id):
+# class ClearNotification(BaseHandler):
+#     def post(self):
 #         self.auth()
 
 #         user = self.current_user()
