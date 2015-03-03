@@ -26,6 +26,10 @@ class GetEventHandler(BaseHandler):
 
         requesters = Requester.all().filter('event = ', event.key()).fetch(None)
 
+        has_request = False
+        if user in requesters:
+            has_request = True
+
         for ride in offered:
             ride.orig = toolbox.format_address(ride.origin_add)
             ride.dest = toolbox.format_address(ride.dest_add)
@@ -46,7 +50,8 @@ class GetEventHandler(BaseHandler):
             'offered': offered,
             'requesters': requesters,
             'user': user,
-            'circle': self.circle()
+            'circle': self.circle(),
+            'has_request': has_request
         })
 
 class EventRequest(BaseHandler):
