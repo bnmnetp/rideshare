@@ -2,30 +2,15 @@ import webapp2
 import urllib2
 from simpleauth import SimpleAuthHandler
 from app.base_handler import BaseHandler
+import app.secrets as secrets
+from app.model import *
+import wsgiref.handlers
+from google.appengine.api import mail
+from google.appengine.ext import db
 
 # testing
 from app.controllers.test_account import email_test
 # end testing
-
-import app.secrets as secrets
-
-from app.model import *
-
-app_config = {
-    'webapp2_extras.sessions': {
-        'cookie_name': '_simpleauth_sess',
-        'secret_key': secrets.SESSION_KEY
-    },
-    'webapp2_extras.auth': {
-        'user_attributes': []
-    }
-}
-
-import wsgiref.handlers
-
-from google.appengine.api import mail
-
-from google.appengine.ext import db
 
 from app.controllers.circles import *
 from app.controllers.events import *
@@ -40,6 +25,16 @@ from app.controllers.home import *
 from app.cron.notifications import *
 
 from app.common import toolbox
+
+app_config = {
+    'webapp2_extras.sessions': {
+        'cookie_name': '_simpleauth_sess',
+        'secret_key': secrets.SESSION_KEY
+    },
+    'webapp2_extras.auth': {
+        'user_attributes': []
+    }
+}
 
 class GetStarted(BaseHandler):
     def get(self):
@@ -57,7 +52,6 @@ class Marketing(BaseHandler):
         if 'invited' in self.request.GET:
             invited = self.request.GET['invited']
             self.session['invited'] = str(invited)
-        print(redirect, invited)
         invite = None
         if redirect and invited:
             invite = Circle.get_by_id(int(invited))

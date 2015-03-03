@@ -372,28 +372,35 @@ class GetRide(BaseHandler):
             if data['action'] == 'leave':
                 passenger = Passenger.all().filter('ride =', ride.key()).filter('user =', user.key()).get()
                 passenger.delete()
-                if passenger:
-                    if ride.driver:
-                        push_noti('pass_leave', ride.driver.key(), ride.key())
+
+                other_passengers = Passenger.all().filter('ride =', ride.key()).get()
+                if not ride.driver and not other_passengers:
+                    ride.delete()
+
                 resp = {
-                        'strong': 'Left the ride!',
-                        'message': 'You are no longer a passenger.'
-                    }
-                self.response.write(json.dumps(resp))
+                    'strong': 'Left the ride!',
+                    'message': 'You are no longer a passenger.'
+                }
+
+                self.json_resp(200, resp)
 
         if data['type'] == 'driver':
             if data['action'] == 'leave':
                 if ride.driver:
-                    for passenger in ride.passengers:
-                        push_noti('driver_leave', passenger.user.key(), ride.key())
                     ride.driver = None
+
+                    any_passengers = Passenger.all().filter('ride =', ride.key()).get()
+
+                    if not any_passengers:
+                        ride.delete()
+                    else:
+                        ride.put()
+
                     resp = {
                         'strong': 'Left the ride!',
                         'message': 'You are no longer the driver.'
                     }
-                    self.response.write(json.dumps(resp))
-            ride.put()
-
+                    self.json_resp(200, resp)
 
     def get(self, ride_id):
         self.auth()
