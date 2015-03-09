@@ -265,6 +265,12 @@ class JoinDriver(BaseHandler):
         ride.details = data['details']
         ride.put()
 
+        check_requester = Requester.all().filter('user =', user).filter('ride =', ride).fetch(None)
+
+        if check_requester:
+            for cr in check_requester:
+                cr.delete()
+
         passengers = Passenger.all().filter('ride =', ride.key()).fetch(None)
         for passenger in passengers:
             # NEW NOTIFICATION
@@ -373,7 +379,7 @@ class GetRide(BaseHandler):
                 passenger = Passenger.all().filter('ride =', ride.key()).filter('user =', user.key()).get()
                 passenger.delete()
 
-                other_passengers = Passenger.all().filter('ride =', ride.key()).get()
+                other_passengers = Passenger.all().filter('ride =', ride.key()).fetch(None)
                 if not ride.driver and not other_passengers:
                     ride.delete()
 
@@ -389,7 +395,7 @@ class GetRide(BaseHandler):
                 if ride.driver:
                     ride.driver = None
 
-                    any_passengers = Passenger.all().filter('ride =', ride.key()).get()
+                    any_passengers = Passenger.all().filter('ride =', ride.key()).fetch(None)
 
                     if not any_passengers:
                         ride.delete()

@@ -39,7 +39,9 @@
                     </li>
                 </ul>
                 <hr>
+                {% if not has_request %}
                 <button class='btn btn-primary' data-ride='request' data-alt='Requested!'>I need a ride to this event</button>
+                {% endif %}
                 <button class='btn btn-primary' data-toggle='modal' data-target='#offer_ride'>I can offer a ride to this event</button>
                 {% if user.key() == event.creator.key() %}
                     <a class='btn btn-primary' href='/event/{{event.key().id()}}/edit'>Edit Event</a>
@@ -179,7 +181,7 @@
                         <div class="input-group">
                             <input class="form-control" type="text" placeholder='Address' name='address' required data-location='input'>
                             <span class="input-group-btn">
-                                <button class="btn btn-default" type="button" data-location='search'>Search Address</button>
+                                <button class="btn btn-info" type="button" data-location='search'>Search Address</button>
                             </span>
                         </div>
                         <div data-location='output' class='hidden'>
