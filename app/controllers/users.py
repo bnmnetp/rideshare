@@ -110,6 +110,28 @@ class DeleteUser(BaseHandler):
                 'message': 'You do not have permission to delete this user.'
             })
 
+class EditPrefHandler(BaseHandler):
+    def get(self, user_id):
+        self.auth()
+        user = self.current_user()
+        if not user.key().id() == int(user_id):
+            self.redirect('/user/' + user_id)
+            return None
+
+        doRender(self, 'edit_email_pref.html', {
+            'user': user
+        })
+
+    def post(self, user_id):
+        self.auth()
+        user = self.current_user()
+        if not user.key().id() == int(user_id):
+            return self.json_resp(500, {
+                'message': 'You do not have permission'
+            })
+
+
+
 class EditUserHandler(BaseHandler):
     def get(self, user_id):
         self.auth()

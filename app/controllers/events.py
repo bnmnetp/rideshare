@@ -198,7 +198,7 @@ class NewEventHandler(BaseHandler):
         if event.circle:
             c_members = User.all().filter('circles =', event.circle.key()).fetch(None)
             d = {
-                'template': 'emails/event_created.html',
+                'template': 'event_created',
                 'data': {
                     'circle_name': event.circle.name,
                     'circle_id': event.circle.key().id(),

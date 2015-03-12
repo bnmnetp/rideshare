@@ -212,7 +212,7 @@ class EditRide(BaseHandler):
         if passengers and ride.event and ride.event.circle:
             
             d = {
-                'template': 'emails/ride_edited.html',
+                'template': 'ride_edited',
                 'data': {
                     'driver_name': ride.driver.name_x,
                     'driver_id': ride.driver.key().id(),
@@ -341,7 +341,7 @@ class JoinPassenger(BaseHandler):
             n.put()
 
             d = {
-                'template': 'emails/passenger_joined.html',
+                'template': 'passenger_joined',
                 'data': {
                     'pass_name': p.user.name_x,
                     'pass_id': p.user.key().id(),
@@ -476,7 +476,7 @@ class CreateRide(BaseHandler):
         requesters = Requester().all().filter('event = ', event.key()).fetch(None)
 
         d = {
-            'template': 'emails/new_ride.html',
+            'template': 'new_ride',
             'data': {
                 'circle_name': circle.name,
                 'circle_id': circle.key().id(),

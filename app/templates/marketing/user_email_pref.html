@@ -1,0 +1,67 @@
+{% extends "layout.html" %}
+
+{% block title %}Edit Email Preference{% endblock %}
+
+{% block head %}
+{% endblock %}
+
+{% block main %}
+<div data-notify="container"></div>
+<div class="panel panel-main">
+    <div class="panel-heading">Update Profile</div>
+    <div class="panel-body">
+        <form id='form'>
+            <p class="lead">You recieve all emails by default. What emails would you not like to recieve?</p>
+            <div class="checkbox">
+                <label>
+                <input type="checkbox" name="join_requested">
+                When somebody asks to join your circle.
+                </label>
+            </div>
+            <div class="checkbox">
+                <label>
+                <input type="checkbox" name="event_created">
+                When a new event is offered.
+                </label>
+            </div>
+            <div class="checkbox">
+                <label>
+                <input type="checkbox" name="ride_edited">
+                When a ride you are associated with is updated.
+                </label>
+            </div>
+            <div class="checkbox">
+                <label>
+                <input type="checkbox" name="passenger_joined">
+                When a passenger joins your ride.
+                </label>
+            </div>
+            <div class="checkbox">
+                <label>
+                <input type="checkbox" name="new_ride">
+                When a new ride is offered to an event you want to go to.
+                </label>
+            </div>
+            <button type='submit' class='btn btn-default'>Update preferences</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src='/static/js/push.js'></script>
+<script src='/static/js/location.js'></script>
+{% raw %}
+<script data-notify="template" type='text/x-handlebars-template'>
+    <div class="alert alert-{{type}} alert-dismissable">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        <strong>{{strong}}</strong> {{message}}
+    </div>
+</script>
+{% endraw %}
+<script type="text/javascript">
+    var form = document.querySelector('#form');
+
+    
+</script>
+{% endblock %}
