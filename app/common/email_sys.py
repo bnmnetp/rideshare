@@ -25,7 +25,7 @@ def sender(d):
 	)
 
 	for u in d['users']:
-		if u.email and template not in u.email_pref:
+		if u.email and d['template'] not in u.email_pref:
 			d['data']['user_name'] = u.name_x
 			d['data']['user_id'] = u.key().id()
 			html = template.render(d['data'])
