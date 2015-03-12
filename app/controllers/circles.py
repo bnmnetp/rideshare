@@ -214,21 +214,6 @@ class CircleInvited(BaseHandler):
         else:
             self.redirect('/')
 
-    def post(self, circle_id):
-        self.auth()
-
-        user = self.current_user()
-
-        circle = Circle.get_by_id(int(circle_id))
-
-        user.circles.append(circle.key())
-        user.put()
-
-        self.json_resp(200, {
-            'message': 'You have joined',
-            'id': circle.key().id()
-        })
-
 class GetCircleInvite(BaseHandler):
     def get(self, circle_id):
         self.auth()

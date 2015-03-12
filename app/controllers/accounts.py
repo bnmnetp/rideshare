@@ -10,14 +10,6 @@ from app.common.email import send_invite, send_email
 
 import uuid
 
-def check_for_invite(self, user):
-    # print('FLAG FOR CHECK INVITE')
-    if self.session.get('invited'):
-        # print('FLAG FOR CHECK INVITE 2')
-        circle = Circle.get_by_id(int(self.session.get('invited')))
-        user.circles.append(circle.key())
-        user.put()
-
 class LoginHandler(BaseHandler):
     def get(self):
         if self.current_user():

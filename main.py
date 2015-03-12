@@ -196,7 +196,6 @@ app = webapp2.WSGIApplication([
     ('/join_circle', JoinCircle),
 
     # controllers/invites.py
-    ('/invite/(\d+)', SendInvite),
     ('/invite/(\d+)/name', SendInviteName),
     ('/invite/(\d+)/email', SendInviteEmail),
     ('/invite/names', GetNames),
