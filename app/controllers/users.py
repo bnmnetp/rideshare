@@ -119,18 +119,16 @@ class EditPrefHandler(BaseHandler):
             return None
 
         preferences = {
-            'join_requested': False,
-            'event_created': False,
-            'ride_edited': False,
-            'passenger_joined': False,
-            'new_ride': False
+            'join_requested': True,
+            'event_created': True,
+            'ride_edited': True,
+            'passenger_joined': True,
+            'new_ride': True
         }
 
         for p in preferences:
             if p in user.email_pref:
-                preferences[p] = True
-
-        print preferences
+                preferences[p] = False
 
         doRender(self, 'user_email_pref.html', {
             'user': user,
@@ -150,7 +148,7 @@ class EditPrefHandler(BaseHandler):
 
         preferences = []
         for d in data:
-            if data[d] == True:
+            if data[d] == False:
                 preferences.append(d)
 
         user.email_pref = preferences
