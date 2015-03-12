@@ -203,7 +203,8 @@ class CircleInvited(BaseHandler):
 
         if user:
             previous = Invite.all().filter('circle =', circle).filter('user =', user).fetch(None)
-            if not previous:
+            in_circle = True if circle.key() in user.circles else False
+            if not previous and not in_circle:
                 inv = Invite()
                 inv.circle = circle
                 inv.email = ''
