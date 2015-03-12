@@ -202,7 +202,7 @@ class CircleInvited(BaseHandler):
         circle = Circle.get_by_id(int(circle_id))
 
         if user:
-            previous = Invite.all().filter('circle =', circle).fetch(None)
+            previous = Invite.all().filter('circle =', circle).filter('user =', user).fetch(None)
             if not previous:
                 inv = Invite()
                 inv.circle = circle
