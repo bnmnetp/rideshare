@@ -58,36 +58,6 @@ class ViewInvites(BaseHandler):
 
         self.response.write(json.dumps(resp))
 
-class SendInvite(BaseHandler):
-    def get(self, invite_id):
-        invite = Invite.get_by_id(int(invite_id))
-
-        toolbox.render(self, 'view_invite.html', {
-            'invite': invite
-        })
-    def post(self, invite_id):
-        self.auth()
-
-        user = self.current_user()
-
-        invite = Invite.get_by_id(int(invite_id))
-
-        if not invite:
-            self.response.status(500)
-            self.response.write(json.dumps({
-                'error': 'You have no pending invites'
-            }))
-            return None
-
-        user.circles.append(invite.circle.key())
-
-        invite.delete()
-
-        self.response.write(json.dumps({
-            'message': 'You have joined the circle'
-        }))
-
-
 class SendInviteEmail(BaseHandler):
     def post(self, circle_id):
         self.auth()
