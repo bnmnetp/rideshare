@@ -9,6 +9,7 @@ from app.common.notification import push_noti
 import json
 import re
 from app.common.email_sys import sender
+import time
 
 class DeleteCircle(BaseHandler):
     def post(self, circle_id):
@@ -208,7 +209,7 @@ class CircleInvited(BaseHandler):
                 inv.email = ''
                 inv.user = user
                 inv.put()
-
+            time.sleep(2)
             self.redirect('/invites')
         else:
             self.redirect('/')
@@ -460,7 +461,7 @@ class RequestJoin(BaseHandler):
                 n.put()
 
             d = {
-                'template': 'emails/join_requested.html',
+                'template': 'join_requested',
                 'data': {
                     'circle_name': circle.name,
                     'circle_id': circle.key().id(),
