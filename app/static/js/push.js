@@ -22,7 +22,11 @@ var SubmitForm = augment(Object, function () {
         for (i = 0; i < this.keys.length; i++) {
             current = this.keys[i];
             if (this.form[current]) {
-                if (current != '') {
+                if (this.form[current].type == 'checkbox') {
+                    if (this.model[current] == true) {
+                        this.form[current].checked = true;
+                    }
+                } else if (current != '') {
                     this.form[current].value = this.model[current];
                 }
             }
@@ -35,7 +39,11 @@ var SubmitForm = augment(Object, function () {
         for (i = 0; i < this.keys.length; i++) {
             current = this.keys[i];
             if (this.form[current]) {
-                this.data[current] = this.form[current].value;
+                if (this.form[current].type == 'checkbox') {
+                    this.data[current] = this.form[current].checked;
+                } else {
+                    this.data[current] = this.form[current].value;   
+                }
             } else if (this.data[current]) {
 
             } else {

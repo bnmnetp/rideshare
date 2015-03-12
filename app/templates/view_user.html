@@ -39,7 +39,8 @@
         <hr>
         {% if is_user %}
             <a href='/user/edit/{{user.key().id()}}' class='btn btn-primary'>Edit Profile</a>
-            <a href="/user/notification/{{user.key().id()}}" class='btn btn-primary'> Notification settings</a>
+            <a href="/user/edit/{{user.key().id()}}/pref" class='btn btn-primary'>Email Preferences</a>
+            <!-- <a href="/user/notification/{{user.key().id()}}" class='btn btn-primary'> Notification settings</a> -->
             <a href="/signout" class='btn btn-primary'>Sign Out</a>
         {% endif %}
     </div>
