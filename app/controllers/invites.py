@@ -116,22 +116,22 @@ class SendInviteEmail(BaseHandler):
                 resp['invalid'].append(email)
 
         for email in resp['valid']:
-            invite = Invite()
-            invite.circle = circle.key()
-            invite.email = email
-            invite.sender = user.key()
-            invite.put()
+            # invite = Invite()
+            # invite.circle = circle.key()
+            # invite.email = email
+            # invite.sender = user.key()
+            # invite.put()
 
             print email
 
             send_invite(email, {
                 'sender_name': user.name,
                 'circle_name': circle.name,
-                'invite_id': invite.key().id(),
+                'circle_id': circle.key().id(),
                 'url': self.request.host_url
             })
 
-        self.response.write(json.dumps(resp))
+        self.json_resp(200, resp)
 
 class SendInviteName(BaseHandler):
     def post(self, circle_id):
