@@ -48,7 +48,7 @@ class LoginHandler(BaseHandler):
 
         if bcrypt.hashpw(data['password'], user.password) == user.password:
             self.session['user'] = user.key().id()
-            check_for_invite(self, user)
+            # check_for_invite(self, user)
             return self.json_resp(200, {
                 'message': 'You have logged in.',
                 'redirect': self.login_redirect(user)
@@ -78,7 +78,7 @@ class RegisterHandler(BaseHandler):
         user.put()
 
         self.session['user'] = user.key().id()
-        check_for_invite(self, user)
+        # check_for_invite(self, user)
         return self.json_resp(200, {
             'message': 'Account created',
             'redirect': self.login_redirect(user)
@@ -120,7 +120,6 @@ class PasswordReset(BaseHandler):
 
 class NewPassword(BaseHandler):
     def get(self, hash):
-        print('XXXXXXXXXXXXXXXXXXXXtest')
         pass
     def post(self, hash):
         pass
