@@ -16,7 +16,7 @@ def sender(d):
 		users
 	}
 	'''
-	template = env.get_template(d['template'])
+	template = env.get_template('emails/' + d['template'] + '.html')
 	
 
 	message = mail.EmailMessage(
@@ -25,7 +25,7 @@ def sender(d):
 	)
 
 	for u in d['users']:
-		if u.email:
+		if u.email and template not in u.email_pref:
 			d['data']['user_name'] = u.name_x
 			d['data']['user_id'] = u.key().id()
 			html = template.render(d['data'])

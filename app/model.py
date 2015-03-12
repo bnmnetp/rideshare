@@ -16,6 +16,7 @@ class User(db.Model):
     noti_time = db.IntegerProperty()
     noti_type = db.StringProperty()
     notis = db.ListProperty(db.Key)
+    email_pref = db.ListProperty(str)
 
     reset = db.StringProperty()
 

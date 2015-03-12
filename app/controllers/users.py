@@ -110,6 +110,56 @@ class DeleteUser(BaseHandler):
                 'message': 'You do not have permission to delete this user.'
             })
 
+class EditPrefHandler(BaseHandler):
+    def get(self, user_id):
+        self.auth()
+        user = self.current_user()
+        if not user.key().id() == int(user_id):
+            self.redirect('/user/' + user_id)
+            return None
+
+        preferences = {
+            'join_requested': False,
+            'event_created': False,
+            'ride_edited': False,
+            'passenger_joined': False,
+            'new_ride': False
+        }
+
+        for p in preferences:
+            if p in user.email_pref:
+                preferences[p] = True
+
+        print preferences
+
+        doRender(self, 'user_email_pref.html', {
+            'user': user,
+            'preferences': json.dumps(preferences)
+        })
+
+    def post(self, user_id):
+        self.auth()
+        user = self.current_user()
+        if not user.key().id() == int(user_id):
+            return self.json_resp(500, {
+                'message': 'You do not have permission'
+            })
+
+        json_str = self.request.body
+        data = json.loads(json_str)
+
+        preferences = []
+        for d in data:
+            if data[d] == True:
+                preferences.append(d)
+
+        user.email_pref = preferences
+        user.put()
+
+        return self.json_resp(200, {
+            'message': 'Preferences updated!'
+        })
+
 class EditUserHandler(BaseHandler):
     def get(self, user_id):
         self.auth()
