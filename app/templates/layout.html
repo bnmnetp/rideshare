@@ -21,11 +21,17 @@
 </head>
 <body>
 	{% if user is defined %}
-	<div id="sidebar-wrapper">
+	<div id="sidebar-wrapper" data-pull='wrapper'>
 		<div class="splash-icon">
 			<a href="/home"></a>
 		</div>
-		<ul class="sidebar">
+		<div class="pull-out active" data-pull="out">
+			<i class="fa fa-toggle-right"></i>
+		</div>
+		<div class="pull-in" data-pull="in">
+			<i class="fa fa-toggle-left"></i>
+		</div>
+		<ul class="sidebar" data-pull='bar'>
 		{% if user.circles %}
 			<li class="sidebar-title separator first beta-warning">
 				BETA. Please bear with us.
@@ -193,6 +199,24 @@
 				cwitch.caret.classList.toggle('fa-caret-up');
 			});
 		}
+
+		var pull = {
+			in: document.querySelector('[data-pull="in"]'),
+			out: document.querySelector('[data-pull="out"]'),
+			bar: document.querySelector('[data-pull="bar"]'),
+			wrapper: document.querySelector('[data-pull="wrapper"]')
+		};
+
+		pull.act = function (e) {
+			console.log('test');
+			pull.in.classList.toggle('active');
+			pull.out.classList.toggle('active');
+			pull.bar.classList.toggle('active');
+			pull.wrapper.classList.toggle('expand');
+		};
+
+		pull.in.addEventListener('click', pull.act);
+		pull.out.addEventListener('click', pull.act);
 	
 	</script>
 	{% block scripts %}
