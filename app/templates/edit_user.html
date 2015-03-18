@@ -64,7 +64,7 @@
 {% endraw %}
 <script type="text/javascript">
     var form = document.querySelector('#form');
-
+    console.log({{user_json|safe}});
     var user_submit = new SubmitForm({
         form: form,
         model: {{user_json|safe}},
@@ -148,7 +148,6 @@
     var ql = new QueryLocation(
         ql_container,
         function () {
-            console.log('test')
             user_submit.set('address', this.result.add);
             user_submit.set('lat', this.result.lat);
             user_submit.set('lng', this.result.lng);

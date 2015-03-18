@@ -1100,9 +1100,9 @@ ul.sidebar .sidebar-list .menu-icon {
     #sidebar-wrapper.expand {
         left: 150px;
     }
-    /*ul.sidebar {
+    ul.sidebar {
       bottom: 0;
-    }
+    /*}
     ul.sidebar .sidebar-title {
       display: none;
     }

@@ -27,7 +27,7 @@ QueryLocation.prototype.send_request = function (e) {
 				this.result.lat = parseFloat(data['results'][0]['geometry']['location']['lat']);
 				this.result.lng = parseFloat(data['results'][0]['geometry']['location']['lng']);
 				
-				this.set_val().bind(this);
+				this.set_val.bind(this)();
 			}.bind(this)
 		);
 	} else {

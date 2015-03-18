@@ -204,15 +204,13 @@
 			in: document.querySelector('[data-pull="in"]'),
 			out: document.querySelector('[data-pull="out"]'),
 			bar: document.querySelector('[data-pull="bar"]'),
-			wrapper: document.querySelector('[data-pull="wrapper"]')
-		};
-
-		pull.act = function (e) {
-			console.log('test');
-			pull.in.classList.toggle('active');
-			pull.out.classList.toggle('active');
-			pull.bar.classList.toggle('active');
-			pull.wrapper.classList.toggle('expand');
+			wrapper: document.querySelector('[data-pull="wrapper"]'),
+			act: function (e) {
+				pull.in.classList.toggle('active');
+				pull.out.classList.toggle('active');
+				pull.bar.classList.toggle('active');
+				pull.wrapper.classList.toggle('expand');
+			}
 		};
 
 		pull.in.addEventListener('click', pull.act);
