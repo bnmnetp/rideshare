@@ -22,6 +22,7 @@
                         <button class="btn btn-default" type="button" data-location='search'>Search Address</button>
                     </span>
                 </div>
+                <span data-location='error'></span>
                 <div data-location='output' class='hidden'>
                     <b>Results:</b> <span data-location='address'></span>
                 </div>
@@ -106,6 +107,16 @@
     console.log({{ride_json|safe}})
     var form = document.querySelector('#form');
 
+    var ql_container = document.querySelector('[data-location="container"]');
+    var ql = new QueryLocation(
+        ql_container,
+        {
+            add: {{ride.origin_add | js}},
+            lat: {{ride.origin_lat | js}},
+            lng: {{ride.origin_lng | js}}
+        }
+    );
+
     var edit_ride = new SubmitForm({
         form: form,
         model: {{ride_json|safe}},
@@ -120,7 +131,8 @@
                 strong: 'Ride not edited.',
                 message: 'Try again.'
             });
-        }
+        },
+        libs: [ql]
     });
 
     var delete_ride = document.querySelector('[data-ride="delete"]');
@@ -149,14 +161,6 @@
         });
     });
 
-    var ql_container = document.querySelector('[data-location="container"]');
-    var ql = new QueryLocation(
-        ql_container,
-        function () {
-            edit_ride.set('origin_add', this.result.add);
-            edit_ride.set('origin_lat', this.result.lat);
-            edit_ride.set('origin_lng', this.result.lng);
-        }
-    );
+
 </script>
 {% endblock %}

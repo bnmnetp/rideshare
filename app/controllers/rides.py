@@ -131,7 +131,7 @@ class FilterRides(BaseHandler):
 
 class EditRide(BaseHandler):
 
-    properties = ['passengers_max', 'date', 'time', 'details', 'driven_by', 'origin_add', 'origin_lat', 'origin_lng',]
+    properties = ['passengers_max', 'date', 'time', 'details', 'driven_by']
 
     def get(self, ride_id):
         self.auth()
@@ -174,9 +174,9 @@ class EditRide(BaseHandler):
             Required('time'): unicode,
             'details': unicode,
             'driven_by': unicode,
-            'origin_add': unicode,
-            'origin_lat': Coerce(float),
-            'origin_lng': Coerce(float)
+            'ql_add': unicode,
+            'ql_lat': Coerce(float),
+            'ql_lng': Coerce(float)
         })
 
         try:
@@ -188,6 +188,10 @@ class EditRide(BaseHandler):
             })
 
         set_properties(ride, self.properties, data)
+
+        ride.origin_add = data['ql_add']
+        ride.origin_lat = data['ql_lat']
+        ride.origin_lng = data['ql_lng']
 
         ride.put()
 
