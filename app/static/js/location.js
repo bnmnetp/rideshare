@@ -22,6 +22,10 @@ QueryLocation.prototype.set_defaults = function () {
 };
 
 QueryLocation.prototype.send_request = function (e) {
+	if (this.err.classList.contains('show')) {
+		this.err.textContent = '';
+		this.err.classList.remove('show');
+	}
 	if (this.input.value != '') {
 		this.has_searched = true;
 		$.get(
@@ -53,9 +57,11 @@ QueryLocation.prototype.send_request = function (e) {
 QueryLocation.prototype.is_valid = function () {
 	if (this.has_searched) {
 		this.err.textContent = '';
+		this.err.classList.remove('show');
 		return true;
 	} else {
 		this.err.textContent = 'Please search for the address before submitting.';
+		this.err.classList.add('show');
 		return false;
 	}
 };
