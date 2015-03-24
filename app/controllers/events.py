@@ -224,7 +224,7 @@ class EditEvent(BaseHandler):
 
         event = Event.get_by_id(int(event_id))
 
-        properties = ['name', 'date', 'time', 'details', 'address', 'lat', 'lng', 'location']
+        properties = ['name', 'date', 'time', 'details', 'location']
 
         event_json = toolbox.grab_json(event, properties)
 
@@ -245,9 +245,9 @@ class EditEvent(BaseHandler):
         event_validator = Schema({
             Required('name'): unicode,
             'location': unicode,
-            'lat': Coerce(float),
-            'lng': Coerce(float),
-            'address': unicode,
+            'ql_lat': Coerce(float),
+            'ql_lng': Coerce(float),
+            'ql_add': unicode,
             Required('date'): toolbox.create_date(),
             'time': unicode,
             'details': unicode
@@ -271,9 +271,9 @@ class EditEvent(BaseHandler):
         event.data = data['date']
         event.time = data['time']
         event.details = data['details']
-        event.address = data['address']
-        event.lat = data['lat']
-        event.lng = data['lng']
+        event.address = data['ql_add']
+        event.lat = data['ql_lat']
+        event.lng = data['ql_lng']
         event.put()
 
         self.json_resp(200, {
