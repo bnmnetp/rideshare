@@ -26,6 +26,7 @@
                         <button class="btn btn-default" type="button" data-location='search'>Search Address</button>
                     </span>
                 </div>
+                <span data-location='error'></span>
                 <div data-location='output' class='hidden'>
                     <b>Results:</b> <span data-location='address'></span>
                 </div>
@@ -98,6 +99,16 @@
 
     var form = document.querySelector('[data-send="event"]');
 
+    var ql_container = document.querySelector('[data-location="event"]');
+    var ql = new QueryLocation(
+        ql_container,
+        {
+            add: {{event.address | js}},
+            lat: {{event.lat | js}},
+            lng: {{event.lng | js}}
+        }
+    );
+
     var edit_event = new SubmitForm({
         form: form,
         model: {{event_json|safe}},
@@ -112,18 +123,11 @@
                 strong: 'Event not edited.',
                 message: 'Try again.'
             });
-        }
+        },
+        libs: [ql]
     });
 
-    var ql_container = document.querySelector('[data-location="event"]');
-    var ql = new QueryLocation(
-        ql_container,
-        function () {
-            edit_event.set('address', this.result.add);
-            edit_event.set('lat', this.result.lat);
-            edit_event.set('lng', this.result.lng);
-        }
-    );
+
 
     var delete_event = document.querySelector('[data-event="delete"]');
 
@@ -139,7 +143,7 @@
         });
 
         request.done(function (data) {
-            document.location = '/circles';
+            document.location = '/circle/{{event.circle.key().id()}}';
         });
 
         request.fail(function (data, status) {
