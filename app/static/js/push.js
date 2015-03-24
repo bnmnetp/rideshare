@@ -8,6 +8,8 @@ var SubmitForm = augment(Object, function () {
         this.done = obj.done;
         this.fail = obj.fail;
 
+        this.libs = obj.libs;
+
         this.data = {};
 
         this.keys = Object.keys(this.model);
@@ -55,21 +57,37 @@ var SubmitForm = augment(Object, function () {
     this.submit_form = function (e) {
         e.preventDefault();
 
-        var req;
+        var valid = true;
 
-        this.get_values();
+        for (var lib of this.libs) {
+            console.log('test')
+            if (!lib.is_valid()) {
+                valid = false;
+            } else {
+                lib.set_values(this.data);
+            }
+        }
 
-        req = $.ajax({
-            type: this.method,
-            url: this.route,
-            dataType: 'json',
-            contentType: 'application/json; charset=UTF-8',
-            data: JSON.stringify(this.data)
-        });
+        if (valid) {
+            var req;
 
-        req.done(this.done.bind(this));
+            this.get_values();
 
-        req.fail(this.fail.bind(this));
+            req = $.ajax({
+                type: this.method,
+                url: this.route,
+                dataType: 'json',
+                contentType: 'application/json; charset=UTF-8',
+                data: JSON.stringify(this.data)
+            });
+
+            req.done(this.done.bind(this));
+
+            req.fail(this.fail.bind(this));      
+        } else {
+            this.fail.bind(this)('Library not valid', 500);
+        }
+        valid = true;
     };
 
     this.set = function (key, value) {

@@ -30,11 +30,12 @@
             <div class="form-group" data-location='address'>
                 <label>Home Address</label>
                 <div class="input-group">
-                    <input class="form-control" type="text" placeholder='Address' name='address' required data-location='input'>
+                    <input class="form-control" type="text" placeholder='Address' required data-location='input'>
                     <span class="input-group-btn">
                         <button class="btn btn-default" type="button" data-location='search'>Search Address</button>
                     </span>
                 </div>
+                <span data-location='error'></span>
                 <div data-location='output' class='hidden'>
                     <b>Results:</b> <span data-location='address'></span>
                 </div>
@@ -64,7 +65,17 @@
 {% endraw %}
 <script type="text/javascript">
     var form = document.querySelector('#form');
-    console.log({{user_json|safe}});
+
+    var ql_container = document.querySelector('[data-location="address"]');
+    var ql = new QueryLocation(
+        ql_container,
+        {
+            add: {{user.address | js}},
+            lat: {{user.lat | js}},
+            lng: {{user.lng | js}}
+        }
+    );
+
     var user_submit = new SubmitForm({
         form: form,
         model: {{user_json|safe}},
@@ -86,7 +97,8 @@
                 strong: 'Whoops',
                 message: 'Something went wrong. Try again.'
             });
-        }
+        },
+        libs: [ql]
     });
 
     function getBase64Image(imgElem) {
@@ -144,15 +156,7 @@
         reader.readAsDataURL(file);
     }
 
-    var ql_container = document.querySelector('[data-location="address"]');
-    var ql = new QueryLocation(
-        ql_container,
-        function () {
-            user_submit.set('address', this.result.add);
-            user_submit.set('lat', this.result.lat);
-            user_submit.set('lng', this.result.lng);
-        }
-    );
+
 
     var delete_account = document.querySelector('[data-user="delete"]');
 

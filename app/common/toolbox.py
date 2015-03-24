@@ -3,16 +3,18 @@ import jinja2
 from app.model import *
 from app.base_handler import BaseHandler
 from datetime import datetime
+import json
 
 # from google.appengine.tools.devappserver2.python import sandbox
 # sandbox._WHITE_LIST_C_MODULES += ['_ctypes', 'gestalt']
 
+
 env = jinja2.Environment(
     loader=jinja2.PackageLoader('app', 'templates'),
-    extensions=['jinja2.ext.autoescape'],
-    autoescape=True,
     trim_blocks=True
 )
+
+env.filters['js'] = json.dumps
 
 def doRender(handler, name = 'home.html', value = {}):
 	b = BaseHandler()
