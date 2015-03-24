@@ -1,23 +1,29 @@
-var QueryLocation = function QueryLocation (parent, set_val) {
+var QueryLocation = function QueryLocation (parent, def) {
+	// default is obj for keys [add, lat, lng]
 	this.parent = parent;
 	this.btn = this.parent.querySelector('[data-location="search"]');
 	this.input = this.parent.querySelector('[data-location="input"]');
 	this.output = this.parent.querySelector('[data-location="output"]');
 	this.address = this.parent.querySelector('[data-location="address"]');
+	this.err = this.parent.querySelector('[data-location="error"]');
 
-	this.set_val = set_val;
+	this.result = def;
 
-	this.result = {
-		'add': '',
-		'lat': false,
-		'lng': false
-	}
+	this.has_searched = false;
+
+	this.set_defaults();
 
 	this.btn.addEventListener('click', this.send_request.bind(this));
 };
 
+QueryLocation.prototype.set_defaults = function () {
+	this.address.textContent = this.result.add;
+	this.input.value = this.result.add;
+};
+
 QueryLocation.prototype.send_request = function (e) {
 	if (this.input.value != '') {
+		this.has_searched = true;
 		$.get(
 			"http://maps.googleapis.com/maps/api/geocode/json?address=" + this.input.value,
 			function (data) {
@@ -26,8 +32,7 @@ QueryLocation.prototype.send_request = function (e) {
 				this.result.add = data['results'][0]['formatted_address'];
 				this.result.lat = parseFloat(data['results'][0]['geometry']['location']['lat']);
 				this.result.lng = parseFloat(data['results'][0]['geometry']['location']['lng']);
-				
-				this.set_val.bind(this)();
+
 			}.bind(this)
 		);
 	} else {
@@ -43,4 +48,20 @@ QueryLocation.prototype.send_request = function (e) {
     // ride.origin_add = json_geocode['results'][0]['formatted_address']
     // ride.origin_lat = json_geocode['results'][0]['geometry']['location']['lat']
     // ride.origin_lng = json_geocode['results'][0]['geometry']['location']['lng']
+};
+
+QueryLocation.prototype.is_valid = function () {
+	if (this.has_searched) {
+		this.err.textContent = '';
+		return true;
+	} else {
+		this.err.textContent = 'Please search for the address before submitting.';
+		return false;
+	}
+};
+
+QueryLocation.prototype.set_values = function (data) {
+	data.ql_add = this.result.add;
+	data.ql_lat = this.result.lat;
+	data.ql_lng = this.result.lng;
 };

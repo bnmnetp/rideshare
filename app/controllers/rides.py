@@ -508,9 +508,9 @@ class CreateRide(BaseHandler):
             'dest_lat': Coerce(float),
             'dest_lng': Coerce(float),
             'dest_address': unicode,
-            'orig_lat': Coerce(float),
-            'orig_lng': Coerce(float),
-            'orig_address': unicode,
+            'ql_lat': Coerce(float),
+            'ql_lng': Coerce(float),
+            'ql_add': unicode,
             'recurring': unicode,
             'circle': Coerce(long),
             'event': unicode
@@ -543,9 +543,9 @@ class CreateRide(BaseHandler):
             ride.dest_lat = data['dest_lat']
             ride.dest_lng = data['dest_lng']
 
-        ride.origin_add = data['orig_address']
-        ride.origin_lat = data['orig_lat']
-        ride.origin_lng = data['orig_lng']
+        ride.origin_add = data['ql_add']
+        ride.origin_lat = data['ql_lat']
+        ride.origin_lng = data['ql_lng']
         ride.date = data['date']
         ride.time = data['time']
         ride.creator = user

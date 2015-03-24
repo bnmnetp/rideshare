@@ -261,9 +261,9 @@ class CircleHandler(BaseHandler):
             Required('privacy', default="public"): unicode,
             Required('color', default="#607d8b"): unicode,
             Required('permission'): unicode,
-            'address': unicode,
-            'lat': Coerce(float),
-            'lng': Coerce(float)
+            'ql_add': unicode,
+            'ql_lat': Coerce(float),
+            'ql_lng': Coerce(float)
         })
 
         json_str = self.request.body
@@ -283,9 +283,9 @@ class CircleHandler(BaseHandler):
         circle.color = data['color']
         circle.permission = data['permission']
         circle.admins.append(user.key())
-        circle.address = data['address']
-        circle.lat = data['lat']
-        circle.lng = data['lng']
+        circle.address = data['ql_add']
+        circle.lat = data['ql_lat']
+        circle.lng = data['ql_lng']
 
         circle.put()
 

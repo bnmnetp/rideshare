@@ -24,6 +24,7 @@
                         <button class="btn btn-default" type="button" data-location='search'>Search Address</button>
                     </span>
                 </div>
+                <span data-location='error'></span>
                 <div data-location='output' class='hidden'>
                     <b>Results:</b> <span data-location='address'></span>
                 </div>
@@ -80,6 +81,16 @@
 <script type="text/javascript">
     var form = document.querySelector('[data-circle="create"]');
 
+    var ql_container = document.querySelector('[data-location="base"]');
+    var ql = new QueryLocation(
+        ql_container,
+        {
+            add: '',
+            lat: '',
+            lng: ''
+        }
+    );
+
     var push = new SubmitForm({
         form: form,
         model: {
@@ -100,17 +111,10 @@
                 strong: 'Sorry!',
                 message: 'The circle was not created. Please try again.'
             });
-        }
+        },
+        libs: [ql]
     });
 
-    var ql_container = document.querySelector('[data-location="base"]');
-    var ql = new QueryLocation(
-        ql_container,
-        function () {
-            push.set('address', this.result.add);
-            push.set('lat', this.result.lat);
-            push.set('lng', this.result.lng);
-        }
-    );
+
 </script>
 {% endblock %}
