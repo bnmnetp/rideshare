@@ -8,7 +8,11 @@ var SubmitForm = augment(Object, function () {
         this.done = obj.done;
         this.fail = obj.fail;
 
-        this.libs = obj.libs;
+        if (obj.libs) {
+            this.libs = obj.libs;
+        } else {
+            this.libs = [];
+        }
 
         this.data = {};
 
