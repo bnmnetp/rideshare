@@ -63,6 +63,13 @@ img {
 [data-location='output'] {
     padding-top: 10px;
 }
+[data-location='error'] {
+    display: none;
+    border-radius: 4px;
+    border: 1px solid red;
+    padding: 5px;
+    margin: 5px 0px;
+}
 /* End */
 
 /* Circle Hero */

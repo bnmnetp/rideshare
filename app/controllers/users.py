@@ -183,15 +183,20 @@ class EditUserHandler(BaseHandler):
         json_str = self.request.body
         data = json.loads(json_str)
 
+        print data
+
         user_validator = Schema({
             Required('zip'): Coerce(int),
             Required('email'): unicode,
             Required('phone'): unicode,
             Required('name'): unicode,
             'photo': unicode,
-            'address': unicode,
-            'lat': Coerce(float),
-            'lng': Coerce(float)
+            'ql_add': unicode,
+            'ql_lat': Coerce(float),
+            'ql_lng': Coerce(float),
+            'lat': unicode,
+            'lng': unicode,
+            'address': unicode
         })
 
         try:
@@ -209,9 +214,9 @@ class EditUserHandler(BaseHandler):
         user.email = data['email']
         user.phone = data['phone']
         user.zip = data['zip']
-        user.address = data['address']
-        user.lat = data['lat']
-        user.lng = data['lng']
+        user.address = data['ql_add']
+        user.lat = data['ql_lat']
+        user.lng = data['ql_lng']
 
         if not user.key().id() == int(user_id):
             self.redirect('/user/' + user_id)
@@ -236,11 +241,9 @@ class EditUserHandler(BaseHandler):
 
         user.put()
 
-        resp = {
+        self.json_resp(200, {
             'message': 'Edited!'
-        }
-
-        self.response.write(json.dumps(resp))
+        })
 
 class UserHandler(BaseHandler):
     def get(self):
