@@ -75,8 +75,11 @@ img {
     display: none;
     border-radius: 4px;
     border: 1px solid red;
-    padding: 5px;
+    padding: 10px;
     margin: 5px 0px;
+    color: #A94442;
+    background-color: #F2DEDE;
+    border-color: #EBCCD1;
 }
 /* End */
 

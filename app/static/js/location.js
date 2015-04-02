@@ -9,16 +9,24 @@ var QueryLocation = function QueryLocation (parent, def) {
 
 	this.result = def;
 
-	this.has_searched = false;
+	this.has_address = false;
 
 	this.set_defaults();
 
 	this.btn.addEventListener('click', this.send_request.bind(this));
+	this.input.addEventListener('change', function (e) {
+		this.has_address = false;
+		this.output.classList.add('hidden');
+	}.bind(this));
 };
 
 QueryLocation.prototype.set_defaults = function () {
-	this.address.textContent = this.result.add;
 	this.input.value = this.result.add;
+	if (this.result.add != null) {
+		this.has_address = true;
+		this.output.classList.remove('hidden');
+		this.address.textContent = this.result.add;
+	}
 };
 
 QueryLocation.prototype.send_request = function (e) {
@@ -27,7 +35,7 @@ QueryLocation.prototype.send_request = function (e) {
 		this.err.classList.remove('show');
 	}
 	if (this.input.value != '') {
-		this.has_searched = true;
+		this.has_address = true;
 		$.get(
 			"http://maps.googleapis.com/maps/api/geocode/json?address=" + this.input.value,
 			function (data) {
@@ -55,7 +63,7 @@ QueryLocation.prototype.send_request = function (e) {
 };
 
 QueryLocation.prototype.is_valid = function () {
-	if (this.has_searched) {
+	if (this.has_address) {
 		this.err.textContent = '';
 		this.err.classList.remove('show');
 		return true;
