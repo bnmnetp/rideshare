@@ -1021,7 +1021,6 @@ ul.sidebar .sidebar-list a {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  width: 200px;
 }
 ul.sidebar .sidebar-list a:hover {
   color: #fff;
