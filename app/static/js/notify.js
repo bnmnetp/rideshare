@@ -184,19 +184,17 @@ var notify = function (opts) {
 	var alert_container = document.querySelector('[data-notify="container"]');
 
 	if (!alert_container) {
-		var alert_container = document.querySelector('#main_container');
+		var main_container = document.querySelector('#main_container');
+		var alert_container = document.createElement('div');
+		alert_container.dataset.notify = 'template';
+		main_container.insertBefore(alert_container, main_container.firstChild);
 	}
 
 	if ('container' in opts) {
 		var alert_container = document.querySelector(opts.container);
 	}
 
-	var source;
-	if (!alert_template) {
-		source = '<div class="alert alert-{{type}} alert-dismissable" data-alert="current"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong>{{strong}}</strong><p>{{message}}</p></div>';
-	} else {
-		source = alert_template.innerHTML;
-	}
+	var source = '<div class="alert alert-{{type}} alert-dismissable" data-alert="current"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong>{{strong}}</strong><p>{{message}}</p></div>';
 
 	var template = Handlebars.compile(source);
 	var html = template(opts);
