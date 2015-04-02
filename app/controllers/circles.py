@@ -64,7 +64,7 @@ class EditCircle(BaseHandler):
         if not circle:
             self.redirect('/circles')
 
-        properties = ['name', 'description', 'privacy', 'permission', 'color', 'address', 'lat', 'lng']
+        properties = ['name', 'description', 'privacy', 'permission', 'color']
 
         circle_json = grab_json(circle, properties)
         
@@ -73,6 +73,7 @@ class EditCircle(BaseHandler):
             'circle': circle,
             'circle_json': circle_json
         })
+        
     def post (self, circle_id):
         self.auth()
 
@@ -91,9 +92,9 @@ class EditCircle(BaseHandler):
             Required('privacy', default="public"): unicode,
             Required('color', default="#607d8b"): unicode,
             Required('permission'): unicode,
-            'address': unicode,
-            'lat': Coerce(float),
-            'lng': Coerce(float)
+            'ql_add': unicode,
+            'ql_lat': Coerce(float),
+            'ql_lng': Coerce(float)
         })
 
         json_str = self.request.body
@@ -115,16 +116,16 @@ class EditCircle(BaseHandler):
         circle.privacy = data['privacy']
         circle.color = data['color']
         circle.permission = data['permission']
-        circle.address = data['address']
-        circle.lat = data['lat']
-        circle.lng = data['lng']
+        circle.address = data['ql_add']
+        circle.lat = data['ql_lat']
+        circle.lng = data['ql_lng']
 
         circle.put()
 
-        self.response.write(json.dumps({
+        self.json_resp(200, {
             'message': 'Circle edited!',
             'id': circle.key().id()
-        }))
+        })
 
 class GetCircleHandler(BaseHandler):
     def get(self, circle_id):

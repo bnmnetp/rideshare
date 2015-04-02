@@ -22,9 +22,10 @@
                 <div class="input-group">
                     <input class="form-control" type="text" placeholder='Address' name='address' required data-location='input'>
                     <span class="input-group-btn">
-                        <button class="btn btn-default" type="button" data-location='search'>Search Address</button>
+                        <button class="btn btn-info" type="button" data-location='search'>Search Address</button>
                     </span>
                 </div>
+                <span data-location='error'></span>
                 <div data-location='output' class='hidden'>
                     <b>Results:</b> <span data-location='address'></span>
                 </div>
@@ -83,6 +84,16 @@
 <script type="text/javascript">
     var form = document.querySelector('[data-circle="edit"]');
 
+    var ql_container = document.querySelector('[data-location="base"]');
+    var ql = new QueryLocation(
+        ql_container,
+        {
+            add: {{circle.address | js}},
+            lat: {{circle.lat | js}},
+            lng: {{circle.lng | js}}
+        }
+    );
+
     var push = new SubmitForm({
         form: form,
         model: {{circle_json|safe}},
@@ -97,18 +108,11 @@
                 strong: 'Sorry!',
                 message: 'The circle was not edited. Please try again.'
             });
-        }
+        },
+        libs: [ql]
     });
 
-    var ql_container = document.querySelector('[data-location="base"]');
-    var ql = new QueryLocation(
-        ql_container,
-        function () {
-            push.set('address', this.result.add);
-            push.set('lat', this.result.lat);
-            push.set('lng', this.result.lng);
-        }
-    );
+
 
     var delete_circle = document.querySelector('[data-circle="delete"]');
 
