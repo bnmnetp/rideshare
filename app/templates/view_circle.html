@@ -24,6 +24,54 @@
         <div class="col-md-6">
             <div class="panel panel-main">
                 <div class="panel-heading">
+                    Events
+                    <div class="pull-right">
+                        <a class='btn btn-xs btn-link' href="/circle/{{circle.key().id()}}/map?events=true">
+                            Create Events
+                        </a>
+                        <a class='btn btn-xs btn-success'
+                            data-toggle="collapse"
+                            data-cbtn="open"
+                            data-target="[data-collapse='events']">
+                            Collapse
+                        </a>
+                    </div>
+                </div>
+                <div class="panel-body panel-no" data-collapse='events'>
+                {% if events_all %}
+                    {% for event in events_all %}
+                        <div class="list">
+                            <div class="ctx">
+                                <i class="fa fa-location-arrow"></i>
+                            </div>
+                            <div class="info">
+                                <div class="title">
+                                    <a href="/event/{{event.key().id()}}">{{event.name}}</a>
+                                </div>
+                                <div class="sub">
+                                    <div class="tag">
+                                        <i class="fa fa-calendar"></i>
+                                        {{event.date}}
+                                    </div>
+                                    <div class="tag">
+                                        <i class="fa fa-location-arrow"></i>
+                                        {{event.address}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="panel-message">
+                        There are no events yet. Visit <a href="/circle/{{circle.key().id()}}/map">the map</a> to create one.
+                    </div>
+                {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="panel panel-main">
+                <div class="panel-heading">
                     <span>
                         Notifications - Messages from {{circle.name}}
                     </span>
@@ -139,54 +187,7 @@
             </div>
 
         </div>
-        <div class="col-md-6">
-            <div class="panel panel-main">
-                <div class="panel-heading">
-                    Events
-                    <div class="pull-right">
-                        <a class='btn btn-xs btn-link' href="/circle/{{circle.key().id()}}/map?events=true">
-                            Create Events
-                        </a>
-                        <a class='btn btn-xs btn-success'
-                            data-toggle="collapse"
-                            data-cbtn="open"
-                            data-target="[data-collapse='events']">
-                            Collapse
-                        </a>
-                    </div>
-                </div>
-                <div class="panel-body panel-no" data-collapse='events'>
-                {% if events_all %}
-                    {% for event in events_all %}
-                        <div class="list">
-                            <div class="ctx">
-                                <i class="fa fa-location-arrow"></i>
-                            </div>
-                            <div class="info">
-                                <div class="title">
-                                    <a href="/event/{{event.key().id()}}">{{event.name}}</a>
-                                </div>
-                                <div class="sub">
-                                    <div class="tag">
-                                        <i class="fa fa-calendar"></i>
-                                        {{event.date}}
-                                    </div>
-                                    <div class="tag">
-                                        <i class="fa fa-location-arrow"></i>
-                                        {{event.address}}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-                {% else %}
-                    <div class="panel-message">
-                        There are no events yet. Visit <a href="/circle/{{circle.key().id()}}/map">the map</a> to create one.
-                    </div>
-                {% endif %}
-                </div>
-            </div>
-        </div>
+
     </div>
 </div>
 
@@ -226,6 +227,7 @@
             target.dataset.cbtn = 'closed';
         } else {
             target.textContent = 'Collapse';
+            target.dataset.cbtn = 'open';
         }
     };
 
