@@ -193,12 +193,24 @@ var notify = function (opts) {
 
 	var source;
 	if (!alert_template) {
-		source = '<div class="alert alert-{{type}} alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong>{{strong}}</strong>{{message}}</div>';
+		source = '<div class="alert alert-{{type}} alert-dismissable" data-alert="current"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong>{{strong}}</strong><p>{{message}}</p></div>';
 	} else {
 		source = alert_template.innerHTML;
 	}
 
 	var template = Handlebars.compile(source);
 	var html = template(opts);
-	alert_container.insertAdjacentHTML('afterbegin', html);
+
+	var current_alert;
+	if (alert_container.hasChildNodes()) {
+		current_alert = document.querySelector('[data-alert="current"]');
+		current_alert.classList.add('hide-alert');
+		setTimeout(function () {
+			alert_container.removeChild(current_alert);
+			alert_container.insertAdjacentHTML('beforeend', html);
+		}.bind(this), 500);
+	} else {
+		alert_container.insertAdjacentHTML('beforeend', html);
+	}
+	
 }

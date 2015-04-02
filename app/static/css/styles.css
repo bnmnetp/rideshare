@@ -32,6 +32,14 @@ img {
     cursor: pointer;
 }
 
+/* Alert Hiding */
+
+.hide-alert {
+    opacity: 0;
+    transition: opacity .5s;
+}
+
+/* Beta Warning */
 .beta-warning {
     color: #D84937 !important;
     font-weight: 700;
