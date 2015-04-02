@@ -23,8 +23,20 @@
     <div class="row">
         <div class="col-md-6">
             <div class="panel panel-main">
-                <div class="panel-heading">Notifications - Messages from {{circle.name}}</div>
-                <div class="panel-body">
+                <div class="panel-heading">
+                    <span>
+                        Notifications - Messages from {{circle.name}}
+                    </span>
+                    <div class="pull-right">
+                        <a class='btn btn-xs btn-success'
+                            data-toggle="collapse"
+                            data-cbtn="open"
+                            data-target="[data-collapse='notis']">
+                            Collapse
+                        </a>
+                    </div>
+                </div>
+                <div class="panel-body collapse in" data-collapse='notis'>
                     {% if notis %}
                         {% for noti in notis %}
                             <div class="list">
@@ -54,16 +66,21 @@
                 <div class="panel-heading">
                     Members of Circle <!-- ({{total_members}} Members) -->
                     <div class="pull-right">
-                        <a href="/circle/{{circle.key().id()}}/invite">
+                        <a class='btn btn-xs btn-link' href="/circle/{{circle.key().id()}}/invite">
                             Invite Friends
                         </a>
-                        | 
-                        <a href="/circle/{{circle.key().id()}}/requests">
+                        <a class='btn btn-xs btn-link' href="/circle/{{circle.key().id()}}/requests">
                             Requests
+                        </a>
+                        <a class='btn btn-xs btn-success'
+                            data-toggle="collapse"
+                            data-cbtn="open"
+                            data-target="[data-collapse='members']">
+                            Collapse
                         </a>
                     </div>
                 </div>
-                <div class="panel-body">
+                <div class="panel-body collapse in" data-collapse='members'>
                 {% if admins %}
                 {% for member in admins %}
                     <div class="media">
@@ -127,12 +144,18 @@
                 <div class="panel-heading">
                     Events
                     <div class="pull-right">
-                        <a href="/circle/{{circle.key().id()}}/map?events=true">
+                        <a class='btn btn-xs btn-link' href="/circle/{{circle.key().id()}}/map?events=true">
                             Create Events
+                        </a>
+                        <a class='btn btn-xs btn-success'
+                            data-toggle="collapse"
+                            data-cbtn="open"
+                            data-target="[data-collapse='events']">
+                            Collapse
                         </a>
                     </div>
                 </div>
-                <div class="panel-body panel-no">
+                <div class="panel-body panel-no" data-collapse='events'>
                 {% if events_all %}
                     {% for event in events_all %}
                         <div class="list">
@@ -195,7 +218,25 @@
 {% endblock %}
 
 {% block scripts %}
+<script type="text/javascript">
+    var change_text = function (e) {
+        var target = e.target;
+        if (target.dataset.cbtn == 'open') {
+            target.textContent = 'Expand';
+            target.dataset.cbtn = 'closed';
+        } else {
+            target.textContent = 'Collapse';
+        }
+    };
 
+    var collapse_btns = document.querySelectorAll('[data-cbtn]');
+
+    console.log(collapse_btns)
+    for (var btn of collapse_btns) {
+        btn.addEventListener('click', change_text);
+    }
+
+</script>
 {% raw %}
 <script data-notify="template" type='text/x-handlebars-template'>
     <div class="alert alert-{{type}} alert-dismissable">

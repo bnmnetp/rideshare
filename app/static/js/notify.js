@@ -184,21 +184,31 @@ var notify = function (opts) {
 	var alert_container = document.querySelector('[data-notify="container"]');
 
 	if (!alert_container) {
-		var alert_container = document.querySelector('#main_container');
+		var main_container = document.querySelector('#main_container');
+		var alert_container = document.createElement('div');
+		alert_container.dataset.notify = 'template';
+		main_container.insertBefore(alert_container, main_container.firstChild);
 	}
 
 	if ('container' in opts) {
 		var alert_container = document.querySelector(opts.container);
 	}
 
-	var source;
-	if (!alert_template) {
-		source = '<div class="alert alert-{{type}} alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong>{{strong}}</strong>{{message}}</div>';
-	} else {
-		source = alert_template.innerHTML;
-	}
+	var source = '<div class="alert alert-{{type}} alert-dismissable" data-alert="current"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong>{{strong}}</strong><p>{{message}}</p></div>';
 
 	var template = Handlebars.compile(source);
 	var html = template(opts);
-	alert_container.insertAdjacentHTML('afterbegin', html);
+
+	var current_alert;
+	if (alert_container.hasChildNodes()) {
+		current_alert = document.querySelector('[data-alert="current"]');
+		current_alert.classList.add('hide-alert');
+		setTimeout(function () {
+			alert_container.removeChild(current_alert);
+			alert_container.insertAdjacentHTML('beforeend', html);
+		}.bind(this), 500);
+	} else {
+		alert_container.insertAdjacentHTML('beforeend', html);
+	}
+	
 }
