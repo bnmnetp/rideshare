@@ -1017,6 +1017,11 @@ ul.sidebar .sidebar-list a {
   font-size: 15px;
   color: #b2bfdc;
   line-height: 40px;
+  height: 40px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 200px;
 }
 ul.sidebar .sidebar-list a:hover {
   color: #fff;
