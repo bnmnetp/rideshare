@@ -37,7 +37,7 @@
                         </a>
                     </div>
                 </div>
-                <div class="panel-body panel-no" data-collapse='events'>
+                <div class="panel-body panel-no  collapse in" data-collapse='events'>
                 {% if events_all %}
                     {% for event in events_all %}
                         <div class="list">
@@ -233,7 +233,6 @@
 
     var collapse_btns = document.querySelectorAll('[data-cbtn]');
 
-    console.log(collapse_btns)
     for (var btn of collapse_btns) {
         btn.addEventListener('click', change_text);
     }
