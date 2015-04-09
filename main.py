@@ -21,6 +21,7 @@ from app.controllers.invites import *
 from app.controllers.alert import *
 from app.controllers.accounts import *
 from app.controllers.home import *
+from app.controllers.calendar import *
 
 from app.cron.notifications import *
 
@@ -151,6 +152,9 @@ app = webapp2.WSGIApplication([
 
     # controllers/home.py
     ('/home', Home2),
+
+    # controllers/calendar.py
+    ('/calendar', GetCalendar),
 
     # controllers/rides.py
     ('/rides', GetRides),

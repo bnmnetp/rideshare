@@ -5,6 +5,6 @@
     </div>
     {% if is_admin %}
         <a class="btn btn-primary" href='/circle/{{circle.key().id()}}/edit'>Manage Circle</a>
-        <button class='btn btn-primary' data-toggle="modal" data-target="#send-message">Send message to all circle members</button>
+        <a class="btn btn-primary" href="/circle/{{circle.key().id()}}/message">Send message to all circle members</a>
     {% endif %}
 </div>
