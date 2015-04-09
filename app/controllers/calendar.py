@@ -35,16 +35,16 @@ class GetCalendar(BaseHandler):
 				'title': r.event.name + ' - Requested',
 				'start': str(r.event.date),
 				'url': '/event/' + str(r.event.key().id()),
-				'color': '#80cbc4'
+				'color': '#81c784'
 			})
 
 		passengers = Passenger.all().filter('user =', user.key()).fetch(None)
 		for p in passengers:
 			if p.ride.date >= today:
 				if p.ride.driver:
-					border = '#00695c'
+					border = '#2e7d32'
 				else:
-					border = '#80cbc4'
+					border = '#81c784'
 				rides.append({
 					'title': p.ride.event.name + ' - Passenger',
 					'start': str(p.ride.date),
