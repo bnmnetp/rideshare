@@ -22,33 +22,34 @@ class GetCalendar(BaseHandler):
 		driving = Ride.all().filter('driver =', user.key()).fetch(None)
 		for d in driving:
 			rides.append({
-				'title': d.origin_add + ' - Driver',
+				'title': d.event.name + ' - Driver',
 				'start': str(d.date),
 				'url': '/ride/' + str(d.key().id()),
-				'borderColor': 'yellow'
+				'color': '#1565c0'
 			})
 
 		requester = Requester.all().filter('user =', user.key()).fetch(None)
 		for r in requester:
+
 			rides.append({
 				'title': r.event.name + ' - Requested',
 				'start': str(r.event.date),
 				'url': '/event/' + str(r.event.key().id()),
-				'borderColor': 'red'
+				'color': '#80cbc4'
 			})
 
 		passengers = Passenger.all().filter('user =', user.key()).fetch(None)
 		for p in passengers:
 			if p.ride.date >= today:
 				if p.ride.driver:
-					border = 'yellow'
+					border = '#00695c'
 				else:
-					border = 'red'
+					border = '#80cbc4'
 				rides.append({
-					'title': p.ride.origin_add + ' - Passenger',
+					'title': p.ride.event.name + ' - Passenger',
 					'start': str(p.ride.date),
 					'url': '/ride/' + str(p.ride.key().id()),
-					'borderColor': border
+					'color': border
 				})
 
 		toolbox.render(self, 'calendar.html', {
