@@ -531,14 +531,6 @@ class CircleMessage(BaseHandler):
             noti.text = data['message']
             noti.put()
 
-        for admin in circle.admins:
-            noti = Notification()
-            noti.user = admin
-            noti.circle = circle.key()
-            noti.type = 'circle_message'
-            noti.text = data['message']
-            noti.put()
-
         return self.json_resp(200, {
             'message': 'Message sent to all users'
         })
