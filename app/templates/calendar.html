@@ -4,6 +4,29 @@
 
 {% block head %}
     <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.3.1/fullcalendar.min.css">
+    <style type="text/css">
+        .keyco {
+            margin-bottom: 25px;
+        }
+        .keyit {
+            display: block;
+            overflow: auto;
+            clear: auto;
+        }
+        .keyit .identify {
+            width: 50px;
+            height: 50px;
+            display: block;
+            float: left;
+            margin-right: 15px;
+        }
+        .keyit .explan {
+            font-size: 24px;
+            line-height: 50px;
+            display: block;
+            float: left;
+        }
+    </style>
 {% endblock %}
 
 {% block main %}
@@ -12,6 +35,30 @@
         Calendar
     </div>
     <div class="panel-body">
+        <div class="row keyco">
+            <div class="col-md-6">
+                <h2>Your offered rides:</h2>
+                <div class="keyit">
+                    <div class='identify' style='background-color:#90caf9;'></div>
+                    <div class="explan">No passengers yet</div>
+                </div>
+                <div class="keyit">
+                    <div class='identify' style='background-color:#1565c0;'></div>
+                    <div class="explan">Passenger(s) connected</div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <h1>Your requested rides:</h1>
+                <div class="keyit">
+                    <div class='identify' style='background-color:#80cbc4;'></div>
+                    <div class="explan">No driver yet</div>
+                </div>
+                <div class="keyit">
+                    <div class='identify' style='background-color:#00695c;'></div>
+                    <div class="explan">Driver connected</div>
+                </div>
+            </div>
+        </div>
         <div id="calendar">
             
         </div>

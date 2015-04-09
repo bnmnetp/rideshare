@@ -32,6 +32,13 @@ img {
     cursor: pointer;
 }
 
+/* full calendar */
+
+.fc-event {
+    font-size: 1.3em;
+    line-height: 1.5;
+}
+
 /* Alert Hiding */
 
 .hide-alert {
