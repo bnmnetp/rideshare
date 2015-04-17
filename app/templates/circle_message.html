@@ -1,0 +1,64 @@
+{% extends "layout.html" %}
+
+{% block title %}Send Message to Circle{% endblock %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block main %}
+
+{% include 'includes/circle_header.html' %}
+
+<div data-notify='container'></div>
+<div class="panel panel-main">
+    <div class="panel-heading">Send a Message</div>
+    <div class="panel-body">
+        <form data-circle='message'>
+            <div class='form-group'>
+                <label>Message</label>
+                <input type='text' name='message' placeholder='Message' class='form-control'>
+            </div>
+            <button type='submit' class='btn btn-primary'>Send Message</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src='/static/js/push.js'></script>
+<script src='/static/js/location.js'></script>
+{% raw %}
+<template data-notify="template" type='text/x-handlebars-template'>
+    <div class="alert alert-{{type}} alert-dismissable">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        <strong>{{strong}}</strong> {{message}}
+    </div>
+</template>
+{% endraw %}
+<script type="text/javascript">
+    var form = document.querySelector('[data-circle="message"]');
+
+    var push = new SubmitForm({
+        form: form,
+        model: {
+            message: ''
+        },
+        method: 'POST',
+        route: '/circle/{{circle.key().id()}}/message',
+        done: function (data) {
+            document.location = '/circle/' + {{circle.key().id()}};
+        },
+        fail: function (message, status) {
+            notify({
+                type: 'danger',
+                strong: 'Sorry!',
+                message: 'The message could not be sent.'
+            });
+        },
+        libs: []
+    });
+
+
+</script>
+{% endblock %}

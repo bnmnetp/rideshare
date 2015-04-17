@@ -85,29 +85,28 @@
                     </div>
                 </div>
                 <div class="panel-body collapse in" data-collapse='notis'>
-                    {% if notis %}
-                        {% for noti in notis %}
-                            <div class="list">
-                                <div class="ctx">
-                                    <i class="fa fa-envelope-o"></i>
-                                </div>
-                                <div class="info">
-                                    <div class="title">
-                                        {{noti.text}}
-                                    </div>
-                                    <div class="sub">
-                                        <div class="tag">
-                                            <i class="fa fa-calendar"></i> {{noti.date_str}}
-                                        </div>
-                                    </div>
+                {% if site_notis %}
+                    {% for sn in site_notis %}
+                        <div class="list noti">
+                            <div class="ctx">
+                                <i class="fa fa-{{sn.symbol}}"></i>
+                            </div>
+                            <div class="info">
+                                <div class="title">
+                                    <b>{{sn.title}}</b>
+                                    <p>{{sn.message | safe}}</p>
                                 </div>
                             </div>
-                        {% endfor %}
+                            <div class="dismiss" data-dismiss="{{sn.id}}">
+                                <i class="fa fa-times" data-child='true'></i>
+                            </div>
+                        </div>
+                    {% endfor %}
                     {% else %}
                         <div class="panel-message">
-                            You do not have any upcoming notifications.
+                            You do not have any notifications.
                         </div>
-                    {% endif %}
+                {% endif %}
                 </div>
             </div>
             <div class="panel panel-main">
