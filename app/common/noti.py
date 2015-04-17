@@ -48,7 +48,7 @@ class Notications:
 			}
 		}
 	def get_all(self, circle=None, user=None):
-
+		today = date.today()
 		notifications = []
 
 		if circle == None:
