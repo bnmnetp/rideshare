@@ -128,19 +128,6 @@ class Home2(BaseHandler):
                             r.event.name
                         )
                     })
-        # for d in is_pass:
-        #     t = 'driver_joined'
-        #     if d.ride.driver:
-        #         notifications.append({
-        #             'type': t,
-        #             'message': noti[t]['template'].format(
-        #                 d.ride.driver.key().id(),
-        #                 d.ride.driver.name,
-        #                 d.ride.key().id(),
-        #                 d.ride.origin_add,
-        #                 d.ride.dest_add
-        #             )
-        #         })
 
         for n in notifications:
             n['title'] = noti[n['type']]['title']
@@ -159,9 +146,3 @@ class Home2(BaseHandler):
             'user': user,
             'circles': circles
         })
-
-# class ClearNotification(BaseHandler):
-#     def post(self):
-#         self.auth()
-
-#         user = self.current_user()
