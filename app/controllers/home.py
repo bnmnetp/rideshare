@@ -14,6 +14,8 @@ class Home2(BaseHandler):
         self.auth()
         user = self.current_user()
 
+        circles = Circle().all().fetch(None)
+
         n = Notifications()
 
         notifications = n.get_all(None, user)

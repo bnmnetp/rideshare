@@ -1,14 +1,8 @@
-from app.common.toolbox import doRender, grab_json, split_address, date_display
-from google.appengine.ext import db
-from app.base_handler import BaseHandler
-from app.common.voluptuous import *
-import json
 from app.model import *
 import datetime
 from datetime import date
-from app.common.email_sys import sender
 
-class Notications:
+class Notifications:
 	def __init__(self):
 		self.templates = {
 			'new_event': { # /
@@ -45,6 +39,11 @@ class Notications:
 				'symbol': 'exclamation',
 				'template': '<a href="/ride/{}">from {} to {}</a> has been updated',
 				'title': 'Ride Updated'
+			},
+			'circle_message': {
+				'symbol': 'envelope',
+				'template': '<a href="/circle/{}">{}</a> says {}',
+				'title': 'New Circle Message'
 			}
 		}
 	def get_all(self, circle=None, user=None):
@@ -65,7 +64,7 @@ class Notications:
 				notifications.append({
 					'id': e.key(),
 					'type': t,
-					'message': noti[t]['template'].format(
+					'message': self.templates[t]['template'].format(
 						e.key().id(),
 						e.name,
 						e.circle.key().id(),
@@ -89,7 +88,7 @@ class Notications:
 					notifications.append({
 						'id': p.key(),
 						'type': t,
-						'message': noti[t]['template'].format(
+						'message': self.templates[t]['template'].format(
 							p.user.key().id(),
 							p.user.name,
 							0,
@@ -111,7 +110,7 @@ class Notications:
 						notifications.append({
 							'id': r.key(),
 							'type': t,
-							'message': noti[t]['template'].format(
+							'message': self.templates[t]['template'].format(
 								len(rides_offered),
 								r.event.key().id(),
 								r.event.name
@@ -130,7 +129,7 @@ class Notications:
 						notifications.append({
 							'id': e.key(),
 							'type': t,
-							'message': noti[t]['template'].format(
+							'message': self.templates[t]['template'].format(
 								first.key().id(),
 								first.name,
 								plus_more,
@@ -139,8 +138,25 @@ class Notications:
 							)
 						})
 
+		if circle:
+			messages = Messages.all().filter('circle =', circle).fetch(10)
+		else:
+			messages = Messages.all().filter('circle in', user.circles).fetch(10)
+
+		for e in messages:
+			t = 'circle_message'
+			notifications.append({
+				'id': e.key(),
+				'type': t,
+				'message': self.templates[t]['template'].format(
+					e.circle.key().id(),
+					e.circle.name,
+					e.message
+				)
+			})
+
 		for n in notifications:
-			n['title'] = noti[n['type']]['title']
-			n['symbol'] = noti[n['type']]['symbol']
+			n['title'] = self.templates[n['type']]['title']
+			n['symbol'] = self.templates[n['type']]['symbol']
 
 		return notifications
