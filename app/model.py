@@ -227,3 +227,9 @@ class Passenger(db.Model):
     user = db.ReferenceProperty(User)
     seats = db.IntegerProperty()
     message = db.TextProperty()
+
+class Messages(db.Model):
+    sent = db.DateTimeProperty(auto_now_add=True)
+    circle = db.ReferenceProperty(Circle)
+    sender = db.ReferenceProperty(User)
+    message = db.TextProperty()

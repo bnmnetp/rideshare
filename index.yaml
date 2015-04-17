@@ -72,6 +72,12 @@ indexes:
 
 - kind: Ride
   properties:
+  - name: circle
+  - name: driver
+  - name: date
+
+- kind: Ride
+  properties:
   - name: driver
   - name: date
 

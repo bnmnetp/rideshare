@@ -10,6 +10,7 @@ import json
 import re
 from app.common.email_sys import sender
 import time
+from app.common.noti import Notifications
 
 class DeleteCircle(BaseHandler):
     def post(self, circle_id):
@@ -144,6 +145,9 @@ class GetCircleHandler(BaseHandler):
 
         today = date.today()
 
+        n = Notifications()
+        notifications = n.get_all(circle, user)
+
         requests = User.all().filter('__key__ in', circle.requests).fetch(100)
 
         notis = Notification.all().filter('circle = ', circle.key()).filter('type = ', 'circle_message').filter('created >', today).fetch(100)
@@ -189,7 +193,8 @@ class GetCircleHandler(BaseHandler):
             'events_all': events_all,
             'members': members,
             'admins': admins,
-            'total_members': len(members)
+            'total_members': len(members),
+            'site_notis': notifications
         })
 
 class CircleInvited(BaseHandler):
@@ -501,6 +506,24 @@ class RequestAccept(BaseHandler):
         })
 
 class CircleMessage(BaseHandler):
+    def get(self, circle_id):
+        self.auth()
+
+        user = self.current_user()
+
+        circle = Circle.get_by_id(int(circle_id))
+
+        if user.key() not in circle.admins:
+            print "Unintended Access"
+
+        if not circle:
+            print "Circle DNE"
+
+        doRender(self, 'circle_message.html', {
+            'user': user,
+            'circle': circle
+        })
+
     def post(self, circle_id):
         self.auth()
 
@@ -521,15 +544,11 @@ class CircleMessage(BaseHandler):
         json_str = self.request.body
         data = json.loads(json_str)
 
-        members = User.all().filter('circle = ', circle.key()).fetch(100)
-
-        for member in members:
-            noti = Notification()
-            noti.user = user.key()
-            noti.circle = circle.key()
-            noti.type = 'circle_message'
-            noti.text = data['message']
-            noti.put()
+        message = Messages()
+        message.sender = user.key()
+        message.circle = circle
+        message.message = data['message']
+        message.put()
 
         return self.json_resp(200, {
             'message': 'Message sent to all users'
