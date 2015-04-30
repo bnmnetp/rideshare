@@ -58,14 +58,34 @@ def render(handler, name = 'home.html', value = {}):
 	template = env.get_template(name)
 	handler.response.write(template.render(value))
 
-def split_address(add):
-	temp = add.split(',')
-	return temp[1][1:] + ', ' + temp[2][1:3]
+def split_address(address):
+	parts = address.split(',')
+	print parts
+	if len(parts) == 3:
+		state = parts[1].split(' ')
+		return parts[0] + ', ' + state[1]
+	elif len(parts) == 4:
+		state = parts[2].split(' ')
+		return parts[1] + ', ' + state[1]
+	else:
+		return address
 
-def format_address(add):
-	return add
-	# temp = add.split(',')
-	# return temp[1][1:] + ', ' + temp[2][1:3]
+def city_state(address):
+	parts = address.split(',')
+	for p in parts:
+		if p == ' ':
+			p = p[1:]
+	if len(parts) == 4:
+		state = parts[1].split(' ')
+		return parts[0] + ', ' + state[0]
+	elif len(parts) == 5:
+		state = parts[2].split(' ')
+		return parts[1] + ', ' + state[0]
+	else:
+		return address
+
+def format_address(address):
+	return split_address(address)
 
 def grab_json(obj, prop):
 	resp = {}
