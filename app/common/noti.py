@@ -144,16 +144,17 @@ class Notifications:
 			messages = Messages.all().filter('circle in', user.circles).fetch(10)
 
 		for e in messages:
-			t = 'circle_message'
-			notifications.append({
-				'id': e.key(),
-				'type': t,
-				'message': self.templates[t]['template'].format(
-					e.circle.key().id(),
-					e.circle.name,
-					e.message
-				)
-			})
+			if e.key() not in user.notis:
+				t = 'circle_message'
+				notifications.append({
+					'id': e.key(),
+					'type': t,
+					'message': self.templates[t]['template'].format(
+						e.circle.key().id(),
+						e.circle.name,
+						e.message
+					)
+				})
 
 		for n in notifications:
 			n['title'] = self.templates[n['type']]['title']

@@ -151,7 +151,7 @@ app = webapp2.WSGIApplication([
     ('/reset/(\w+)', NewPassword),
 
     # controllers/home.py
-    ('/home', Home2),
+    ('/home', Home),
 
     # controllers/calendar.py
     ('/calendar', GetCalendar),

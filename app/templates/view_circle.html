@@ -143,9 +143,6 @@
                             {% if is_admin %}
                             <div class="pull-right">
                                 <div class="options">
-                                    {% if not member.key() in circle.admins %}
-                                        <button class='btn btn-success' data-promote='{{member.key().id()}}'>Promote to Manager</button>
-                                    {% endif %}
                                     <!-- <button class='btn btn-danger' data-kick='{{member.key().id()}}'>Kick Member</button> -->
                                 </div>
                             </div>
@@ -171,10 +168,10 @@
                             {% if is_admin %}
                             <div class="pull-right">
                                 <div class="options">
-                                    {% if not member.key() in circle.admins %}
+                                    {% if member.key() not in circle.admins %}
                                         <button class='btn btn-success' data-promote='{{member.key().id()}}'>Promote to Manager</button>
+                                        <button class='btn btn-danger' data-kick='{{member.key().id()}}'>Remove Member</button>
                                     {% endif %}
-                                    <button class='btn btn-danger' data-kick='{{member.key().id()}}'>Remove Member</button>
                                 </div>
                             </div>
                             {% endif %}
@@ -218,6 +215,7 @@
 {% endblock %}
 
 {% block scripts %}
+<script src='/static/js/push.js'></script>
 <script type="text/javascript">
     var change_text = function (e) {
         var target = e.target;
@@ -235,6 +233,65 @@
     for (var btn of collapse_btns) {
         btn.addEventListener('click', change_text);
     }
+
+    var send_req = function (ele) {
+        var push = $.ajax({
+            type: 'POST',
+            url: '/alert/dismiss',
+            dataType: 'json',
+            contentType: 'application/json; charset=UTF-8',
+            data: JSON.stringify({
+                id: ele.dataset.dismiss
+            })
+        });
+
+        push.done(function (data) {
+            ele.parentNode.parentNode.removeChild(ele.parentNode);
+        });
+
+        push.fail(function (data, status) {
+            notify({
+                type: 'danger',
+                strong: 'Whoops',
+                message: 'Alert does not exist.'
+            });
+        });
+    };
+
+    document.addEventListener('click', function (e) {
+        var target = e.target;
+        if (target.dataset.child) {
+            target = target.parentNode;
+        }
+
+        if (target.dataset.dismiss) {
+            send_req(target);
+        }
+        if (target.dataset.promote) {
+            var request = $.ajax({
+                type: 'POST',
+                url: '/circle/{{circle.key().id()}}/promote',
+                dataType: 'json',
+                contentType: 'application/json; charset=UTF-8',
+                data: JSON.stringify({
+                    'user': target.dataset.promote
+                })
+            });
+
+            request.done(function (data) {
+                document.location = '/circle/{{circle.key().id()}}';
+            });
+
+            request.fail(function (data, status) {
+                notify({
+                            type: 'danger',
+                            strong: 'Member not promoted.',
+                            message: 'Try again.'
+                        });
+            });
+        }
+    });
+
 
 </script>
 {% raw %}
