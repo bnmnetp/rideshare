@@ -31,7 +31,6 @@ class GetEventHandler(BaseHandler):
             has_request = True
 
         for ride in offered:
-            print 'yes'
             ride.orig = toolbox.format_address(ride.origin_add)
             ride.dest = toolbox.format_address(ride.dest_add)
             if ride.driver and user.key() == ride.driver.key():

@@ -61,15 +61,12 @@ def render(handler, name = 'home.html', value = {}):
 def split_address(address):
 	parts = address.split(',')
 	print parts
-	for p in parts:
-		if p[0] == ' ':
-			p = p[1:]
 	if len(parts) == 3:
 		state = parts[1].split(' ')
-		return parts[0] + ', ' + state[0]
+		return parts[0] + ', ' + state[1]
 	elif len(parts) == 4:
 		state = parts[2].split(' ')
-		return parts[1] + ', ' + state[0]
+		return parts[1] + ', ' + state[1]
 	else:
 		return address
 
@@ -87,10 +84,8 @@ def city_state(address):
 	else:
 		return address
 
-def format_address(add):
-	return add
-	# temp = add.split(',')
-	# return temp[1][1:] + ', ' + temp[2][1:3]
+def format_address(address):
+	return split_address(address)
 
 def grab_json(obj, prop):
 	resp = {}
