@@ -21,11 +21,16 @@ class GetCalendar(BaseHandler):
 
 		driving = Ride.all().filter('driver =', user.key()).fetch(None)
 		for d in driving:
+			check_for_passengers = Passenger.all().filter('ride =', d).fetch(1)
+			if check_for_passengers:
+				border = '#1565C0'
+			else:
+				border = '#90CAF9'
 			rides.append({
 				'title': d.event.name + ' - Driver',
 				'start': str(d.date),
 				'url': '/ride/' + str(d.key().id()),
-				'color': '#1565c0'
+				'color': border
 			})
 
 		requester = Requester.all().filter('user =', user.key()).fetch(None)

@@ -406,15 +406,15 @@ class PromoteMember(BaseHandler):
         json_str = self.request.body
         data = json.loads(json_str)
 
-        user = User.get_by_id(data['user'])
+        user = User.get_by_id(int(data['user']))
 
         if not user:
             return self.json_resp(500, {
                 'message': 'User does not exist'
             })
 
-        if user.key().id() in circle.admins:
-            circle.admins.remove(user.key().id())
+        if user.key().id() not in circle.admins:
+            circle.admins.append(user.key())
 
         circle.put()
 

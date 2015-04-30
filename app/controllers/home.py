@@ -9,7 +9,7 @@ from datetime import date
 from app.common.email_sys import sender
 from app.common.noti import Notifications
 
-class Home2(BaseHandler):
+class Home(BaseHandler):
     def get(self):
         self.auth()
         user = self.current_user()
@@ -26,7 +26,7 @@ class Home2(BaseHandler):
             else:
                 circle.user = False
 
-        doRender(self, 'home2.html', { 
+        doRender(self, 'home.html', { 
             'site_notis': notifications,
             'user': user,
             'circles': circles
