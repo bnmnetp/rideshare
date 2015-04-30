@@ -235,7 +235,6 @@
     }
 
     document.addEventListener('click', function (e) {
-        e.preventDefault();
         var target = e.target;
         if (target.dataset.promote) {
             var request = $.ajax({

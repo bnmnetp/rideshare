@@ -45,7 +45,8 @@
     </div>
 </div>
 {% if user.name == '' or user.name == 'No name entered' %}
-<div class="alert alert-info" role="alert">
+<div class="alert alert-danger" role="alert">
+    <i class="fa fa-exclamation-circle"></i>
     <strong>You need to fill out your profile!</strong> Please edit your profile and give us some additional information. <a href="/user/edit/{{user.key().id()}}">Edit Profile >></a>
 </div>
 {% endif %}
@@ -53,63 +54,39 @@
     <div class="col-md-6">
         <div class="panel panel-main">
             <div class="panel-heading">
-                Ride Alert
+                Site Notifications
                 <div class="pull-right">
                     <i class="fa fa-question" data-help='toggle'></i>
                 </div>
             </div>
             <div class="panel-body panel-no">
-                {% if ride_alerts %}
-                    {% for ra in ride_alerts %}
-                        <div class="list" data-parent=''>
-                            <div class="ctx">
-                                <i class="fa fa-paper-plane"></i>
-                            </div>
-                            <div class="info">
-                                <div class="title">
-                                    {{ra.message | safe}}
-                                    {% if ra.submessage %}
-                                    <blockquote>
-                                        {{ra.submessage}}
-                                    </blockquote>
-                                    {% endif %}
-                                </div>
-                                <div class="sub">
-                                    {% if ra.details %}
-                                    <a href="/ride/{{ra.details.id}}" class='btn btn-primary btn-sm'>
-                                        <i class="fa fa-automobile"></i>
-                                        {{ra.details.message}}
-                                    </a>
-                                    {% endif %}
-                                    {% if ra.circle %}
-                                    <a href="/circle/{{ra.circle.id}}" class='btn btn-primary btn-sm'>
-                                        <i class="fa fa-circle-o"></i>
-                                        {{ra.circle.name}}
-                                    </a>
-                                    {% endif %}
-                                    {% if ra.date %}
-                                    <div class="tag">
-                                        <i class="fa fa-calendar"></i> {{ra.date}}
-                                    </div>
-                                    {% endif %}
-                                    <div class="tag">
-                                        {{ra.type}}
-                                    </div>
-                                    <!-- <button class='btn btn-danger btn-xs' data-alert='' data-type='{{ra.type}}'>
-                                        <i class="fa fa-times"></i>
-                                        Dismiss
-                                    </button> -->
-                                </div>
+                {% if site_notis %}
+                {% for sn in site_notis %}
+                    <div class="list noti">
+                        <div class="ctx">
+                            <i class="fa fa-{{sn.symbol}}"></i>
+                        </div>
+                        <div class="info">
+                            <div class="title">
+                                <b>{{sn.title}}</b>
+                                <p>{{sn.message | safe}}</p>
                             </div>
                         </div>
-                    {% endfor %}
+                        <div class="dismiss" data-dismiss="{{sn.id}}">
+                            <i class="fa fa-times" data-child='true'></i>
+                        </div>
+                    </div>
+                {% endfor %}
                 {% else %}
-                <div class="panel-message">
-                    You do not have any notifications.
-                </div>
+                    <div class="panel-message">
+                        You do not have any notifications.
+                    </div>
                 {% endif %}
             </div>
         </div>
+
+    </div>
+    <div class="col-md-6">
         <div class="panel panel-main">
             <div class="panel-heading">Quick options</div>
             <div class="panel-body panel-no">
@@ -125,6 +102,16 @@
                 </div>
                 <div class="list">
                     <div class="ctx">
+                        <i class="fa fa-user"></i>
+                    </div>
+                    <div class="info">
+                        <div class="title">
+                            <a href="/invites">My Invites</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="list">
+                    <div class="ctx">
                         <i class="fa fa-child"></i>
                     </div>
                     <div class="info">
@@ -133,61 +120,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="panel panel-main">
-            <div class="panel-heading">
-                Circle Notifications
-                <div class="pull-right">
-                    <i class="fa fa-question" data-help='toggle'></i>
-                </div>
-            </div>
-            <div class="panel-body panel-no">
-                {% if site_notis %}
-                {% for sn in site_notis %}
-                    <div class="list">
-                        <div class="ctx">
-                            <i class="fa fa-envelope-o"></i>
-                        </div>
-                        <div class="info">
-                            <div class="title">
-                                {{sn.message}}
-                            </div>
-                            <div class="sub">
-                                {% if sn.circle %}
-                                <a href="/circle/{{sn.circle.id}}" class='btn btn-primary btn-sm'>
-                                    <i class="fa fa-circle-o"></i>
-                                    {{sn.circle.name}}
-                                </a>
-                                {% endif %}
-                                {% if sn.invited_by %}
-                                <a href="/circle/{{sn.invited_by.id}}" class='btn btn-primary btn-sm'>
-                                    <i class="fa fa-circle-o"></i>
-                                    {{sn.invited_by.name}}
-                                </a>
-                                {% endif %}
-                                {% if sn.date %}
-                                <div class="tag">
-                                    <i class="fa fa-calendar"></i>
-                                    {{sn.date}}
-                                </div>
-                                {% endif %}
-                                {% if sn.type %}
-                                <div class="tag">
-                                    {{sn.type}}
-                                </div>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
-                {% endfor %}
-                {% else %}
-                    <div class="panel-message">
-                        You do not have any upcoming events.
-                    </div>
-                {% endif %}
             </div>
         </div>
         <div class="panel panel-main">
@@ -232,20 +164,19 @@
 
 {% block scripts %}
 <script type="text/javascript">
-    var send_req = function (id) {
+    var send_req = function (ele) {
         var push = $.ajax({
             type: 'POST',
-            url: '/alert/' + id + '/dismiss',
+            url: '/alert/dismiss',
             dataType: 'json',
             contentType: 'application/json; charset=UTF-8',
             data: JSON.stringify({
-                id: id
+                id: ele.dataset.dismiss
             })
         });
 
         push.done(function (data) {
-            var parent = document.querySelector('[data-parent="' + id + '"]');
-            parent.parentNode.removeChild(parent);
+            ele.parentNode.parentNode.removeChild(ele.parentNode);
         });
 
         push.fail(function (data, status) {
@@ -260,23 +191,45 @@
     document.body.addEventListener('click', function (e) {
         var target = e.target;
 
-        if (target.dataset.alert) {
-            send_req(target.dataset.alert);
+        if (target.dataset.child) {
+            target = target.parentNode;
+        }
+
+        if (target.dataset.dismiss) {
+            send_req(target);
         }
     });
 
-/* Toggle Help */
-var help = {};
-help.btns = document.querySelectorAll('[data-help="toggle"]');
-help.container = document.querySelector('[data-help="container"]');
+    /* Toggle Help */
+    var help = {};
+    help.btns = document.querySelectorAll('[data-help="toggle"]');
+    help.container = document.querySelector('[data-help="container"]');
 
-console.log(help.btns)
+    for (var btn of help.btns) {
+        btn.addEventListener('click', function (e) {
+            help.container.classList.toggle('hidden');
+        });
+    };
 
-for (var btn of help.btns) {
-    btn.addEventListener('click', function (e) {
-        help.container.classList.toggle('hidden');
-    });
-};
+    // document.body.addEventListener('click', function (e) {
+    //     var target = e.target;
+    //     if (target.dataset.dismiss) {
+    //         var push = $.ajax({
+    //             type: 'POST',
+    //             url: '/alert/dismiss',
+    //             dataType: 'json',
+    //             contentType: 'application/json; charset=UTF-8',
+    //             data: JSON.stringify({
+    //                 id: id
+    //             })
+    //         });
+
+    //         push.done(function (data) {
+    //             var parent = document.querySelector('[data-parent="' + id + '"]');
+    //             parent.parentNode.removeChild(parent);
+    //         });
+    //     }
+    // });
 
 // help.btn.addEventListener('click', function (e) {
 //     var target = e.target;
