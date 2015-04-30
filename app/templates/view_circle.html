@@ -116,9 +116,11 @@
                         <a class='btn btn-xs btn-link' href="/circle/{{circle.key().id()}}/invite">
                             Invite Friends
                         </a>
+                        {% if is_admin %}
                         <a class='btn btn-xs btn-link' href="/circle/{{circle.key().id()}}/requests">
                             Requests
                         </a>
+                        {% endif %}
                         <a class='btn btn-xs btn-success'
                             data-toggle="collapse"
                             data-cbtn="open"
