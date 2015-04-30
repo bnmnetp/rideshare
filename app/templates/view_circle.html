@@ -234,8 +234,39 @@
         btn.addEventListener('click', change_text);
     }
 
+    var send_req = function (ele) {
+        var push = $.ajax({
+            type: 'POST',
+            url: '/alert/dismiss',
+            dataType: 'json',
+            contentType: 'application/json; charset=UTF-8',
+            data: JSON.stringify({
+                id: ele.dataset.dismiss
+            })
+        });
+
+        push.done(function (data) {
+            ele.parentNode.parentNode.removeChild(ele.parentNode);
+        });
+
+        push.fail(function (data, status) {
+            notify({
+                type: 'danger',
+                strong: 'Whoops',
+                message: 'Alert does not exist.'
+            });
+        });
+    };
+
     document.addEventListener('click', function (e) {
         var target = e.target;
+        if (target.dataset.child) {
+            target = target.parentNode;
+        }
+
+        if (target.dataset.dismiss) {
+            send_req(target);
+        }
         if (target.dataset.promote) {
             var request = $.ajax({
                 type: 'POST',
@@ -260,6 +291,8 @@
             });
         }
     });
+
+
 </script>
 {% raw %}
 <script data-notify="template" type='text/x-handlebars-template'>
