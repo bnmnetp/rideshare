@@ -1,0 +1,216 @@
+{% extends "layout.html" %}
+
+{% block title %}Ride{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="/static/css/datepicker.css">
+{% endblock %}
+
+{% block main %}
+
+{% include 'includes/circle_header.html' %}
+
+<div data-notify="container"></div>
+
+<div class="panel panel-default padding">
+    <div class="panel-body">
+        <div class="key">
+            <i class='fa fa-key'></i>
+            Key
+        </div>
+        <div class="key">
+            <img src="/static/img/person.png" />
+            Event
+        </div>
+        <div class="key">
+            <img src="/static/img/start.png" />
+            Starting point
+        </div>
+        <div class="key">
+            <img src="/static/img/end.png" />
+            Destination
+        </div>
+        <div class="btn-group pull-right">
+            <button class='btn btn-primary' data-reset="btn">
+                <i class="fa fa-tencent-weibo"></i>
+                Start over
+            </button>
+            <button class='btn btn-primary' data-help='toggle'>
+                <i class="fa fa-navicon"></i>
+                Help
+            </button>
+        </div>
+
+    </div>
+</div>
+
+{% include 'help_map.html' %}
+
+<div class="row" >
+    <div class="col-md-12" data-layout="header">
+        
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-8 map-container" id='col_map' data-layout='map'>
+        <div id="map_canvas"></div>
+    </div>
+
+    <div class="col-md-4" data-layout='side'>
+        
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+
+{% raw %}
+
+<script data-template='type_select' type="text/x-handlebars-template">
+    To get started, <b>click on a marker to get details</b> or
+    <ul class="menu">
+        <li data-next='new_event'>Create a new Event</li>
+    </ul>    
+</script>
+
+<script data-template='location_select' type="text/x-handlebars-template">
+    <div class="locsec">
+        <h1>Select the {{type}} location</h1>
+
+        <p>Use one of the following options:</p>
+        <ul>
+            <li>
+                <h2>Point & Click</h2>
+                Zoom in to select an exact location by clicking on the map. (Zoom in as close as possible!)
+            </li>
+            <li data-geolocation='container' class='hidden'>
+                <h2>Geolocation</h2>
+                <button data-geolocation='btn' class='btn btn-primary'>Use your current location.</button>
+            </li>
+            <li>
+                <h2>Search</h2>
+                <form data-search>
+                    <div class="form-group">
+                        <label>Enter an address, city, or state:</label>
+                        <input type="text" class="form-control" name="address">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </form>
+            </li>
+        </ul>
+        <hr>
+    </div>
+</script>
+
+<script data-template='selected' type="text/x-handlebars-template">
+    <p style="font-weight:700;">
+        You have selected:
+    </p>
+    <span data-location='text'>
+        Please select an address
+    </span>
+    <button class="btn btn-success btn-lg pull-right hidden" data-next="true" type='button' data-location="btn">
+        Next
+    </button>
+</script>
+
+<script data-template='event_details' type="text/x-handlebars-template">
+    <form data-send="event">
+        <div class="form-group">
+            <label>Event Name</label>
+            <input class="form-control" type="text" placeholder="Name" name='name' required>
+        </div>
+        <div class="form-group">
+            <label>Location Description</label>
+            <input class="form-control" type="text" placeholder="Name" name='location' required>
+            <p class="help-block">Give a short description of where the event will take place. i.e. Decorah High School</p>
+        </div>
+        <div class="form-group">
+            <label>Date</label>
+            <div class='input-group date' data-datepicker data-date-format="MM/DD/YYYY">
+                <input class="form-control" type="text" placeholder="Date" name='date' required>
+                <span class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                </span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Time</label>
+            <div class="input-group date" data-time='container'>
+                <input class="form-control" type="text" placeholder="Time" name='time' required data-time='input'>
+                <span class="input-group-addon">
+                    <i class="fa fa-clock-o"></i>
+                </span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Details</label>
+            <input class="form-control" type="text" placeholder="Details" name='details'>
+        </div>
+        <button type='submit' class='btn btn-primary'>Create Event</button>
+    </form>
+</script>
+
+<script data-template='event_info' type="text/x-handlebars-template">
+    <div class="entry">
+        This is an <strong>event</strong>.
+    </div>
+    <div class="entry">
+        <strong>Location:</strong> {{add}}
+    </div>
+    <div class="entry">
+        <strong>Date:</strong> {{date}}
+    </div>
+    <a class='btn btn-primary' href='/event/{{id}}'>
+        View Event
+    </a>
+    <a href='/event/{{id}}' class='btn btn-primary'>
+        Create a ride to this event.
+    </a>
+    <p class="help-block">View the event to look for rides / set up rides.</p>
+</script>
+
+<script data-notify="template" type='text/x-handlebars-template'>
+    <div class="alert alert-{{type}} alert-dismissable">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        <strong>{{strong}}</strong> {{message}}
+    </div>
+</script>
+
+{% endraw %}
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB15X6ti6tDQUQKjwPCI2zi3XFfxZW3MGM&sensor=false" type="text/javascript"></script>
+<script src="/static/js/map3.js" type="text/javascript"></script>
+<script src='//cdnjs.cloudflare.com/ajax/libs/moment.js/2.7.0/moment.min.js'></script>
+<script src='//cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/3.0.0/js/bootstrap-datetimepicker.min.js'></script>
+
+<script type="text/javascript">
+
+    var circle = "{{circle.key().id()}}";
+
+    var map = new Map();
+    var markers = new Markers(map);
+    map.add_markers(markers);
+
+    // var flow = new Flow('path', paths);
+    // flow.set_handler(map);
+
+    // if (getParameterByName('events') == 'true') {
+    //     flow.change_slide({
+    //         next: 'new_event'
+    //     });
+    // }
+
+    /* Toggle Help */
+    var help = {};
+    help.btn = document.querySelector('[data-help="toggle"]');
+    help.container = document.querySelector('[data-help="container"]');
+
+    help.btn.addEventListener('click', function (e) {
+        var target = e.target;
+
+        help.container.classList.toggle('hidden');
+    });
+    /* End */
+</script>
+
+{% endblock %}

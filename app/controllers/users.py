@@ -123,7 +123,8 @@ class EditPrefHandler(BaseHandler):
             'event_created': True,
             'ride_edited': True,
             'passenger_joined': True,
-            'new_ride': True
+            'new_ride': True,
+            'circle_message': True
         }
 
         for p in preferences:
