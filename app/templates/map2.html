@@ -31,7 +31,7 @@
             Destination
         </div>
         <div class="btn-group pull-right">
-            <button class='btn btn-primary' data-reset>
+            <button class='btn btn-primary' data-reset="btn">
                 <i class="fa fa-tencent-weibo"></i>
                 Start over
             </button>
@@ -188,6 +188,8 @@
     var circle = "{{circle.key().id()}}";
 
     var map = new Map();
+    var markers = new Markers(map);
+    map.add_markers(markers);
 
     // var flow = new Flow('path', paths);
     // flow.set_handler(map);

@@ -72,7 +72,7 @@ var icons = {
 
 var Markers = function Markers (map) {
 	this.markers = [];
-	this.map = map;
+	this.map = map.map;
 };
 
 Markers.prototype.last_marker = function () {
@@ -111,19 +111,13 @@ Markers.prototype.add_event_info = function (ctx) {
 };
 
 Markers.prototype.delete_marker = function () {
-	this.last_marker().setMap(null);
-	this.markers.pop();
+	if (this.markers.length > 0) {
+		this.last_marker().setMap(null);
+		this.markers.pop();
+	}
 };
 
 var Map = function Map () {
-	document.addEventListener('click', function (e) {
-		var target = e.target;
-
-		if (target.dataset.next) {
-			this.advance();
-		}
-	}.bind(this));
-
 	this.details = {};
 
 	this.layout = {};
@@ -137,6 +131,10 @@ var Map = function Map () {
 
 	this.flow.actions = {
 		type: function () {
+			if (this.markers) {
+				this.markers.delete_marker();
+			}
+
 			template_helper(
 				this.layout.side,
 				'type_select',
@@ -167,7 +165,7 @@ var Map = function Map () {
 						address: address
 					}, this.act_address.bind(this));
 				}.bind(this));
-				
+
 		}.bind(this),
 		details: function () {
 			template_helper(
@@ -205,7 +203,23 @@ var Map = function Map () {
 
 	this.flow.actions.type();
 	this.create_map();
+
+	document.addEventListener('click', function (e) {
+		var target = e.target;
+
+		if (target.dataset.next) {
+			this.advance();
+		}
+
+		if (target.dataset.reset) {
+			this.reset();
+		}
+	}.bind(this));
 };
+
+Map.prototype.add_markers = function (markers) {
+	this.markers = markers;
+}
 
 Map.prototype.check_geolocation = function () {
 	if (has_geolocation) {
@@ -241,6 +255,8 @@ Map.prototype.geocode_address = function (e) {
 
 Map.prototype.act_address = function (d) {
 	if (this.current_view() == 'location') {
+		this.markers.delete_marker();
+
 		var point = d[0].geometry.location;
 		this.details.lat = point.lat();
 		this.details.lng = point.lng();
@@ -252,6 +268,11 @@ Map.prototype.act_address = function (d) {
 
 		var btn = document.querySelector('[data-location="btn"]');
 		btn.classList.remove('hidden');
+
+		this.markers.add_event_marker(
+			this.details.lat,
+			this.details.lng
+		);
 	};
 };
 
@@ -263,6 +284,14 @@ Map.prototype.advance = function () {
 	this.clear_node(this.layout.side);
 	this.clear_node(this.layout.header);
 	this.flow.current++;
+	var view = this.current_view();
+	this.flow.actions[view]();
+};
+
+Map.prototype.reset = function () {
+	this.clear_node(this.layout.side);
+	this.clear_node(this.layout.header);
+	this.flow.current = 0;
 	var view = this.current_view();
 	this.flow.actions[view]();
 };
@@ -302,7 +331,7 @@ Map.prototype.new_event = function (e) {
 	});
 
 	push.done(function (data) {
-		this.flow.actions.type();
+		this.reset();
 		notify({
 			type: 'success',
 			strong: 'Event created!',
