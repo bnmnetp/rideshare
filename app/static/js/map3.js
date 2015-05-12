@@ -157,6 +157,17 @@ var Map = function Map () {
 				{}
 			);
 			this.check_geolocation();
+
+			document
+				.querySelector('[data-search]')
+				.addEventListener('submit', function (e) {
+					e.preventDefault();
+					var address = e.target.address.value;
+					this.geocoder.geocode({
+						address: address
+					}, this.act_address.bind(this));
+				}.bind(this));
+				
 		}.bind(this),
 		details: function () {
 			template_helper(
