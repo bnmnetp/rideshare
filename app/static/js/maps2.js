@@ -10,37 +10,6 @@ if (!Array.prototype.contains) {
 	}
 }
 
-var get_geolocation = function (e) {
-	var target = e.target;
-	navigator.geolocation.getCurrentPosition(function (pos) {
-		map.geocode_latlng({
-			lat: pos.coords.latitude,
-			lng: pos.coords.longitude
-		});
-	});
-};
-
-var getParameterByName = function (name) {
-    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-        results = regex.exec(location.search);
-    return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-};
-
-var display_geolocation = function () {
-	var geo_container = document.querySelector('[data-geolocation="container"]');
-	geo_container.classList.remove('hidden');
-
-	var geo_btn = document.querySelector('[data-geolocation="container"]');
-	geo_btn.addEventListener('click', get_geolocation);
-};
-
-if ('geolocation' in navigator) {
-	console.log('Geolocation Availible');
-	display_geolocation();
-} else {
-	console.log('Geolocation Unavailible');
-}
 
 var icons = {
 	event: {
@@ -495,7 +464,6 @@ var Map = augment(Object, function () {
 	};
 
 	this.disp_address = function (deta) {
-		console.log(this.state);
 		if (this.state == 'select_orig') {
 			if (flow.history.contains('new_ride') || flow.history.contains('new_trip')) {
 				this.set_window(deta, 'success');
@@ -541,5 +509,5 @@ var Map = augment(Object, function () {
 });
 
 var map = new Map();
-var markers = new Markers();
+// var markers = new Markers();
 var forms = new Forms();
