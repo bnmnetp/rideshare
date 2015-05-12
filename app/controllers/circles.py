@@ -550,6 +550,22 @@ class CircleMessage(BaseHandler):
         message.message = data['message']
         message.put()
 
+        # EMAIL NOTIFICATION
+        circle_members = User.all().filter('circles =', circle.key()).fetch(None)
+        
+        d = {
+            'template': 'circle_message',
+            'data': {
+                'circle_name': circle.name,
+                'circle_id': circle.key().id(),
+                'circle_message': data['message']
+            },
+            'subject': 'Ridecircles - ' + circle.name + ' has sent you a message',
+            'users': circle_members
+        }
+
+        sender(d)
+
         return self.json_resp(200, {
             'message': 'Message sent to all users'
         })

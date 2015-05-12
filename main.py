@@ -67,7 +67,7 @@ class MapHandler(BaseHandler):
 
         circle = Circle.get_by_id(int(circle_id))
 
-        toolbox.render(self, 'map.html', {
+        toolbox.render(self, 'map2.html', {
             'user': user,
             'circle': circle
         })
