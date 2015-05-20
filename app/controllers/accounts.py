@@ -50,7 +50,7 @@ class LoginHandler(BaseHandler):
                 'message': 'Email/password is wrong.'
             })
 
-        if data['org']:
+        if data['org'] != '':
             org = Org.get_by_id(int(data['org']))
             if not org.email in data['email']:
                 return self.json_resp(500, {
@@ -81,7 +81,7 @@ class RegisterHandler(BaseHandler):
         })
 
         has_org = False
-        if data['org']:
+        if data['org'] != '':
             org = Org.get_by_id(int(data['org']))
             if not org.email in data['email']:
                 return self.json_resp(500, {
