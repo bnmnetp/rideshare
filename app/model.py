@@ -233,3 +233,9 @@ class Messages(db.Model):
     circle = db.ReferenceProperty(Circle)
     sender = db.ReferenceProperty(User)
     message = db.TextProperty()
+
+class Org(db.Model):
+    name = db.TextProperty()
+    email = db.TextProperty()
+    slug = db.TextProperty()
+    circle = db.ReferenceProperty(Circle)
