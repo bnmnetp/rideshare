@@ -235,7 +235,7 @@ class Messages(db.Model):
     message = db.TextProperty()
 
 class Org(db.Model):
-    name = db.TextProperty()
-    email = db.TextProperty()
-    slug = db.TextProperty()
+    name = db.StringProperty()
+    email = db.StringProperty()
+    slug = db.StringProperty()
     circle = db.ReferenceProperty(Circle)
