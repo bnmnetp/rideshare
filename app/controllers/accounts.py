@@ -10,6 +10,10 @@ from app.common.email import send_invite, send_email
 
 import uuid
 
+class OrgLogin(BaseHandler):
+    def get(self, org_id):
+        doRender(self, 'accounts/orglogin.html', {})
+
 class LoginHandler(BaseHandler):
     def get(self):
         if self.current_user():

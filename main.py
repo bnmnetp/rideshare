@@ -141,6 +141,9 @@ app = webapp2.WSGIApplication([
     ('/circle/(\d+)/map', MapHandler),
     ('/stats/(\w+)', RideStats),
 
+    # login for orgs
+    ('/org/(\w+)', OrgLogin),
+
     # cron
     ('/notifications/check', CheckNotifications),
 
