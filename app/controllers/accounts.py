@@ -12,9 +12,10 @@ import uuid
 
 class OrgLogin(BaseHandler):
     def get(self, slug):
+        print slug
         org = Org.all().filter('slug =', slug).get()
         if not org:
-            self.redirect('/')
+            return self.redirect('/')
 
         doRender(self, 'accounts/orglogin.html', {
             'org': org
