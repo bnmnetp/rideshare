@@ -10,7 +10,7 @@
     <div data-notify='container'></div>
     <div class="panel panel-default">
         <div class="panel-body">
-            Hello! You are logging into the {{org.name}}. Please use your {{org.email}}!
+            Hello! You are logging into {{org.name}} ridesharing. Please use your {{org.email}}!
         </div>
     </div>
     <div class="row">
@@ -69,10 +69,6 @@
                     </button>
                 </form>
             </div>
-            <!-- <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
-            </div> -->
         </div>
     </div>
 </div>
@@ -101,10 +97,6 @@
                     <button type="submit" class="btn btn-default">Submit</button>
                 </form>
             </div>
-            <!-- <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
-            </div> -->
         </div>
     </div>
 </div>
@@ -130,7 +122,8 @@
         model: {
             name: '',
             email: '',
-            password: ''
+            password: '',
+            org: '{{org.key().id()}}'
         },
         method: 'POST',
         route: '/register',
@@ -150,7 +143,8 @@
         form: login,
         model: {
             email: '',
-            password: ''
+            password: '',
+            org: '{{org.key().id()}}'
         },
         method: 'POST',
         route: '/login',

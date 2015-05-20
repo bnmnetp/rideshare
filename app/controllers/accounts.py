@@ -11,8 +11,14 @@ from app.common.email import send_invite, send_email
 import uuid
 
 class OrgLogin(BaseHandler):
-    def get(self, org_id):
-        doRender(self, 'accounts/orglogin.html', {})
+    def get(self, slug):
+        org = Org.all().filter('slug =', slug).get()
+        if not org:
+            self.redirect('/')
+
+        doRender(self, 'accounts/orglogin.html', {
+            'org': org
+        })
 
 class LoginHandler(BaseHandler):
     def get(self):
@@ -32,7 +38,8 @@ class LoginHandler(BaseHandler):
 
         login_validator = Schema({
             Required('email'): unicode,
-            Required('password'): unicode
+            Required('password'): unicode,
+            'org': unicode
         })
 
         user = User.all().filter('email_account = ', data['email']).get()
@@ -41,6 +48,13 @@ class LoginHandler(BaseHandler):
             return self.json_resp(500, {
                 'message': 'Email/password is wrong.'
             })
+
+        if data['org']:
+            org = Org.get_by_id(int(data['org']))
+            if not org.email in data['email']:
+                return self.json_resp(500, {
+                    'message': 'Email/password is wrong.'
+                })
 
         if bcrypt.hashpw(data['password'], user.password) == user.password:
             self.session['user'] = user.key().id()
@@ -61,8 +75,19 @@ class RegisterHandler(BaseHandler):
 
         login_validator = Schema({
             Required('email'): unicode,
-            Required('password'): unicode
+            Required('password'): unicode,
+            'org': unicode
         })
+
+        has_org = False
+        if data['org']:
+            org = Org.get_by_id(int(data['org']))
+            if not org.email in data['email']:
+                return self.json_resp(500, {
+                    'message': 'Your email is not apart of this organization!'
+                })
+            else:
+                has_org = True
 
         hashed = bcrypt.hashpw(data['password'], bcrypt.gensalt())
 
@@ -72,6 +97,10 @@ class RegisterHandler(BaseHandler):
         user.name = data['name']
         user.password = hashed
         user.put()
+
+        if has_org:
+            user.circles.append(org.circle.key())
+            user.put()
 
         self.session['user'] = user.key().id()
         # check_for_invite(self, user)
